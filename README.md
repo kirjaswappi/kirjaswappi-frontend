@@ -1,4 +1,4 @@
-# Tecgen E-commerce 🚀
+# kirjaswappi 🚀
 
 
 
@@ -21,9 +21,10 @@ This powerd by React JS.
 
 
 ```sh
-cd dillinger
-npm i
-node app
+cd kirjaswappi-frontend
+npm install
+yarn install
+npm run dev
 ```
 
 ```
