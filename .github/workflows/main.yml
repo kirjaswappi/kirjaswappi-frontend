@@ -9,6 +9,9 @@ jobs:
   publish_and_release:
     runs-on: ubuntu-latest
     container: node:18
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
