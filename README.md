@@ -2,6 +2,8 @@
 
 Powered by React JS.
 
+[![Main Pipeline](https://github.com/kirjaswappi/kirjaswappi-frontend/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/kirjaswappi/kirjaswappi-frontend/actions/workflows/main.yml)
+
 
 ## Installation
 
