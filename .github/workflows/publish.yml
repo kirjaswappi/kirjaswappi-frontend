@@ -25,7 +25,7 @@ jobs:
         run: npm ci
 
       - name: Extract Release Version
-        run: echo "RELEASE_VERSION=$(echo $GITHUB_REF | sed -e 's/refs\/tags\/Release v//')" >> $GITHUB_ENV
+        run: echo "RELEASE_VERSION=$(echo $GITHUB_REF | sed -e 's/refs\/tags\/v//')" >> $GITHUB_ENV
 
       - name: Update package.json
         run: npm version "$RELEASE_VERSION" --no-git-tag-version --allow-same-version
