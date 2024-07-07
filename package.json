@@ -1,6 +1,5 @@
 {
   "name": "@kirjaswappi/kirjaswappi-frontend",
-  "private": true,
   "type": "module",
   "repository": {
     "type": "git",
