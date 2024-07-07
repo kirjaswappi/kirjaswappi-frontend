@@ -1,0 +1,43 @@
+name: Main Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish_and_release:
+    runs-on: ubuntu-latest
+    container: node:18
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Dependencies
+        run: npm ci
+  
+      - name: Run Linting Check & Build Package
+        run: npm run build
+
+      - name: Publish to GitHub Packages
+        run: npm publish
+        env:
+          USERNAME_GIT: ${{ secrets.USERNAME_GIT }}
+          PASSWORD_GIT: ${{ secrets.TOKEN_GITHUB }}
+
+      - name: Set Version
+        id: set_version
+        run: echo "::set-output name=version::0.0.${{ github.run_number }}"
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+        with:
+          tag_name: v${{ steps.set_version.outputs.version }}
+          release_name: Release v${{ steps.set_version.outputs.version }}
+          draft: false
+          prerelease: false
