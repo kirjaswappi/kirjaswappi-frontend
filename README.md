@@ -2,7 +2,7 @@
 
 Powered by React JS.
 
-[![Main Pipeline](https://github.com/kirjaswappi/kirjaswappi-frontend/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/kirjaswappi/kirjaswappi-frontend/actions/workflows/main.yml)
+[![Release Pipeline](https://github.com/kirjaswappi/kirjaswappi-frontend/actions/workflows/release.yml/badge.svg)](https://github.com/kirjaswappi/kirjaswappi-frontend/actions/workflows/release.yml) [![Publish Package](https://github.com/kirjaswappi/kirjaswappi-frontend/actions/workflows/publish.yml/badge.svg)](https://github.com/kirjaswappi/kirjaswappi-frontend/actions/workflows/publish.yml)
 
 
 ## Installation
