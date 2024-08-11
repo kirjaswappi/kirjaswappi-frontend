@@ -34,6 +34,6 @@ my-react-app/
 └── ...
 ```
 
-**Backeknd APIs**: https://api.kirjaswappi.fi
+**Backeknd API Url**: https://api.kirjaswappi.fi
 
 **API Documentation**: [Open API Documentation](https://api.kirjaswappi.fi/swagger-ui/index.html)
