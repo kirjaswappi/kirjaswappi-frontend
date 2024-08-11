@@ -39,5 +39,5 @@ Backeknd APIs:
 https://api.kirjaswappi.fi
 
 API Documentation:
-[https://api.kirjaswappi.fi/swagger-ui/index.html](https://api.kirjaswappi.fi/swagger-ui/index.html)
+[Open API Documentation](https://api.kirjaswappi.fi/swagger-ui/index.html)
 ```
