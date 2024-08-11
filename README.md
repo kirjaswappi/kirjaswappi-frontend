@@ -36,8 +36,8 @@ my-react-app/
 
 ```sh
 Backeknd APIs:
-https://kirjaswappi-backend-api.onrender.com
+https://api.kirjaswappi.fi
 
 API Documentation:
-https://kirjaswappi-backend-api.onrender.com/swagger-ui/index.html
+[https://api.kirjaswappi.fi/swagger-ui/index.html](https://api.kirjaswappi.fi/swagger-ui/index.html)
 ```
