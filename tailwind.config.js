@@ -6,15 +6,6 @@ export default {
   ],
   theme: {
     extend: {
-      animation: {
-        "slide-from-top": "slideFromTop 1s ease-out",
-      },
-      keyframes: {
-        slideFromTop: {
-          "0%": { transform: "translateY(-50px)", opacity: "0" },
-          "100%": { transform: "translateY(0)", opacity: "1" },
-        },
-      },
       container: {
         center: true,
         screens: {
@@ -33,39 +24,23 @@ export default {
         },
       },
       colors: {
-        primary: "#157892",
-        secondary: "#EE485C",
-        gray: "#D9D9D9",
-        light: "#E6E6E6",
-        "spanish-gray": "#9B9B9C",
-        "light-gray": "#F3F5F6",
-        "dim-gray": "#8D8D8D",
-        "slate-gray": "#CDCDCD",
-        yellow: "#FFC702",
-        "black-dim": "#2B2B2B",
-        "black-dark": "#363739",
-        "black-light": "#7E7E7E",
-        link: "#2C77AC",
-        "white-light": "#EAEAEA",
-        skeleton: "#E0E0E0",
-        "skeleton-white": "#F0F0F0",
+        primary: "#114074",
+        secondary: "#B90E25",
+        white: "#FFFFFF",
+        black: "#090909",
+        grey: "#777777",
+        night:"#363739",
+        gray:"#CDCDCD",
+        grayDark:"#9B9B9C"
       },
-      fontSize: {
-        "8xl": "8px",
-        xsm: "10px",
-        "15xl": "15px",
-        "18xl": "18px",
-        "22xl": "22px",
-        "26xl": "26px",
-        "45xl": "45px",
-        "80xl": "80px",
-      },
+      // fontSize: {
+
+      // },
       borderRadius: {
-        "5px": "5px",
-        "15px": "15px",
+        '5px':"5px"
       },
       fontFamily: {
-        inter: ["Inter", "sans-serif"],
+        poppins: ["Poppins", "sans-serif"],
       },
       screens: {
         xsm: "320px",
@@ -75,32 +50,10 @@ export default {
         md: "768px",
         tab: "992px",
         lg: "1024px",
-        xl: "1245px",
+        xl: "1224px",
       },
       spacing: {
         "1px": "1px",
-        "2px": "2px",
-        "3px": "3px",
-        "15px": "15px",
-        "17px": "17px",
-        "18px": "18px",
-        "19px": "19px",
-        "25px": "25px",
-        "30px": "30px",
-        "34px": "34px",
-        "50px": "50px",
-        "59px": "59px",
-        "60px": "60px",
-        "62px": "62px",
-        "72px": "72px",
-        "82px": "82px",
-        "86px": "86px",
-        "114px": "114px",
-        "120px": "120px",
-        "150px": "150px",
-        "200px": "200px",
-        "274px": "274px",
-        "309px": "309px",
       },
       gap: {
         "19px": "19px",
@@ -113,13 +66,9 @@ export default {
         // "deals-background-sm": "url('/src/assets/images/dealOfTheWeekBG.jpg')",
       },
       boxShadow: {
-        "3xl": "0 0 0 1px rgb(230, 230, 230)",
-        card: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+        'custom-box-shadow':"0px 0px 5px #64646439"
       },
-      dropShadow: {
-        "3xl": "1px 5px 2px rgba(0, 0, 0, 0.25)",
-        "2xl": "0px 5px 2px rgba(0, 0, 0, 0.15)",
-      },
+      dropShadow: {},
     },
   },
   plugins: [],
