@@ -3,6 +3,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import Login from "../pages/auth/login";
+import Register from "../pages/auth/register";
 
 const routes = createBrowserRouter([
   {
@@ -29,6 +30,14 @@ const routes = createBrowserRouter([
         element: (
           // <Aunthenticate>
             <Login />
+          // </Aunthenticate>
+        ),
+      },
+      {
+        path: "/auth/register",
+        element: (
+          // <Aunthenticate>
+            <Register />
           // </Aunthenticate>
         ),
       },

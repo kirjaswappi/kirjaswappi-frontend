@@ -1,5 +1,5 @@
 export const setTokens = (accessToken: string, refreshToken: string) => {
-  localStorage.setItem('token', accessToken)
+  localStorage.setItem('jwtToken', accessToken)
   localStorage.setItem('refreshToken', refreshToken)
 }
 

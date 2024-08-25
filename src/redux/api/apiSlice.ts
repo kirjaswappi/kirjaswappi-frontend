@@ -1,47 +1,44 @@
 import {
-  BaseQueryApi,
-  FetchArgs,
-  createApi,
-  fetchBaseQuery,
-} from '@reduxjs/toolkit/query/react'
-import { getUserData } from '../../utility/getUser'
-import { logout, setToken, setUserInfo } from '../feature/auth/authAction'
-import { refreshAuthToken } from '../feature/auth/authSlice'
+    BaseQueryFn,
+    createApi,
+    FetchArgs,
+    fetchBaseQuery,
+    FetchBaseQueryError,
+} from "@reduxjs/toolkit/query/react";
+import { getToken } from "../../utility/localStorage/localStorage";
 
+const mainBaseQuery: BaseQueryFn<
+    string | FetchArgs,
+    unknown,
+    FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+    const baseQuery = fetchBaseQuery({
+        baseUrl: import.meta.env.VITE_REACT_MAIN_API,
+        prepareHeaders: (headers) => {
+            const url = (typeof args === "string" ? args : args.url) || "";
+            if (!url.includes("/authenticate")) {
+                const jwtToken = getToken("jwtToken");
+                if (jwtToken) {
+                    headers.set("Authorization", `Bearer ${jwtToken}`);
+                }
+            }
+            return headers;
+        },
+    });
+    // If args is a string, treat it as a URL
+    const { url, method, body } =
+        typeof args === "string"
+            ? { url: args, method: "GET", body: undefined }
+            : args;
 
-const baseQuery = async (
-  args: string | FetchArgs,
-  api: BaseQueryApi,
-  extraOptions: object,
-) => {
-  const result = await fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_URL,
-  })(args, api, extraOptions)
-  if (result?.error?.status === 401) {
-    const refreshResult = await api.dispatch(refreshAuthToken()).unwrap()
-    if (refreshResult) {
-      // token set in setToken
-      api.dispatch(setToken(refreshResult.access))
-      // decode user and data store in setUserInfo
-      api.dispatch(setUserInfo(getUserData(refreshResult.access)))
-
-      return await fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_URL })(
-        args,
-        api,
-        extraOptions,
-      )
-    } else {
-      api.dispatch(logout())
-    }
-  } else if (result?.error?.status === 'FETCH_ERROR') {
-    api.dispatch(logout())
-  }
-  return result
-}
-
+    // Make the API request
+    let result = await baseQuery({ url, method, body }, api, extraOptions);
+    
+    return result;
+};
 export const api = createApi({
-  reducerPath: 'api',
-  baseQuery: baseQuery as any,
-  tagTypes: [],
-  endpoints: () => ({}),
-})
+    reducerPath: "api",
+    baseQuery: mainBaseQuery,
+    tagTypes: [],
+    endpoints: () => ({}),
+});

@@ -4,6 +4,7 @@ import { PiEyeClosed } from "react-icons/pi";
 import { Link, useNavigate } from "react-router-dom";
 import authVector from "../../../assets/vectorAuth.png";
 import Image from "../../../components/shared/Image";
+import { useLoginMutation } from "../../../redux/feature/auth/authApi";
 
 interface ILoginForm {
     email: string;
@@ -11,6 +12,7 @@ interface ILoginForm {
 }
 
 export default function Login() {
+    const [login] = useLoginMutation()
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState<{
         [key: string]: string | null | undefined;
@@ -60,10 +62,11 @@ export default function Login() {
         return !hasErrors;
     };
 
-    const handleSubmit = (e: { preventDefault: () => void }) => {
+    const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
         if (validateForm()) {
-            //
+            const resp = await login(userInfo)
+            console.log(resp)
         }
     };
     return (
