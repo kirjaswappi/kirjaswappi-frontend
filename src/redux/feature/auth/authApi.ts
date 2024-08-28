@@ -1,5 +1,6 @@
 import { applicationJSON } from "../../../utility/headersConstant";
-import { setTokens } from "../../../utility/localStorage/localStorage";
+import { setTokens } from "../../../utility/localStorage";
+
 import { api } from "../../api/apiSlice";
 
 export const authApi = api.injectEndpoints({

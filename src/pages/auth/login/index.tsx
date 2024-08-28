@@ -18,7 +18,7 @@ export default function Login() {
         [key: string]: string | null | undefined;
     }>({});
     const [userInfo, setUserInfo] = useState<ILoginForm>({
-        email: "",
+        email: "rahat@gmail.com",
         password: "",
     });
 
@@ -51,7 +51,7 @@ export default function Login() {
         }
         if (!userInfo.password) {
             errors.password = "Password is required";
-        }else if (userInfo.password.length < 6) {
+        }else if (userInfo.password.length < 0) {
             errors.password = "Password must be at least 6 characters long";
         }
         setErrors(errors);
@@ -65,8 +65,7 @@ export default function Login() {
     const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
         if (validateForm()) {
-            const resp = await login(userInfo)
-            console.log(resp)
+            await login(userInfo)
         }
     };
     return (
@@ -83,7 +82,7 @@ export default function Login() {
                                 <input
                                     type="text"
                                     id="email"
-                                    // value={email}
+                                    value={userInfo.email}
                                     name="email"
                                     onChange={handleChange}
                                     className={`w-full h-[48px] px-[14px] py-2 mt-1 border ${errors.email ? "border-rose-500" :"border-grayDark"} bg-[#F2F2F2] rounded-md shadow-sm focus:outline-none focus:ring-grayDark focus:border-grayDark`}
