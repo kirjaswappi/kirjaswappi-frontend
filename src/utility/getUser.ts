@@ -38,5 +38,5 @@ export const isTokenExpired = (token: string): boolean => {
 
     const jwtPayload = JSON.parse(atob(token.split(".")[1]));
     const currentTime = Date.now() / 1000;
-    return jwtPayload.exp > currentTime;
+    return jwtPayload.exp < currentTime;
 };

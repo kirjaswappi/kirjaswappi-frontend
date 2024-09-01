@@ -15,12 +15,15 @@ export const api = createApi({
               const response = await fetch(`${import.meta.env.VITE_REACT_MAIN_API}/authenticate/refresh`, {
                 method: 'POST',
                 body: JSON.stringify({ refreshToken }),
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json',
+                  
+                 },
               });
               console.log(response)
-            } else if (jwtToken) {
-                headers.set("Authorization", `Bearer ${jwtToken}`);
-            }
+            } 
+            // else if (jwtToken) {
+            //     headers.set("Authorization", `Bearer ${jwtToken}`);
+            // }
             return headers;
         },
     }),

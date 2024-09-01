@@ -1,5 +1,5 @@
 import { applicationJSON } from "../../../utility/headersConstant";
-import { setTokens } from "../../../utility/localStorage";
+import { getToken, setTokens } from "../../../utility/localStorage";
 
 import { api } from "../../api/apiSlice";
 
@@ -14,7 +14,7 @@ export const authApi = api.injectEndpoints({
                     headers: applicationJSON
                 };
             },
-            onQueryStarted: async (_agrs, { dispatch, queryFulfilled }) => {
+            onQueryStarted: async (_agrs, {  queryFulfilled }) => {
                 try {
                     const { data } = await queryFulfilled;
                     if (data) {
@@ -31,7 +31,10 @@ export const authApi = api.injectEndpoints({
                     url: "/user/login",
                     method: "POST",
                     body: data,
-                    headers: applicationJSON
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${getToken('jwtToken')}`
+                    }
                 };
             },
         }),

@@ -18,7 +18,7 @@ export default function Login() {
         [key: string]: string | null | undefined;
     }>({});
     const [userInfo, setUserInfo] = useState<ILoginForm>({
-        email: "rahat@gmail.com",
+        email: "rahat.official.info9016@gmail.com",
         password: "",
     });
 
@@ -65,7 +65,8 @@ export default function Login() {
     const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
         if (validateForm()) {
-            await login(userInfo)
+            const resp = await login(userInfo)
+            console.log(resp)
         }
     };
     return (
