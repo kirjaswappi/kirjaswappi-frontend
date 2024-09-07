@@ -1,5 +1,6 @@
 // import { createAsyncThunk } from '@reduxjs/toolkit'
 
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
 // // import { setCookie } from '../../../utils/cookies/cookies.auth'
 
@@ -23,39 +24,29 @@
 // }
 // const backendURL = import.meta.env.VITE_API_URL
 
-
-// export const userLogin = createAsyncThunk<
-//   IAuthResponse,
-//   ISigningFormData,
-//   { rejectValue: string }
-// >('auth/login', async (formData: ISigningFormData, { rejectWithValue }) => {
-//   try {
-//     const { email, password } = formData
-//     const userData = { email, password }
-
-//     const resp = await fetch(`${backendURL}/token/`, {
-//       method: 'POST',
-//       body: JSON.stringify(userData),
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//     })
-//     // if response is not ok then return error message
-//     if (!resp.ok) {
-//       const data = await resp.json()
-//       return rejectWithValue(`${data.message}`)
-//     }
-//     // response is ok than return data
-//     const response = await resp.json()
-//     return response.data
-//   } catch (error) {
-//     const castedError = error as any
-//     if (castedError.response && castedError.response.data?.details[0]) {
-//       return rejectWithValue(castedError.response.data?.details[0])
-//     }
-//     return rejectWithValue(castedError.message)
-//   }
-// })
+export const userLogin = createAsyncThunk(
+    "auth/login",
+    async (formData: any, { rejectWithValue }) => {
+        try {
+            await fetch(`${import.meta.env.VITE_REACT_MAIN_API}/authenticate`, {
+                method: "POST",
+                body: JSON.stringify(formData),
+                headers: { "Content-Type": "application/json" },
+            })
+                .then((res) => res.json())
+                .then((res) => {
+                    return res;
+                })
+                .catch((error) => console.log(error));
+        } catch (error) {
+            const castedError = error as any;
+            if (castedError.response && castedError.response.data?.details[0]) {
+                return rejectWithValue(castedError.response.data?.details[0]);
+            }
+            return rejectWithValue(castedError.message);
+        }
+    }
+);
 
 // export const refreshAuthToken = createAsyncThunk<
 //   RefreshTokenResponse,

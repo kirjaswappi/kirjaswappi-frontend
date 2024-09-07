@@ -2,6 +2,9 @@ export const setTokens = (accessToken: string, refreshToken: string) => {
   localStorage.setItem('jwtToken', accessToken)
   localStorage.setItem('refreshToken', refreshToken)
 }
+export const setToken = (name: string, value: string) => {
+  localStorage.setItem(`${name}`, `${value}`)
+}
 export const getTokens = () => {
   const jwtToken = localStorage.getItem('jwtToken')
   const refreshToken = localStorage.getItem('refreshToken')

@@ -65,8 +65,17 @@ export default function Login() {
     const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
         if (validateForm()) {
-            const resp = await login(userInfo)
-            console.log(resp)
+            try {
+                await login(userInfo).then((res) => {
+                    if(!res?.error){
+                        setUserInfo((prev) => ({...prev, email:'', password: ''}))
+                    }
+                }).catch(error => {
+                    console.log(error)
+                })
+            } catch (error) {
+                console.log('login error', error)
+            }
         }
     };
     return (
@@ -100,6 +109,7 @@ export default function Login() {
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     id="password"
+                                    value={userInfo.password}
                                     name="password"
                                     onChange={handleChange}
                                     className={`w-full h-[48px] px-[14px] py-2  border ${errors.email ? "border-rose-500" :"border-grayDark"} bg-[#F2F2F2]  rounded-md shadow-sm focus:outline-none focus:ring-grayDark focus:border-grayDark relative`}

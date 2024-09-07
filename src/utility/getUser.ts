@@ -33,7 +33,7 @@ export const getUserData = (token: string | null) => {
     }
 };
 
-export const isTokenExpired = (token: string): boolean => {
+export const isTokenExpired = (token: string | null): boolean => {
     if (!token) return true;
 
     const jwtPayload = JSON.parse(atob(token.split(".")[1]));

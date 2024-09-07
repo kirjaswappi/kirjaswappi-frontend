@@ -1,5 +1,5 @@
 import { applicationJSON } from "../../../utility/headersConstant";
-import { getToken, setTokens } from "../../../utility/localStorage";
+import { setTokens } from "../../../utility/localStorage";
 
 import { api } from "../../api/apiSlice";
 
@@ -14,7 +14,7 @@ export const authApi = api.injectEndpoints({
                     headers: applicationJSON
                 };
             },
-            onQueryStarted: async (_agrs, {  queryFulfilled }) => {
+            onQueryStarted: async (_args, {  queryFulfilled }) => {
                 try {
                     const { data } = await queryFulfilled;
                     if (data) {
@@ -28,13 +28,9 @@ export const authApi = api.injectEndpoints({
         login: builder.mutation({
             query: (data) => {
                 return {
-                    url: "/user/login",
+                    url: "/users/login",
                     method: "POST",
                     body: data,
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${getToken('jwtToken')}`
-                    }
                 };
             },
         }),

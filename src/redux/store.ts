@@ -4,15 +4,6 @@ import authReducer from "../redux/feature/auth/authAction"
 import { api } from "./api/apiSlice"
 import { IInitialState } from "./feature/auth/authAction"
 
-// const token = localStorage.getItem('token')
-
-// const initialState: IInitialState = {
-//   loading: false,
-//   userInfo: getUserData(token),
-//   // userToken: token,
-//   error: null,
-//   success: false,
-// }
 
 const store: EnhancedStore<
   {
