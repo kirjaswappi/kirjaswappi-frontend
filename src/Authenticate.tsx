@@ -8,6 +8,7 @@ import { getToken } from './utility/localStorage'
 export default function Authenticate() {
     const [authenticate, {isLoading}] = useAuthenticateMutation()
     const hasFetched = useRef(false)
+    
     useEffect(() => {
         const auth = async () => {
             try {
@@ -28,7 +29,11 @@ export default function Authenticate() {
             }
         }
     }, [])
+
+    // Global Loading Return
     if(isLoading) return <p>Loading...</p>
+
+    // Routes return
     return (
         <React.Fragment>
             <RouterProvider router={routes} />

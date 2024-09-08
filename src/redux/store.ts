@@ -1,8 +1,9 @@
 import { EnhancedStore, StoreEnhancer, ThunkDispatch, Tuple, UnknownAction, configureStore } from "@reduxjs/toolkit"
 import { CombinedState } from "@reduxjs/toolkit/query"
-import authReducer from "../redux/feature/auth/authAction"
+
 import { api } from "./api/apiSlice"
-import { IInitialState } from "./feature/auth/authAction"
+import authSlice, { IInitialState } from "./feature/auth/authSlice"
+
 
 
 const store: EnhancedStore<
@@ -29,7 +30,7 @@ const store: EnhancedStore<
 > = configureStore({
   reducer: {
     [api.reducerPath]: api.reducer,
-    auth: authReducer,
+    auth: authSlice,
   },
   preloadedState: {
     // auth: initialState,

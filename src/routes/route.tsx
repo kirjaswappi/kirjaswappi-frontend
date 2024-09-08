@@ -4,6 +4,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import Login from "../pages/auth/login";
 import Register from "../pages/auth/register";
+import ResetPassword from "../pages/auth/resetPassword";
 
 const routes = createBrowserRouter([
   {
@@ -30,6 +31,14 @@ const routes = createBrowserRouter([
         element: (
           // <Aunthenticate>
             <Login />
+          // </Aunthenticate>
+        ),
+      },
+      {
+        path: "/password/reset",
+        element: (
+          // <Aunthenticate>
+            <ResetPassword />
           // </Aunthenticate>
         ),
       },

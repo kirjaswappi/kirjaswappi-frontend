@@ -34,6 +34,17 @@ export const authApi = api.injectEndpoints({
                 };
             },
         }),
+        resetPassword: builder.mutation({
+            query: (data) => {
+                const {email} = data
+                return {
+                    url: `/reset-password/${email}`,
+                    method: "POST",
+                    body: data,
+                    headers: applicationJSON
+                }
+            }
+        })
     }),
 });
 

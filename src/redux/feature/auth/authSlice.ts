@@ -1,82 +1,66 @@
-// import { createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice } from "@reduxjs/toolkit";
+import { authApi } from "./authApi";
 
-import { createAsyncThunk } from "@reduxjs/toolkit";
+export interface IInitialState {
+    loading: boolean;
+    error: null | string;
+    success: boolean;
+    userInformation: {
+        id?: string,
+        firstName?: string,
+        lastName: string,
+        email: string,
+        streetName?: null,
+        houseNumber?: null,
+        zipCode?: number,
+        city?: null,
+        country?: null,
+        phoneNumber?: null,
+        aboutMe?: null,
+        favGenres?: null
+    };
+}
 
-// // import { setCookie } from '../../../utils/cookies/cookies.auth'
-
-// export interface ISigningFormData {
-//   email: string
-//   password: string
-// }
-
-// interface IAuthResponse {
-//   access: string
-//   refresh: string
-// }
-
-// interface RefreshTokenResponse {
-//   access: string
-//   refresh: string
-// }
-
-// interface RefreshTokenError {
-//   message: string
-// }
-// const backendURL = import.meta.env.VITE_API_URL
-
-export const userLogin = createAsyncThunk(
-    "auth/login",
-    async (formData: any, { rejectWithValue }) => {
-        try {
-            await fetch(`${import.meta.env.VITE_REACT_MAIN_API}/authenticate`, {
-                method: "POST",
-                body: JSON.stringify(formData),
-                headers: { "Content-Type": "application/json" },
-            })
-                .then((res) => res.json())
-                .then((res) => {
-                    return res;
-                })
-                .catch((error) => console.log(error));
-        } catch (error) {
-            const castedError = error as any;
-            if (castedError.response && castedError.response.data?.details[0]) {
-                return rejectWithValue(castedError.response.data?.details[0]);
-            }
-            return rejectWithValue(castedError.message);
-        }
+const initialState: IInitialState = {
+    loading: false,
+    error: null,
+    success: false,
+    userInformation: {
+        id: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        streetName: null,
+        houseNumber: null,
+        zipCode: 0,
+        city: null,
+        country: null,
+        phoneNumber: null,
+        aboutMe: null,
+        favGenres: null
     }
-);
-
-// export const refreshAuthToken = createAsyncThunk<
-//   RefreshTokenResponse,
-//   void,
-//   {
-//     rejectValue: RefreshTokenError
-//   }
-// >('auth/refreshToken', async (_, { dispatch }) => {
-//   try {
-//     const refreshToken = localStorage.getItem('refreshToken')
-//     if (refreshToken) {
-//       const resp = await fetch(`${backendURL}/token/refresh/`, {
-//         method: 'POST',
-//         body: JSON.stringify({ refresh: refreshToken }),
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//       })
-//       const response = await resp.json()
-//       const { access, refresh } = response.data
-//       localStorage.setItem('userToken', access)
-//       localStorage.setItem('refreshToken', refresh)
-//       return response.data
-//     } else {
-//       dispatch(logout())
-//       throw new Error('No refresh token found')
-//     }
-//   } catch (error) {
-//     console.error(error)
-//     // dispatch(logout())
-//     throw error
-//   }
-// })
+  }
+  const authSlice = createSlice({
+    name: 'auth',
+    initialState,
+    reducers: {},
+    extraReducers: builder => {
+        builder.addMatcher(authApi.endpoints.login.matchPending, (state) =>{
+            state.loading = true
+            state.error = null
+            state.success = false
+        })
+        builder.addMatcher(authApi.endpoints.login.matchFulfilled, (state, action) =>{
+            console.log(action.payload)
+            state.loading = false
+            state.error = null
+            state.success = true
+            state.userInformation = {...action.payload}
+        })
+    },
+  })
+  
+  export const {  } = authSlice.actions
+  export default authSlice.reducer
+  
+  
