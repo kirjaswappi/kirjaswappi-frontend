@@ -71,51 +71,51 @@ export default function Register() {
             }
         }
     };
-    const validateForm = () => {
-        let errors: {
-            firstName: string | null | undefined;
-            lastName: string | null | undefined;
-            email: string | null | undefined;
-            password: string | null | undefined;
-            confirmPassword: string | null | undefined;
-        } = {
-            firstName: undefined,
-            lastName: undefined,
-            email: undefined,
-            password: undefined,
-            confirmPassword: undefined,
-        };
-        // Regular expression to validate email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!userInfo.email.trim()) {
-            errors.email = "E-mail is required";
-        } else if (!emailRegex.test(userInfo.email)) {
-            errors.email = "Please enter a valid email address";
-        }
-        if (!userInfo.firstName) {
-            errors.firstName = "First name is required";
-        }
-        if (!userInfo.lastName) {
-            errors.lastName = "Last name is required";
-        }
-        if (!userInfo.password) {
-            errors.password = "Password is required";
-        } else if (userInfo.password.length < 0) {
-            errors.password = "Password must be at least 6 characters long";
-        }
-        if (!userInfo.confirmPassword) {
-            errors.confirmPassword = "Confirm password is required";
-        } else if (userInfo.password.length < 0) {
-            errors.confirmPassword =
-                "Confirm password must be at least 6 characters long";
-        }
-        setErrors(errors);
+    // const validateForm = () => {
+    //     let errors: {
+    //         firstName: string | null | undefined;
+    //         lastName: string | null | undefined;
+    //         email: string | null | undefined;
+    //         password: string | null | undefined;
+    //         confirmPassword: string | null | undefined;
+    //     } = {
+    //         firstName: undefined,
+    //         lastName: undefined,
+    //         email: undefined,
+    //         password: undefined,
+    //         confirmPassword: undefined,
+    //     };
+    //     // Regular expression to validate email format
+    //     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    //     if (!userInfo.email.trim()) {
+    //         errors.email = "E-mail is required";
+    //     } else if (!emailRegex.test(userInfo.email)) {
+    //         errors.email = "Please enter a valid email address";
+    //     }
+    //     if (!userInfo.firstName) {
+    //         errors.firstName = "First name is required";
+    //     }
+    //     if (!userInfo.lastName) {
+    //         errors.lastName = "Last name is required";
+    //     }
+    //     if (!userInfo.password) {
+    //         errors.password = "Password is required";
+    //     } else if (userInfo.password.length < 0) {
+    //         errors.password = "Password must be at least 6 characters long";
+    //     }
+    //     if (!userInfo.confirmPassword) {
+    //         errors.confirmPassword = "Confirm password is required";
+    //     } else if (userInfo.password.length < 0) {
+    //         errors.confirmPassword =
+    //             "Confirm password must be at least 6 characters long";
+    //     }
+    //     setErrors(errors);
 
-        const hasErrors = Object.values(errors).some(
-            (error) => error !== undefined
-        );
-        return !hasErrors;
-    };
+    //     const hasErrors = Object.values(errors).some(
+    //         (error) => error !== undefined
+    //     );
+    //     return !hasErrors;
+    // };
 
     const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
