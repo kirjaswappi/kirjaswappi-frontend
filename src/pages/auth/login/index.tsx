@@ -4,8 +4,8 @@ import { PiEyeClosed } from "react-icons/pi";
 import { Link, useNavigate } from "react-router-dom";
 import authVector from "../../../assets/vectorAuth.png";
 import Image from "../../../components/shared/Image";
-import { useLoginMutation } from "../../../redux/feature/auth/authApi";
 import Input from "../../../components/shared/Input";
+import { useLoginMutation } from "../../../redux/feature/auth/authApi";
 import { useAppSelector } from "../../../redux/hooks";
 
 interface ILoginForm {
@@ -156,7 +156,7 @@ export default function Login() {
                                     </label>
                                 </div>
                                 <Link
-                                    to="/password/reset"
+                                    to="#"
                                     className="text-primary font-semibold text-sm hover:underline"
                                 >
                                     Forgot Password ?

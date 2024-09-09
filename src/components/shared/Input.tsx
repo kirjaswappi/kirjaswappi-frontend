@@ -23,7 +23,7 @@ export default function Input({
     error,
 }: IInputFieldProps) {
     return (
-        <React.Fragment>
+        <div className="flex flex-col">
             <input
                 type={type}
                 id={id}
@@ -40,6 +40,6 @@ export default function Input({
             {error && (
                 <div className="text-rose-500 text-xs mt-1 pl-2">{error}</div>
             )}
-        </React.Fragment>
+        </div>
     );
 }
