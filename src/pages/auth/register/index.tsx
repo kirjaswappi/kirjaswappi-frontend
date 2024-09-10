@@ -5,7 +5,7 @@ import Image from "../../../components/shared/Image";
 import Input from "../../../components/shared/Input";
 import OTP from "../../../components/shared/OTP";
 import PasswordInput from "../../../components/shared/PasswordInput";
-import { useDeleteUserMutation, useLazyVerifyOTPQuery, useRegisterMutation } from "../../../redux/feature/auth/authApi";
+import { useDeleteUserMutation, useRegisterMutation, useVerifyEmailMutation } from "../../../redux/feature/auth/authApi";
 
 interface ILoginForm {
     firstName: string;
@@ -23,7 +23,7 @@ export default function Register() {
     // const { userInformation } = useAppSelector(state=> state.auth)
     const [register] = useRegisterMutation()
     const [deleteUser] = useDeleteUserMutation()
-    const [verifyOTP] = useLazyVerifyOTPQuery()
+    const [verifyEmail] = useVerifyEmailMutation()
     const [isOpenOtp, setOpenOtp] = useState(false);
     const [errors, setErrors] = useState<{
         [key: string]: string | null | undefined;
@@ -145,20 +145,21 @@ export default function Register() {
             }
         }
     };
-    const handleOTPVerify = (email: string, otp: string) => {
+    const handleOTPVerify = async (email: string, otp: string) => {
         if (email !== '' && otp !== '' && otp.length >= 6) {
             try {
-                verifyOTP({ email: email, otp: otp }).then((res: any) => {
-                    if (res?.error) {
-                        // const {}
-                        const error = res?.error?.data?.error
-                        if (error.message === 'otpDoesNotMatch') {
+                await verifyEmail({ email: email, otp: otp }).then((res: any) => {
+                    console.log('working...', res)
+                    if (res?.error?.data?.error?.message === 'otpDoesNotMatch') {
                             setOtpError('OTP does not match.')
-                        } else {
-                            setOtpError('Something went wrong!')
-                        }
-                    } else {
-                        
+                        // const {}
+                        // console.log("error->",res?.error)
+                        // const error = res?.error?.data?.error
+                        // if (error?.message === 'otpDoesNotMatch') {
+                        //     setOtpError('OTP does not match.')
+                        // }
+                    } else {  
+                        console.log('okk')                      
                         setOtpError('')
                         setSuccessMessage(true)
                         setUserInfo((prev) => ({
@@ -169,7 +170,7 @@ export default function Register() {
                             confirmPassword: ""
                         }))
                         setTimeout(() => {
-                            setSuccessMessage(true)
+                            setSuccessMessage(false)
                             navigate('/auth/login')
                         }, 2000)
                     }

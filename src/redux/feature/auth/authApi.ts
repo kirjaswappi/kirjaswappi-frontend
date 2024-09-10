@@ -51,10 +51,18 @@ export const authApi = api.injectEndpoints({
                 };
             },
         }),
+        verifyEmail: builder.mutation({
+            query: ({ email, otp }) => {
+                return {
+                    url: `/users/verify-email?email=${email}&otp=${otp}`,
+                    method: "POST",
+                };
+            },
+        }),
         verifyOTP: builder.query({
             query: ({ email, otp }) => {
                 return {
-                    url: `/verify-otp?email=${email}&otp=${otp}`,
+                    url: `/verify-email?email=${email}&otp=${otp}`,
                     method: "GET",
                 };
             },
@@ -88,6 +96,8 @@ export const {
     useRegisterMutation,
     useLoginMutation,
     useDeleteUserMutation,
+    useVerifyEmailMutation,
     useLazySentOTPQuery,
     useLazyVerifyOTPQuery,
+
 } = authApi;
