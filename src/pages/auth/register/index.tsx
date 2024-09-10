@@ -5,7 +5,7 @@ import Image from "../../../components/shared/Image";
 import Input from "../../../components/shared/Input";
 import OTP from "../../../components/shared/OTP";
 import PasswordInput from "../../../components/shared/PasswordInput";
-import { useDeleteUserMutation, useLazySentOTPQuery, useLazyVerifyOTPQuery, useRegisterMutation } from "../../../redux/feature/auth/authApi";
+import { useDeleteUserMutation, useLazyVerifyOTPQuery, useRegisterMutation } from "../../../redux/feature/auth/authApi";
 
 interface ILoginForm {
     firstName: string;
@@ -23,7 +23,6 @@ export default function Register() {
     // const { userInformation } = useAppSelector(state=> state.auth)
     const [register] = useRegisterMutation()
     const [deleteUser] = useDeleteUserMutation()
-    const [sentOTP] = useLazySentOTPQuery()
     const [verifyOTP] = useLazyVerifyOTPQuery()
     const [isOpenOtp, setOpenOtp] = useState(false);
     const [errors, setErrors] = useState<{

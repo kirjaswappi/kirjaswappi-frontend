@@ -59,14 +59,14 @@ const initialState: IInitialState = {
             state.success = true
             state.userInformation = {...action.payload}
         })
-        builder.addMatcher(authApi.endpoints.register.matchPending, (state, action) =>{
+        builder.addMatcher(authApi.endpoints.register.matchPending, (state) =>{
             // console.log(action.payload)
             state.loading = true
             state.error = null
             state.success = false
             // state.userInformation = {...action.payload}
         })
-        builder.addMatcher(authApi.endpoints.register.matchPending, (state, action) =>{
+        builder.addMatcher(authApi.endpoints.register.matchPending, (state) =>{
             // console.log(action.payload)
             state.loading = true
             state.error = null
