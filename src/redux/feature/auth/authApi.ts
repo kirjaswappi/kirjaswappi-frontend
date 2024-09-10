@@ -11,10 +11,10 @@ export const authApi = api.injectEndpoints({
                     url: "/authenticate",
                     method: "POST",
                     body: data,
-                    headers: applicationJSON
+                    headers: applicationJSON,
                 };
             },
-            onQueryStarted: async (_args, {  queryFulfilled }) => {
+            onQueryStarted: async (_args, { queryFulfilled }) => {
                 try {
                     const { data } = await queryFulfilled;
                     if (data) {
@@ -25,7 +25,7 @@ export const authApi = api.injectEndpoints({
                 }
             },
         }),
-        register : builder.mutation({
+        register: builder.mutation({
             query: (data) => {
                 return {
                     url: "/users/signup",
@@ -43,18 +43,51 @@ export const authApi = api.injectEndpoints({
                 };
             },
         }),
+        sentOTP: builder.query({
+            query: ({ email }) => {
+                return {
+                    url: `/send-otp?email=${email}`,
+                    method: "GET",
+                };
+            },
+        }),
+        verifyOTP: builder.query({
+            query: ({ email, otp }) => {
+                return {
+                    url: `/verify-otp?email=${email}&otp=${otp}`,
+                    method: "GET",
+                };
+            },
+        }),
         resetPassword: builder.mutation({
             query: (data) => {
-                const {email} = data
+                const { email } = data;
                 return {
                     url: `/reset-password/${email}`,
                     method: "POST",
                     body: data,
-                    headers: applicationJSON
-                }
-            }
-        })
+                    headers: applicationJSON,
+                };
+            },
+        }),
+        deleteUser: builder.mutation({
+            query: (id) => {
+                return {
+                    url: `/users/${id}`,
+                    method: "DELETE",
+                    // body: data,
+                    headers: applicationJSON,
+                };
+            },
+        }),
     }),
 });
 
-export const { useAuthenticateMutation, useRegisterMutation, useLoginMutation } = authApi;
+export const {
+    useAuthenticateMutation,
+    useRegisterMutation,
+    useLoginMutation,
+    useDeleteUserMutation,
+    useLazySentOTPQuery,
+    useLazyVerifyOTPQuery,
+} = authApi;

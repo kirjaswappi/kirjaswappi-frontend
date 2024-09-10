@@ -1,7 +1,7 @@
-import { useRef, useState } from "react";
+import React, { SetStateAction, useRef } from "react";
 
-export default function OTP() {
-    const [otp, setOtp] = useState(Array(6).fill(""));
+export default function OTP({ otp, setOtp, error, success }: { otp: string[]; setOtp: React.Dispatch<SetStateAction<any[]>>; error: string; success: boolean }) {
+
     const inputs = useRef<(HTMLInputElement | null)[]>([]);
 
     const handleChange = (
@@ -40,20 +40,30 @@ export default function OTP() {
     };
 
     return (
-        <div className="flex gap-2 justify-between">
-            {otp.map((_, index) => (
-                <input
-                    key={index}
-                    type="text"
-                    maxLength={1}
-                    value={otp[index]}
-                    onChange={(e) => handleChange(e, index)}
-                    onKeyDown={(e) => handleKeyDown(e, index)}
-                    ref={(el) => (inputs.current[index] = el)}
-                    className="max-w-10 h-10 border border-grayDark rounded-md text-center text-base"
-                    placeholder="-"
-                />
-            ))}
-        </div>
+        <>
+            <div className="flex gap-2 justify-between">
+                {otp.map((_, index: number) => (
+                    <input
+                        key={index}
+                        type="text"
+                        maxLength={1}
+                        value={otp[index]}
+                        onChange={(e) => handleChange(e, index)}
+                        onKeyDown={(e) => handleKeyDown(e, index)}
+                        ref={(el) => (inputs.current[index] = el)}
+                        className={`max-w-10 h-10 border ${
+                            error ? "border-rose-500" : "border-grayDark"
+                        } rounded-md text-center text-base`}
+                        placeholder="-"
+                    />
+                ))}
+            </div>
+            {error !== '' && (
+                <div className="text-rose-500 text-xs mt-2 pl-2">{error}</div>
+            )}
+            {success && (
+                <div className="bg-green-100 text-green-600 text-xs mt-2  text-center py-3">OTP is verify successfully.</div>
+            )}
+        </>
     );
 }

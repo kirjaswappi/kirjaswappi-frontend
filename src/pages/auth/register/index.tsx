@@ -5,6 +5,7 @@ import Image from "../../../components/shared/Image";
 import Input from "../../../components/shared/Input";
 import OTP from "../../../components/shared/OTP";
 import PasswordInput from "../../../components/shared/PasswordInput";
+import { useDeleteUserMutation, useLazySentOTPQuery, useLazyVerifyOTPQuery, useRegisterMutation } from "../../../redux/feature/auth/authApi";
 
 interface ILoginForm {
     firstName: string;
@@ -15,6 +16,15 @@ interface ILoginForm {
 }
 
 export default function Register() {
+    const navigate = useNavigate()
+    const [otp, setOtp] = useState(Array(6).fill(""));
+    const [otpError, setOtpError] = useState('')
+    const [successMessage, setSuccessMessage] = useState(false)
+    // const { userInformation } = useAppSelector(state=> state.auth)
+    const [register] = useRegisterMutation()
+    const [deleteUser] = useDeleteUserMutation()
+    const [sentOTP] = useLazySentOTPQuery()
+    const [verifyOTP] = useLazyVerifyOTPQuery()
     const [isOpenOtp, setOpenOtp] = useState(false);
     const [errors, setErrors] = useState<{
         [key: string]: string | null | undefined;
@@ -27,7 +37,7 @@ export default function Register() {
         confirmPassword: "",
     });
 
-    const navigate = useNavigate();
+    
 
     // handle Change function to take sign-up information
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,79 +81,117 @@ export default function Register() {
             }
         }
     };
-    // const validateForm = () => {
-    //     let errors: {
-    //         firstName: string | null | undefined;
-    //         lastName: string | null | undefined;
-    //         email: string | null | undefined;
-    //         password: string | null | undefined;
-    //         confirmPassword: string | null | undefined;
-    //     } = {
-    //         firstName: undefined,
-    //         lastName: undefined,
-    //         email: undefined,
-    //         password: undefined,
-    //         confirmPassword: undefined,
-    //     };
-    //     // Regular expression to validate email format
-    //     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    //     if (!userInfo.email.trim()) {
-    //         errors.email = "E-mail is required";
-    //     } else if (!emailRegex.test(userInfo.email)) {
-    //         errors.email = "Please enter a valid email address";
-    //     }
-    //     if (!userInfo.firstName) {
-    //         errors.firstName = "First name is required";
-    //     }
-    //     if (!userInfo.lastName) {
-    //         errors.lastName = "Last name is required";
-    //     }
-    //     if (!userInfo.password) {
-    //         errors.password = "Password is required";
-    //     } else if (userInfo.password.length < 0) {
-    //         errors.password = "Password must be at least 6 characters long";
-    //     }
-    //     if (!userInfo.confirmPassword) {
-    //         errors.confirmPassword = "Confirm password is required";
-    //     } else if (userInfo.password.length < 0) {
-    //         errors.confirmPassword =
-    //             "Confirm password must be at least 6 characters long";
-    //     }
-    //     setErrors(errors);
+    const validateForm = () => {
+        let errors: {
+            firstName: string | null | undefined;
+            lastName: string | null | undefined;
+            email: string | null | undefined;
+            password: string | null | undefined;
+            confirmPassword: string | null | undefined;
+        } = {
+            firstName: undefined,
+            lastName: undefined,
+            email: undefined,
+            password: undefined,
+            confirmPassword: undefined,
+        };
+        // Regular expression to validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!userInfo.email.trim()) {
+            errors.email = "E-mail is required";
+        } else if (!emailRegex.test(userInfo.email)) {
+            errors.email = "Please enter a valid email address";
+        }
+        if (!userInfo.firstName) {
+            errors.firstName = "First name is required";
+        }
+        if (!userInfo.lastName) {
+            errors.lastName = "Last name is required";
+        }
+        if (!userInfo.password) {
+            errors.password = "Password is required";
+        } else if (userInfo.password.length < 0) {
+            errors.password = "Password must be at least 6 characters long";
+        }
+        if (!userInfo.confirmPassword) {
+            errors.confirmPassword = "Confirm password is required";
+        } else if (userInfo.password.length < 0) {
+            errors.confirmPassword =
+                "Confirm password must be at least 6 characters long";
+        }
+        setErrors(errors);
 
-    //     const hasErrors = Object.values(errors).some(
-    //         (error) => error !== undefined
-    //     );
-    //     return !hasErrors;
-    // };
+        const hasErrors = Object.values(errors).some(
+            (error) => error !== undefined
+        );
+        return !hasErrors;
+    };
 
     const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
         // validateForm()
-        setOpenOtp(true);
-        // if (validateForm()) {
-        //     try {
-        //         await login(userInfo)
-        //             .then((res) => {
-        //                 if(res.error){
-
-        //                 }
-        //                 if (!res?.error) {
-        //                     setUserInfo((prev) => ({
-        //                         ...prev,
-        //                         email: "",
-        //                         password: "",
-        //                     }));
-        //                 }
-        //             })
-        //             .catch((error) => {
-        //                 console.log(error);
-        //             });
-        //     } catch (error) {
-        //         console.log("login error", error);
-        //     }
-        // }
+        if (validateForm()) {
+            try {
+                await register(userInfo)
+                    .then(async (res) => {
+                        if (res?.data) {
+                            setOpenOtp(true)
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            } catch (error) {
+                console.log("login error", error);
+            }
+        }
     };
+    const handleOTPVerify = (email: string, otp: string) => {
+        if (email !== '' && otp !== '' && otp.length >= 6) {
+            try {
+                verifyOTP({ email: email, otp: otp }).then((res: any) => {
+                    if (res?.error) {
+                        // const {}
+                        const error = res?.error?.data?.error
+                        if (error.message === 'otpDoesNotMatch') {
+                            setOtpError('OTP does not match.')
+                        } else {
+                            setOtpError('Something went wrong!')
+                        }
+                    } else {
+                        
+                        setOtpError('')
+                        setSuccessMessage(true)
+                        setUserInfo((prev) => ({
+                            ...prev, firstName: "",
+                            lastName: "",
+                            email: "",
+                            password: "",
+                            confirmPassword: ""
+                        }))
+                        setTimeout(() => {
+                            setSuccessMessage(true)
+                            navigate('/auth/login')
+                        }, 2000)
+                    }
+                }).catch(error => {
+                    console.log(error)
+                })
+            } catch (error) {
+                console.log("error", error)
+            }
+        } else {
+            setOtpError('OTP is required! insert your otp code in this field.')
+        }
+    }
+
+    const handleUserDelete = (id: string) => {
+        try {
+            deleteUser(id)
+        } catch (error) {
+
+        }
+    }
     return (
         <div>
             <div className="container h-[777px] bg-white shadow-custom-box-shadow flex items-center mb-10">
@@ -152,6 +200,7 @@ export default function Register() {
                 </div>
                 <div className="w-1/2 flex items-center justify-center">
                     <div className="w-8/12">
+                        <button className="bg-rose-500 text-white px-3 py-2" onClick={() => handleUserDelete('66d05b6d703a891f1a08297e')}>DELETE</button>
                         <h2 className="text-primary text-[20px] font-medium mb-6">
                             {!isOpenOtp ? "Sign up" : "Verify OTP"}
                         </h2>
@@ -230,7 +279,15 @@ export default function Register() {
                             </form>
                         ) : (
                             <div>
-                                <OTP />
+                                <OTP otp={otp} setOtp={setOtp} error={otpError} success={successMessage} />
+
+                                <button
+                                    type="button"
+                                    className="w-full px-4 py-2 font-medium text-white bg-primary rounded-md mt-5"
+                                    onClick={() => handleOTPVerify(userInfo.email, otp?.join(''))}
+                                >
+                                    Verify OTP
+                                </button>
                                 <p className="my-5 text-sm">Please check your email to get OTP code</p>
                             </div>
                         )}
