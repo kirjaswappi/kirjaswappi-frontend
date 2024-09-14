@@ -42,9 +42,9 @@ export const authApi = api.injectEndpoints({
                     body: data,
                 };
             },
-            onQueryStarted: async (_args, { queryFulfilled }) => {
-                
-            }
+            // onQueryStarted: async (_args, { _queryFulfilled }) => {
+
+            // }
         }),
         sentOTP: builder.query({
             query: ({ email }) => {

@@ -6,8 +6,7 @@ import authVector from "../../../assets/vectorAuth.png";
 import Image from "../../../components/shared/Image";
 import Input from "../../../components/shared/Input";
 import { useLoginMutation } from "../../../redux/feature/auth/authApi";
-import { useAppSelector } from "../../../redux/hooks";
-import { clearCookie, getCookie, handleExpiredCookie, setCookie } from "../../../utility/cookies";
+import { getCookie, handleExpiredCookie } from "../../../utility/cookies";
 
 interface ILoginForm {
     email: string;
@@ -15,7 +14,7 @@ interface ILoginForm {
 }
 
 export default function Login() {
-    const {userInformation} = useAppSelector(state => state.auth)
+    // const {userInformation} = useAppSelector(state => state.auth)
     // console.log(userInformation)
     const [login] = useLoginMutation();
     const [showPassword, setShowPassword] = useState(false);
