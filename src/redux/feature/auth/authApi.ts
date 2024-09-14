@@ -43,7 +43,7 @@ export const authApi = api.injectEndpoints({
                 };
             },
             // onQueryStarted: async (_args, { _queryFulfilled }) => {
-
+            
             // }
         }),
         sentOTP: builder.query({
