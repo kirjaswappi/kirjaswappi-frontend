@@ -7,6 +7,7 @@ import Image from "../../../components/shared/Image";
 import Input from "../../../components/shared/Input";
 import { useLoginMutation } from "../../../redux/feature/auth/authApi";
 import { useAppSelector } from "../../../redux/hooks";
+import { clearCookie, getCookie, handleExpiredCookie, setCookie } from "../../../utility/cookies";
 
 interface ILoginForm {
     email: string;
@@ -15,7 +16,7 @@ interface ILoginForm {
 
 export default function Login() {
     const {userInformation} = useAppSelector(state => state.auth)
-    console.log(userInformation)
+    // console.log(userInformation)
     const [login] = useLoginMutation();
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState<{
@@ -65,7 +66,10 @@ export default function Login() {
         );
         return !hasErrors;
     };
-
+    // setCookie('rahat', 'rahat@gmail.com',  1 / 60)
+    getCookie('rahat')
+    // clearCookie('rahat')
+    handleExpiredCookie('rahat')
     const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
         if (validateForm()) {
