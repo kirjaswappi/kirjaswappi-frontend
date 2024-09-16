@@ -1,10 +1,11 @@
 
 interface IInputToastify {
     type: 'SUCCESS' | 'ERROR' | 'WARNING';
-    value: string
+    value: string;
+    isShow: boolean
 }
 
-export default function InputToastify({ type, value }: IInputToastify) {
+export default function InputToastify({ type, value, isShow = false }: IInputToastify) {
 
     const getColorClass = () => {
         switch (type) {
@@ -20,6 +21,6 @@ export default function InputToastify({ type, value }: IInputToastify) {
     };
 
     return (
-        <div className={`p-2 rounded-md ${getColorClass()} text-center text-sm`}>{value}</div>
+        <div className={`p-2 rounded-md  ${isShow ? 'block' : 'hidden'} ${getColorClass() } text-center text-sm`}>{value}</div>
     )
 }
