@@ -1,12 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineEye } from "react-icons/ai";
 import { PiEyeClosed } from "react-icons/pi";
 import { Link, useNavigate } from "react-router-dom";
 import authVector from "../../../assets/vectorAuth.png";
 import Image from "../../../components/shared/Image";
 import Input from "../../../components/shared/Input";
-import InputToastify from "../../../components/shared/InputToastify";
+// import InputToastify from "../../../components/shared/InputToastify";
+import { useDispatch } from "react-redux";
+import MessageToastify from "../../../components/shared/MessageToastify";
+import { ERROR, SUCCESS } from "../../../constant/MESSAGETYPE";
 import { useLoginMutation } from "../../../redux/feature/auth/authApi";
+import { setIsShow, setMessage, setMessageType } from "../../../redux/feature/notification/notificationSlice";
 import { useAppSelector } from "../../../redux/hooks";
 
 interface ILoginForm {
@@ -15,9 +19,12 @@ interface ILoginForm {
 }
 
 export default function Login() {
-    const {error} = useAppSelector(state => state.auth)
-    console.log(error)
-    const [login, {isLoading}] = useLoginMutation();
+    const { error, success } = useAppSelector(state => state.auth)
+    const { isShow, message, messageType } = useAppSelector((state) => state.notification)
+    // const { isShow, messageType, message,  setIsShow, setMessageType, setMessage } = useNotification()
+    // console.log(isShow, messageType, message,)
+    const dispatch = useDispatch()
+    const [login, { isLoading }] = useLoginMutation();
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState<{
         [key: string]: string | null | undefined;
@@ -66,35 +73,25 @@ export default function Login() {
         );
         return !hasErrors;
     };
-    // setCookie('rahat', 'rahat@gmail.com',  1 / 60)
-    // getCookie('rahat')
-    // clearCookie('rahat')
-    // handleExpiredCookie('rahat')
+
     const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
         if (validateForm()) {
             try {
                 await login(userInfo)
-                    .then((res) => {
-                        if(res.error){
-
-                        }
-                        if (!res?.error) {
-                            setUserInfo((prev) => ({
-                                ...prev,
-                                email: "",
-                                password: "",
-                            }));
-                        }
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
             } catch (error) {
                 console.log("login error", error);
             }
         }
     };
+
+    useEffect(() => {
+        if (success || error) {
+        dispatch(setIsShow(true))
+        dispatch(setMessageType(success ? SUCCESS : ERROR))
+        dispatch(setMessage(success ? 'Login Successfully Done.' : error))        
+    }
+    }, [error, success])
     return (
         <div>
             <div className="container h-[777px] bg-white shadow-custom-box-shadow flex items-center mb-10">
@@ -144,7 +141,8 @@ export default function Login() {
                                     )}
                                 </div>
                             </div>
-                            <InputToastify type="SUCCESS" value="Login Successfully done." />
+
+                            <MessageToastify isShow={isShow} type={messageType} value={message} />
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2 text-grayDark">
                                     <input
@@ -161,7 +159,7 @@ export default function Login() {
                                     </label>
                                 </div>
                                 <Link
-                                    to="#"
+                                    to="/password/reset"
                                     className="text-primary font-semibold text-sm hover:underline"
                                 >
                                     Forgot Password ?
@@ -171,7 +169,7 @@ export default function Login() {
                                 type="submit"
                                 className="w-full px-4 py-2 font-bold text-white bg-primary rounded-md "
                             >
-                                {isLoading ? "Loading..." :"Sign In"} 
+                                {isLoading ? "Loading..." : "Sign In"}
                             </button>
                             <div className=" flex items-center gap-3 mt-6">
                                 <p className="text-grayDark text-sm font-normal">

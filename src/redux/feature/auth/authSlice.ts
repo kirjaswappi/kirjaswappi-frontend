@@ -26,6 +26,8 @@ export interface IInitialState {
         aboutMe?: null;
         favGenres?: null;
     };
+    otp: any[];
+    resetEmail: string;
 }
 
 const initialState: IInitialState = {
@@ -47,11 +49,23 @@ const initialState: IInitialState = {
         aboutMe: null,
         favGenres: null,
     },
+    otp: Array(6).fill(""),
+    resetEmail: "",
 };
 const authSlice = createSlice({
     name: "auth",
     initialState,
-    reducers: {},
+    reducers: {
+        setOtp: (state, action) => {
+            state.otp = action.payload;
+        },
+        setResetEmail: (state, action) => {
+            state.resetEmail = action.payload;
+        },
+        setError: (state, action) => {
+            state.error = action.payload;
+        },
+    },
     extraReducers: (builder) => {
         builder.addMatcher(authApi.endpoints.login.matchPending, (state) => {
             state.loading = true;
@@ -114,8 +128,71 @@ const authSlice = createSlice({
                 // state.userInformation = {...action.payload}
             }
         );
+        builder.addMatcher(authApi.endpoints.sentOTP.matchPending, (state) => {
+            state.loading = true;
+            state.error = null;
+            state.success = false;
+        });
+        builder.addMatcher(
+            authApi.endpoints.sentOTP.matchFulfilled,
+            (state) => {
+                state.loading = false;
+                state.error = null;
+                state.success = true;
+            }
+        );
+        builder.addMatcher(
+            authApi.endpoints.sentOTP.matchRejected,
+            (state, action) => {
+                console.log(action);
+                state.loading = false;
+                state.error = null;
+                state.success = false;
+            }
+        );
+        builder.addMatcher(
+            authApi.endpoints.verifyEmail.matchPending,
+            (state) => {
+                state.loading = true;
+                state.error = null;
+                state.success = false;
+            }
+        );
+        builder.addMatcher(
+            authApi.endpoints.verifyEmail.matchFulfilled,
+            (state, action) => {
+                console.log(action);
+                state.loading = false;
+                state.error = null;
+                state.message = "";
+                state.success = true;
+            }
+        );
+        builder.addMatcher(
+            authApi.endpoints.verifyEmail.matchRejected,
+            (state, action: PayloadAction<any>) => {
+                const error = (action.payload?.data as IErrorPayload)?.error;
+                let errorMessage: string | undefined;
+                if (typeof error === "object" && error !== null) {
+                    // Check if error has a 'code' and 'message'
+                    if (error.code === "otpDoesNotMatch") {
+                        errorMessage = "OTP does not match.";
+                    } else {
+                        errorMessage = error.message;
+                    }
+                } else {
+                    // Handle case where error is not an object
+                    errorMessage = "An unknown error occurred";
+                }
+                console.log(errorMessage);
+                state.loading = false;
+                state.error = errorMessage;
+                state.message = "";
+                state.success = false;
+            }
+        );
     },
 });
 
-export const {} = authSlice.actions;
+export const { setOtp, setResetEmail, setError } = authSlice.actions;
 export default authSlice.reducer;

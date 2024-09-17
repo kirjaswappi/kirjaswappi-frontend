@@ -51,6 +51,7 @@ export const authApi = api.injectEndpoints({
                 return {
                     url: `/send-otp?email=${email}`,
                     method: "GET",
+                    responseHandler: 'text',
                 };
             },
         }),
@@ -59,6 +60,7 @@ export const authApi = api.injectEndpoints({
                 return {
                     url: `/users/verify-email?email=${email}&otp=${otp}`,
                     method: "POST",
+                    responseHandler: 'text'
                 };
             },
         }),

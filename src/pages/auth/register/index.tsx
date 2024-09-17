@@ -1,11 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import authVector from "../../../assets/vectorAuth.png";
+import Button from "../../../components/shared/Button";
 import Image from "../../../components/shared/Image";
 import Input from "../../../components/shared/Input";
 import OTP from "../../../components/shared/OTP";
 import PasswordInput from "../../../components/shared/PasswordInput";
-import { useDeleteUserMutation, useRegisterMutation, useVerifyEmailMutation } from "../../../redux/feature/auth/authApi";
+import { ERROR, SUCCESS } from "../../../constant/MESSAGETYPE";
+import { useRegisterMutation, useVerifyEmailMutation } from "../../../redux/feature/auth/authApi";
+import { setIsShow, setMessage, setMessageType } from "../../../redux/feature/notification/notificationSlice";
+import { useAppSelector } from "../../../redux/hooks";
 
 interface ILoginForm {
     firstName: string;
@@ -17,12 +22,9 @@ interface ILoginForm {
 
 export default function Register() {
     const navigate = useNavigate()
-    const [otp, setOtp] = useState(Array(6).fill(""));
-    const [otpError, setOtpError] = useState('')
-    const [successMessage, setSuccessMessage] = useState(false)
-    // const { userInformation } = useAppSelector(state=> state.auth)
+    const dispatch = useDispatch()
+    const { otp, loading, error, success, message } = useAppSelector(state => state.auth)
     const [register] = useRegisterMutation()
-    const [deleteUser] = useDeleteUserMutation()
     const [verifyEmail] = useVerifyEmailMutation()
     const [isOpenOtp, setOpenOtp] = useState(false);
     const [errors, setErrors] = useState<{
@@ -31,12 +33,12 @@ export default function Register() {
     const [userInfo, setUserInfo] = useState<ILoginForm>({
         firstName: "",
         lastName: "",
-        email: "",
+        email: "rahat@gmail.com",
         password: "",
         confirmPassword: "",
     });
 
-    
+
 
     // handle Change function to take sign-up information
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -148,50 +150,35 @@ export default function Register() {
     const handleOTPVerify = async (email: string, otp: string) => {
         if (email !== '' && otp !== '' && otp.length >= 6) {
             try {
-                await verifyEmail({ email: email, otp: otp }).then((res: any) => {
-                    console.log('working...', res)
-                    if (res?.error?.data?.error?.message === 'otpDoesNotMatch') {
-                            setOtpError('OTP does not match.')
-                        // const {}
-                        // console.log("error->",res?.error)
-                        // const error = res?.error?.data?.error
-                        // if (error?.message === 'otpDoesNotMatch') {
-                        //     setOtpError('OTP does not match.')
-                        // }
-                    } else {  
-                        console.log('okk')                      
-                        setOtpError('')
-                        setSuccessMessage(true)
-                        setUserInfo((prev) => ({
-                            ...prev, firstName: "",
-                            lastName: "",
-                            email: "",
-                            password: "",
-                            confirmPassword: ""
-                        }))
-                        setTimeout(() => {
-                            setSuccessMessage(false)
+                await verifyEmail({ email: email, otp: otp }).then(res=> {
+                    if(!res.error){
+                        const timer = setTimeout(() => {
+                            dispatch(setIsShow(false));
+                            dispatch(setMessageType(''));
+                            dispatch(setMessage(''));
                             navigate('/auth/login')
-                        }, 2000)
+                        }, 2000);                    
+                        return () => clearTimeout(timer);
                     }
-                }).catch(error => {
-                    console.log(error)
                 })
             } catch (error) {
                 console.log("error", error)
             }
         } else {
-            setOtpError('OTP is required! insert your otp code in this field.')
+            dispatch(setIsShow(true))
+            dispatch(setMessageType(ERROR))
+            dispatch(setMessage('OTP is required! insert your otp code in this field.'))
         }
     }
 
-    const handleUserDelete = (id: string) => {
-        try {
-            deleteUser(id)
-        } catch (error) {
-
+    useEffect(() => {
+        if (success || error) {
+            dispatch(setIsShow(true))
+            dispatch(setMessageType(success ? SUCCESS : ERROR))
+            dispatch(setMessage(success ? message : error))
         }
-    }
+    }, [error, success])
+
     return (
         <div>
             <div className="container h-[777px] bg-white shadow-custom-box-shadow flex items-center mb-10">
@@ -200,7 +187,6 @@ export default function Register() {
                 </div>
                 <div className="w-1/2 flex items-center justify-center">
                     <div className="w-8/12">
-                        <button className="bg-rose-500 text-white px-3 py-2" onClick={() => handleUserDelete('66d05b6d703a891f1a08297e')}>DELETE</button>
                         <h2 className="text-primary text-[20px] font-medium mb-6">
                             {!isOpenOtp ? "Sign up" : "Verify OTP"}
                         </h2>
@@ -279,16 +265,10 @@ export default function Register() {
                             </form>
                         ) : (
                             <div>
-                                <OTP otp={otp} setOtp={setOtp} error={otpError} success={successMessage} />
-
-                                <button
-                                    type="button"
-                                    className="w-full px-4 py-2 font-medium text-white bg-primary rounded-md mt-5"
-                                    onClick={() => handleOTPVerify(userInfo.email, otp?.join(''))}
-                                >
-                                    Verify OTP
-                                </button>
-                                <p className="my-5 text-sm">Please check your email to get OTP code</p>
+                                <OTP />
+                                <Button type="button" onClick={() => handleOTPVerify(userInfo?.email, otp.join(''))} className="text-white font-medium text-sm w-full bg-primary py-2 mt-3">
+                                    {loading ? 'Loading...' : 'OTP Verify'}
+                                </Button>
                             </div>
                         )}
                     </div>

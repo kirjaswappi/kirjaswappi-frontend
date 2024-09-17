@@ -3,6 +3,8 @@ import { CombinedState } from "@reduxjs/toolkit/query"
 
 import { api } from "./api/apiSlice"
 import authSlice, { IInitialState } from "./feature/auth/authSlice"
+import notificationSlice, { INotificationInitialState } from "./feature/notification/notificationSlice"
+import stepSlice, { IStepInitialState } from "./feature/step/stepSlice"
 
 
 
@@ -10,6 +12,8 @@ const store: EnhancedStore<
   {
     api: CombinedState<{}, never, 'api'>
     auth: IInitialState
+    step: IStepInitialState
+    notification: INotificationInitialState
   },
   UnknownAction,
   Tuple<
@@ -19,6 +23,7 @@ const store: EnhancedStore<
           {
             api: CombinedState<{}, never, 'api'>
             auth: IInitialState
+
           },
           undefined,
           UnknownAction
@@ -31,6 +36,8 @@ const store: EnhancedStore<
   reducer: {
     [api.reducerPath]: api.reducer,
     auth: authSlice,
+    step: stepSlice,
+    notification: notificationSlice
   },
   preloadedState: {
     // auth: initialState,
