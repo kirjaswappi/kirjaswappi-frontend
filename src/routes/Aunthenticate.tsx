@@ -2,19 +2,22 @@
 // import { Navigate, useLocation } from "react-router-dom";
 // import { useAppSelector } from "../redux/hooks";
 
-const Aunthenticate = ({ children }: { children: any }) => {
-  // const location = useLocation();
-  // const { pathname, state } = location;
-  // const { userAllInfo } = useAppSelector((state) => state.auth);
+import { Navigate, useLocation } from "react-router-dom";
+import { useAppSelector } from "../redux/hooks";
 
-  // if (!userAllInfo) {
-  //   return children;
-  // }
+const Authenticate = ({ children }: { children: any }) => {
+  const location = useLocation();
+  const { pathname, state } = location;
+  const { userInformation } = useAppSelector((state) => state.auth);
 
-  // if (userAllInfo) {
-  //   return <Navigate to="/" state={{ ...state, path: pathname }} />;
-  // }
+  if (!userInformation.email) {
+    return children;
+  }
+
+  if (userInformation.email) {
+    return <Navigate to="/" state={{ ...state, path: pathname }} />;
+  }
   return children;
 };
 
-export default Aunthenticate;
+export default Authenticate;

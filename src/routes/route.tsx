@@ -5,15 +5,16 @@ import App from "../App";
 import Login from "../pages/auth/login";
 import Register from "../pages/auth/register";
 import ResetPassword from "../pages/auth/resetPassword";
+import Authenticate from "./Aunthenticate";
 
 const routes = createBrowserRouter([
   {
     path: "/",
     element: (
       // <NoInternetConnection>
-        // <ErrorBoundary FallbackComponent={ErrorReturn} onReset={() => (location.href = "/")}>
-          <App />
-        // </ErrorBoundary>
+      // <ErrorBoundary FallbackComponent={ErrorReturn} onReset={() => (location.href = "/")}>
+      <App />
+      // </ErrorBoundary>
       // </NoInternetConnection>
     ),
     // errorElement: <ErrorBoundary />,
@@ -29,16 +30,16 @@ const routes = createBrowserRouter([
       {
         path: "/auth/login",
         element: (
-          // <Aunthenticate>
+          <Authenticate>
             <Login />
-          // </Aunthenticate>
+          // </Authenticate>
         ),
       },
       {
         path: "/password/reset",
         element: (
           // <Aunthenticate>
-            <ResetPassword />
+          <ResetPassword />
           // </Aunthenticate>
         ),
       },
@@ -46,7 +47,7 @@ const routes = createBrowserRouter([
         path: "/auth/register",
         element: (
           // <Aunthenticate>
-            <Register />
+          <Register />
           // </Aunthenticate>
         ),
       },
@@ -63,10 +64,10 @@ const routes = createBrowserRouter([
           //   index: true,
           //   element: <UserProfile />,
           // },
-          
+
         ],
       },
-      
+
     ],
   },
 

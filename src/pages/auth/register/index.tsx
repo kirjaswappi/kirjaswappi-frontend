@@ -5,6 +5,7 @@ import authVector from "../../../assets/vectorAuth.png";
 import Button from "../../../components/shared/Button";
 import Image from "../../../components/shared/Image";
 import Input from "../../../components/shared/Input";
+import MessageToastify from "../../../components/shared/MessageToastify";
 import OTP from "../../../components/shared/OTP";
 import PasswordInput from "../../../components/shared/PasswordInput";
 import { ERROR, SUCCESS } from "../../../constant/MESSAGETYPE";
@@ -23,6 +24,7 @@ interface ILoginForm {
 export default function Register() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const { isShow, message: msg, messageType } = useAppSelector(state => state.notification)
     const { otp, loading, error, success, message } = useAppSelector(state => state.auth)
     const [register] = useRegisterMutation()
     const [verifyEmail] = useVerifyEmailMutation()
@@ -33,7 +35,7 @@ export default function Register() {
     const [userInfo, setUserInfo] = useState<ILoginForm>({
         firstName: "",
         lastName: "",
-        email: "rahat@gmail.com",
+        email: "rahat.official.info9016@gmail.com",
         password: "",
         confirmPassword: "",
     });
@@ -137,6 +139,8 @@ export default function Register() {
                     .then(async (res) => {
                         if (res?.data) {
                             setOpenOtp(true)
+                            dispatch(setIsShow(false))
+
                         }
                     })
                     .catch((error) => {
@@ -150,14 +154,14 @@ export default function Register() {
     const handleOTPVerify = async (email: string, otp: string) => {
         if (email !== '' && otp !== '' && otp.length >= 6) {
             try {
-                await verifyEmail({ email: email, otp: otp }).then(res=> {
-                    if(!res.error){
+                await verifyEmail({ email: email, otp: otp }).then(res => {
+                    if (!res.error) {
                         const timer = setTimeout(() => {
                             dispatch(setIsShow(false));
                             dispatch(setMessageType(''));
                             dispatch(setMessage(''));
                             navigate('/auth/login')
-                        }, 2000);                    
+                        }, 2000);
                         return () => clearTimeout(timer);
                     }
                 })
@@ -178,7 +182,7 @@ export default function Register() {
             dispatch(setMessage(success ? message : error))
         }
     }, [error, success])
-
+// console.log(isVerify)
     return (
         <div>
             <div className="container h-[777px] bg-white shadow-custom-box-shadow flex items-center mb-10">
@@ -242,12 +246,13 @@ export default function Register() {
                                     placeholder="Confirm Password"
                                     error={errors.confirmPassword}
                                 />
-                                <button
+                                <MessageToastify isShow={isShow} type={messageType} value={msg} />
+                                <Button
                                     type="submit"
                                     className="w-full px-4 py-2 font-bold text-white bg-primary rounded-md "
                                 >
-                                    Sign up
-                                </button>
+                                    {loading ? 'Loading...' : 'Sign up'}
+                                </Button>
                                 <div className=" flex items-center gap-3 mt-6">
                                     <p className="text-grayDark text-sm font-normal">
                                         do you have an account yet ?

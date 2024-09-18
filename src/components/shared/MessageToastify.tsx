@@ -29,7 +29,7 @@ export default function MessageToastify({ type, value, isShow = false }: IMessag
             dispatch(setIsShow(false));
             dispatch(setMessageType(''));
             dispatch(setMessage(''));
-        }, type !== ERROR ? 2000 : 8000);
+        }, type !== ERROR ? 2000 : 10000);
     
         return () => clearTimeout(timer);
     }, [isShow])

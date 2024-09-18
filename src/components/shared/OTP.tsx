@@ -67,16 +67,9 @@ export default function OTP() {
                 ))}
 
             </div>
-            <div className="mt-2">
             <MessageToastify isShow={isShow} type={messageType} value={message} />
+            <div className={`mt-2 ${otp.join() !== '' ? 'hidden': 'block' }`}>
             </div>
-            
-            {/* {error !== '' && (
-                <div className="text-rose-500 text-xs mt-2 pl-2">{error}</div>
-            )}
-            {success && (
-                <div className="bg-green-100 text-green-600 text-xs mt-2  text-center py-3">OTP is verify successfully.</div>
-            )} */}
         </>
     );
 }

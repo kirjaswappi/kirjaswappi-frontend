@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { ERROR, SUCCESS } from "../constant/MESSAGETYPE"
+import { ERROR } from "../constant/MESSAGETYPE"
 
 export const useNotification = () => {
     const [isShow, setIsShow] = useState<boolean>(false)

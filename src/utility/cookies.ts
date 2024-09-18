@@ -1,8 +1,9 @@
 import CryptoJS from "crypto-js";
 
 export const setCookie = (name: string, value: any, time: number) => {
+    console.log(name, value)
     const encryptedValue = CryptoJS.AES.encrypt(
-        value,
+        JSON.stringify(value),
         import.meta.env.VITE_REACT_SECRET_KEY
     ).toString();
 

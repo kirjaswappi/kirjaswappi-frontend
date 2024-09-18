@@ -28,9 +28,10 @@ export interface IInitialState {
     };
     otp: any[];
     resetEmail: string;
+    isVerify: boolean;
 }
 
-const initialState: IInitialState = {
+export const initialState: IInitialState = {
     loading: false,
     error: null,
     message: null,
@@ -51,6 +52,7 @@ const initialState: IInitialState = {
     },
     otp: Array(6).fill(""),
     resetEmail: "",
+    isVerify: false,
 };
 const authSlice = createSlice({
     name: "auth",
@@ -63,6 +65,9 @@ const authSlice = createSlice({
             state.resetEmail = action.payload;
         },
         setError: (state, action) => {
+            state.error = action.payload;
+        },
+        setVerify: (state, action) => {
             state.error = action.payload;
         },
     },
@@ -112,20 +117,46 @@ const authSlice = createSlice({
             // state.userInformation = {...action.payload}
         });
         builder.addMatcher(authApi.endpoints.register.matchPending, (state) => {
-            // console.log(action.payload)
             state.loading = true;
             state.error = null;
             state.success = false;
-            // state.userInformation = {...action.payload}
+            state.isVerify= false
         });
         builder.addMatcher(
             authApi.endpoints.register.matchFulfilled,
-            (state) => {
-                // console.log(action.payload)
+            (state, action) => {
+                console.log(action)
                 state.loading = false;
                 state.error = null;
                 state.success = true;
-                // state.userInformation = {...action.payload}
+                state.isVerify= false
+            }
+        );
+        builder.addMatcher(
+            authApi.endpoints.register.matchRejected,
+            (state, action) => {
+                console.log(action)
+                const error = (action.payload?.data as IErrorPayload)?.error;
+
+                let errorMessage: string | undefined;
+                let verify: boolean | undefined = false;
+                if (typeof error === "object" && error !== null) {
+                    // Check if error has a 'code' and 'message'
+                    if (error.code === "userExistsButNotVerified") {
+                        errorMessage = error.message;
+                        verify = true
+                    } else {
+                        errorMessage = error.message;
+                        verify = false
+                    }
+                } else {
+                    // Handle case where error is not an object
+                    errorMessage = "An unknown error occurred";
+                }
+                state.loading = false;
+                state.error = errorMessage;
+                state.success = false;
+                state.isVerify= verify
             }
         );
         builder.addMatcher(authApi.endpoints.sentOTP.matchPending, (state) => {
@@ -173,10 +204,11 @@ const authSlice = createSlice({
             (state, action: PayloadAction<any>) => {
                 const error = (action.payload?.data as IErrorPayload)?.error;
                 let errorMessage: string | undefined;
+                console.log(error)
                 if (typeof error === "object" && error !== null) {
                     // Check if error has a 'code' and 'message'
                     if (error.code === "otpDoesNotMatch") {
-                        errorMessage = "OTP does not match.";
+                        errorMessage = error.message;
                     } else {
                         errorMessage = error.message;
                     }
@@ -189,6 +221,7 @@ const authSlice = createSlice({
                 state.error = errorMessage;
                 state.message = "";
                 state.success = false;
+                
             }
         );
     },

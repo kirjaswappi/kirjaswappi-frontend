@@ -1,12 +1,26 @@
 import { EnhancedStore, StoreEnhancer, ThunkDispatch, Tuple, UnknownAction, configureStore } from "@reduxjs/toolkit"
 import { CombinedState } from "@reduxjs/toolkit/query"
 
+import { getCookie } from "../utility/cookies"
 import { api } from "./api/apiSlice"
-import authSlice, { IInitialState } from "./feature/auth/authSlice"
+import authSlice, { IInitialState, initialState } from "./feature/auth/authSlice"
 import notificationSlice, { INotificationInitialState } from "./feature/notification/notificationSlice"
 import stepSlice, { IStepInitialState } from "./feature/step/stepSlice"
 
 
+
+const cookieUser = getCookie('user');
+const user = cookieUser ? JSON.parse(cookieUser) : {};
+
+const preloadedState = {
+  auth: {
+    ...initialState,
+    userInformation: {
+      ...initialState.userInformation,
+      ...user, 
+    },
+  },
+};
 
 const store: EnhancedStore<
   {
@@ -39,9 +53,7 @@ const store: EnhancedStore<
     step: stepSlice,
     notification: notificationSlice
   },
-  preloadedState: {
-    // auth: initialState,
-  },
+  preloadedState,
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware().concat(api.middleware),
 })

@@ -1,3 +1,4 @@
+import { setCookie } from "../../../utility/cookies";
 import { applicationJSON } from "../../../utility/headersConstant";
 import { setTokens } from "../../../utility/localStorage";
 
@@ -42,9 +43,16 @@ export const authApi = api.injectEndpoints({
                     body: data,
                 };
             },
-            // onQueryStarted: async (_args, { _queryFulfilled }) => {
-            
-            // }
+            onQueryStarted: async (_args, { queryFulfilled }) => {
+                try {
+                    const { data } = await queryFulfilled;
+                    if(data){
+                        setCookie('user', data, 24)
+                    }
+                } catch (error) {
+                    console.error("Can't set data in cookie. failed:", error);
+                }
+            }
         }),
         sentOTP: builder.query({
             query: ({ email }) => {
@@ -60,7 +68,6 @@ export const authApi = api.injectEndpoints({
                 return {
                     url: `/users/verify-email?email=${email}&otp=${otp}`,
                     method: "POST",
-                    responseHandler: 'text'
                 };
             },
         }),
