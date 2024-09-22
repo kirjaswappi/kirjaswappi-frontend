@@ -59,7 +59,6 @@ export const authApi = api.injectEndpoints({
                 return {
                     url: `/send-otp?email=${email}`,
                     method: "GET",
-                    responseHandler: 'text',
                 };
             },
         }),
@@ -68,15 +67,14 @@ export const authApi = api.injectEndpoints({
                 return {
                     url: `/users/verify-email`,
                     method: "POST",
-                    body: {email: email,
-                        otp: otp}
+                    body: {email: email, otp: otp}
                 };
             },
         }),
         verifyOTP: builder.query({
             query: ({ email, otp }) => {
                 return {
-                    url: `/verify-email?email=${email}&otp=${otp}`,
+                    url: `/verify-otp?email=${email}&otp=${otp}`,
                     method: "GET",
                 };
             },
@@ -113,5 +111,6 @@ export const {
     useVerifyEmailMutation,
     useLazySentOTPQuery,
     useLazyVerifyOTPQuery,
+    useResetPasswordMutation
 
 } = authApi;

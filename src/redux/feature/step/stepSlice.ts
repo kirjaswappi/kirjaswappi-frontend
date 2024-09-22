@@ -5,14 +5,13 @@ export interface IStepInitialState {
 }
 
 const initialState: IStepInitialState = {
-    step: 0,
+    step: 2,
 };
 const stepSlice = createSlice({
     name: "step",
     initialState,
     reducers: {
         setStep: (state, action: PayloadAction<number>) => {
-
             state.step = action.payload;
         },
     },

@@ -6,7 +6,7 @@ import { setIsShow, setMessage, setMessageType } from "../../redux/feature/notif
 import { useAppSelector } from "../../redux/hooks";
 import MessageToastify from "./MessageToastify";
 
-export default function OTP() {
+export default function OTP({otpMessageShow=true}: {otpMessageShow?: boolean}) {
     const dispatch = useDispatch()
     const { otp } = useAppSelector(state => state.auth)
     const { messageType, message, isShow } = useAppSelector(state => state.notification)
@@ -67,9 +67,7 @@ export default function OTP() {
                 ))}
 
             </div>
-            <MessageToastify isShow={isShow} type={messageType} value={message} />
-            <div className={`mt-2 ${otp.join() !== '' ? 'hidden': 'block' }`}>
-            </div>
+            {otpMessageShow && <MessageToastify isShow={isShow} type={messageType} value={message} />}
         </>
     );
 }

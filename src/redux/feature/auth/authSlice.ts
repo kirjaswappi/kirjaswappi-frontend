@@ -136,7 +136,6 @@ const authSlice = createSlice({
         builder.addMatcher(
             authApi.endpoints.register.matchRejected,
             (state, action) => {
-                console.log(action)
                 const error = (action.payload?.data as IErrorPayload)?.error;
 
                 let errorMessage: string | undefined;
@@ -171,14 +170,28 @@ const authSlice = createSlice({
                 state.loading = false;
                 state.error = null;
                 state.success = true;
+                state.message = 'OTP has been sent to email.'
             }
         );
         builder.addMatcher(
             authApi.endpoints.sentOTP.matchRejected,
             (state, action) => {
-                console.log(action);
+                const error = (action.payload?.data as IErrorPayload)?.error;
+                let errorMessage: string | undefined;
+                if (typeof error === "object" && error !== null) {
+                    // Check if error has a 'code' and 'message'
+                    if (error.code === "userNotFound") {
+                        errorMessage = error.message;
+                    } else {
+                        errorMessage = error.message;
+                    }
+                } else {
+                    // Handle case where error is not an object
+                    errorMessage = "An unknown error occurred";
+                }
+                console.log({errorMessage})
                 state.loading = false;
-                state.error = null;
+                state.error = errorMessage;
                 state.success = false;
             }
         );
