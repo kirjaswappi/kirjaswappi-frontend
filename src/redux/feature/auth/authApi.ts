@@ -66,8 +66,10 @@ export const authApi = api.injectEndpoints({
         verifyEmail: builder.mutation({
             query: ({ email, otp }) => {
                 return {
-                    url: `/users/verify-email?email=${email}&otp=${otp}`,
+                    url: `/users/verify-email`,
                     method: "POST",
+                    body: {email: email,
+                        otp: otp}
                 };
             },
         }),

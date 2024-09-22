@@ -138,9 +138,13 @@ export default function Register() {
                 await register(userInfo)
                     .then(async (res) => {
                         if (res?.data) {
-                            setOpenOtp(true)
-                            dispatch(setIsShow(false))
-
+                            const timer = setTimeout(() => {
+                                dispatch(setIsShow(false));
+                                dispatch(setMessageType(''));
+                                dispatch(setMessage(''));
+                                setOpenOtp(true)
+                            }, 2000);
+                            return () => clearTimeout(timer);
                         }
                     })
                     .catch((error) => {
@@ -161,7 +165,7 @@ export default function Register() {
                             dispatch(setMessageType(''));
                             dispatch(setMessage(''));
                             navigate('/auth/login')
-                        }, 2000);
+                        }, 3000);
                         return () => clearTimeout(timer);
                     }
                 })
@@ -182,7 +186,12 @@ export default function Register() {
             dispatch(setMessage(success ? message : error))
         }
     }, [error, success])
-// console.log(isVerify)
+
+    useEffect(() => {
+        dispatch(setIsShow(false))
+        dispatch(setMessageType(''))
+        dispatch(setMessage(''))
+    }, [location.pathname, dispatch])
     return (
         <div>
             <div className="container h-[777px] bg-white shadow-custom-box-shadow flex items-center mb-10">

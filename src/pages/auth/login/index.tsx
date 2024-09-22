@@ -21,8 +21,7 @@ interface ILoginForm {
 export default function Login() {
     const { error, success } = useAppSelector(state => state.auth)
     const { isShow, message, messageType } = useAppSelector((state) => state.notification)
-    // const { isShow, messageType, message,  setIsShow, setMessageType, setMessage } = useNotification()
-    // console.log(isShow, messageType, message,)
+
     const dispatch = useDispatch()
     const [login, { isLoading }] = useLoginMutation();
     const [showPassword, setShowPassword] = useState(false);
@@ -93,6 +92,12 @@ export default function Login() {
     }
     }, [error, success])
 
+
+    useEffect(() => {
+        dispatch(setIsShow(false))
+        dispatch(setMessageType(''))
+        dispatch(setMessage(''))
+    }, [location.pathname, dispatch])
     return (
         <div>
             <div className="container h-[777px] bg-white shadow-custom-box-shadow flex items-center mb-10">

@@ -121,6 +121,7 @@ const authSlice = createSlice({
             state.error = null;
             state.success = false;
             state.isVerify= false
+            state.message = 'OTP has been sent to email.'
         });
         builder.addMatcher(
             authApi.endpoints.register.matchFulfilled,
@@ -192,10 +193,10 @@ const authSlice = createSlice({
         builder.addMatcher(
             authApi.endpoints.verifyEmail.matchFulfilled,
             (state, action) => {
-                console.log(action);
+                const data = action.payload
                 state.loading = false;
                 state.error = null;
-                state.message = "";
+                state.message = data?.message;
                 state.success = true;
             }
         );

@@ -61,14 +61,14 @@ export default function GetOTPByEmail() {
                 value={resetEmail}
                 name="email"
                 onChange={handleChange}
-                placeholder="E-mail"
+                placeholder="Enter email"
                 error={error}
             />
             <Button
                 type="submit"
                 className="w-full px-4 py-2 font-bold text-white bg-primary rounded-md mt-3"
             >
-                {loading ? "Loading..." : "Get OTP"}
+                {loading ? "Loading..." : "Continue"}
                
             </Button>
         </form>
