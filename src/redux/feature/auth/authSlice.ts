@@ -238,6 +238,49 @@ const authSlice = createSlice({
                 
             }
         );
+        builder.addMatcher(
+            authApi.endpoints.verifyOTP.matchPending,
+            (state) => {
+                state.loading = true;
+                state.error = null;
+                state.success = false;
+            }
+        );
+        builder.addMatcher(
+            authApi.endpoints.verifyOTP.matchFulfilled,
+            (state, action) => {
+                const data = action.payload
+                state.loading = false;
+                state.error = null;
+                state.message = data?.message;
+                state.success = true;
+            }
+        );
+        builder.addMatcher(
+            authApi.endpoints.verifyOTP.matchRejected,
+            (state, action: PayloadAction<any>) => {
+                const error = (action.payload?.data as IErrorPayload)?.error;
+                let errorMessage: string | undefined;
+                console.log(error)
+                if (typeof error === "object" && error !== null) {
+                    // Check if error has a 'code' and 'message'
+                    if (error.code === "otpDoesNotMatch") {
+                        errorMessage = error.message;
+                    } else {
+                        errorMessage = error.message;
+                    }
+                } else {
+                    // Handle case where error is not an object
+                    errorMessage = "An unknown error occurred";
+                }
+                console.log(errorMessage);
+                state.loading = false;
+                state.error = errorMessage;
+                state.message = "";
+                state.success = false;
+                
+            }
+        );
     },
 });
 

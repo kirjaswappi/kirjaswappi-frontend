@@ -46,19 +46,20 @@ export const authApi = api.injectEndpoints({
             onQueryStarted: async (_args, { queryFulfilled }) => {
                 try {
                     const { data } = await queryFulfilled;
-                    if(data){
-                        setCookie('user', data, 24)
+                    if (data) {
+                        setCookie("user", data, 24);
                     }
                 } catch (error) {
                     console.error("Can't set data in cookie. failed:", error);
                 }
-            }
+            },
         }),
         sentOTP: builder.query({
             query: ({ email }) => {
                 return {
-                    url: `/send-otp?email=${email}`,
-                    method: "GET",
+                    url: `/send-otp`,
+                    method: "POST",
+                    body: { email: email },
                 };
             },
         }),
@@ -67,23 +68,25 @@ export const authApi = api.injectEndpoints({
                 return {
                     url: `/users/verify-email`,
                     method: "POST",
-                    body: {email: email, otp: otp}
+                    body: { email: email, otp: otp },
                 };
             },
         }),
         verifyOTP: builder.query({
             query: ({ email, otp }) => {
                 return {
-                    url: `/verify-otp?email=${email}&otp=${otp}`,
-                    method: "GET",
+                    url: `/verify-otp`,
+                    method: "POST",
+                    body: { email: email, otp: otp },
                 };
             },
         }),
         resetPassword: builder.mutation({
             query: (data) => {
                 const { email } = data;
+                console.log(data)
                 return {
-                    url: `/reset-password/${email}`,
+                    url: `/users/reset-password/${email}`,
                     method: "POST",
                     body: data,
                     headers: applicationJSON,
@@ -111,6 +114,5 @@ export const {
     useVerifyEmailMutation,
     useLazySentOTPQuery,
     useLazyVerifyOTPQuery,
-    useResetPasswordMutation
-
+    useResetPasswordMutation,
 } = authApi;

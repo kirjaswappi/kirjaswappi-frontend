@@ -6,7 +6,7 @@ import Image from "../../../components/shared/Image";
 import MessageToastify from "../../../components/shared/MessageToastify";
 import OTP from "../../../components/shared/OTP";
 import { ERROR, SUCCESS } from "../../../constant/MESSAGETYPE";
-import { useLazySentOTPQuery, useLazyVerifyOTPQuery } from "../../../redux/feature/auth/authApi";
+import { useLazySentOTPQuery, useLazyVerifyOTPQuery, useResetPasswordMutation } from "../../../redux/feature/auth/authApi";
 import { setError, setResetEmail } from "../../../redux/feature/auth/authSlice";
 import { setIsShow, setMessage, setMessageType } from "../../../redux/feature/notification/notificationSlice";
 import { setStep } from "../../../redux/feature/step/stepSlice";
@@ -24,6 +24,7 @@ export default function ResetPassword() {
     const dispatch = useDispatch()
     const [sentOTP] = useLazySentOTPQuery()
     const [verifyOTP] = useLazyVerifyOTPQuery()
+    const [resetPassword] = useResetPasswordMutation()
     // const [resetPassword] = useResetPasswordMutation()
     const { messageType, message, isShow } = useAppSelector(state => state.notification)
     const { success, loading, resetEmail, error, otp } = useAppSelector(state => state.auth)
@@ -38,7 +39,7 @@ export default function ResetPassword() {
         [key: string]: string | null | undefined;
     }>({});
 
-console.log(errors)
+// console.log(userPass)
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         dispatch(setResetEmail(e.target.value.trim()))
         setEmailError('')
@@ -149,7 +150,13 @@ console.log(errors)
             }
         }else if(step === 2){
             if(validateChangePassword()){
-
+                const resetObj = {
+                    otp: '1212',
+                    newPassword: userPass.password,
+                    confirmPassword: userPass.confirmPassword,
+                    email: 'resetEmail@gmail.com'
+                  }
+                resetPassword(resetObj)
             }
         }
     }
