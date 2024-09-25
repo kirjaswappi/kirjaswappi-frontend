@@ -203,7 +203,7 @@ export default function Register() {
                         <h2 className="text-primary text-[20px] font-medium mb-6">
                             {!isOpenOtp ? "Sign up" : "Verify OTP"}
                         </h2>
-                        {!isOpenOtp ? (
+                        {!!isOpenOtp ? (
                             <form
                                 onSubmit={handleSubmit}
                                 className="flex flex-col gap-4"

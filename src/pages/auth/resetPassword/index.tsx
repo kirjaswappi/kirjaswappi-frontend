@@ -213,12 +213,14 @@ export default function ResetPassword() {
                 </div>
                 <div className="w-1/2 flex items-center justify-center">
                     <div className="w-8/12">
-                        <h2 className="text-primary text-[20px] font-medium mb-14">
-                            Forgot Password
+                        <h2 className="text-primary text-[20px] font-medium mb-6">
+                            {step === 1 ? "Verify OTP" : "Forgot Password"}
                         </h2>
                         <form onSubmit={(e) => handleSubmit(e)}>
                             {renderStepContent()}
+                            <div className="mt-4">
                             <MessageToastify isShow={isShow} type={messageType} value={msg} />
+                            </div>
                             <Button type="submit" className="text-white font-medium text-sm w-full bg-primary py-2 mt-3">
                                 {loading ? 'Loading...' : 'Continue'}
                             </Button>

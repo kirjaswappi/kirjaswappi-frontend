@@ -57,8 +57,10 @@ export default function OTP({otpMessageShow=true}: {otpMessageShow?: boolean}) {
         }
     };
     return (
-        <>
+        <div>
+            
             <div className="flex gap-2 justify-between">
+                
                 {otp.map((_, index: number) => (
                     <input
                         key={index}
@@ -77,6 +79,6 @@ export default function OTP({otpMessageShow=true}: {otpMessageShow?: boolean}) {
 
             </div>
             {otpMessageShow && <MessageToastify isShow={isShow} type={messageType} value={message} />}
-        </>
+        </div>
     );
 }
