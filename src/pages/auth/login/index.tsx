@@ -29,7 +29,7 @@ export default function Login() {
         [key: string]: string | null | undefined;
     }>({});
     const [userInfo, setUserInfo] = useState<ILoginForm>({
-        email: "rahat.official.info9016@gmail.com",
+        email: "",
         password: "",
     });
 
