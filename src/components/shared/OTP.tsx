@@ -47,7 +47,15 @@ export default function OTP({otpMessageShow=true}: {otpMessageShow?: boolean}) {
             }
         }
     };
-
+    const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+        const pasteData = e.clipboardData.getData('text').trim();
+        
+        if (pasteData.length === otp.length && /^\d+$/.test(pasteData)) {
+            const newOtp = pasteData.split('');
+            dispatch(setOtp(newOtp));
+            inputs.current[otp.length - 1]?.focus(); // Move focus to the last input
+        }
+    };
     return (
         <>
             <div className="flex gap-2 justify-between">
@@ -59,6 +67,7 @@ export default function OTP({otpMessageShow=true}: {otpMessageShow?: boolean}) {
                         value={otp[index]}
                         onChange={(e) => handleChange(e, index)}
                         onKeyDown={(e) => handleKeyDown(e, index)}
+                        onPaste={handlePaste}
                         ref={(el) => (inputs.current[index] = el)}
                         className={`max-w-10 h-10 border ${messageType === ERROR ? "border-rose-500" : "border-grayDark"
                             } rounded-md text-center text-base`}

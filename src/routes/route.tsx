@@ -24,10 +24,6 @@ const routes = createBrowserRouter([
         // element: <Home />,
       },
       {
-        path: "/campaign",
-        // element: <Campaign />,
-      },
-      {
         path: "/auth/login",
         element: (
           <Authenticate>
@@ -38,35 +34,35 @@ const routes = createBrowserRouter([
       {
         path: "/password/reset",
         element: (
-          // <Aunthenticate>
-          <ResetPassword />
-          // </Aunthenticate>
+          <Authenticate>
+            <ResetPassword />
+          // </Authenticate>
         ),
       },
       {
         path: "/auth/register",
         element: (
-          // <Aunthenticate>
-          <Register />
-          // </Aunthenticate>
+          <Authenticate>
+            <Register />
+          // </Authenticate>
         ),
       },
-      {
-        // path: "/profile",
-        // element: (
-        //   <PrivateRoute>
-        //     {" "}
-        //     <User />{" "}
-        //   </PrivateRoute>
-        // ),
-        children: [
-          // {
-          //   index: true,
-          //   element: <UserProfile />,
-          // },
+      // {
+      //   // path: "/profile",
+      //   // element: (
+      //   //   <PrivateRoute>
+      //   //     {" "}
+      //   //     <User />{" "}
+      //   //   </PrivateRoute>
+      //   // ),
+      //   children: [
+      //     // {
+      //     //   index: true,
+      //     //   element: <UserProfile />,
+      //     // },
 
-        ],
-      },
+      //   ],
+      // },
 
     ],
   },

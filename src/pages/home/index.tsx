@@ -1,5 +1,5 @@
 
-export default function index() {
+export default function Home() {
   return (
     <div>index</div>
   )

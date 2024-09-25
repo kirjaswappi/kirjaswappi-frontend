@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import authVector from "../../../assets/vectorAuth.png";
 import Button from "../../../components/shared/Button";
 import Image from "../../../components/shared/Image";
@@ -26,8 +27,9 @@ export default function ResetPassword() {
     const [verifyOTP] = useLazyVerifyOTPQuery()
     const [resetPassword] = useResetPasswordMutation()
     // const [resetPassword] = useResetPasswordMutation()
-    const { messageType, message, isShow } = useAppSelector(state => state.notification)
-    const { success, loading, resetEmail, error, otp } = useAppSelector(state => state.auth)
+    const navigate = useNavigate()
+    const { messageType, message:msg, isShow } = useAppSelector(state => state.notification)
+    const { success, loading, resetEmail, error, otp, message } = useAppSelector(state => state.auth)
     const { step } = useAppSelector(state => state.step)
     const [emailError, setEmailError] = useState<string | null | undefined>('')       
     
@@ -76,7 +78,7 @@ export default function ResetPassword() {
                 setErrors((prevErrors) => ({
                     ...prevErrors,
                     confirmPassword:
-                        "Password and confirm password do not match!",
+                        "Password and confirm password does not match!",
                 }));
             } else {
                 setErrors((prevErrors) => ({
@@ -151,12 +153,24 @@ export default function ResetPassword() {
         }else if(step === 2){
             if(validateChangePassword()){
                 const resetObj = {
-                    otp: '1212',
                     newPassword: userPass.password,
                     confirmPassword: userPass.confirmPassword,
-                    email: 'resetEmail@gmail.com'
+                    email: resetEmail
                   }
-                resetPassword(resetObj)
+                await resetPassword(resetObj).then(res => {
+                    if (!res.error) {
+                        const timer = setTimeout(() => {
+                            dispatch(setIsShow(false));
+                            dispatch(setMessageType(''));
+                            dispatch(setMessage(''));
+                            navigate('/auth/login')
+                        }, 3000);
+                        return () => clearTimeout(timer);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
             }
         }
     }
@@ -169,8 +183,8 @@ export default function ResetPassword() {
                 return <OTP otpMessageShow={false} />
             case 2:
                 return <NewPassword userPass={userPass} handleChange={handleChange} errors={errors}/>
-            default:
-                return <GetOTPByEmail error={emailError} handleChange={handleEmailChange} />
+            // default:
+            //     return <GetOTPByEmail error={emailError} handleChange={handleEmailChange} />
         }
     };
     useEffect(() => {
@@ -186,7 +200,9 @@ export default function ResetPassword() {
 
     useEffect(() => {
         if (success) {
-            dispatch(setStep(step + 1))
+            if(step < 2){
+                dispatch(setStep(step + 1))
+            }
         }
     }, [success])
     return (
@@ -202,7 +218,7 @@ export default function ResetPassword() {
                         </h2>
                         <form onSubmit={(e) => handleSubmit(e)}>
                             {renderStepContent()}
-                            <MessageToastify isShow={isShow} type={messageType} value={message} />
+                            <MessageToastify isShow={isShow} type={messageType} value={msg} />
                             <Button type="submit" className="text-white font-medium text-sm w-full bg-primary py-2 mt-3">
                                 {loading ? 'Loading...' : 'Continue'}
                             </Button>

@@ -5,7 +5,7 @@ export interface IStepInitialState {
 }
 
 const initialState: IStepInitialState = {
-    step: 2,
+    step: 0,
 };
 const stepSlice = createSlice({
     name: "step",

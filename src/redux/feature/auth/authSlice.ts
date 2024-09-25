@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { clearCookie } from "../../../utility/cookies";
 import { authApi } from "./authApi";
 interface IErrorPayload {
     error?: {
@@ -58,6 +59,16 @@ const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
+        logout: (state) => {
+            clearCookie('user')
+            state.userInformation = initialState.userInformation
+            state.loading = false
+            state.error = null
+            state.message = null
+            state.otp = []
+            state.resetEmail = ""
+            state.success = false
+        },
         setOtp: (state, action) => {
             state.otp = action.payload;
         },
@@ -281,8 +292,51 @@ const authSlice = createSlice({
                 
             }
         );
+        builder.addMatcher(
+            authApi.endpoints.resetPassword.matchPending,
+            (state) => {
+                state.loading = true;
+                state.error = null;
+                state.success = false;
+            }
+        );
+        builder.addMatcher(
+            authApi.endpoints.resetPassword.matchFulfilled,
+            (state, action) => {
+                const data = action.payload
+                console.log(data)
+                state.loading = false;
+                state.error = null;
+                state.message = data?.message;
+                state.success = true;
+            }
+        );
+        builder.addMatcher(
+            authApi.endpoints.resetPassword.matchRejected,
+            (state, action: PayloadAction<any>) => {
+                const error = (action.payload?.data as IErrorPayload)?.error;
+                let errorMessage: string | undefined;
+                if (typeof error === "object" && error !== null) {
+                    // Check if error has a 'code' and 'message'
+                    if (error.code === "newPasswordCannotBeSameAsCurrentPassword") {
+                        errorMessage = error.message;
+                    } else {
+                        errorMessage = error.message;
+                    }
+                } else {
+                    // Handle case where error is not an object
+                    errorMessage = "An unknown error occurred";
+                }
+                // console.log(errorMessage);
+                state.loading = false;
+                state.error = errorMessage;
+                state.message = "";
+                state.success = false;
+                
+            }
+        );
     },
 });
 
-export const { setOtp, setResetEmail, setError } = authSlice.actions;
+export const { setOtp, setResetEmail, setError, logout } = authSlice.actions;
 export default authSlice.reducer;

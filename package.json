@@ -12,7 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^2.2.6",
+    "@reduxjs/toolkit": "^2.2.7",
     "crypto-js": "^4.2.0",
     "jwt-decode": "^4.0.0",
     "react": "^18.3.1",
