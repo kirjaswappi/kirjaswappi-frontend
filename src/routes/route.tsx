@@ -5,6 +5,7 @@ import App from "../App";
 import Login from "../pages/auth/login";
 import Register from "../pages/auth/register";
 import ResetPassword from "../pages/auth/resetPassword";
+import Home from "../pages/home";
 import Authenticate from "./Aunthenticate";
 
 const routes = createBrowserRouter([
@@ -21,7 +22,7 @@ const routes = createBrowserRouter([
     children: [
       {
         index: true,
-        // element: <Home />,
+        element: <Home />,
       },
       {
         path: "/auth/login",

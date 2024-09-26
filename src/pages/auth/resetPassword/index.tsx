@@ -8,7 +8,7 @@ import MessageToastify from "../../../components/shared/MessageToastify";
 import OTP from "../../../components/shared/OTP";
 import { ERROR, SUCCESS } from "../../../constant/MESSAGETYPE";
 import { useLazySentOTPQuery, useLazyVerifyOTPQuery, useResetPasswordMutation } from "../../../redux/feature/auth/authApi";
-import { setError, setResetEmail } from "../../../redux/feature/auth/authSlice";
+import { setError, setOtp, setResetEmail } from "../../../redux/feature/auth/authSlice";
 import { setIsShow, setMessage, setMessageType } from "../../../redux/feature/notification/notificationSlice";
 import { setStep } from "../../../redux/feature/step/stepSlice";
 import { useAppSelector } from "../../../redux/hooks";
@@ -48,9 +48,7 @@ export default function ResetPassword() {
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // NewPass information store in state
         setUserPass({ ...userPass, [e.target.name]: e.target.value });
-
         setErrors({
             ...errors,
             [e.target.id]: "",
@@ -140,11 +138,31 @@ export default function ResetPassword() {
         e.preventDefault()
         if (step === 0) {
             if (validation()) {
-                await sentOTP({ email: resetEmail })
+                await sentOTP({ email: resetEmail }).then(res => {
+                    if(res.data) {
+                        const timer = setTimeout(() => {
+                            dispatch(setIsShow(false));
+                            dispatch(setMessageType(''));
+                            dispatch(setMessage(''));                            
+                            dispatch(setStep(step + 1))                            
+                        }, 2000);
+                        return () => clearTimeout(timer);
+                    }
+                })
             }
         } else if (step === 1) {
             if (resetEmail !== '' && otp.join('') !== '' && otp.join('').length >= 6) {
-                await verifyOTP({email:resetEmail, otp: otp.join('')})
+                await verifyOTP({email:resetEmail, otp: otp.join('')}).then(res => {
+                    if(res.data) {
+                        const timer = setTimeout(() => {
+                            dispatch(setIsShow(false));
+                            dispatch(setMessageType(''));
+                            dispatch(setMessage(''));                            
+                            dispatch(setStep(step + 1))                            
+                        }, 2000);
+                        return () => clearTimeout(timer);
+                    }
+                })
             }else{
                 dispatch(setIsShow(true))
                 dispatch(setMessageType(ERROR))
@@ -162,9 +180,12 @@ export default function ResetPassword() {
                         const timer = setTimeout(() => {
                             dispatch(setIsShow(false));
                             dispatch(setMessageType(''));
-                            dispatch(setMessage(''));
+                            dispatch(setMessage(''));                            
                             navigate('/auth/login')
-                        }, 3000);
+                            dispatch(setStep(0))
+                            dispatch(setResetEmail(''))
+                            dispatch(setOtp(Array(6).fill("")))
+                        }, 2000);
                         return () => clearTimeout(timer);
                     }
                 })
@@ -183,8 +204,8 @@ export default function ResetPassword() {
                 return <OTP otpMessageShow={false} />
             case 2:
                 return <NewPassword userPass={userPass} handleChange={handleChange} errors={errors}/>
-            // default:
-            //     return <GetOTPByEmail error={emailError} handleChange={handleEmailChange} />
+            default:
+                return null
         }
     };
     useEffect(() => {
@@ -199,12 +220,10 @@ export default function ResetPassword() {
     }, [error, success])
 
     useEffect(() => {
-        if (success) {
-            if(step < 2){
-                dispatch(setStep(step + 1))
-            }
-        }
-    }, [success])
+        dispatch(setIsShow(false))
+        dispatch(setMessageType(''))
+        dispatch(setMessage(''))
+    }, [location.pathname, dispatch])
     return (
         <div>
             <div className="container h-[777px] bg-white shadow-custom-box-shadow flex items-center mb-10">

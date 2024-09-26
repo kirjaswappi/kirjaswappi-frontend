@@ -10,6 +10,7 @@ import OTP from "../../../components/shared/OTP";
 import PasswordInput from "../../../components/shared/PasswordInput";
 import { ERROR, SUCCESS } from "../../../constant/MESSAGETYPE";
 import { useRegisterMutation, useVerifyEmailMutation } from "../../../redux/feature/auth/authApi";
+import { setOtp } from "../../../redux/feature/auth/authSlice";
 import { setIsShow, setMessage, setMessageType } from "../../../redux/feature/notification/notificationSlice";
 import { useAppSelector } from "../../../redux/hooks";
 
@@ -39,7 +40,7 @@ export default function Register() {
         password: "",
         confirmPassword: "",
     });
-
+console.log(otp)
 
 
     // handle Change function to take sign-up information
@@ -165,6 +166,7 @@ export default function Register() {
                             dispatch(setMessageType(''));
                             dispatch(setMessage(''));
                             navigate('/auth/login')
+                            dispatch(setOtp(Array(6).fill("")))
                         }, 3000);
                         return () => clearTimeout(timer);
                     }
@@ -203,7 +205,7 @@ export default function Register() {
                         <h2 className="text-primary text-[20px] font-medium mb-6">
                             {!isOpenOtp ? "Sign up" : "Verify OTP"}
                         </h2>
-                        {!!isOpenOtp ? (
+                        {!isOpenOtp ? (
                             <form
                                 onSubmit={handleSubmit}
                                 className="flex flex-col gap-4"
