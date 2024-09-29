@@ -104,16 +104,8 @@ const authSlice = createSlice({
 
                 let errorMessage: string | undefined;
 
-                if (typeof error === "object" && error !== null) {
-                    // Check if error has a 'code' and 'message'
-                    if (error.code === "invalidCredentials") {
-                        errorMessage = "Invalid E-mail/Password.";
-                    } else {
-                        errorMessage = error.message;
-                    }
-                } else {
-                    // Handle case where error is not an object
-                    errorMessage = "An unknown error occurred";
+                if (error !== null) {
+                    errorMessage = error.message;
                 }
                 state.loading = false;
                 state.error = errorMessage;
