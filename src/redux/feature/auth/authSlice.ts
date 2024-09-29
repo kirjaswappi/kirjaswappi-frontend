@@ -144,17 +144,7 @@ const authSlice = createSlice({
                 let errorMessage: string | undefined;
                 let verify: boolean | undefined = false;
                 if (typeof error === "object" && error !== null) {
-                    // Check if error has a 'code' and 'message'
-                    if (error.code === "userExistsButNotVerified") {
-                        errorMessage = error.message;
-                        verify = true
-                    } else {
-                        errorMessage = error.message;
-                        verify = false
-                    }
-                } else {
-                    // Handle case where error is not an object
-                    errorMessage = "An unknown error occurred";
+                    errorMessage = error.message;
                 }
                 state.loading = false;
                 state.error = errorMessage;
@@ -182,17 +172,8 @@ const authSlice = createSlice({
                 const error = (action.payload?.data as IErrorPayload)?.error;
                 let errorMessage: string | undefined;
                 if (typeof error === "object" && error !== null) {
-                    // Check if error has a 'code' and 'message'
-                    if (error.code === "userNotFound") {
-                        errorMessage = error.message;
-                    } else {
-                        errorMessage = error.message;
-                    }
-                } else {
-                    // Handle case where error is not an object
-                    errorMessage = "An unknown error occurred";
+                    errorMessage = error.message;
                 }
-                console.log({errorMessage})
                 state.loading = false;
                 state.error = errorMessage;
                 state.success = false;
@@ -223,15 +204,7 @@ const authSlice = createSlice({
                 let errorMessage: string | undefined;
                 console.log(error)
                 if (typeof error === "object" && error !== null) {
-                    // Check if error has a 'code' and 'message'
-                    if (error.code === "otpDoesNotMatch") {
-                        errorMessage = error.message;
-                    } else {
-                        errorMessage = error.message;
-                    }
-                } else {
-                    // Handle case where error is not an object
-                    errorMessage = "An unknown error occurred";
+                    errorMessage = error.message;
                 }
                 console.log(errorMessage);
                 state.loading = false;
@@ -264,19 +237,10 @@ const authSlice = createSlice({
             (state, action: PayloadAction<any>) => {
                 const error = (action.payload?.data as IErrorPayload)?.error;
                 let errorMessage: string | undefined;
-                console.log(error)
                 if (typeof error === "object" && error !== null) {
-                    // Check if error has a 'code' and 'message'
-                    if (error.code === "otpDoesNotMatch") {
-                        errorMessage = error.message;
-                    } else {
-                        errorMessage = error.message;
-                    }
-                } else {
-                    // Handle case where error is not an object
-                    errorMessage = "An unknown error occurred";
+                    errorMessage = error.message;
                 }
-                console.log(errorMessage);
+
                 state.loading = false;
                 state.error = errorMessage;
                 state.message = "";
@@ -308,16 +272,9 @@ const authSlice = createSlice({
             (state, action: PayloadAction<any>) => {
                 const error = (action.payload?.data as IErrorPayload)?.error;
                 let errorMessage: string | undefined;
+                
                 if (typeof error === "object" && error !== null) {
-                    // Check if error has a 'code' and 'message'
-                    if (error.code === "newPasswordCannotBeSameAsCurrentPassword") {
-                        errorMessage = error.message;
-                    } else {
-                        errorMessage = error.message;
-                    }
-                } else {
-                    // Handle case where error is not an object
-                    errorMessage = "An unknown error occurred";
+                    errorMessage = error.message;
                 }
                 // console.log(errorMessage);
                 state.loading = false;
