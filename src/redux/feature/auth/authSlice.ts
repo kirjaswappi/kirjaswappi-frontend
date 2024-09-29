@@ -104,7 +104,7 @@ const authSlice = createSlice({
 
                 let errorMessage: string | undefined;
 
-                if (error !== null) {
+                if (typeof error === "object" && error !== null) {
                     errorMessage = error.message;
                 }
                 state.loading = false;
