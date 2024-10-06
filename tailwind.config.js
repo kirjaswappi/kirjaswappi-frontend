@@ -24,14 +24,15 @@ export default {
         },
       },
       colors: {
-        primary: "#114074",
+        primary: "#3879E9",
+        "primary-light":"#E7F0FF",
         secondary: "#B90E25",
         white: "#FFFFFF",
-        black: "#090909",
-        grey: "#777777",
+        light:"#F2F4F8",
+        black: "#000000",
         night:"#363739",
-        gray:"#CDCDCD",
-        grayDark:"#9B9B9C"
+        gray:"#CCCCCC",
+        grayDark:"#808080"
       },
       // fontSize: {
 
@@ -41,6 +42,7 @@ export default {
       },
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],
+        sofia: ['Sofia Sans Condensed', 'sans-serif']
       },
       screens: {
         xsm: "320px",

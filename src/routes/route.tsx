@@ -5,7 +5,9 @@ import App from "../App";
 import Login from "../pages/auth/login";
 import Register from "../pages/auth/register";
 import ResetPassword from "../pages/auth/resetPassword";
-import Home from "../pages/home";
+import BookDetails from "../pages/bookDetails";
+import Books from "../pages/books";
+import Profile from "../pages/profile";
 import Authenticate from "./Aunthenticate";
 
 const routes = createBrowserRouter([
@@ -22,7 +24,31 @@ const routes = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />,
+        element: <Books />,
+      },
+      {
+        path: "/book-details/:id",
+        element: (
+          <BookDetails/>
+        ),
+      },
+      {
+        path: "/profile",
+        element: (
+          <Profile/>
+        ),
+      },
+      {
+        path: "/map",
+        element: (
+          <Profile/>
+        ),
+      },
+      {
+        path: "/message",
+        element: (
+          <Profile/>
+        ),
       },
       {
         path: "/auth/login",
