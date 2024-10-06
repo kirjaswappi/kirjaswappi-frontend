@@ -39,6 +39,18 @@ const routes = createBrowserRouter([
         ),
       },
       {
+        path: "/map",
+        element: (
+          <Profile/>
+        ),
+      },
+      {
+        path: "/message",
+        element: (
+          <Profile/>
+        ),
+      },
+      {
         path: "/auth/login",
         element: (
           <Authenticate>

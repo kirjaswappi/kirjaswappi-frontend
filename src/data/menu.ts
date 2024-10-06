@@ -17,15 +17,15 @@ export const menu = [
       icon: map,
     //   selected: store,
       value: "Map",
-      route: "#",
+      route: "/map",
       isRoute: true,
     },
     {
       id: 3,
       icon: message,
     //   selected: category,
-      value: "Categories",
-      route: "#",
+      value: "Message",
+      route: "/message",
       isRoute: true,
     },
     {

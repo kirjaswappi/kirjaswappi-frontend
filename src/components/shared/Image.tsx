@@ -1,4 +1,4 @@
-import React, { RefObject } from "react";
+import React, { CSSProperties, RefObject } from "react";
 import NotFoundImg from "../../assets/notFoundIcon.png";
 
 interface IImageProps {
@@ -9,10 +9,11 @@ interface IImageProps {
   onMouseOver?: () => void;
   onClick?: () => void;
   onKeyDown?: () => void;
+  style?: CSSProperties
 }
 
 const Image: React.FC<IImageProps> = (props) => {
-  const { src } = props;
+  const { src, style } = props;
   // Image Error Handling Function
   const handleImageError = (event: React.SyntheticEvent<HTMLImageElement>) => {
     const img = event.target as HTMLImageElement;
@@ -27,6 +28,7 @@ const Image: React.FC<IImageProps> = (props) => {
         loading="lazy"
         decoding="async"
         alt={props?.alt ? props?.alt : "kirja"}
+        style={style}
       />
     </picture>
   );

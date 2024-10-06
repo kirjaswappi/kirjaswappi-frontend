@@ -14,7 +14,7 @@ export default function BookCard({ title, by }: IBookCard) {
 
     
     return (
-        <div className="max-w-[168px] flex flex-col gap-2" onClick={() => navigate('/book-details/12')}>
+        <div className="max-w-[168px] flex flex-col gap-2 cursor-pointer" onClick={() => navigate('/book-details/12')}>
             <div className=" max-h-[190px] rounded-[8px]">
                 <Image className="mx-auto" src={bookImg} alt={`${title} || 'Your favorite book'`} />
             </div>

@@ -16,7 +16,7 @@ export default function BookDetails() {
             <div className="absolute left-0 top-4 w-full flex justify-between px-4">
                 <div className="flex items-center gap-4">
                     <Image src={leftArrowIcon} alt="icon" />
-                    <h2>Book Details</h2>
+                    <h2 className="text-black text-base font-medium leading-none mt-[3px]">Book Details</h2>
                 </div>
                 <div className="flex items-center gap-4">
                     <Image src={shareIcon} alt="icon" />
@@ -58,7 +58,7 @@ export default function BookDetails() {
                             English
                         </h3>
                     </div>
-                    <div className="text-center">
+                    <div className="flex flex-col items-center">
                         <p className="text-grayDark text-xs font-sofia font-normal">
                             Exchange Condition
                         </p>
