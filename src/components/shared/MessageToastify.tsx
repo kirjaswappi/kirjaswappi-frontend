@@ -14,7 +14,7 @@ export default function MessageToastify({ type, value, isShow = false }: IMessag
     const getColorClass = () => {
         switch (type) {
             case 'SUCCESS':
-                return 'bg-green-100 text-green-600';
+                return 'bg-green-100 text-green-600 ';
             case 'ERROR':
                 return 'bg-rose-100 text-rose-600';
             case 'WARNING':
@@ -35,6 +35,6 @@ export default function MessageToastify({ type, value, isShow = false }: IMessag
     }, [isShow])
 
     return (
-        <div className={`p-2 rounded-md  ${isShow ? 'block' : 'hidden'} ${getColorClass()} text-center text-sm`} role="alert" aria-live="assertive">{value}</div>
+        <div className={`p-2 rounded-lg font-sofia  ${isShow ? 'block' : 'hidden'} ${getColorClass()} text-center text-sm`} role="alert" aria-live="assertive">{value}</div>
     )
 }

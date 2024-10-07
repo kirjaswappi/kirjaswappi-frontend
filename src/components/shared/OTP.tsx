@@ -78,7 +78,7 @@ export default function OTP({otpMessageShow=true}: {otpMessageShow?: boolean}) {
                 ))}
 
             </div>
-            {otpMessageShow && <MessageToastify isShow={isShow} type={messageType} value={message} />}
+            {otpMessageShow && isShow && <div className="mt-2"><MessageToastify isShow={isShow} type={messageType} value={message} /></div>}
         </div>
     );
 }

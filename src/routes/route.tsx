@@ -9,6 +9,7 @@ import BookDetails from "../pages/bookDetails";
 import Books from "../pages/books";
 import Profile from "../pages/profile";
 import Authenticate from "./Aunthenticate";
+import PrivateRoute from "./PrivateRoute";
 
 const routes = createBrowserRouter([
   {
@@ -35,7 +36,7 @@ const routes = createBrowserRouter([
       {
         path: "/profile",
         element: (
-          <Profile/>
+          <PrivateRoute><Profile/></PrivateRoute>
         ),
       },
       {
@@ -55,7 +56,7 @@ const routes = createBrowserRouter([
         element: (
           <Authenticate>
             <Login />
-          // </Authenticate>
+           </Authenticate>
         ),
       },
       {
@@ -63,7 +64,7 @@ const routes = createBrowserRouter([
         element: (
           <Authenticate>
             <ResetPassword />
-          // </Authenticate>
+          </Authenticate>
         ),
       },
       {
@@ -71,7 +72,7 @@ const routes = createBrowserRouter([
         element: (
           <Authenticate>
             <Register />
-          // </Authenticate>
+          </Authenticate>
         ),
       },
       // {

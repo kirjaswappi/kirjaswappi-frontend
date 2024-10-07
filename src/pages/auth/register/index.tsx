@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import authVector from "../../../assets/vectorAuth.png";
+import leftArrowIcon from "../../../assets/leftArrow.png";
 import Button from "../../../components/shared/Button";
 import Image from "../../../components/shared/Image";
 import Input from "../../../components/shared/Input";
@@ -13,7 +13,6 @@ import { useRegisterMutation, useVerifyEmailMutation } from "../../../redux/feat
 import { setOtp } from "../../../redux/feature/auth/authSlice";
 import { setIsShow, setMessage, setMessageType } from "../../../redux/feature/notification/notificationSlice";
 import { useAppSelector } from "../../../redux/hooks";
-
 interface ILoginForm {
     firstName: string;
     lastName: string;
@@ -36,11 +35,11 @@ export default function Register() {
     const [userInfo, setUserInfo] = useState<ILoginForm>({
         firstName: "",
         lastName: "",
-        email: "rahat.official.info9016@gmail.com",
+        email: "",
         password: "",
         confirmPassword: "",
     });
-console.log(otp)
+
 
 
     // handle Change function to take sign-up information
@@ -194,102 +193,102 @@ console.log(otp)
         dispatch(setMessageType(''))
         dispatch(setMessage(''))
     }, [location.pathname, dispatch])
+    console.log(message)
     return (
         <div>
-            <div className="container h-[777px] bg-white shadow-custom-box-shadow flex items-center mb-10">
-                <div className="w-1/2 flex items-center justify-center">
-                    <Image src={authVector} alt="Logo Vector" />
-                </div>
-                <div className="w-1/2 flex items-center justify-center">
-                    <div className="w-8/12">
-                        <h2 className="text-primary text-[20px] font-medium mb-6">
+           <div className="container h-svh ">
+                    {/* <h2 className="text-black text-base font-sofia, font-normal text-center mb-4">
                             {!isOpenOtp ? "Sign up" : "Verify OTP"}
-                        </h2>
-                        {!isOpenOtp ? (
-                            <form
-                                onSubmit={handleSubmit}
-                                className="flex flex-col gap-4"
-                            >
-                                <div className="flex gap-3">
-                                    <Input
-                                        type="text"
-                                        id="firstName"
-                                        // value={userInfo.email}
-                                        name="firstName"
-                                        onChange={handleChange}
-                                        placeholder="First Name"
-                                        error={errors.firstName}
-                                    />
-                                    <Input
-                                        type="text"
-                                        id="lastName"
-                                        // value={userInfo.email}
-                                        name="lastName"
-                                        onChange={handleChange}
-                                        placeholder="Last Name"
-                                        error={errors.lastName}
-                                    />
-                                </div>
-                                <div>
-                                    <Input
-                                        type="email"
-                                        id="email"
-                                        // value={userInfo.email}
-                                        name="email"
-                                        onChange={handleChange}
-                                        placeholder="E-mail"
-                                        error={errors.email}
-                                    />
-                                </div>
-                                <PasswordInput
-                                    id="password"
-                                    name="password"
-                                    value={userInfo.password}
+                        </h2> */}
+                        <div className="pt-4 pb-6 flex items-center gap-4">
+                            <Image src={leftArrowIcon} alt="left" />
+                            <h3 className="font-sofia text-base font-medium ">log in or Signup</h3>
+                        </div>
+                    {!isOpenOtp ? (
+                        <form
+                            onSubmit={handleSubmit}
+                            className="flex flex-col gap-4"
+                        >
+                            <div className="flex gap-3">
+                                <Input
+                                    type="text"
+                                    id="firstName"
+                                    // value={userInfo.email}
+                                    name="firstName"
                                     onChange={handleChange}
-                                    placeholder="Password"
-                                    error={errors.password}
+                                    placeholder="First Name"
+                                    error={errors.firstName}
                                 />
-                                <PasswordInput
-                                    id="confirmPassword"
-                                    name="confirmPassword"
-                                    value={userInfo.confirmPassword}
+                                <Input
+                                    type="text"
+                                    id="lastName"
+                                    // value={userInfo.email}
+                                    name="lastName"
                                     onChange={handleChange}
-                                    placeholder="Confirm Password"
-                                    error={errors.confirmPassword}
+                                    placeholder="Last Name"
+                                    error={errors.lastName}
                                 />
-                                <MessageToastify isShow={isShow} type={messageType} value={msg} />
-                                <Button
-                                    type="submit"
-                                    className="w-full px-4 py-2 font-bold text-white bg-primary rounded-md "
-                                >
-                                    {loading ? 'Loading...' : 'Sign up'}
-                                </Button>
-                                <div className=" flex items-center gap-3 mt-6">
-                                    <p className="text-grayDark text-sm font-normal">
-                                        do you have an account yet ?
-                                    </p>
-                                    <button
-                                        className="text-primary font-medium text-sm"
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            navigate("/auth/login");
-                                        }}
-                                    >
-                                        Sign in
-                                    </button>
-                                </div>
-                            </form>
-                        ) : (
-                            <div>
-                                <OTP />
-                                <Button type="button" onClick={() => handleOTPVerify(userInfo?.email, otp.join(''))} className="text-white font-medium text-sm w-full bg-primary py-2 mt-3">
-                                    {loading ? 'Loading...' : 'OTP Verify'}
-                                </Button>
                             </div>
-                        )}
-                    </div>
+                            <div>
+                                <Input
+                                    type="email"
+                                    id="email"
+                                    // value={userInfo.email}
+                                    name="email"
+                                    onChange={handleChange}
+                                    placeholder="E-mail"
+                                    error={errors.email}
+                                />
+                            </div>
+                            <PasswordInput
+                                id="password"
+                                name="password"
+                                value={userInfo.password}
+                                onChange={handleChange}
+                                placeholder="Password"
+                                error={errors.password}
+                            />
+                            <PasswordInput
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                value={userInfo.confirmPassword}
+                                onChange={handleChange}
+                                placeholder="Confirm Password"
+                                error={errors.confirmPassword}
+                            />
+                           {isShow && <div className="mt-2">
+                        <MessageToastify isShow={isShow} type={messageType} value={message} />
+                        </div>}
+                            <Button
+                                type="submit"
+                                className="w-full h-[48px] px-4 font-normal text-white bg-primary rounded-2xl text-sm"
+                            >
+                                {loading ? 'Loading...' : 'Continue'}
+                            </Button>
+                            <div className=" flex items-center justify-center gap-1 mt-4">
+                            <p className="text-black text-sm font-light font-sofia">
+                            Already have an account?
+                            </p>
+                            <button
+                            className="text-black text-sm font-light font-sofia underline"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    navigate("/auth/login");
+                                }}
+                            >
+                                log In
+                            </button>
+                        </div>
+                        </form>
+                    ) : (
+                        <div>
+                            <OTP />
+                            <Button type="button" onClick={() => handleOTPVerify(userInfo?.email, otp.join(''))} className="text-white font-medium text-sm w-full bg-primary py-2 mt-3">
+                                {loading ? 'Loading...' : 'OTP Verify'}
+                            </Button>
+                        </div>
+                    )}
                 </div>
-            </div>
         </div>
     );
 }

@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { AiOutlineEye } from "react-icons/ai";
 import { PiEyeClosed } from "react-icons/pi";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import authVector from "../../../assets/vectorAuth.png";
+import bookDetailsBg from "../../../assets/bookdetailsbg.jpg";
+import profileIcon from "../../../assets/profileIcon.png";
+import rightMenu from "../../../assets/rightmenu.png";
 import Image from "../../../components/shared/Image";
 import Input from "../../../components/shared/Input";
-// import InputToastify from "../../../components/shared/InputToastify";
-import { useDispatch } from "react-redux";
 import MessageToastify from "../../../components/shared/MessageToastify";
 import { ERROR, SUCCESS } from "../../../constant/MESSAGETYPE";
 import { useLoginMutation } from "../../../redux/feature/auth/authApi";
@@ -86,10 +87,10 @@ export default function Login() {
 
     useEffect(() => {
         if (success || error) {
-        dispatch(setIsShow(true))
-        dispatch(setMessageType(success ? SUCCESS : ERROR))
-        dispatch(setMessage(success ? 'Login Successfully Done.' : error))        
-    }
+            dispatch(setIsShow(true))
+            dispatch(setMessageType(success ? SUCCESS : ERROR))
+            dispatch(setMessage(success ? 'Login Successfully Done.' : error))
+        }
     }, [error, success])
 
 
@@ -99,101 +100,116 @@ export default function Login() {
         dispatch(setMessage(''))
     }, [location.pathname, dispatch])
     return (
-        <div>
-            <div className="container h-[777px] bg-white shadow-custom-box-shadow flex items-center mb-10">
-                <div className="w-1/2 flex items-center justify-center">
-                    <Image src={authVector} alt="Logo Vector" />
+        <div className="relative">
+            <div className="absolute left-0 top-4 w-full flex justify-between px-4">
+                <div className="flex items-center gap-4">
+                    <h2>My profile</h2>
                 </div>
-                <div className="w-1/2 flex items-center justify-center">
-                    <div className="w-8/12">
-                        <h2 className="text-primary text-[20px] font-medium mb-14">
-                            Sign In
-                        </h2>
-                        <form
-                            onSubmit={handleSubmit}
-                            className="flex flex-col gap-4"
-                        >
-                            <div>
-                                <Input
-                                    type="text"
-                                    id="email"
-                                    value={userInfo.email}
-                                    name="email"
-                                    onChange={handleChange}
-                                    placeholder="E-mail"
-                                    error={errors.email}
-                                />
-                            </div>
-                            <div className="relative">
-                                <Input
-                                    type={showPassword ? "text" : "password"}
-                                    id="password"
-                                    value={userInfo.password}
-                                    name="password"
-                                    onChange={handleChange}
-                                    placeholder="Password"
-                                    error={errors.password}
-                                />
-                                <div
-                                    className="absolute right-4 top-[18px] flex items-center cursor-pointer"
-                                    onClick={() =>
-                                        setShowPassword(!showPassword)
-                                    }
-                                >
-                                    {showPassword ? (
-                                        <PiEyeClosed className=" text-grayDark" />
-                                    ) : (
-                                        <AiOutlineEye className=" text-grayDark" />
-                                    )}
-                                </div>
-                            </div>
-
-                            <MessageToastify isShow={isShow} type={messageType} value={message} />
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2 text-grayDark">
-                                    <input
-                                        type="checkbox"
-                                        name=""
-                                        id="remember"
-                                        className="cursor-pointer"
-                                    />
-                                    <label
-                                        htmlFor="remember"
-                                        className="cursor-pointer text-sm font-normal"
-                                    >
-                                        Remember me
-                                    </label>
-                                </div>
-                                <Link
-                                    to="/password/reset"
-                                    className="text-primary font-semibold text-sm hover:underline"
-                                >
-                                    Forgot Password ?
-                                </Link>
-                            </div>
-                            <button
-                                type="submit"
-                                className="w-full px-4 py-2 font-bold text-white bg-primary rounded-md "
+                <div className="flex items-center gap-4">
+                    <Image src={rightMenu} alt="icon" />
+                </div>
+            </div>
+            <div className="absolute top-[18%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] rounded-full  bg-white flex items-center justify-center">
+                <Image src={profileIcon} className=" " />
+            </div>
+            <div className="w-full h-[124px] z-0">
+                <Image src={bookDetailsBg} className="w-full h-full" />
+            </div>
+            <div className="container h-[calc(80vh-128px)]">
+                <div>
+                    <h2 className="text-black text-base font-sofia, font-normal text-center mt-24 mb-4">
+                        Sign In
+                    </h2>
+                    <form
+                        onSubmit={handleSubmit}
+                        className="flex flex-col"
+                    >
+                        <div className="rounded-2xl overflow-hidden border border-gray bg-white" >
+                        <div className="border-b border-gray">
+                            <Input
+                                type="text"
+                                id="email"
+                                value={userInfo.email}
+                                name="email"
+                                onChange={handleChange}
+                                placeholder="E-mail"
+                                error={errors.email}
+                                className="border-none rounded-none mt-0 bg-white pl-6 shadow-none"
+                            />
+                        </div>
+                        <div className="relative">
+                            <Input
+                                type={showPassword ? "text" : "password"}
+                                id="password"
+                                value={userInfo.password}
+                                name="password"
+                                onChange={handleChange}
+                                placeholder="Password"
+                                error={errors.password}
+                                className="border-none rounded-none mt-0 bg-white pl-6 shadow-none"
+                            />
+                            <div
+                                className="absolute right-4 top-[18px] flex items-center cursor-pointer"
+                                onClick={() =>
+                                    setShowPassword(!showPassword)
+                                }
                             >
-                                {isLoading ? "Loading..." : "Sign In"}
-                            </button>
-                            <div className=" flex items-center gap-3 mt-6">
-                                <p className="text-grayDark text-sm font-normal">
-                                    Don’t have an account yet ?
-                                </p>
-                                <button
-                                    className="text-primary font-medium text-sm"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        navigate("/auth/register");
-                                    }}
-                                >
-                                    Sign Up
-                                </button>
+                                {showPassword ? (
+                                    <PiEyeClosed className=" text-grayDark" />
+                                ) : (
+                                    <AiOutlineEye className=" text-grayDark" />
+                                )}
                             </div>
-                        </form>
-                    </div>
-                </div>
+                        </div>
+                        </div>
+
+                        {isShow && <div className="mt-2">
+                        <MessageToastify isShow={isShow} type={messageType} value={message} />
+                        </div>}
+                        <div className="flex items-center justify-between my-4">
+                            <div className="flex items-center gap-2 text-grayDark">
+                                <input
+                                    type="checkbox"
+                                    name=""
+                                    id="remember"
+                                    className="cursor-pointer"
+                                />
+                                <label
+                                    htmlFor="remember"
+                                    className="cursor-pointer text-sm font-light font-sofia text-grayDark"
+                                >
+                                    Remember me
+                                </label>
+                            </div>
+                            <Link
+                                to="/password/reset"
+                                className="text-black font-light text-sm underline font-sofia"
+                            >
+                                Forgot Password ?
+                            </Link>
+                        </div>
+                        <button
+                            type="submit"
+                            className="w-full h-[48px] px-4 font-normal text-white bg-primary rounded-2xl text-sm"
+                        >
+                            {isLoading ? "Loading..." : "Continue"}
+                        </button>
+                        <div className=" flex items-center justify-center gap-1 mt-4">
+                            <p className="text-black text-sm font-light font-sofia">
+                            Don’t have an account? 
+                            </p>
+                            <button
+                            className="text-black text-sm font-light font-sofia underline"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    navigate("/auth/register");
+                                }}
+                            >
+                                Create an account
+                            </button>
+                        </div>
+                    </form>
+                </div> 
             </div>
         </div>
     );
