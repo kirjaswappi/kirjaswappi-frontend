@@ -15,6 +15,7 @@ export default function GetOTPByEmail({error, handleChange}: any) {
                 onChange={handleChange}
                 placeholder="Enter email"
                 error={error}
+                className='bg-white !border-[#E6E6E6]  !shadow-none placeholder:text-sm placeholder:font-sofia'
             />
             <p className='mt-4 text-sm text-[#808080] font-light'>An OTP will be sent to the email address</p>
         </div>

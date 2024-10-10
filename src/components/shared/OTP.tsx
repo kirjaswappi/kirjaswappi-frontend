@@ -71,7 +71,7 @@ export default function OTP({otpMessageShow=true}: {otpMessageShow?: boolean}) {
                         onKeyDown={(e) => handleKeyDown(e, index)}
                         onPaste={handlePaste}
                         ref={(el) => (inputs.current[index] = el)}
-                        className={`max-w-10 h-10 border ${messageType === ERROR ? "border-rose-500" : "border-grayDark"
+                        className={`max-w-10 h-10  bg-[#E7E7E7] ${messageType === ERROR ? "border border-rose-500" : ""
                             } rounded-md text-center text-base`}
                         placeholder="-"
                     />

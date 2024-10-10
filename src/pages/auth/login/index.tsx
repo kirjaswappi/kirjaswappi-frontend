@@ -11,7 +11,11 @@ import Input from "../../../components/shared/Input";
 import MessageToastify from "../../../components/shared/MessageToastify";
 import { ERROR, SUCCESS } from "../../../constant/MESSAGETYPE";
 import { useLoginMutation } from "../../../redux/feature/auth/authApi";
-import { setIsShow, setMessage, setMessageType } from "../../../redux/feature/notification/notificationSlice";
+import {
+    setIsShow,
+    setMessage,
+    setMessageType,
+} from "../../../redux/feature/notification/notificationSlice";
 import { useAppSelector } from "../../../redux/hooks";
 
 interface ILoginForm {
@@ -20,10 +24,12 @@ interface ILoginForm {
 }
 
 export default function Login() {
-    const { error, success } = useAppSelector(state => state.auth)
-    const { isShow, message, messageType } = useAppSelector((state) => state.notification)
+    const { error, success } = useAppSelector((state) => state.auth);
+    const { isShow, message, messageType } = useAppSelector(
+        (state) => state.notification
+    );
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const [login, { isLoading }] = useLoginMutation();
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState<{
@@ -78,7 +84,7 @@ export default function Login() {
         e.preventDefault();
         if (validateForm()) {
             try {
-                await login(userInfo)
+                await login(userInfo);
             } catch (error) {
                 console.log("login error", error);
             }
@@ -87,18 +93,17 @@ export default function Login() {
 
     useEffect(() => {
         if (success || error) {
-            dispatch(setIsShow(true))
-            dispatch(setMessageType(success ? SUCCESS : ERROR))
-            dispatch(setMessage(success ? 'Login Successfully Done.' : error))
+            dispatch(setIsShow(true));
+            dispatch(setMessageType(success ? SUCCESS : ERROR));
+            dispatch(setMessage(success ? "Login Successfully Done." : error));
         }
-    }, [error, success])
-
+    }, [error, success]);
 
     useEffect(() => {
-        dispatch(setIsShow(false))
-        dispatch(setMessageType(''))
-        dispatch(setMessage(''))
-    }, [location.pathname, dispatch])
+        dispatch(setIsShow(false));
+        dispatch(setMessageType(""));
+        dispatch(setMessage(""));
+    }, [location.pathname, dispatch]);
     return (
         <div className="relative">
             <div className="absolute left-0 top-4 w-full flex justify-between px-4">
@@ -120,52 +125,55 @@ export default function Login() {
                     <h2 className="text-black text-base font-sofia, font-normal text-center mt-24 mb-4">
                         Sign In
                     </h2>
-                    <form
-                        onSubmit={handleSubmit}
-                        className="flex flex-col"
-                    >
-                        <div className="rounded-2xl overflow-hidden border border-gray bg-white" >
-                        <div className="border-b border-gray">
-                            <Input
-                                type="text"
-                                id="email"
-                                value={userInfo.email}
-                                name="email"
-                                onChange={handleChange}
-                                placeholder="E-mail"
-                                error={errors.email}
-                                className="border-none rounded-none mt-0 bg-white pl-6 shadow-none"
-                            />
-                        </div>
-                        <div className="relative">
-                            <Input
-                                type={showPassword ? "text" : "password"}
-                                id="password"
-                                value={userInfo.password}
-                                name="password"
-                                onChange={handleChange}
-                                placeholder="Password"
-                                error={errors.password}
-                                className="border-none rounded-none mt-0 bg-white pl-6 shadow-none"
-                            />
-                            <div
-                                className="absolute right-4 top-[18px] flex items-center cursor-pointer"
-                                onClick={() =>
-                                    setShowPassword(!showPassword)
-                                }
-                            >
-                                {showPassword ? (
-                                    <PiEyeClosed className=" text-grayDark" />
-                                ) : (
-                                    <AiOutlineEye className=" text-grayDark" />
-                                )}
+                    <form onSubmit={handleSubmit} className="flex flex-col">
+                        <div className="rounded-2xl overflow-hidden border border-gray bg-white">
+                            <div className="border-b border-gray">
+                                <Input
+                                    type="text"
+                                    id="email"
+                                    value={userInfo.email}
+                                    name="email"
+                                    onChange={handleChange}
+                                    placeholder="E-mail"
+                                    error={errors.email}
+                                    className="border-none rounded-none mt-0 bg-white pl-6 shadow-none"
+                                />
+                            </div>
+                            <div className="relative">
+                                <Input
+                                    type={showPassword ? "text" : "password"}
+                                    id="password"
+                                    value={userInfo.password}
+                                    name="password"
+                                    onChange={handleChange}
+                                    placeholder="Password"
+                                    error={errors.password}
+                                    className="border-none rounded-none mt-0 bg-white pl-6 shadow-none"
+                                />
+                                <div
+                                    className="absolute right-4 top-[18px] flex items-center cursor-pointer"
+                                    onClick={() =>
+                                        setShowPassword(!showPassword)
+                                    }
+                                >
+                                    {showPassword ? (
+                                        <PiEyeClosed className=" text-grayDark" />
+                                    ) : (
+                                        <AiOutlineEye className=" text-grayDark" />
+                                    )}
+                                </div>
                             </div>
                         </div>
-                        </div>
 
-                        {isShow && <div className="mt-2">
-                        <MessageToastify isShow={isShow} type={messageType} value={message} />
-                        </div>}
+                        {isShow && (
+                            <div className="mt-2">
+                                <MessageToastify
+                                    isShow={isShow}
+                                    type={messageType}
+                                    value={message}
+                                />
+                            </div>
+                        )}
                         <div className="flex items-center justify-between my-4">
                             <div className="flex items-center gap-2 text-grayDark">
                                 <input
@@ -196,10 +204,10 @@ export default function Login() {
                         </button>
                         <div className=" flex items-center justify-center gap-1 mt-4">
                             <p className="text-black text-sm font-light font-sofia">
-                            Don’t have an account? 
+                                Don’t have an account?
                             </p>
                             <button
-                            className="text-black text-sm font-light font-sofia underline"
+                                className="text-black text-sm font-light font-sofia underline"
                                 onClick={(e) => {
                                     e.preventDefault();
                                     navigate("/auth/register");
@@ -209,7 +217,7 @@ export default function Login() {
                             </button>
                         </div>
                     </form>
-                </div> 
+                </div>
             </div>
         </div>
     );

@@ -33,7 +33,7 @@ export default function Input({
                 placeholder={placeholder}
                 className={`w-full h-[48px] px-[14px] py-2 mt-1 border ${
                     error ? "border-rose-500" : "border-grayDark"
-                } bg-[#F2F2F2] rounded-md shadow-sm focus:outline-none focus:ring-grayDark focus:border-grayDark ${
+                } bg-[#F2F2F2] rounded-md shadow-sm focus:outline-none focus:ring-grayDark focus:border-grayDark placeholder:text-grayDark ${
                     className && className
                 }`}
             />

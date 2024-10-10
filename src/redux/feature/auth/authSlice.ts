@@ -113,13 +113,6 @@ const authSlice = createSlice({
             }
         );
         builder.addMatcher(authApi.endpoints.register.matchPending, (state) => {
-            // console.log(action.payload)
-            state.loading = true;
-            state.error = null;
-            state.success = false;
-            // state.userInformation = {...action.payload}
-        });
-        builder.addMatcher(authApi.endpoints.register.matchPending, (state) => {
             state.loading = true;
             state.error = null;
             state.success = false;
@@ -132,23 +125,21 @@ const authSlice = createSlice({
                 state.loading = false;
                 state.error = null;
                 state.success = true;
-                state.isVerify= false
+                state.message = 'OTP has been sent to you email'
             }
         );
         builder.addMatcher(
             authApi.endpoints.register.matchRejected,
-            (state, action) => {
+            (state, action: PayloadAction<any>) => {
                 const error = (action.payload?.data);
-console.log(action.payload, error)
                 let errorMessage: string | undefined;
-                let verify: boolean | undefined = false;
                 if (typeof error === "object" && error !== null) {
-                    errorMessage = error.message;
+                    errorMessage = error.error.message 
                 }
+
                 state.loading = false;
                 state.error = errorMessage;
                 state.success = false;
-                state.isVerify= verify
             }
         );
         builder.addMatcher(authApi.endpoints.sentOTP.matchPending, (state) => {

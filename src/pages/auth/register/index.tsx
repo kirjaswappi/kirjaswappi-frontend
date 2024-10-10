@@ -9,9 +9,16 @@ import MessageToastify from "../../../components/shared/MessageToastify";
 import OTP from "../../../components/shared/OTP";
 import PasswordInput from "../../../components/shared/PasswordInput";
 import { ERROR, SUCCESS } from "../../../constant/MESSAGETYPE";
-import { useRegisterMutation, useVerifyEmailMutation } from "../../../redux/feature/auth/authApi";
+import {
+    useRegisterMutation,
+    useVerifyEmailMutation,
+} from "../../../redux/feature/auth/authApi";
 import { setOtp } from "../../../redux/feature/auth/authSlice";
-import { setIsShow, setMessage, setMessageType } from "../../../redux/feature/notification/notificationSlice";
+import {
+    setIsShow,
+    setMessage,
+    setMessageType,
+} from "../../../redux/feature/notification/notificationSlice";
 import { useAppSelector } from "../../../redux/hooks";
 interface ILoginForm {
     firstName: string;
@@ -22,12 +29,18 @@ interface ILoginForm {
 }
 
 export default function Register() {
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const { isShow, message: msg, messageType } = useAppSelector(state => state.notification)
-    const { otp, loading, error, success, message } = useAppSelector(state => state.auth)
-    const [register] = useRegisterMutation()
-    const [verifyEmail] = useVerifyEmailMutation()
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const {
+        isShow,
+        message: msg,
+        messageType,
+    } = useAppSelector((state) => state.notification);
+    const { otp, loading, error, success, message } = useAppSelector(
+        (state) => state.auth
+    );
+    const [register] = useRegisterMutation();
+    const [verifyEmail] = useVerifyEmailMutation();
     const [isOpenOtp, setOpenOtp] = useState(false);
     const [errors, setErrors] = useState<{
         [key: string]: string | null | undefined;
@@ -39,8 +52,6 @@ export default function Register() {
         password: "",
         confirmPassword: "",
     });
-
-
 
     // handle Change function to take sign-up information
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,9 +151,9 @@ export default function Register() {
                         if (res?.data) {
                             const timer = setTimeout(() => {
                                 dispatch(setIsShow(false));
-                                dispatch(setMessageType(''));
-                                dispatch(setMessage(''));
-                                setOpenOtp(true)
+                                dispatch(setMessageType(""));
+                                dispatch(setMessage(""));
+                                setOpenOtp(true);
                             }, 2000);
                             return () => clearTimeout(timer);
                         }
@@ -156,60 +167,64 @@ export default function Register() {
         }
     };
     const handleOTPVerify = async (email: string, otp: string) => {
-        if (email !== '' && otp !== '' && otp.length >= 6) {
+        if (email !== "" && otp !== "" && otp.length >= 6) {
             try {
-                await verifyEmail({ email: email, otp: otp }).then(res => {
+                await verifyEmail({ email: email, otp: otp }).then((res) => {
                     if (!res.error) {
                         const timer = setTimeout(() => {
                             dispatch(setIsShow(false));
-                            dispatch(setMessageType(''));
-                            dispatch(setMessage(''));
-                            navigate('/auth/login')
-                            dispatch(setOtp(Array(6).fill("")))
+                            dispatch(setMessageType(""));
+                            dispatch(setMessage(""));
+                            navigate("/auth/login");
+                            dispatch(setOtp(Array(6).fill("")));
                         }, 3000);
                         return () => clearTimeout(timer);
                     }
-                })
+                });
             } catch (error) {
-                console.log("error", error)
+                console.log("error", error);
             }
         } else {
-            dispatch(setIsShow(true))
-            dispatch(setMessageType(ERROR))
-            dispatch(setMessage('OTP is required! insert your otp code in this field.'))
+            dispatch(setIsShow(true));
+            dispatch(setMessageType(ERROR));
+            dispatch(
+                setMessage(
+                    "OTP is required! insert your otp code in this field."
+                )
+            );
         }
-    }
+    };
 
     useEffect(() => {
         if (success || error) {
-            dispatch(setIsShow(true))
-            dispatch(setMessageType(success ? SUCCESS : ERROR))
-            dispatch(setMessage(success ? message : error))
+            dispatch(setIsShow(true));
+            dispatch(setMessageType(success ? SUCCESS : ERROR));
+            dispatch(setMessage(success ? message : error));
         }
-    }, [error, success])
+    }, [error, success]);
 
     useEffect(() => {
-        dispatch(setIsShow(false))
-        dispatch(setMessageType(''))
-        dispatch(setMessage(''))
-    }, [location.pathname, dispatch])
-    console.log(message)
+        dispatch(setIsShow(false));
+        dispatch(setMessageType(""));
+        dispatch(setMessage(""));
+    }, [location.pathname, dispatch]);
+    console.log(message);
     return (
         <div>
-           <div className="container h-svh ">
-                    {/* <h2 className="text-black text-base font-sofia, font-normal text-center mb-4">
-                            {!isOpenOtp ? "Sign up" : "Verify OTP"}
-                        </h2> */}
-                        <div className="pt-4 pb-6 flex items-center gap-4">
-                            <Image src={leftArrowIcon} alt="left" />
-                            <h3 className="font-sofia text-base font-medium ">log in or Signup</h3>
-                        </div>
-                    {!isOpenOtp ? (
-                        <form
-                            onSubmit={handleSubmit}
-                            className="flex flex-col gap-4"
-                        >
-                            <div className="flex gap-3">
+            <div className="container h-svh relative">
+                <div className="pt-4 pb-6 flex items-center gap-4">
+                    <Image src={leftArrowIcon} alt="left" />
+                    <h3 className="font-sofia text-base font-medium ">
+                        log in or Signup
+                    </h3>
+                </div>
+                {!isOpenOtp ? (
+                    <form
+                        onSubmit={handleSubmit}
+                        className="flex flex-col gap-4"
+                    >
+                        <div className="rounded-2xl overflow-hidden border border-gray bg-white">
+                            <div className="border-b border-gray">
                                 <Input
                                     type="text"
                                     id="firstName"
@@ -218,7 +233,11 @@ export default function Register() {
                                     onChange={handleChange}
                                     placeholder="First Name"
                                     error={errors.firstName}
+                                    className="border-none rounded-none mt-0 bg-white pl-6 shadow-none placeholder:text-sm placeholder:text-grayDark"
                                 />
+                            </div>
+
+                            <div className="border-b border-gray">
                                 <Input
                                     type="text"
                                     id="lastName"
@@ -227,9 +246,10 @@ export default function Register() {
                                     onChange={handleChange}
                                     placeholder="Last Name"
                                     error={errors.lastName}
+                                    className="border-none rounded-none mt-0 bg-white pl-6 shadow-none placeholder:text-sm"
                                 />
                             </div>
-                            <div>
+                            <div className="border-b border-gray">
                                 <Input
                                     type="email"
                                     id="email"
@@ -238,39 +258,68 @@ export default function Register() {
                                     onChange={handleChange}
                                     placeholder="E-mail"
                                     error={errors.email}
+                                    className="border-none rounded-none mt-0 bg-white pl-6 shadow-none placeholder:text-sm"
                                 />
                             </div>
-                            <PasswordInput
-                                id="password"
-                                name="password"
-                                value={userInfo.password}
-                                onChange={handleChange}
-                                placeholder="Password"
-                                error={errors.password}
+                            <div className="border-b border-gray">
+                                <PasswordInput
+                                    id="password"
+                                    name="password"
+                                    value={userInfo.password}
+                                    onChange={handleChange}
+                                    placeholder="Password"
+                                    error={errors.password}
+                                    className="border-none rounded-none mt-0 bg-white pl-6 shadow-none placeholder:text-sm"
+                                />
+                            </div>
+                            <div>
+                                <PasswordInput
+                                    id="confirmPassword"
+                                    name="confirmPassword"
+                                    value={userInfo.confirmPassword}
+                                    onChange={handleChange}
+                                    placeholder="Confirm Password"
+                                    error={errors.confirmPassword}
+                                    className="border-none rounded-none mt-0 bg-white pl-6 shadow-none placeholder:text-sm"
+                                />
+                            </div>
+                        </div>
+                       
+                        {isShow && (
+                            <div className="-mt-2">
+                                <MessageToastify
+                                    isShow={isShow}
+                                    type={messageType}
+                                    value={msg}
+                                />
+                            </div>
+                        )}
+                         <div className="flex items-center gap-2 text-grayDark">
+                            <input
+                                type="checkbox"
+                                name=""
+                                id="remember"
+                                className="cursor-pointer"
                             />
-                            <PasswordInput
-                                id="confirmPassword"
-                                name="confirmPassword"
-                                value={userInfo.confirmPassword}
-                                onChange={handleChange}
-                                placeholder="Confirm Password"
-                                error={errors.confirmPassword}
-                            />
-                           {isShow && <div className="mt-2">
-                        <MessageToastify isShow={isShow} type={messageType} value={message} />
-                        </div>}
-                            <Button
-                                type="submit"
-                                className="w-full h-[48px] px-4 font-normal text-white bg-primary rounded-2xl text-sm"
+                            <label
+                                htmlFor="remember"
+                                className="cursor-pointer text-sm font-light font-sofia text-grayDark"
                             >
-                                {loading ? 'Loading...' : 'Continue'}
-                            </Button>
-                            <div className=" flex items-center justify-center gap-1 mt-4">
+                                Remember me
+                            </label>
+                        </div>
+                        <Button
+                            type="submit"
+                            className="w-full h-[48px] px-4 font-normal text-white bg-primary rounded-2xl text-sm"
+                        >
+                            {loading ? "Loading..." : "Continue"}
+                        </Button>
+                        <div className=" flex items-center justify-center gap-1 ">
                             <p className="text-black text-sm font-light font-sofia">
-                            Already have an account?
+                                Already have an account?
                             </p>
                             <button
-                            className="text-black text-sm font-light font-sofia underline"
+                                className="text-black text-sm font-light font-sofia underline"
                                 onClick={(e) => {
                                     e.preventDefault();
                                     navigate("/auth/login");
@@ -279,16 +328,38 @@ export default function Register() {
                                 log In
                             </button>
                         </div>
-                        </form>
-                    ) : (
-                        <div>
-                            <OTP />
-                            <Button type="button" onClick={() => handleOTPVerify(userInfo?.email, otp.join(''))} className="text-white font-medium text-sm w-full bg-primary py-2 mt-3">
-                                {loading ? 'Loading...' : 'OTP Verify'}
-                            </Button>
+                    </form>
+                ) : (
+                    <div className={`bg-white absolute bottom-0 left-0 w-full  rounded-t-3xl transition-all duration-500 ease-in-out transform ${
+        isOpenOtp ? 'translate-y-0 h-[80vh]' : 'translate-y-full h-0'
+    }`}>
+                        <div className="text-center py-6 border-b border-[#E6E6E6]">
+                            <h1>Confirm you Email</h1>
                         </div>
-                    )}
-                </div>
+                        <div className="px-6">
+                            <p className="text-sm font-light font-sofia text-center pt-8 pb-10">
+                                Enter the code we’ve sent to your Email
+                            </p>
+                            <OTP />
+                            <Button
+                                type="button"
+                                onClick={() =>
+                                    handleOTPVerify(
+                                        userInfo?.email,
+                                        otp.join("")
+                                    )
+                                }
+                                className="text-white font-medium text-sm w-full bg-primary py-2 mt-3 rounded-2xl"
+                            >
+                                {loading ? "Loading..." : "OTP Verify"}
+                            </Button>
+                            <div className="flex items-center justify-center mt-10 gap-2 text-grayDark text-sm font-sofia">
+                                <p>Haven’t received a code?  </p> <Button className="underline text-sm">Sent again</Button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
