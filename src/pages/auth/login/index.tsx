@@ -63,12 +63,12 @@ export default function Login() {
         // Regular expression to validate email format
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!userInfo.email.trim()) {
-            errors.email = "E-mail is required";
+            errors.email = "This is required";
         } else if (!emailRegex.test(userInfo.email)) {
             errors.email = "Please enter a valid email address";
         }
         if (!userInfo.password) {
-            errors.password = "Password is required";
+            errors.password = "This is required";
         } else if (userInfo.password.length < 0) {
             errors.password = "Password must be at least 6 characters long";
         }
@@ -90,9 +90,11 @@ export default function Login() {
             }
         }
     };
-
+    const fieldError = Object.keys(errors).map((key) => errors[key])
+    const filterError = fieldError.filter(error => error !==  undefined)[0]
+    console.log(!!filterError)
     useEffect(() => {
-        if (success || error) {
+        if (success || error || fieldError) {
             dispatch(setIsShow(true));
             dispatch(setMessageType(success ? SUCCESS : ERROR));
             dispatch(setMessage(success ? "Login Successfully Done." : error));
@@ -104,6 +106,7 @@ export default function Login() {
         dispatch(setMessageType(""));
         dispatch(setMessage(""));
     }, [location.pathname, dispatch]);
+    // console.log(errors)
     return (
         <div className="relative">
             <div className="absolute left-0 top-4 w-full flex justify-between px-4">
@@ -126,8 +129,8 @@ export default function Login() {
                         Sign In
                     </h2>
                     <form onSubmit={handleSubmit} className="flex flex-col">
-                        <div className="rounded-2xl overflow-hidden border border-gray bg-white">
-                            <div className="border-b border-gray">
+                        <div >
+                            <div>
                                 <Input
                                     type="text"
                                     id="email"
@@ -136,7 +139,8 @@ export default function Login() {
                                     onChange={handleChange}
                                     placeholder="E-mail"
                                     error={errors.email}
-                                    className="border-none rounded-none mt-0 bg-white pl-6 shadow-none"
+                                    // className=" rounded-none mt-0 bg-white pl-6 shadow-none"
+                                    className="rounded-t-lg"
                                 />
                             </div>
                             <div className="relative">
@@ -148,7 +152,8 @@ export default function Login() {
                                     onChange={handleChange}
                                     placeholder="Password"
                                     error={errors.password}
-                                    className="border-none rounded-none mt-0 bg-white pl-6 shadow-none"
+                                    className="rounded-b-lg border-t-0"
+                                    // className="rounded-none mt-0 bg-white pl-6 shadow-none"
                                 />
                                 <div
                                     className="absolute right-4 top-[18px] flex items-center cursor-pointer"
@@ -165,7 +170,8 @@ export default function Login() {
                             </div>
                         </div>
 
-                        {isShow && (
+                        {!!(fieldError) ? <p>Error 1</p> : null }
+                        { isShow && (
                             <div className="mt-2">
                                 <MessageToastify
                                     isShow={isShow}

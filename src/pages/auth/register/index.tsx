@@ -284,7 +284,7 @@ export default function Register() {
                                 />
                             </div>
                         </div>
-                       
+
                         {isShow && (
                             <div className="-mt-2">
                                 <MessageToastify
@@ -294,7 +294,7 @@ export default function Register() {
                                 />
                             </div>
                         )}
-                         <div className="flex items-center gap-2 text-grayDark">
+                        <div className="flex items-center gap-2 text-grayDark">
                             <input
                                 type="checkbox"
                                 name=""
@@ -330,9 +330,13 @@ export default function Register() {
                         </div>
                     </form>
                 ) : (
-                    <div className={`bg-white absolute bottom-0 left-0 w-full  rounded-t-3xl transition-all duration-500 ease-in-out transform ${
-        isOpenOtp ? 'translate-y-0 h-[80vh]' : 'translate-y-full h-0'
-    }`}>
+                    <div
+                        className={`bg-white absolute bottom-0 left-0 w-full  rounded-t-3xl transition-all duration-500 ease-in-out transform ${
+                            isOpenOtp
+                                ? "translate-y-0 h-[80vh]"
+                                : "translate-y-full h-0"
+                        }`}
+                    >
                         <div className="text-center py-6 border-b border-[#E6E6E6]">
                             <h1>Confirm you Email</h1>
                         </div>
@@ -354,7 +358,10 @@ export default function Register() {
                                 {loading ? "Loading..." : "OTP Verify"}
                             </Button>
                             <div className="flex items-center justify-center mt-10 gap-2 text-grayDark text-sm font-sofia">
-                                <p>Haven’t received a code?  </p> <Button className="underline text-sm">Sent again</Button>
+                                <p>Haven’t received a code? </p>{" "}
+                                <Button className="underline text-sm">
+                                    Sent again
+                                </Button>
                             </div>
                         </div>
                     </div>
