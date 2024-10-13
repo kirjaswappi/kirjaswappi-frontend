@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import leftArrowIcon from "../../../assets/leftArrow.png";
@@ -26,8 +26,10 @@ import { setStep } from "../../../redux/feature/step/stepSlice";
 import { useAppSelector } from "../../../redux/hooks";
 import GetOTPByEmail from "./_component/GetOTPByEmail";
 import NewPassword from "./_component/NewPassword";
+import useCleanState from "../../../hooks/useCleanState";
 
 interface INewPassForm {
+    email: string;
     password: string;
     confirmPassword: string;
 }
@@ -37,6 +39,7 @@ export default function ResetPassword() {
     const [sentOTP] = useLazySentOTPQuery();
     const [verifyOTP] = useLazyVerifyOTPQuery();
     const [resetPassword] = useResetPasswordMutation();
+    const clearState = useCleanState()
     // const [resetPassword] = useResetPasswordMutation()
     const navigate = useNavigate();
     const {
@@ -47,9 +50,9 @@ export default function ResetPassword() {
     const { success, loading, resetEmail, error, otp, message } =
         useAppSelector((state) => state.auth);
     const { step } = useAppSelector((state) => state.step);
-    const [emailError, setEmailError] = useState<string | null | undefined>("");
 
     const [userPass, setUserPass] = useState<INewPassForm>({
+        email:"",
         password: "",
         confirmPassword: "",
     });
@@ -57,10 +60,18 @@ export default function ResetPassword() {
         [key: string]: string | null | undefined;
     }>({});
 
-    // console.log(userPass)
+
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         dispatch(setResetEmail(e.target.value.trim()));
-        setEmailError("");
+        setErrors({
+            ...errors,
+            email: "",
+        });
+        clearState()
+        // dispatch(setIsShow(false));
+        // dispatch(setMessageType(''));
+        // dispatch(setMessage(''));
+        // dispatch(setError(''))
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,64 +113,66 @@ export default function ResetPassword() {
             }
         }
     };
-    const validation = () => {
-        let error: {
-            email: string | null | undefined;
-        } = {
-            email: undefined,
-        };
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!resetEmail.trim()) {
-            error.email = "E-mail is required";
-        } else if (!emailRegex.test(resetEmail)) {
-            error.email = "Please enter a valid email address";
-        }
-        if (error) {
-            setEmailError(error?.email);
-        }
-        const hasErrors = Object.values(error).some(
-            (error) => error !== undefined
-        );
-        return !hasErrors;
-    };
+
     const validateChangePassword = () => {
         let errors: {
+            email: string | null | undefined;
             password: string | null | undefined;
             confirmPassword: string | null | undefined;
         } = {
+            email: undefined,
             password: undefined,
             confirmPassword: undefined,
         };
 
-        if (!userPass.password) {
-            errors.password = "Password is required";
-        } else if (userPass.password.length < 0) {
-            errors.password = "Password must be at least 6 characters long";
+        if(step == 0){
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!resetEmail.trim()) {
+                errors.email = "E-mail is required";
+            } else if (!emailRegex.test(resetEmail)) {
+                errors.email = "Please enter a valid email address";
+            }
+            setErrors(errors);
+    
+            const hasErrors = Object.values(errors).some(
+                (error) => error !== undefined
+            );
+    
+            return !hasErrors;
+        }else if(step === 2) {
+            if (!userPass.password) {
+                errors.password = "Password is required";
+            } else if (userPass.password.length < 0) {
+                errors.password = "Password must be at least 6 characters long";
+            }
+            if (!userPass.confirmPassword) {
+                errors.confirmPassword = "Confirm password is required";
+            } else if (userPass.password.length < 0) {
+                errors.confirmPassword =
+                    "Confirm password must be at least 6 characters long";
+            }
+            setErrors(errors);
+    
+            const hasErrors = Object.values(errors).some(
+                (error) => error !== undefined
+            );
+    
+            return !hasErrors;
         }
-        if (!userPass.confirmPassword) {
-            errors.confirmPassword = "Confirm password is required";
-        } else if (userPass.password.length < 0) {
-            errors.confirmPassword =
-                "Confirm password must be at least 6 characters long";
-        }
-        setErrors(errors);
-
-        const hasErrors = Object.values(errors).some(
-            (error) => error !== undefined
-        );
-        return !hasErrors;
+        
     };
 
     const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
         if (step === 0) {
-            if (validation()) {
+            if (validateChangePassword()) {
                 await sentOTP({ email: resetEmail }).then((res) => {
                     if (res.data) {
                         const timer = setTimeout(() => {
-                            dispatch(setIsShow(false));
-                            dispatch(setMessageType(""));
-                            dispatch(setMessage(""));
+                            clearState()
+                            // dispatch(setIsShow(false));
+                            // dispatch(setMessageType(""));
+                            // dispatch(setMessage(""));
                             dispatch(setStep(step + 1));
                         }, 2000);
                         return () => clearTimeout(timer);
@@ -176,9 +189,10 @@ export default function ResetPassword() {
                     (res) => {
                         if (res.data) {
                             const timer = setTimeout(() => {
-                                dispatch(setIsShow(false));
-                                dispatch(setMessageType(""));
-                                dispatch(setMessage(""));
+                                clearState()
+                                // dispatch(setIsShow(false));
+                                // dispatch(setMessageType(""));
+                                // dispatch(setMessage(""));
                                 dispatch(setStep(step + 1));
                             }, 2000);
                             return () => clearTimeout(timer);
@@ -205,9 +219,10 @@ export default function ResetPassword() {
                     .then((res) => {
                         if (!res.error) {
                             const timer = setTimeout(() => {
-                                dispatch(setIsShow(false));
-                                dispatch(setMessageType(""));
-                                dispatch(setMessage(""));
+                                clearState()
+                                // dispatch(setIsShow(false));
+                                // dispatch(setMessageType(""));
+                                // dispatch(setMessage(""));
                                 navigate("/auth/login");
                                 dispatch(setStep(0));
                                 dispatch(setResetEmail(""));
@@ -228,7 +243,7 @@ export default function ResetPassword() {
             case 0:
                 return (
                     <GetOTPByEmail
-                        error={emailError}
+                        error={errors.email}
                         handleChange={handleEmailChange}
                     />
                 );
@@ -246,21 +261,31 @@ export default function ResetPassword() {
                 return null;
         }
     };
-    useEffect(() => {
-        if (success || error) {
-            if (success) {
-                dispatch(setError(""));
-            }
-            dispatch(setIsShow(true));
-            dispatch(setMessageType(success ? SUCCESS : ERROR));
-            dispatch(setMessage(success ? message : error));
-        }
-    }, [error, success]);
+    const fieldError = Object.keys(errors).map((key) => errors[key]);
+    const filterError = useCallback(
+        () => fieldError.filter((error) => error),
+        [fieldError]
+    );
+    console.log(filterError())
+    const errorTypes = filterError()[0] ? filterError()[0] : error
+    const IsItFieldError = filterError().length !== 0 ? 'FIELD_ERROR' : ERROR
+    
+
 
     useEffect(() => {
-        dispatch(setIsShow(false));
-        dispatch(setMessageType(""));
-        dispatch(setMessage(""));
+        if (success || errorTypes) {            
+            dispatch(setIsShow(true));
+            dispatch(setMessageType(success ? SUCCESS : IsItFieldError));
+            dispatch(setMessage(success ? message : errorTypes));            
+        }
+    }, [errorTypes, success]);
+
+    useEffect(() => {
+        clearState()
+        // dispatch(setIsShow(false));
+        // dispatch(setMessageType(""));
+        // dispatch(setMessage(""));
+        dispatch(setOtp(Array(6).fill("")))
     }, [location.pathname, dispatch]);
     return (
         <div>

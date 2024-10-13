@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AiOutlineEye } from "react-icons/ai";
 import { PiEyeClosed } from "react-icons/pi";
 import { useDispatch } from "react-redux";
@@ -17,6 +17,7 @@ import {
     setMessageType,
 } from "../../../redux/feature/notification/notificationSlice";
 import { useAppSelector } from "../../../redux/hooks";
+import { setError } from "../../../redux/feature/auth/authSlice";
 
 interface ILoginForm {
     email: string;
@@ -28,7 +29,7 @@ export default function Login() {
     const { isShow, message, messageType } = useAppSelector(
         (state) => state.notification
     );
-
+    console.log(isShow, message, messageType)
     const dispatch = useDispatch();
     const [login, { isLoading }] = useLoginMutation();
     const [showPassword, setShowPassword] = useState(false);
@@ -51,6 +52,10 @@ export default function Login() {
             ...errors,
             [e.target.id]: "",
         });
+        dispatch(setIsShow(false));
+        dispatch(setMessageType(''));
+        dispatch(setMessage(''));
+        dispatch(setError(''))
     };
     const validateForm = () => {
         let errors: {
@@ -90,23 +95,28 @@ export default function Login() {
             }
         }
     };
-    const fieldError = Object.keys(errors).map((key) => errors[key])
-    const filterError = fieldError.filter(error => error !==  undefined)[0]
-    console.log(!!filterError)
+    const fieldError = Object.keys(errors).map((key) => errors[key]);
+    const filterError = useCallback(
+        () => fieldError.filter((error) => error),
+        [fieldError]
+    );
+    const errorTypes = filterError()[0] ? filterError()[0] : error
+    const IsItFieldError = filterError().length !== 0 ? 'FIELD_ERROR' : ERROR
     useEffect(() => {
-        if (success || error || fieldError) {
+        if (success || errorTypes) {
             dispatch(setIsShow(true));
-            dispatch(setMessageType(success ? SUCCESS : ERROR));
-            dispatch(setMessage(success ? "Login Successfully Done." : error));
+            dispatch(setMessageType(success ? SUCCESS : IsItFieldError));
+            dispatch(setMessage(success ? "Login Successfully Done." : errorTypes));
         }
-    }, [error, success]);
+    }, [errorTypes, success]);
 
     useEffect(() => {
         dispatch(setIsShow(false));
         dispatch(setMessageType(""));
         dispatch(setMessage(""));
+        dispatch(setError(''))
     }, [location.pathname, dispatch]);
-    // console.log(errors)
+
     return (
         <div className="relative">
             <div className="absolute left-0 top-4 w-full flex justify-between px-4">
@@ -139,7 +149,6 @@ export default function Login() {
                                     onChange={handleChange}
                                     placeholder="E-mail"
                                     error={errors.email}
-                                    // className=" rounded-none mt-0 bg-white pl-6 shadow-none"
                                     className="rounded-t-lg"
                                 />
                             </div>
@@ -153,7 +162,6 @@ export default function Login() {
                                     placeholder="Password"
                                     error={errors.password}
                                     className="rounded-b-lg border-t-0"
-                                    // className="rounded-none mt-0 bg-white pl-6 shadow-none"
                                 />
                                 <div
                                     className="absolute right-4 top-[18px] flex items-center cursor-pointer"
@@ -170,8 +178,7 @@ export default function Login() {
                             </div>
                         </div>
 
-                        {!!(fieldError) ? <p>Error 1</p> : null }
-                        { isShow && (
+                        {isShow && (
                             <div className="mt-2">
                                 <MessageToastify
                                     isShow={isShow}

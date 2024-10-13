@@ -44,9 +44,9 @@ export default function NewPassword({ userPass, handleChange, errors }:any) {
     return (
         <div
             // onSubmit={handleSubmit}
-            className="flex flex-col rounded-2xl overflow-hidden border border-gray bg-white"
+            // className="flex flex-col rounded-2xl overflow-hidden border border-gray bg-white"
         >
-            <div className="border-b border-gray">
+            <div>
             <PasswordInput
                 id="password"
                 name="password"
@@ -54,7 +54,8 @@ export default function NewPassword({ userPass, handleChange, errors }:any) {
                 onChange={handleChange}
                 placeholder="Password"
                 error={errors.password}
-                className="border-none rounded-none mt-0 bg-white pl-6 shadow-none"
+                className='rounded-t-lg'
+                // className="border-none rounded-none mt-0 bg-white pl-6 shadow-none"
             />
             </div>
             
@@ -65,7 +66,8 @@ export default function NewPassword({ userPass, handleChange, errors }:any) {
                 onChange={handleChange}
                 placeholder="Confirm Password"
                 error={errors.confirmPassword}
-                className="border-none rounded-none mt-0 bg-white pl-6 shadow-none"
+                className='rounded-b-lg'
+                // className="border-none rounded-none mt-0 bg-white pl-6 shadow-none"
             />
         </div>
     )

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import leftArrowIcon from "../../../assets/leftArrow.png";
@@ -13,7 +13,7 @@ import {
     useRegisterMutation,
     useVerifyEmailMutation,
 } from "../../../redux/feature/auth/authApi";
-import { setOtp } from "../../../redux/feature/auth/authSlice";
+import { setError, setOtp } from "../../../redux/feature/auth/authSlice";
 import {
     setIsShow,
     setMessage,
@@ -102,6 +102,7 @@ export default function Register() {
             email: string | null | undefined;
             password: string | null | undefined;
             confirmPassword: string | null | undefined;
+            
         } = {
             firstName: undefined,
             lastName: undefined,
@@ -112,15 +113,15 @@ export default function Register() {
         // Regular expression to validate email format
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!userInfo.email.trim()) {
-            errors.email = "E-mail is required";
+            errors.email = "This is required";
         } else if (!emailRegex.test(userInfo.email)) {
             errors.email = "Please enter a valid email address";
         }
         if (!userInfo.firstName) {
-            errors.firstName = "First name is required";
+            errors.firstName = "This is required";
         }
         if (!userInfo.lastName) {
-            errors.lastName = "Last name is required";
+            errors.lastName = "This is required";
         }
         if (!userInfo.password) {
             errors.password = "Password is required";
@@ -129,10 +130,17 @@ export default function Register() {
         }
         if (!userInfo.confirmPassword) {
             errors.confirmPassword = "Confirm password is required";
-        } else if (userInfo.password.length < 0) {
+        } else if (userInfo.password.length < 0) {                      
             errors.confirmPassword =
                 "Confirm password must be at least 6 characters long";
         }
+// console.log(!userInfo.password !== !userInfo.confirmPassword)
+        // if(!userInfo.password !== !userInfo.confirmPassword){
+        //     console.log(!userInfo.password !== !userInfo.confirmPassword)
+        //     errors.confirmPassword = 'Password and confirm password do not match!'
+        // }
+
+        console.log(errors)
         setErrors(errors);
 
         const hasErrors = Object.values(errors).some(
@@ -195,20 +203,33 @@ export default function Register() {
         }
     };
 
+
+    const fieldError = Object.keys(errors).map((key) => errors[key]);
+    const filterError = useCallback(
+        () => fieldError.filter((error) => error),
+        [fieldError]
+    );
+    const errorTypes = filterError()[0] ? filterError()[0] : error
+    const IsItFieldError = filterError().length !== 0 ? 'FIELD_ERROR' : ERROR
+
     useEffect(() => {
-        if (success || error) {
+        if (success || errorTypes) {
             dispatch(setIsShow(true));
-            dispatch(setMessageType(success ? SUCCESS : ERROR));
-            dispatch(setMessage(success ? message : error));
+            dispatch(setMessageType(success ? SUCCESS : IsItFieldError));
+            dispatch(setMessage(success ? message : errorTypes));
+            dispatch(setError(''))
         }
-    }, [error, success]);
+    }, [errorTypes, success]);
 
     useEffect(() => {
         dispatch(setIsShow(false));
         dispatch(setMessageType(""));
         dispatch(setMessage(""));
+        dispatch(setError(''))
+        dispatch(setOtp(Array(6).fill("")))
+        
     }, [location.pathname, dispatch]);
-    console.log(message);
+    
     return (
         <div>
             <div className="container h-svh relative">
@@ -221,23 +242,23 @@ export default function Register() {
                 {!isOpenOtp ? (
                     <form
                         onSubmit={handleSubmit}
-                        className="flex flex-col gap-4"
+                        className="flex flex-col"
                     >
-                        <div className="rounded-2xl overflow-hidden border border-gray bg-white">
-                            <div className="border-b border-gray">
+                        <div>
+                            <div>
                                 <Input
                                     type="text"
                                     id="firstName"
-                                    // value={userInfo.email}
                                     name="firstName"
                                     onChange={handleChange}
                                     placeholder="First Name"
                                     error={errors.firstName}
-                                    className="border-none rounded-none mt-0 bg-white pl-6 shadow-none placeholder:text-sm placeholder:text-grayDark"
+                                    className="rounded-t-lg"
+                                    // className="border-none rounded-none mt-0 bg-white pl-6 shadow-none placeholder:text-sm placeholder:text-grayDark"
                                 />
                             </div>
 
-                            <div className="border-b border-gray">
+                            <div>
                                 <Input
                                     type="text"
                                     id="lastName"
@@ -246,10 +267,11 @@ export default function Register() {
                                     onChange={handleChange}
                                     placeholder="Last Name"
                                     error={errors.lastName}
-                                    className="border-none rounded-none mt-0 bg-white pl-6 shadow-none placeholder:text-sm"
+                                    className="border-t-0"
+                                    // className="border-none rounded-none mt-0 bg-white pl-6 shadow-none placeholder:text-sm"
                                 />
                             </div>
-                            <div className="border-b border-gray">
+                            <div >
                                 <Input
                                     type="email"
                                     id="email"
@@ -258,10 +280,11 @@ export default function Register() {
                                     onChange={handleChange}
                                     placeholder="E-mail"
                                     error={errors.email}
-                                    className="border-none rounded-none mt-0 bg-white pl-6 shadow-none placeholder:text-sm"
+                                    className="border-t-0"
+                                    // className="border-none rounded-none mt-0 bg-white pl-6 shadow-none placeholder:text-sm"
                                 />
                             </div>
-                            <div className="border-b border-gray">
+                            <div>
                                 <PasswordInput
                                     id="password"
                                     name="password"
@@ -269,7 +292,8 @@ export default function Register() {
                                     onChange={handleChange}
                                     placeholder="Password"
                                     error={errors.password}
-                                    className="border-none rounded-none mt-0 bg-white pl-6 shadow-none placeholder:text-sm"
+                                    className="border-t-0"
+                                    // className="border-none rounded-none mt-0 bg-white pl-6 shadow-none placeholder:text-sm"
                                 />
                             </div>
                             <div>
@@ -280,13 +304,14 @@ export default function Register() {
                                     onChange={handleChange}
                                     placeholder="Confirm Password"
                                     error={errors.confirmPassword}
-                                    className="border-none rounded-none mt-0 bg-white pl-6 shadow-none placeholder:text-sm"
+                                    className="rounded-b-lg border-t-0"
+                                    // className="border-none rounded-none mt-0 bg-white pl-6 shadow-none placeholder:text-sm"
                                 />
                             </div>
                         </div>
 
                         {isShow && (
-                            <div className="-mt-2">
+                            <div className="mt-2">
                                 <MessageToastify
                                     isShow={isShow}
                                     type={messageType}
@@ -294,7 +319,7 @@ export default function Register() {
                                 />
                             </div>
                         )}
-                        <div className="flex items-center gap-2 text-grayDark">
+                        <div className="flex items-center gap-2 text-grayDark my-4">
                             <input
                                 type="checkbox"
                                 name=""
@@ -314,7 +339,7 @@ export default function Register() {
                         >
                             {loading ? "Loading..." : "Continue"}
                         </Button>
-                        <div className=" flex items-center justify-center gap-1 ">
+                        <div className=" flex items-center justify-center gap-1 mt-4">
                             <p className="text-black text-sm font-light font-sofia">
                                 Already have an account?
                             </p>
