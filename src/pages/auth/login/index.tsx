@@ -11,13 +11,13 @@ import Input from "../../../components/shared/Input";
 import MessageToastify from "../../../components/shared/MessageToastify";
 import { ERROR, SUCCESS } from "../../../constant/MESSAGETYPE";
 import { useLoginMutation } from "../../../redux/feature/auth/authApi";
+import { setError } from "../../../redux/feature/auth/authSlice";
 import {
     setIsShow,
     setMessage,
     setMessageType,
 } from "../../../redux/feature/notification/notificationSlice";
 import { useAppSelector } from "../../../redux/hooks";
-import { setError } from "../../../redux/feature/auth/authSlice";
 
 interface ILoginForm {
     email: string;
@@ -102,11 +102,12 @@ export default function Login() {
     );
     const errorTypes = filterError()[0] ? filterError()[0] : error
     const IsItFieldError = filterError().length !== 0 ? 'FIELD_ERROR' : ERROR
+
     useEffect(() => {
         if (success || errorTypes) {
             dispatch(setIsShow(true));
             dispatch(setMessageType(success ? SUCCESS : IsItFieldError));
-            dispatch(setMessage(success ? "Login Successfully Done." : errorTypes));
+            dispatch(setMessage(success ? message : errorTypes));
         }
     }, [errorTypes, success]);
 

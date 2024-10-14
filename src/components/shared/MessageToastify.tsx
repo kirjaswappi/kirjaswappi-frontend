@@ -26,7 +26,7 @@ export default function MessageToastify({ type, value, isShow = false }: IMessag
                 return '';
         }
     };
-
+console.log(type, value, isShow)
     useEffect(() => {
         if(type !== 'FIELD_ERROR'){
             const timer = setTimeout(() => {

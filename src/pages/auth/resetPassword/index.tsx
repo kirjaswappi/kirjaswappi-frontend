@@ -7,12 +7,15 @@ import Image from "../../../components/shared/Image";
 import MessageToastify from "../../../components/shared/MessageToastify";
 import OTP from "../../../components/shared/OTP";
 import { ERROR, SUCCESS } from "../../../constant/MESSAGETYPE";
+import useCleanState from "../../../hooks/useCleanState";
 import {
     useLazySentOTPQuery,
     useLazyVerifyOTPQuery,
     useResetPasswordMutation,
 } from "../../../redux/feature/auth/authApi";
 import {
+    setAuthMessage,
+    setAuthSuccess,
     setError,
     setOtp,
     setResetEmail,
@@ -26,7 +29,6 @@ import { setStep } from "../../../redux/feature/step/stepSlice";
 import { useAppSelector } from "../../../redux/hooks";
 import GetOTPByEmail from "./_component/GetOTPByEmail";
 import NewPassword from "./_component/NewPassword";
-import useCleanState from "../../../hooks/useCleanState";
 
 interface INewPassForm {
     email: string;
@@ -39,7 +41,7 @@ export default function ResetPassword() {
     const [sentOTP] = useLazySentOTPQuery();
     const [verifyOTP] = useLazyVerifyOTPQuery();
     const [resetPassword] = useResetPasswordMutation();
-    const clearState = useCleanState()
+    const clearState = useCleanState();
     // const [resetPassword] = useResetPasswordMutation()
     const navigate = useNavigate();
     const {
@@ -52,35 +54,34 @@ export default function ResetPassword() {
     const { step } = useAppSelector((state) => state.step);
 
     const [userPass, setUserPass] = useState<INewPassForm>({
-        email:"",
+        email: "",
         password: "",
         confirmPassword: "",
     });
     const [errors, setErrors] = useState<{
         [key: string]: string | null | undefined;
     }>({});
-
-
+console.log(errors)
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         dispatch(setResetEmail(e.target.value.trim()));
         setErrors({
             ...errors,
             email: "",
         });
-        clearState()
-        // dispatch(setIsShow(false));
-        // dispatch(setMessageType(''));
-        // dispatch(setMessage(''));
-        // dispatch(setError(''))
+        // clearState()
+        dispatch(setIsShow(false));
+        dispatch(setMessageType(""));
+        dispatch(setMessage(""));
+        dispatch(setError(""));
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUserPass({ ...userPass, [e.target.name]: e.target.value });
-        setErrors({
-            ...errors,
-            [e.target.id]: "",
-        });
-
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            [e.target.name]: "",
+            notMatch: "",  
+        }));
         if (
             e.target.name === "password" ||
             e.target.name === "confirmPassword"
@@ -94,6 +95,7 @@ export default function ResetPassword() {
                     ...prevErrors,
                     confirmPassword:
                         "Password and confirm password do not match!",
+                    
                 }));
             } else if (
                 e.target.name === "password" &&
@@ -119,13 +121,15 @@ export default function ResetPassword() {
             email: string | null | undefined;
             password: string | null | undefined;
             confirmPassword: string | null | undefined;
+            notMatch: string | null | undefined;
         } = {
             email: undefined,
             password: undefined,
             confirmPassword: undefined,
+            notMatch: undefined,
         };
 
-        if(step == 0){
+        if (step == 0) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!resetEmail.trim()) {
                 errors.email = "E-mail is required";
@@ -133,13 +137,13 @@ export default function ResetPassword() {
                 errors.email = "Please enter a valid email address";
             }
             setErrors(errors);
-    
+
             const hasErrors = Object.values(errors).some(
                 (error) => error !== undefined
             );
-    
+
             return !hasErrors;
-        }else if(step === 2) {
+        } else if (step === 2) {
             if (!userPass.password) {
                 errors.password = "Password is required";
             } else if (userPass.password.length < 0) {
@@ -151,15 +155,17 @@ export default function ResetPassword() {
                 errors.confirmPassword =
                     "Confirm password must be at least 6 characters long";
             }
+            if (userPass.confirmPassword !== userPass.password) {
+                errors.notMatch = "notMatch";
+            }
             setErrors(errors);
-    
+
             const hasErrors = Object.values(errors).some(
                 (error) => error !== undefined
             );
-    
+
             return !hasErrors;
         }
-        
     };
 
     const handleSubmit = async (e: { preventDefault: () => void }) => {
@@ -169,10 +175,12 @@ export default function ResetPassword() {
                 await sentOTP({ email: resetEmail }).then((res) => {
                     if (res.data) {
                         const timer = setTimeout(() => {
-                            clearState()
-                            // dispatch(setIsShow(false));
-                            // dispatch(setMessageType(""));
-                            // dispatch(setMessage(""));
+                            // clearState()
+                            dispatch(setIsShow(false));
+                            dispatch(setMessageType(""));
+                            dispatch(setMessage(""));
+                            dispatch(setAuthMessage(""));
+                            dispatch(setAuthSuccess(false));
                             dispatch(setStep(step + 1));
                         }, 2000);
                         return () => clearTimeout(timer);
@@ -189,10 +197,11 @@ export default function ResetPassword() {
                     (res) => {
                         if (res.data) {
                             const timer = setTimeout(() => {
-                                clearState()
-                                // dispatch(setIsShow(false));
-                                // dispatch(setMessageType(""));
-                                // dispatch(setMessage(""));
+                                dispatch(setIsShow(false));
+                                dispatch(setMessageType(""));
+                                dispatch(setMessage(""));
+                                dispatch(setAuthMessage(""));
+                                dispatch(setAuthSuccess(false));
                                 dispatch(setStep(step + 1));
                             }, 2000);
                             return () => clearTimeout(timer);
@@ -219,10 +228,10 @@ export default function ResetPassword() {
                     .then((res) => {
                         if (!res.error) {
                             const timer = setTimeout(() => {
-                                clearState()
-                                // dispatch(setIsShow(false));
-                                // dispatch(setMessageType(""));
-                                // dispatch(setMessage(""));
+                                dispatch(setIsShow(false));
+                                dispatch(setMessageType(""));
+                                dispatch(setMessage(""));
+                                dispatch(setAuthMessage(""));
                                 navigate("/auth/login");
                                 dispatch(setStep(0));
                                 dispatch(setResetEmail(""));
@@ -261,37 +270,45 @@ export default function ResetPassword() {
                 return null;
         }
     };
+    // console.log(errors)
     const fieldError = Object.keys(errors).map((key) => errors[key]);
     const filterError = useCallback(
         () => fieldError.filter((error) => error),
         [fieldError]
     );
-    console.log(filterError())
-    const errorTypes = filterError()[0] ? filterError()[0] : error
-    const IsItFieldError = filterError().length !== 0 ? 'FIELD_ERROR' : ERROR
-    
+
+    const errorMsg = filterError()[0] ? filterError()[0] : error;
+    const IsItFieldError = filterError().length !== 0 ? "FIELD_ERROR" : ERROR;
 
 
     useEffect(() => {
-        if (success || errorTypes) {            
+        if (success || errorMsg) {
             dispatch(setIsShow(true));
             dispatch(setMessageType(success ? SUCCESS : IsItFieldError));
-            dispatch(setMessage(success ? message : errorTypes));            
+            dispatch(setMessage(success ? message : errorMsg));
         }
-    }, [errorTypes, success]);
+    }, [errorMsg, success]);
 
+    // Reset redux state
     useEffect(() => {
-        clearState()
-        // dispatch(setIsShow(false));
-        // dispatch(setMessageType(""));
-        // dispatch(setMessage(""));
-        dispatch(setOtp(Array(6).fill("")))
+        dispatch(setIsShow(false));
+        dispatch(setMessageType(""));
+        dispatch(setMessage(""));
+        dispatch(setAuthMessage(""));
+        dispatch(setOtp(Array(6).fill("")));
+        // dispatch(setStep(0))
+        dispatch(setResetEmail(""));
     }, [location.pathname, dispatch]);
     return (
         <div>
             <div className="container h-svh relative">
-                <div className="pt-4 pb-6 flex items-center gap-4">
-                    <Image src={leftArrowIcon} alt="left" />
+                <div className="pt-4 pb-6 flex items-center gap-2">
+                    <div
+                        className="cursor-pointer w-5"
+                        onClick={() => navigate("/auth/login")}
+                    >
+                        <Image src={leftArrowIcon} alt="left" />
+                    </div>
                     <h3 className="font-sofia text-base font-medium ">
                         Forget Password
                     </h3>

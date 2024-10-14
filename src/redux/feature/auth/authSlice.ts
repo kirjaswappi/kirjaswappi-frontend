@@ -81,6 +81,12 @@ const authSlice = createSlice({
         setVerify: (state, action) => {
             state.error = action.payload;
         },
+        setAuthMessage: (state, action: PayloadAction<string>) => {
+            state.message = action.payload;
+        },
+        setAuthSuccess: (state, action: PayloadAction<boolean>) => {
+            state.success = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder.addMatcher(authApi.endpoints.login.matchPending, (state) => {
@@ -95,6 +101,7 @@ const authSlice = createSlice({
                 state.error = null;
                 state.success = true;
                 state.userInformation = { ...action.payload };
+                state.message = 'Login Successfully Done.'
             }
         );
         builder.addMatcher(
@@ -277,5 +284,5 @@ const authSlice = createSlice({
     },
 });
 
-export const { setOtp, setResetEmail, setError, logout } = authSlice.actions;
+export const { setOtp, setResetEmail, setError, logout, setAuthMessage, setAuthSuccess } = authSlice.actions;
 export default authSlice.reducer;
