@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import leftArrowIcon from "../../../assets/leftArrow.png";
@@ -8,19 +8,17 @@ import Input from "../../../components/shared/Input";
 import MessageToastify from "../../../components/shared/MessageToastify";
 import OTP from "../../../components/shared/OTP";
 import PasswordInput from "../../../components/shared/PasswordInput";
-import { ERROR, SUCCESS } from "../../../constant/MESSAGETYPE";
+import { ERROR } from "../../../constant/MESSAGETYPE";
 import {
     useRegisterMutation,
     useVerifyEmailMutation,
 } from "../../../redux/feature/auth/authApi";
 import { setError, setOtp } from "../../../redux/feature/auth/authSlice";
 import {
-    setIsShow,
-    setMessage,
-    setMessageType,
+    setMessages
 } from "../../../redux/feature/notification/notificationSlice";
 import { useAppSelector } from "../../../redux/hooks";
-interface ILoginForm {
+interface IRegisterForm {
     firstName: string;
     lastName: string;
     email: string;
@@ -33,10 +31,10 @@ export default function Register() {
     const dispatch = useDispatch();
     const {
         isShow,
-        message: msg,
+        message: msg, // It will initial in Toastify
         messageType,
     } = useAppSelector((state) => state.notification);
-    const { otp, loading, error, success, message } = useAppSelector(
+    const { otp, loading, error, message } = useAppSelector(
         (state) => state.auth
     );
     const [register] = useRegisterMutation();
@@ -45,7 +43,7 @@ export default function Register() {
     const [errors, setErrors] = useState<{
         [key: string]: string | null | undefined;
     }>({});
-    const [userInfo, setUserInfo] = useState<ILoginForm>({
+    const [userInfo, setUserInfo] = useState<IRegisterForm>({
         firstName: "",
         lastName: "",
         email: "",
@@ -56,111 +54,103 @@ export default function Register() {
     // handle Change function to take sign-up information
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         // login information store in state
-        setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
-
+        const { name, value } = e.target;
+        setUserInfo({ ...userInfo, [name]: value });
         setErrors({
             ...errors,
-            [e.target.id]: "",
+            [name]: "",
         });
+        validateInput(e);
+        dispatch(setError(""));
+    };
 
-        if (
-            e.target.name === "password" ||
-            e.target.name === "confirmPassword"
-        ) {
-            if (
-                e.target.name === "confirmPassword" &&
-                userInfo.password &&
-                e.target.value !== userInfo.password
-            ) {
-                setErrors((prevErrors) => ({
-                    ...prevErrors,
-                    confirmPassword:
-                        "Password and confirm password do not match!",
-                }));
-            } else if (
-                e.target.name === "password" &&
-                userInfo.confirmPassword &&
-                userInfo.confirmPassword !== e.target.value
-            ) {
-                setErrors((prevErrors) => ({
-                    ...prevErrors,
-                    confirmPassword:
-                        "Password and confirm password do not match!",
-                }));
-            } else {
-                setErrors((prevErrors) => ({
-                    ...prevErrors,
-                    confirmPassword: "",
-                }));
+    const validateInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+
+        setErrors((prev: any) => {
+            const stateObj = { ...prev, [name]: "" };
+
+            switch (name) {
+                case "firstName":
+                    if (!value) {
+                        stateObj[name] = "Please enter first name.";
+                    }
+                    break;
+                case "lastName":
+                    if (!value) {
+                        stateObj[name] = "Please enter last name.";
+                    }
+                    break;
+                case "email":
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!value) {
+                        stateObj[name] = "Please enter email.";
+                    } else if (!emailRegex.test(value)) {
+                        stateObj[name] = "Please Enter your valid email";
+                    }
+                    break;
+
+                case "password":
+                    if (!value) {
+                        stateObj[name] = "Please enter Password.";
+                    } else if (
+                        userInfo.confirmPassword &&
+                        value !== userInfo.confirmPassword
+                    ) {
+                        stateObj["confirmPassword"] =
+                            "Password and Confirm Password do not match.";
+                    } else {
+                        stateObj["confirmPassword"] = userInfo.confirmPassword
+                            ? ""
+                            : errors.confirmPassword;
+                    }
+                    break;
+
+                case "confirmPassword":
+                    if (!value) {
+                        stateObj[name] = "Please enter Confirm Password.";
+                    } else if (
+                        userInfo.password &&
+                        value !== userInfo.password
+                    ) {
+                        stateObj[name] =
+                            "Password and Confirm Password do not match.";
+                    }
+                    break;
+
+                default:
+                    break;
             }
-        }
-    };
-    const validateForm = () => {
-        let errors: {
-            firstName: string | null | undefined;
-            lastName: string | null | undefined;
-            email: string | null | undefined;
-            password: string | null | undefined;
-            confirmPassword: string | null | undefined;
-            
-        } = {
-            firstName: undefined,
-            lastName: undefined,
-            email: undefined,
-            password: undefined,
-            confirmPassword: undefined,
-        };
-        // Regular expression to validate email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!userInfo.email.trim()) {
-            errors.email = "This is required";
-        } else if (!emailRegex.test(userInfo.email)) {
-            errors.email = "Please enter a valid email address";
-        }
-        if (!userInfo.firstName) {
-            errors.firstName = "This is required";
-        }
-        if (!userInfo.lastName) {
-            errors.lastName = "This is required";
-        }
-        if (!userInfo.password) {
-            errors.password = "Password is required";
-        } else if (userInfo.password.length < 0) {
-            errors.password = "Password must be at least 6 characters long";
-        }
-        if (!userInfo.confirmPassword) {
-            errors.confirmPassword = "Confirm password is required";
-        } else if (userInfo.password.length < 0) {                      
-            errors.confirmPassword =
-                "Confirm password must be at least 6 characters long";
-        }
-// console.log(!userInfo.password !== !userInfo.confirmPassword)
-        // if(!userInfo.password !== !userInfo.confirmPassword){
-        //     console.log(!userInfo.password !== !userInfo.confirmPassword)
-        //     errors.confirmPassword = 'Password and confirm password do not match!'
-        // }
-
-        console.log(errors)
-        setErrors(errors);
-
-        const hasErrors = Object.values(errors).some(
-            (error) => error !== undefined
-        );
-        return !hasErrors;
+            return stateObj;
+        });
     };
 
-    const handleSubmit = async (e: { preventDefault: () => void }) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // validateForm()
-        if (validateForm()) {
+        // Run validation for all fields on submit
+        let allValid = true;
+
+        Object.keys(userInfo).forEach((key: any) => {
+            const event = {
+                target: {
+                    name: key,
+                    value: userInfo[key],
+                },
+            };
+
+            validateInput(event);
+
+            if (!userInfo[key]) {
+                allValid = false;
+            }
+        });
+        if (allValid) {
             try {
                 await register(userInfo)
                     .then(async (res) => {
                         if (res?.data) {
                             const timer = setTimeout(() => {
-                                dispatch(setIsShow(false));
-                                dispatch(setMessageType(""));
-                                dispatch(setMessage(""));
+                                dispatch(setMessages({ type: "", isShow: false, message: "" }));
                                 setOpenOtp(true);
                             }, 2000);
                             return () => clearTimeout(timer);
@@ -174,15 +164,21 @@ export default function Register() {
             }
         }
     };
+
     const handleOTPVerify = async (email: string, otp: string) => {
+        console.log("click");
         if (email !== "" && otp !== "" && otp.length >= 6) {
             try {
                 await verifyEmail({ email: email, otp: otp }).then((res) => {
                     if (!res.error) {
                         const timer = setTimeout(() => {
-                            dispatch(setIsShow(false));
-                            dispatch(setMessageType(""));
-                            dispatch(setMessage(""));
+                            dispatch(
+                                setMessages({
+                                    type: "",
+                                    isShow: false,
+                                    message: "",
+                                })
+                            );
                             navigate("/auth/login");
                             dispatch(setOtp(Array(6).fill("")));
                         }, 3000);
@@ -193,43 +189,80 @@ export default function Register() {
                 console.log("error", error);
             }
         } else {
-            dispatch(setIsShow(true));
-            dispatch(setMessageType(ERROR));
             dispatch(
-                setMessage(
-                    "OTP is required! insert your otp code in this field."
-                )
+                setMessages({
+                    type: ERROR,
+                    isShow: true,
+                    message:
+                        "OTP is required! insert your otp code in this field.",
+                })
             );
         }
     };
-
-
+console.log(isShow)
     const fieldError = Object.keys(errors).map((key) => errors[key]);
-    const filterError = useCallback(
-        () => fieldError.filter((error) => error),
-        [fieldError]
-    );
-    const errorTypes = filterError()[0] ? filterError()[0] : error
-    const IsItFieldError = filterError().length !== 0 ? 'FIELD_ERROR' : ERROR
+    const filteredError = fieldError.filter((msg) => msg);
+    console.log(filteredError)
 
     useEffect(() => {
-        if (success || errorTypes) {
-            dispatch(setIsShow(true));
-            dispatch(setMessageType(success ? SUCCESS : IsItFieldError));
-            dispatch(setMessage(success ? message : errorTypes));
-            dispatch(setError(''))
+        if(filteredError.length > 0){
+            dispatch(setMessages({type: 'FIELD_ERROR', isShow: true, message : filteredError[0] }))
+        }else{
+            dispatch(setMessages({ type: "", isShow: false, message: "" }));
         }
-    }, [errorTypes, success]);
-
-    useEffect(() => {
-        dispatch(setIsShow(false));
-        dispatch(setMessageType(""));
-        dispatch(setMessage(""));
-        dispatch(setError(''))
-        dispatch(setOtp(Array(6).fill("")))
         
-    }, [location.pathname, dispatch]);
-    
+    }, [filteredError, error])
+    // const checkingFieldErrorOrApiError = () => {
+    //     if (message) {
+    //         console.log("message->", message);
+    //         return {
+    //             msg: message,
+    //             type: SUCCESS,
+    //             isShow: true,
+    //         };
+    //     } else if (filteredError.length > 0) {
+    //         return {
+    //             msg: filteredError[0],
+    //             type: "FIELD_ERROR",
+    //             isShow: true,
+    //         };
+    //     } else if (error !== "") {
+    //         console.log('error', error)
+    //         return {
+    //             msg: error,
+    //             type: ERROR,
+    //             isShow: true,
+    //         };
+    //     }
+    //     return {
+    //         isShow: false,
+    //         msg: "",
+    //         type: "",
+    //     };
+    // };
+    // useEffect(() => {
+    //     const  checkingField = checkingFieldErrorOrApiError();
+    //     if (checkingField.isShow && checkingField.msg !== null) {
+    //         console.log('we')
+    //         dispatch(
+    //             setMessages({
+    //                 type: checkingField.type,
+    //                 isShow: checkingField.isShow,
+    //                 message: checkingField.msg,
+    //             })
+    //         );
+    //     } 
+    //     // else {
+    //     //     dispatch(setMessages({ type: "", isShow: false, message: "" }));
+    //     // }
+    // }, [dispatch, message, error, filteredError]);
+
+    // useEffect(() => {
+    //     dispatch(setMessages({ type: "", isShow: false, message: "" }));
+    //     dispatch(setError(""));
+    //     dispatch(setOtp(Array(6).fill("")));
+    // }, [location.pathname, dispatch]);
+
     return (
         <div>
             <div className="container h-svh relative">
@@ -240,10 +273,7 @@ export default function Register() {
                     </h3>
                 </div>
                 {!isOpenOtp ? (
-                    <form
-                        onSubmit={handleSubmit}
-                        className="flex flex-col"
-                    >
+                    <form onSubmit={handleSubmit} className="flex flex-col">
                         <div>
                             <div>
                                 <Input
@@ -254,7 +284,7 @@ export default function Register() {
                                     placeholder="First Name"
                                     error={errors.firstName}
                                     className="rounded-t-lg"
-                                    // className="border-none rounded-none mt-0 bg-white pl-6 shadow-none placeholder:text-sm placeholder:text-grayDark"
+                                    onBlur={validateInput}
                                 />
                             </div>
 
@@ -267,11 +297,11 @@ export default function Register() {
                                     onChange={handleChange}
                                     placeholder="Last Name"
                                     error={errors.lastName}
-                                    className="border-t-0"
-                                    // className="border-none rounded-none mt-0 bg-white pl-6 shadow-none placeholder:text-sm"
+                                    className="border-t-0 focus:border-t"
+                                    onBlur={validateInput}
                                 />
                             </div>
-                            <div >
+                            <div>
                                 <Input
                                     type="email"
                                     id="email"
@@ -280,8 +310,8 @@ export default function Register() {
                                     onChange={handleChange}
                                     placeholder="E-mail"
                                     error={errors.email}
-                                    className="border-t-0"
-                                    // className="border-none rounded-none mt-0 bg-white pl-6 shadow-none placeholder:text-sm"
+                                    className="border-t-0 focus:border-t"
+                                    onBlur={validateInput}
                                 />
                             </div>
                             <div>
@@ -292,8 +322,8 @@ export default function Register() {
                                     onChange={handleChange}
                                     placeholder="Password"
                                     error={errors.password}
-                                    className="border-t-0"
-                                    // className="border-none rounded-none mt-0 bg-white pl-6 shadow-none placeholder:text-sm"
+                                    className="border-t-0 focus:border-t"
+                                    onBlur={validateInput}
                                 />
                             </div>
                             <div>
@@ -304,8 +334,8 @@ export default function Register() {
                                     onChange={handleChange}
                                     placeholder="Confirm Password"
                                     error={errors.confirmPassword}
-                                    className="rounded-b-lg border-t-0"
-                                    // className="border-none rounded-none mt-0 bg-white pl-6 shadow-none placeholder:text-sm"
+                                    className="rounded-b-lg border-t-0 focus:border-t"
+                                    onBlur={validateInput}
                                 />
                             </div>
                         </div>

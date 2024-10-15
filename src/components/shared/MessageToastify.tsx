@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { ERROR } from "../../constant/MESSAGETYPE";
-import { setError } from "../../redux/feature/auth/authSlice";
+import { setAuthMessage, setError } from "../../redux/feature/auth/authSlice";
 import { setIsShow, setMessage, setMessageType } from "../../redux/feature/notification/notificationSlice";
 
 interface IMessageToastify {
@@ -11,6 +11,7 @@ interface IMessageToastify {
 }
 
 export default function MessageToastify({ type, value, isShow = false }: IMessageToastify) {
+    
     const dispatch = useDispatch()
     const getColorClass = () => {
         switch (type) {
@@ -26,14 +27,15 @@ export default function MessageToastify({ type, value, isShow = false }: IMessag
                 return '';
         }
     };
-console.log(type, value, isShow)
+    
     useEffect(() => {
-        if(type !== 'FIELD_ERROR'){
+        if(type !== 'FIELD_ERROR' ){
             const timer = setTimeout(() => {
                 dispatch(setIsShow(false));
                 dispatch(setMessageType(''));
                 dispatch(setMessage(''));
                 dispatch(setError(''))
+                dispatch(setAuthMessage(''))
             }, type !== ERROR ? 2000 : 10000);
         
             return () => clearTimeout(timer);

@@ -7,6 +7,7 @@ interface IInputFieldProps {
     value?: string;
     name?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onBlur?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     error?: string | null | undefined;
     placeholder?: string;
     className?: string;
@@ -22,7 +23,8 @@ export default function Input({
     placeholder,
     className,
     error,
-    showErrorMessage = false
+    showErrorMessage = false,
+    onBlur
 }: IInputFieldProps) {
     return (
         <div className="flex flex-col">
@@ -32,6 +34,7 @@ export default function Input({
                 value={value}
                 name={name}
                 onChange={onChange}
+                onBlur={onBlur}
                 placeholder={placeholder}
                 className={`w-full h-[48px] px-[14px] py-2  bg-white border border-[#E6E6E6] ${
                     error ? "border border-rose-500" : "focus:ring-grayDark focus:border-grayDark"

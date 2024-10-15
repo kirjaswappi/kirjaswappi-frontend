@@ -15,6 +15,12 @@ const notificationSlice = createSlice({
     name: "notification",
     initialState,
     reducers: {
+        setMessages: (state, action: PayloadAction<{type: string, isShow: boolean, message: string | undefined | null}>) => {
+            const { isShow, message, type } = action.payload
+            state.isShow = isShow;
+            state.message = message
+            state.messageType = type 
+        },
         setIsShow: (state, action: PayloadAction<boolean>) => {
             state.isShow = action.payload
         },
@@ -27,5 +33,5 @@ const notificationSlice = createSlice({
     },
 });
 
-export const { setIsShow, setMessageType, setMessage } = notificationSlice.actions;
+export const { setIsShow, setMessageType, setMessage, setMessages } = notificationSlice.actions;
 export default notificationSlice.reducer;
