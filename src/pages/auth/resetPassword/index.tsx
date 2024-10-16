@@ -18,7 +18,7 @@ import {
     setAuthSuccess,
     setError,
     setOtp,
-    setResetEmail,
+    setUserEmail,
 } from "../../../redux/feature/auth/authSlice";
 import {
     setIsShow,
@@ -49,7 +49,7 @@ export default function ResetPassword() {
         message: msg,
         isShow,
     } = useAppSelector((state) => state.notification);
-    const { success, loading, resetEmail, error, otp, message } =
+    const { success, loading, userEmail, error, otp, message } =
         useAppSelector((state) => state.auth);
     const { step } = useAppSelector((state) => state.step);
 
@@ -63,7 +63,7 @@ export default function ResetPassword() {
     }>({});
 console.log(errors)
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        dispatch(setResetEmail(e.target.value.trim()));
+        dispatch(setUserEmail(e.target.value.trim()));
         setErrors({
             ...errors,
             email: "",
@@ -131,9 +131,9 @@ console.log(errors)
 
         if (step == 0) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!resetEmail.trim()) {
+            if (!userEmail.trim()) {
                 errors.email = "E-mail is required";
-            } else if (!emailRegex.test(resetEmail)) {
+            } else if (!emailRegex.test(userEmail)) {
                 errors.email = "Please enter a valid email address";
             }
             setErrors(errors);
@@ -172,7 +172,7 @@ console.log(errors)
         e.preventDefault();
         if (step === 0) {
             if (validateChangePassword()) {
-                await sentOTP({ email: resetEmail }).then((res) => {
+                await sentOTP({ email: userEmail }).then((res) => {
                     if (res.data) {
                         const timer = setTimeout(() => {
                             // clearState()
@@ -189,11 +189,11 @@ console.log(errors)
             }
         } else if (step === 1) {
             if (
-                resetEmail !== "" &&
+                userEmail !== "" &&
                 otp.join("") !== "" &&
                 otp.join("").length >= 6
             ) {
-                await verifyOTP({ email: resetEmail, otp: otp.join("") }).then(
+                await verifyOTP({ email: userEmail, otp: otp.join("") }).then(
                     (res) => {
                         if (res.data) {
                             const timer = setTimeout(() => {
@@ -222,7 +222,7 @@ console.log(errors)
                 const resetObj = {
                     newPassword: userPass.password,
                     confirmPassword: userPass.confirmPassword,
-                    email: resetEmail,
+                    email: userEmail,
                 };
                 await resetPassword(resetObj)
                     .then((res) => {
@@ -234,7 +234,7 @@ console.log(errors)
                                 dispatch(setAuthMessage(""));
                                 navigate("/auth/login");
                                 dispatch(setStep(0));
-                                dispatch(setResetEmail(""));
+                                dispatch(setUserEmail(""));
                                 dispatch(setOtp(Array(6).fill("")));
                             }, 2000);
                             return () => clearTimeout(timer);
@@ -297,7 +297,7 @@ console.log(errors)
         dispatch(setAuthMessage(""));
         dispatch(setOtp(Array(6).fill("")));
         // dispatch(setStep(0))
-        dispatch(setResetEmail(""));
+        dispatch(setUserEmail(""));
     }, [location.pathname, dispatch]);
     return (
         <div>

@@ -28,7 +28,7 @@ export interface IInitialState {
         favGenres?: null;
     };
     otp: any[];
-    resetEmail: string;
+    userEmail: string;
     isVerify: boolean;
 }
 
@@ -52,7 +52,7 @@ export const initialState: IInitialState = {
         favGenres: null,
     },
     otp: Array(6).fill(""),
-    resetEmail: "",
+    userEmail: "",
     isVerify: false,
 };
 const authSlice = createSlice({
@@ -66,14 +66,14 @@ const authSlice = createSlice({
             state.error = null
             state.message = null
             state.otp = []
-            state.resetEmail = ""
+            state.userEmail = ""
             state.success = false
         },
         setOtp: (state, action) => {
             state.otp = action.payload;
         },
-        setResetEmail: (state, action) => {
-            state.resetEmail = action.payload;
+        setUserEmail: (state, action) => {
+            state.userEmail = action.payload;
         },
         setError: (state, action) => {
             state.error = action.payload;
@@ -284,5 +284,5 @@ const authSlice = createSlice({
     },
 });
 
-export const { setOtp, setResetEmail, setError, logout, setAuthMessage, setAuthSuccess } = authSlice.actions;
+export const { setOtp, setUserEmail, setError, logout, setAuthMessage, setAuthSuccess } = authSlice.actions;
 export default authSlice.reducer;

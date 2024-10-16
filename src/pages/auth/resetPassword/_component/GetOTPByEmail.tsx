@@ -3,14 +3,14 @@ import { useAppSelector } from '../../../../redux/hooks';
 
 
 export default function GetOTPByEmail({error, handleChange}: any) {
-    const { resetEmail } = useAppSelector(state => state.auth)
+    const { userEmail } = useAppSelector(state => state.auth)
     
     return (
         <div>
             <Input
                 type='email'
                 id="email"
-                value={resetEmail}
+                value={userEmail}
                 name="email"
                 onChange={handleChange}
                 placeholder="Enter email"
