@@ -7,10 +7,10 @@ import MessageToastify from "../../../../components/shared/MessageToastify";
 import PasswordInput from "../../../../components/shared/PasswordInput";
 import { ERROR, SUCCESS } from "../../../../constant/MESSAGETYPE";
 import { useRegisterMutation } from "../../../../redux/feature/auth/authApi";
+import { setAuthMessage, setError, setUserEmail } from "../../../../redux/feature/auth/authSlice";
 import { setMessages } from "../../../../redux/feature/notification/notificationSlice";
-import { setStep } from "../../../../redux/feature/step/stepSlice";
 import { useAppSelector } from "../../../../redux/hooks";
-import { setUserEmail } from "../../../../redux/feature/auth/authSlice";
+import { setStep } from "../../../../redux/feature/step/stepSlice";
 
 interface IRegisterForm {
     firstName: string;
@@ -40,6 +40,9 @@ export default function RegisterForm() {
         password: "",
         confirmPassword: "",
     });
+    // Filtered Error
+    const fieldError = Object.keys(errors).map((key) => errors[key]);
+    const filteredError = fieldError.filter((msg) => msg);
 
     // handle Change function to take sign-up information
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,8 +50,10 @@ export default function RegisterForm() {
         setUserInfo({ ...userInfo, [name]: value });
         setErrors({ ...errors, [name]: "" });
         validateInput(e);
+        dispatch(setError('')) // Clear error in state when input change or update
     };
 
+    // Handle Input validation (onBlur)
     const validateInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
 
@@ -108,10 +113,13 @@ export default function RegisterForm() {
             return stateObj;
         });
     };
-    const handleSubmit = async (e: any) => {
+    
+
+    // Handle submit
+    const handleSubmit = async (e) => {
         e.preventDefault();
         let allValid = true;
-        Object.keys(userInfo).forEach((key: any) => {
+        Object.keys(userInfo).forEach((key: any) => {            
             const event = {
                 target: {
                     name: key,
@@ -122,6 +130,9 @@ export default function RegisterForm() {
 
             if (!userInfo[key]) {
                 allValid = false;
+            }
+            if(userInfo.password !== userInfo.confirmPassword){
+                allValid = false
             }
         });
         if (allValid) {
@@ -137,6 +148,7 @@ export default function RegisterForm() {
                                         message: "",
                                     })
                                 );
+                                dispatch(setAuthMessage(''))
                                 dispatch(setUserEmail(userInfo.email))
                                 dispatch(setStep(step + 1));
 
@@ -153,13 +165,13 @@ export default function RegisterForm() {
         }
     };
 
-    const fieldError = Object.keys(errors).map((key) => errors[key]);
-    const filteredError = fieldError.filter((msg) => msg);
-    // console.log("filteredError", filteredError)
-    // console.log("api error", error);
+    // !Important message
+    // Check it out. Is it a field error or an API error?  [type_off_error: ['FIELD_ERROR', 'ERROR]]
+    // If field error we will show the error message in toastify. Until filed not fill up  (FIELD_ERROR)
+    // If I will get an error form API then it will show for 10's. After 10s it will auto clear out redux state also turn of toastify
+    // If I will get Success from API then it will show for 2's. After 10s it will auto clear out redux state also turn of toastify
     const checkingFieldErrorOrApiError = () => {
         if (message && message !== null) {
-            console.log("error", filteredError[0]);
             return {
                 msg: message,
                 type: SUCCESS,
@@ -167,7 +179,6 @@ export default function RegisterForm() {
             };
         }
         if (filteredError.length > 0) {
-            console.log("error", filteredError[0]);
             return {
                 msg: filteredError[0],
                 type: "FIELD_ERROR",
@@ -186,20 +197,15 @@ export default function RegisterForm() {
             type: "",
         };
     };
+    
     useEffect(() => {
-        const checkingField = checkingFieldErrorOrApiError();
-        if (checkingField.isShow && checkingField.msg !== null) {
-            dispatch(
-                setMessages({
-                    type: checkingField.type,
-                    isShow: checkingField.isShow,
-                    message: checkingField.msg,
-                })
-            );
+        const { isShow, msg, type } = checkingFieldErrorOrApiError();
+        if (isShow && msg) {
+            dispatch(setMessages({ type, isShow, message: msg }));
         } else {
             dispatch(setMessages({ type: "", isShow: false, message: "" }));
         }
-    }, [filteredError]);
+    }, [filteredError, error, message]);
     return (
         <form onSubmit={handleSubmit} className="flex flex-col">
             <div>

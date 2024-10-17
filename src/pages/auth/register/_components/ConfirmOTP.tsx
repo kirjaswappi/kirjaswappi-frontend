@@ -1,18 +1,20 @@
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../../components/shared/Button";
 import OTP from "../../../../components/shared/OTP";
-import { ERROR } from "../../../../constant/MESSAGETYPE";
+import { ERROR, SUCCESS } from "../../../../constant/MESSAGETYPE";
 import { useVerifyEmailMutation } from "../../../../redux/feature/auth/authApi";
 import { setOtp } from "../../../../redux/feature/auth/authSlice";
 import { setMessages } from "../../../../redux/feature/notification/notificationSlice";
+import { setStep } from "../../../../redux/feature/step/stepSlice";
 import { useAppSelector } from "../../../../redux/hooks";
 
 export default function ConfirmOTP() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [verifyEmail] = useVerifyEmailMutation();
-    const { userEmail, loading, otp } = useAppSelector((state) => state.auth);
+    const { userEmail, loading, otp, success, error, message } = useAppSelector((state) => state.auth);
     const handleOTPVerify = async (email: string, otp: string) => {
         if (email !== "" && otp !== "" && otp.length >= 6) {
             try {
@@ -26,8 +28,9 @@ export default function ConfirmOTP() {
                                     message: "",
                                 })
                             );
-                            navigate("/auth/login");
                             dispatch(setOtp(Array(6).fill("")));
+                            navigate("/auth/login");
+                            dispatch(setStep(0))
                         }, 3000);
                         return () => clearTimeout(timer);
                     }
@@ -38,7 +41,7 @@ export default function ConfirmOTP() {
         } else {
             dispatch(
                 setMessages({
-                    type: ERROR,
+                    type: 'FIELD_ERROR',
                     isShow: true,
                     message:
                         "OTP is required! insert your otp code in this field.",
@@ -46,7 +49,16 @@ export default function ConfirmOTP() {
             );
         }
     };
-    
+
+    useEffect(() => {
+        if (!!message || error) {
+            dispatch(setMessages({
+                type: success ? SUCCESS : ERROR,
+                isShow: true,
+                message: success ? message : error
+            }))
+        }
+    }, [error, message]);
     return (
         <div
             className={`bg-white absolute bottom-0 left-0 w-full  rounded-t-3xl transition-all duration-500 ease-in-out transform translate-y-0 h-[80vh]`}

@@ -25,13 +25,13 @@ interface ILoginForm {
 }
 
 export default function Login() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [login, { isLoading }] = useLoginMutation();
     const { error, success } = useAppSelector((state) => state.auth);
     const { isShow, message, messageType } = useAppSelector(
         (state) => state.notification
     );
-    console.log(isShow, message, messageType)
-    const dispatch = useDispatch();
-    const [login, { isLoading }] = useLoginMutation();
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState<{
         [key: string]: string | null | undefined;
@@ -41,13 +41,11 @@ export default function Login() {
         password: "",
     });
 
-    const navigate = useNavigate();
 
     // handle Change function to take login information
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         // login information store in state
         setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
-
         setErrors({
             ...errors,
             [e.target.id]: "",
@@ -104,7 +102,7 @@ export default function Login() {
     const IsItFieldError = filterError().length !== 0 ? 'FIELD_ERROR' : ERROR
 
     useEffect(() => {
-        if (success || errorTypes) {
+        if (!message || errorTypes) {
             dispatch(setIsShow(true));
             dispatch(setMessageType(success ? SUCCESS : IsItFieldError));
             dispatch(setMessage(success ? message : errorTypes));

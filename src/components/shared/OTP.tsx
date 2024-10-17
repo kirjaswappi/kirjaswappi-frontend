@@ -1,8 +1,7 @@
 import React, { useRef } from "react";
 import { useDispatch } from "react-redux";
-import { ERROR } from "../../constant/MESSAGETYPE";
 import { setOtp } from "../../redux/feature/auth/authSlice";
-import { setIsShow, setMessage, setMessageType } from "../../redux/feature/notification/notificationSlice";
+import { setMessages } from "../../redux/feature/notification/notificationSlice";
 import { useAppSelector } from "../../redux/hooks";
 import MessageToastify from "./MessageToastify";
 
@@ -18,13 +17,10 @@ export default function OTP({otpMessageShow=true}: {otpMessageShow?: boolean}) {
     ) => {
         const { value } = e.target;
         const newOtp = [...otp];
-
         if (value.match(/^\d$/)) {
             newOtp[index] = value;
             dispatch(setOtp(newOtp))
-            dispatch(setIsShow(false))
-            dispatch(setMessage(''))
-            dispatch(setMessageType(''))
+            dispatch(setMessages({type: "", isShow: false, message: ""}))
             if (index < otp.length - 1) {
                 inputs.current[index + 1]?.focus();
             }
@@ -42,25 +38,32 @@ export default function OTP({otpMessageShow=true}: {otpMessageShow?: boolean}) {
         index: number
     ) => {
         if (e.key === "Backspace" && otp[index] === "") {
-            if (index > 0) {
-                inputs.current[index - 1]?.focus();
-            }
-        }
+            if (index > 0) inputs.current[index - 1]?.focus();
+            dispatch(
+                setMessages({
+                    type: 'FIELD_ERROR',
+                    isShow: true,
+                    message:
+                        "OTP is required! insert your otp code in this field.",
+                })
+            );
+        } 
+        
     };
     const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
-        const pasteData = e.clipboardData.getData('text').trim();
-        
+        const pasteData = e.clipboardData.getData('text').trim();        
         if (pasteData.length === otp.length && /^\d+$/.test(pasteData)) {
             const newOtp = pasteData.split('');
             dispatch(setOtp(newOtp));
-            inputs.current[otp.length - 1]?.focus(); // Move focus to the last input
+            inputs.current[otp.length - 1]?.focus(); 
+        }else{
+            dispatch(setMessages({type: "", isShow: false, message: ""}))
         }
     };
+    
     return (
-        <div>
-            
-            <div className="flex gap-2 justify-between">
-                
+        <div>            
+            <div className="flex gap-2 justify-between">                
                 {otp.map((_, index: number) => (
                     <input
                         key={index}
@@ -71,7 +74,7 @@ export default function OTP({otpMessageShow=true}: {otpMessageShow?: boolean}) {
                         onKeyDown={(e) => handleKeyDown(e, index)}
                         onPaste={handlePaste}
                         ref={(el) => (inputs.current[index] = el)}
-                        className={`max-w-10 h-10  bg-[#E7E7E7] ${messageType === ERROR ? "border border-rose-500" : ""
+                        className={`max-w-10 h-10  bg-[#E7E7E7] ${messageType === 'FIELD_ERROR' ? "border border-rose-500" : ""
                             } rounded-md text-center text-base`}
                         placeholder="-"
                     />
