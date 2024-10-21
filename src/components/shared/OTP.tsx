@@ -5,7 +5,7 @@ import { setMessages } from "../../redux/feature/notification/notificationSlice"
 import { useAppSelector } from "../../redux/hooks";
 import MessageToastify from "./MessageToastify";
 
-export default function OTP({otpMessageShow=true}: {otpMessageShow?: boolean}) {
+export default function OTP({ otpMessageShow = true }: { otpMessageShow?: boolean }) {
     const dispatch = useDispatch()
     const { otp } = useAppSelector(state => state.auth)
     const { messageType, message, isShow } = useAppSelector(state => state.notification)
@@ -20,7 +20,7 @@ export default function OTP({otpMessageShow=true}: {otpMessageShow?: boolean}) {
         if (value.match(/^\d$/)) {
             newOtp[index] = value;
             dispatch(setOtp(newOtp))
-            dispatch(setMessages({type: "", isShow: false, message: ""}))
+            dispatch(setMessages({ type: "", isShow: false, message: "" }))
             if (index < otp.length - 1) {
                 inputs.current[index + 1]?.focus();
             }
@@ -47,23 +47,26 @@ export default function OTP({otpMessageShow=true}: {otpMessageShow?: boolean}) {
                         "OTP is required! insert your otp code in this field.",
                 })
             );
-        } 
-        
+        }
+
     };
     const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
-        const pasteData = e.clipboardData.getData('text').trim();        
+        const pasteData = e.clipboardData.getData('text').trim();
+        console.log('outer')
         if (pasteData.length === otp.length && /^\d+$/.test(pasteData)) {
             const newOtp = pasteData.split('');
             dispatch(setOtp(newOtp));
-            inputs.current[otp.length - 1]?.focus(); 
-        }else{
-            dispatch(setMessages({type: "", isShow: false, message: ""}))
+            inputs.current[otp.length - 1]?.focus();
+            dispatch(setMessages({ type: "", isShow: false, message: "" }))
+        } else {
+            console.log('not work')
+            dispatch(setMessages({ type: "", isShow: false, message: "" }))
         }
     };
-    
+
     return (
-        <div>            
-            <div className="flex gap-2 justify-between">                
+        <div>
+            <div className="flex gap-2 justify-between">
                 {otp.map((_, index: number) => (
                     <input
                         key={index}

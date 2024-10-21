@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineEye } from "react-icons/ai";
 import { PiEyeClosed } from "react-icons/pi";
 import { useDispatch } from "react-redux";
@@ -13,9 +13,7 @@ import { ERROR, SUCCESS } from "../../../constant/MESSAGETYPE";
 import { useLoginMutation } from "../../../redux/feature/auth/authApi";
 import { setError } from "../../../redux/feature/auth/authSlice";
 import {
-    setIsShow,
-    setMessage,
-    setMessageType,
+    setMessages
 } from "../../../redux/feature/notification/notificationSlice";
 import { useAppSelector } from "../../../redux/hooks";
 
@@ -28,8 +26,8 @@ export default function Login() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [login, { isLoading }] = useLoginMutation();
-    const { error, success } = useAppSelector((state) => state.auth);
-    const { isShow, message, messageType } = useAppSelector(
+    const { error, message } = useAppSelector((state) => state.auth);
+    const { isShow, message: msg, messageType } = useAppSelector(
         (state) => state.notification
     );
     const [showPassword, setShowPassword] = useState(false);
@@ -41,51 +39,72 @@ export default function Login() {
         password: "",
     });
 
+    // Filtered Error
+    const fieldError = Object.keys(errors).map((key) => errors[key]);
+    const filteredError = fieldError.filter((msg) => msg);
 
+
+
+    const validateInput = (e: any) => {
+        const { name, value } = e.target;
+
+        setErrors((prev: any) => {
+            const stateObj = { ...prev, [name]: "" };
+            switch (name) {
+                case "email":
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!value) {
+                        console.log(value)
+                        stateObj[name] = "Please enter email.";
+                    } else if (!emailRegex.test(value)) {
+                        console.log(name)
+                        stateObj[name] = "Please Enter your valid email";
+                    }
+                    break;
+                case "password":
+                    if (!value) {
+                        stateObj[name] = "Please enter Password.";
+                    } else if (value < 0) {
+                        console.log(value)
+                        errors.password = "Password must be at least 6 characters long";
+                    }
+                    break;
+                default:
+                    break;
+            }
+            return stateObj;
+        });
+    };
     // handle Change function to take login information
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         // login information store in state
-        setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
-        setErrors({
-            ...errors,
-            [e.target.id]: "",
-        });
-        dispatch(setIsShow(false));
-        dispatch(setMessageType(''));
-        dispatch(setMessage(''));
+        const { name, value } = e.target;
+        setUserInfo({ ...userInfo, [name]: value });
+        setErrors({ ...errors, [name]: "" });
+        validateInput(e);
         dispatch(setError(''))
-    };
-    const validateForm = () => {
-        let errors: {
-            email: string | null | undefined;
-            password: string | null | undefined;
-        } = {
-            email: undefined,
-            password: undefined,
-        };
-        // Regular expression to validate email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!userInfo.email.trim()) {
-            errors.email = "This is required";
-        } else if (!emailRegex.test(userInfo.email)) {
-            errors.email = "Please enter a valid email address";
-        }
-        if (!userInfo.password) {
-            errors.password = "This is required";
-        } else if (userInfo.password.length < 0) {
-            errors.password = "Password must be at least 6 characters long";
-        }
-        setErrors(errors);
-
-        const hasErrors = Object.values(errors).some(
-            (error) => error !== undefined
-        );
-        return !hasErrors;
     };
 
     const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
-        if (validateForm()) {
+        let allValid = true;
+        Object.keys(userInfo).forEach((key: any) => {
+            const typedKey = key as keyof ILoginForm;
+
+            const event = {
+                target: {
+                    name: key,
+                    value: userInfo[typedKey],
+                },
+            };
+            validateInput(event);
+
+            if (!userInfo[typedKey]) {
+                allValid = false;
+            }
+        });
+        // e.preventDefault();
+        if (allValid) {
             try {
                 await login(userInfo);
             } catch (error) {
@@ -93,28 +112,52 @@ export default function Login() {
             }
         }
     };
-    const fieldError = Object.keys(errors).map((key) => errors[key]);
-    const filterError = useCallback(
-        () => fieldError.filter((error) => error),
-        [fieldError]
-    );
-    const errorTypes = filterError()[0] ? filterError()[0] : error
-    const IsItFieldError = filterError().length !== 0 ? 'FIELD_ERROR' : ERROR
 
-    useEffect(() => {
-        if (!message || errorTypes) {
-            dispatch(setIsShow(true));
-            dispatch(setMessageType(success ? SUCCESS : IsItFieldError));
-            dispatch(setMessage(success ? message : errorTypes));
+
+    // !Important message
+    // Check it out. Is it a field error or an API error?  [type_off_error: ['FIELD_ERROR', 'ERROR]]
+    // If field error? we will show the error message message in toastify. Until filed not fill up  (FIELD_ERROR)
+    // If I will get an error form API then, it will show message for 10's. After 10s it will auto clear out redux state. also turn of toastify
+    // If I will get Success from API then it will show message for 2's. After 10s it will auto clear out redux state also. turn of toastify
+    // console.log(filteredError)
+    const checkingFieldErrorOrApiError = () => {
+        if (message && message !== null) {
+            return {
+                msg: message,
+                type: SUCCESS,
+                isShow: true,
+            };
         }
-    }, [errorTypes, success]);
+        if (filteredError.length > 0) {
+            return {
+                msg: filteredError[0],
+                type: "FIELD_ERROR",
+                isShow: true,
+            };
+        } else if (error && error !== null) {
+            return {
+                msg: error,
+                type: ERROR,
+                isShow: true,
+            };
+        }
+        return {
+            isShow: false,
+            msg: "",
+            type: "",
+        };
+    };
 
     useEffect(() => {
-        dispatch(setIsShow(false));
-        dispatch(setMessageType(""));
-        dispatch(setMessage(""));
-        dispatch(setError(''))
-    }, [location.pathname, dispatch]);
+        const { isShow, msg, type } = checkingFieldErrorOrApiError();
+        // console.log(msg)
+        if (isShow && msg) {
+
+            dispatch(setMessages({ type, isShow, message: msg }));
+        } else {
+            dispatch(setMessages({ type: "", isShow: false, message: "" }));
+        }
+    }, [filteredError, error, message]);
 
     return (
         <div className="relative">
@@ -141,7 +184,7 @@ export default function Login() {
                         <div >
                             <div>
                                 <Input
-                                    type="text"
+                                    type="email"
                                     id="email"
                                     value={userInfo.email}
                                     name="email"
@@ -149,6 +192,7 @@ export default function Login() {
                                     placeholder="E-mail"
                                     error={errors.email}
                                     className="rounded-t-lg"
+                                    onBlur={validateInput}
                                 />
                             </div>
                             <div className="relative">
@@ -161,6 +205,7 @@ export default function Login() {
                                     placeholder="Password"
                                     error={errors.password}
                                     className="rounded-b-lg border-t-0"
+                                    onBlur={validateInput}
                                 />
                                 <div
                                     className="absolute right-4 top-[18px] flex items-center cursor-pointer"
@@ -182,7 +227,7 @@ export default function Login() {
                                 <MessageToastify
                                     isShow={isShow}
                                     type={messageType}
-                                    value={message}
+                                    value={msg}
                                 />
                             </div>
                         )}

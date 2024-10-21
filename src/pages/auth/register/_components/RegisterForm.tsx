@@ -9,8 +9,8 @@ import { ERROR, SUCCESS } from "../../../../constant/MESSAGETYPE";
 import { useRegisterMutation } from "../../../../redux/feature/auth/authApi";
 import { setAuthMessage, setError, setUserEmail } from "../../../../redux/feature/auth/authSlice";
 import { setMessages } from "../../../../redux/feature/notification/notificationSlice";
-import { useAppSelector } from "../../../../redux/hooks";
 import { setStep } from "../../../../redux/feature/step/stepSlice";
+import { useAppSelector } from "../../../../redux/hooks";
 
 interface IRegisterForm {
     firstName: string;
@@ -54,7 +54,7 @@ export default function RegisterForm() {
     };
 
     // Handle Input validation (onBlur)
-    const validateInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const validateInput = (e: any) => {
         const { name, value } = e.target;
 
         setErrors((prev: any) => {
@@ -116,19 +116,21 @@ export default function RegisterForm() {
     
 
     // Handle submit
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         let allValid = true;
-        Object.keys(userInfo).forEach((key: any) => {            
+        Object.keys(userInfo).forEach((key: any) => {         
+            const typedKey = key as keyof IRegisterForm;
+            
             const event = {
                 target: {
                     name: key,
-                    value: userInfo[key],
+                    value: userInfo[typedKey],
                 },
             };
             validateInput(event);
 
-            if (!userInfo[key]) {
+            if (!userInfo[typedKey]) {
                 allValid = false;
             }
             if(userInfo.password !== userInfo.confirmPassword){
@@ -167,9 +169,9 @@ export default function RegisterForm() {
 
     // !Important message
     // Check it out. Is it a field error or an API error?  [type_off_error: ['FIELD_ERROR', 'ERROR]]
-    // If field error we will show the error message in toastify. Until filed not fill up  (FIELD_ERROR)
-    // If I will get an error form API then it will show for 10's. After 10s it will auto clear out redux state also turn of toastify
-    // If I will get Success from API then it will show for 2's. After 10s it will auto clear out redux state also turn of toastify
+    // If field error? we will show the error message message in toastify. Until filed not fill up  (FIELD_ERROR)
+    // If I will get an error form API then, it will show message for 10's. After 10s it will auto clear out redux state. also turn of toastify
+    // If I will get Success from API then it will show message for 2's. After 10s it will auto clear out redux state also. turn of toastify
     const checkingFieldErrorOrApiError = () => {
         if (message && message !== null) {
             return {
