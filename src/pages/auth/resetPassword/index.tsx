@@ -23,6 +23,7 @@ import {
 import {
     setIsShow,
     setMessage,
+    setMessages,
     setMessageType,
 } from "../../../redux/feature/notification/notificationSlice";
 import { setStep } from "../../../redux/feature/step/stepSlice";
@@ -41,7 +42,7 @@ export default function ResetPassword() {
     const [sentOTP] = useLazySentOTPQuery();
     const [verifyOTP] = useLazyVerifyOTPQuery();
     const [resetPassword] = useResetPasswordMutation();
-    const clearState = useCleanState();
+
     // const [resetPassword] = useResetPasswordMutation()
     const navigate = useNavigate();
     const {
@@ -61,17 +62,14 @@ export default function ResetPassword() {
     const [errors, setErrors] = useState<{
         [key: string]: string | null | undefined;
     }>({});
-console.log(errors)
+
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         dispatch(setUserEmail(e.target.value.trim()));
         setErrors({
             ...errors,
             email: "",
         });
-        // clearState()
-        dispatch(setIsShow(false));
-        dispatch(setMessageType(""));
-        dispatch(setMessage(""));
+        dispatch(setMessages({type: '', isShow: false, message: ""}))
         dispatch(setError(""));
     };
 
@@ -271,34 +269,34 @@ console.log(errors)
         }
     };
     // console.log(errors)
-    const fieldError = Object.keys(errors).map((key) => errors[key]);
-    const filterError = useCallback(
-        () => fieldError.filter((error) => error),
-        [fieldError]
-    );
+    // const fieldError = Object.keys(errors).map((key) => errors[key]);
+    // const filterError = useCallback(
+    //     () => fieldError.filter((error) => error),
+    //     [fieldError]
+    // );
 
-    const errorMsg = filterError()[0] ? filterError()[0] : error;
-    const IsItFieldError = filterError().length !== 0 ? "FIELD_ERROR" : ERROR;
+    // const errorMsg = filterError()[0] ? filterError()[0] : error;
+    // const IsItFieldError = filterError().length !== 0 ? "FIELD_ERROR" : ERROR;
 
 
-    useEffect(() => {
-        if (success || errorMsg) {
-            dispatch(setIsShow(true));
-            dispatch(setMessageType(success ? SUCCESS : IsItFieldError));
-            dispatch(setMessage(success ? message : errorMsg));
-        }
-    }, [errorMsg, success]);
+    // useEffect(() => {
+    //     if (success || errorMsg) {
+    //         dispatch(setIsShow(true));
+    //         dispatch(setMessageType(success ? SUCCESS : IsItFieldError));
+    //         dispatch(setMessage(success ? message : errorMsg));
+    //     }
+    // }, [errorMsg, success]);
 
-    // Reset redux state
-    useEffect(() => {
-        dispatch(setIsShow(false));
-        dispatch(setMessageType(""));
-        dispatch(setMessage(""));
-        dispatch(setAuthMessage(""));
-        dispatch(setOtp(Array(6).fill("")));
-        // dispatch(setStep(0))
-        dispatch(setUserEmail(""));
-    }, [location.pathname, dispatch]);
+    // // Reset redux state
+    // useEffect(() => {
+    //     dispatch(setIsShow(false));
+    //     dispatch(setMessageType(""));
+    //     dispatch(setMessage(""));
+    //     dispatch(setAuthMessage(""));
+    //     dispatch(setOtp(Array(6).fill("")));
+    //     // dispatch(setStep(0))
+    //     dispatch(setUserEmail(""));
+    // }, [location.pathname, dispatch]);
     return (
         <div>
             <div className="container h-svh relative">

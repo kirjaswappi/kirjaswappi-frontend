@@ -11,7 +11,7 @@ import Input from "../../../components/shared/Input";
 import MessageToastify from "../../../components/shared/MessageToastify";
 import { ERROR, SUCCESS } from "../../../constant/MESSAGETYPE";
 import { useLoginMutation } from "../../../redux/feature/auth/authApi";
-import { setError } from "../../../redux/feature/auth/authSlice";
+import { setAuthMessage, setAuthSuccess, setError } from "../../../redux/feature/auth/authSlice";
 import {
     setMessages
 } from "../../../redux/feature/notification/notificationSlice";
@@ -54,7 +54,6 @@ export default function Login() {
                 case "email":
                     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                     if (!value) {
-                        console.log(value)
                         stateObj[name] = "Please enter email.";
                     } else if (!emailRegex.test(value)) {
                         console.log(name)
@@ -106,7 +105,19 @@ export default function Login() {
         // e.preventDefault();
         if (allValid) {
             try {
-                await login(userInfo);
+                await login(userInfo).then(async (res) => {
+                    if (res?.data) {
+                        const timer = setTimeout(() => {
+                            dispatch(setMessages({ type: "", isShow: false, message: ""}));
+                            dispatch(setAuthMessage(''))
+                            dispatch(setAuthSuccess(false))
+                        }, 2000);
+                        return () => clearTimeout(timer);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
             } catch (error) {
                 console.log("login error", error);
             }
@@ -150,15 +161,16 @@ export default function Login() {
 
     useEffect(() => {
         const { isShow, msg, type } = checkingFieldErrorOrApiError();
-        // console.log(msg)
         if (isShow && msg) {
-
             dispatch(setMessages({ type, isShow, message: msg }));
         } else {
             dispatch(setMessages({ type: "", isShow: false, message: "" }));
         }
     }, [filteredError, error, message]);
 
+    useEffect(() => {
+        dispatch(setMessages({type: '', isShow: false, message:''}))
+    }, [location.pathname, dispatch]);
     return (
         <div className="relative">
             <div className="absolute left-0 top-4 w-full flex justify-between px-4">
