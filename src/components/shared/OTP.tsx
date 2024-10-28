@@ -10,7 +10,7 @@ export default function OTP({ otpMessageShow = true }: { otpMessageShow?: boolea
     const { otp } = useAppSelector(state => state.auth)
     const { messageType, message, isShow } = useAppSelector(state => state.notification)
     const inputs = useRef<(HTMLInputElement | null)[]>([]);
-
+console.log({message, isShow, messageType})
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement>,
         index: number
@@ -52,7 +52,6 @@ export default function OTP({ otpMessageShow = true }: { otpMessageShow?: boolea
     };
     const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
         const pasteData = e.clipboardData.getData('text').trim();
-        console.log('outer')
         if (pasteData.length === otp.length && /^\d+$/.test(pasteData)) {
             const newOtp = pasteData.split('');
             dispatch(setOtp(newOtp));

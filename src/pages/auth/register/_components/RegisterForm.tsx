@@ -49,8 +49,8 @@ export default function RegisterForm() {
         const { name, value } = e.target;
         setUserInfo({ ...userInfo, [name]: value });
         setErrors({ ...errors, [name]: "" });
-        validateInput(e);
-        dispatch(setError('')) // Clear error in state when input change or update
+        // validateInput(e);
+        dispatch(setError(''))
     };
 
     // Handle Input validation (onBlur)
@@ -59,57 +59,38 @@ export default function RegisterForm() {
 
         setErrors((prev: any) => {
             const stateObj = { ...prev, [name]: "" };
-            switch (name) {
-                case "firstName":
-                    if (!value) {
-                        stateObj[name] = "Please enter first name.";
-                    }
-                    break;
-                case "lastName":
-                    if (!value) {
-                        stateObj[name] = "Please enter last name.";
-                    }
-                    break;
-                case "email":
-                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (!value) {
-                        stateObj[name] = "Please enter email.";
-                    } else if (!emailRegex.test(value)) {
-                        stateObj[name] = "Please Enter your valid email";
-                    }
-                    break;
-
-                case "password":
-                    if (!value) {
-                        stateObj[name] = "Please enter Password.";
-                    } else if (
-                        userInfo.confirmPassword &&
-                        value !== userInfo.confirmPassword
-                    ) {
-                        stateObj["confirmPassword"] =
-                            "Password and Confirm Password do not match.";
-                    } else {
-                        stateObj["confirmPassword"] = userInfo.confirmPassword
-                            ? ""
-                            : errors.confirmPassword;
-                    }
-                    break;
-
-                case "confirmPassword":
-                    if (!value) {
-                        stateObj[name] = "Please enter Confirm Password.";
-                    } else if (
-                        userInfo.password &&
-                        value !== userInfo.password
-                    ) {
-                        stateObj[name] =
-                            "Password and Confirm Password do not match.";
-                    }
-                    break;
-
-                default:
-                    break;
+        
+            if (name === "firstName") {
+                if (!value) {
+                    stateObj[name] = "Please enter first name.";
+                }
+            } else if (name === "lastName") {
+                if (!value) {
+                    stateObj[name] = "Please enter last name.";
+                }
+            } else if (name === "email") {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!value) {
+                    stateObj[name] = "Please enter email.";
+                } else if (!emailRegex.test(value)) {
+                    stateObj[name] = "Please enter a valid email.";
+                }
+            } else if (name === "password") {
+                if (!value) {
+                    stateObj[name] = "Please enter Password.";
+                } else if (userInfo.confirmPassword && value !== userInfo.confirmPassword) {
+                    stateObj["confirmPassword"] = "Password and Confirm Password do not match.";
+                } else {
+                    stateObj["confirmPassword"] = userInfo.confirmPassword ? "" : errors.confirmPassword;
+                }
+            } else if (name === "confirmPassword") {
+                if (!value) {
+                    stateObj[name] = "Please enter Confirm Password.";
+                } else if (userInfo.password && value !== userInfo.password) {
+                    stateObj[name] = "Password and Confirm Password do not match.";
+                }
             }
+        
             return stateObj;
         });
     };
