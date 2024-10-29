@@ -80,7 +80,6 @@ export default function Login() {
         const { name, value } = e.target;
         setUserInfo({ ...userInfo, [name]: value });
         setErrors({ ...errors, [name]: "" });
-        validateInput(e);
         dispatch(setError(''))
     };
 
