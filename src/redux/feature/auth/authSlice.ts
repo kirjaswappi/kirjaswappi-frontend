@@ -28,7 +28,7 @@ export interface IInitialState {
         favGenres?: null;
     };
     otp: any[];
-    resetEmail: string;
+    userEmail: string;
     isVerify: boolean;
 }
 
@@ -52,7 +52,7 @@ export const initialState: IInitialState = {
         favGenres: null,
     },
     otp: Array(6).fill(""),
-    resetEmail: "",
+    userEmail: "",
     isVerify: false,
 };
 const authSlice = createSlice({
@@ -66,20 +66,26 @@ const authSlice = createSlice({
             state.error = null
             state.message = null
             state.otp = []
-            state.resetEmail = ""
+            state.userEmail = ""
             state.success = false
         },
         setOtp: (state, action) => {
             state.otp = action.payload;
         },
-        setResetEmail: (state, action) => {
-            state.resetEmail = action.payload;
+        setUserEmail: (state, action) => {
+            state.userEmail = action.payload;
         },
         setError: (state, action) => {
             state.error = action.payload;
         },
         setVerify: (state, action) => {
             state.error = action.payload;
+        },
+        setAuthMessage: (state, action: PayloadAction<string>) => {
+            state.message = action.payload;
+        },
+        setAuthSuccess: (state, action: PayloadAction<boolean>) => {
+            state.success = action.payload;
         },
     },
     extraReducers: (builder) => {
@@ -95,6 +101,7 @@ const authSlice = createSlice({
                 state.error = null;
                 state.success = true;
                 state.userInformation = { ...action.payload };
+                state.message = 'Login Successfully Done.'
             }
         );
         builder.addMatcher(
@@ -113,43 +120,33 @@ const authSlice = createSlice({
             }
         );
         builder.addMatcher(authApi.endpoints.register.matchPending, (state) => {
-            // console.log(action.payload)
-            state.loading = true;
-            state.error = null;
-            state.success = false;
-            // state.userInformation = {...action.payload}
-        });
-        builder.addMatcher(authApi.endpoints.register.matchPending, (state) => {
             state.loading = true;
             state.error = null;
             state.success = false;
             state.isVerify= false
-            state.message = 'OTP has been sent to email.'
         });
         builder.addMatcher(
             authApi.endpoints.register.matchFulfilled,
             (state, action) => {
-                console.log(action)
+                console.log(action.payload)
                 state.loading = false;
                 state.error = null;
                 state.success = true;
-                state.isVerify= false
+                state.message = 'OTP has been sent to you email'
             }
         );
         builder.addMatcher(
             authApi.endpoints.register.matchRejected,
-            (state, action) => {
-                const error = (action.payload?.data as IErrorPayload)?.error;
-
+            (state, action: PayloadAction<any>) => {
+                const error = (action.payload?.data);
                 let errorMessage: string | undefined;
-                let verify: boolean | undefined = false;
                 if (typeof error === "object" && error !== null) {
-                    errorMessage = error.message;
+                    errorMessage = error.error.message 
                 }
+
                 state.loading = false;
                 state.error = errorMessage;
                 state.success = false;
-                state.isVerify= verify
             }
         );
         builder.addMatcher(authApi.endpoints.sentOTP.matchPending, (state) => {
@@ -287,5 +284,5 @@ const authSlice = createSlice({
     },
 });
 
-export const { setOtp, setResetEmail, setError, logout } = authSlice.actions;
+export const { setOtp, setUserEmail, setError, logout, setAuthMessage, setAuthSuccess } = authSlice.actions;
 export default authSlice.reducer;

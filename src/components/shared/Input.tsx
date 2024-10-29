@@ -7,9 +7,11 @@ interface IInputFieldProps {
     value?: string;
     name?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onBlur?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     error?: string | null | undefined;
     placeholder?: string;
     className?: string;
+    showErrorMessage?: boolean
 }
 
 export default function Input({
@@ -21,6 +23,8 @@ export default function Input({
     placeholder,
     className,
     error,
+    showErrorMessage = false,
+    onBlur
 }: IInputFieldProps) {
     return (
         <div className="flex flex-col">
@@ -30,14 +34,15 @@ export default function Input({
                 value={value}
                 name={name}
                 onChange={onChange}
+                onBlur={onBlur}
                 placeholder={placeholder}
-                className={`w-full h-[48px] px-[14px] py-2 mt-1 border ${
-                    error ? "border-rose-500" : "border-grayDark"
-                } bg-[#F2F2F2] rounded-md shadow-sm focus:outline-none focus:ring-grayDark focus:border-grayDark ${
+                className={`w-full h-[48px] px-[14px] py-2  bg-white border border-[#E6E6E6] ${
+                    error ? "border border-rose-500" : "focus:ring-grayDark focus:border-grayDark"
+                } bg-[#F2F2F2] focus:outline-none  placeholder:text-sm placeholder:text-grayDark ${
                     className && className
                 }`}
             />
-            {error && (
+            {showErrorMessage && error && (
                 <div className="text-rose-500 text-xs mt-1 pl-2">{error}</div>
             )}
         </div>

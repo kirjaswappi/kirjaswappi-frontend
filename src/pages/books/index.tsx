@@ -3,6 +3,7 @@ import { goToTop } from "../../utility/helper";
 
 export default function Books() {
   goToTop()
+
   return (
     <section>
       <div className="container">

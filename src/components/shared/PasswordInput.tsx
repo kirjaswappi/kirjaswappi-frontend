@@ -10,6 +10,8 @@ interface PasswordInputProps {
     placeholder?: string;
     error?: string | null;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onBlur?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    className?: string;
 }
 
 const PasswordInput: React.FC<PasswordInputProps> = ({
@@ -19,6 +21,8 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
     placeholder,
     error,
     onChange,
+    onBlur,
+    className
 }) => {
     const [isVisible, setIsVisible] = useState(false);
 
@@ -36,6 +40,8 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
                 onChange={onChange}
                 placeholder={placeholder}
                 error={error}
+                className={`${className}`}
+                onBlur={onBlur}
             />
             <div
                 className="absolute right-4 top-[18px] flex items-center cursor-pointer"

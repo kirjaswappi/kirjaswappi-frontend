@@ -1,39 +1,54 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import authVector from "../../../assets/vectorAuth.png";
+import leftArrowIcon from "../../../assets/leftArrow.png";
 import Button from "../../../components/shared/Button";
 import Image from "../../../components/shared/Image";
 import MessageToastify from "../../../components/shared/MessageToastify";
 import OTP from "../../../components/shared/OTP";
 import { ERROR, SUCCESS } from "../../../constant/MESSAGETYPE";
-import { useLazySentOTPQuery, useLazyVerifyOTPQuery, useResetPasswordMutation } from "../../../redux/feature/auth/authApi";
-import { setError, setOtp, setResetEmail } from "../../../redux/feature/auth/authSlice";
-import { setIsShow, setMessage, setMessageType } from "../../../redux/feature/notification/notificationSlice";
+import {
+    useLazySentOTPQuery,
+    useLazyVerifyOTPQuery,
+    useResetPasswordMutation,
+} from "../../../redux/feature/auth/authApi";
+import {
+    setAuthMessage,
+    setError,
+    setOtp
+} from "../../../redux/feature/auth/authSlice";
+import {
+    setMessages
+} from "../../../redux/feature/notification/notificationSlice";
 import { setStep } from "../../../redux/feature/step/stepSlice";
 import { useAppSelector } from "../../../redux/hooks";
 import GetOTPByEmail from "./_component/GetOTPByEmail";
 import NewPassword from "./_component/NewPassword";
 
-
 interface INewPassForm {
+    email: string;
     password: string;
     confirmPassword: string;
 }
 
 export default function ResetPassword() {
-    const dispatch = useDispatch()
-    const [sentOTP] = useLazySentOTPQuery()
-    const [verifyOTP] = useLazyVerifyOTPQuery()
-    const [resetPassword] = useResetPasswordMutation()
-    // const [resetPassword] = useResetPasswordMutation()
-    const navigate = useNavigate()
-    const { messageType, message:msg, isShow } = useAppSelector(state => state.notification)
-    const { success, loading, resetEmail, error, otp, message } = useAppSelector(state => state.auth)
-    const { step } = useAppSelector(state => state.step)
-    const [emailError, setEmailError] = useState<string | null | undefined>('')       
-    
+    const dispatch = useDispatch();
+    const [sentOTP] = useLazySentOTPQuery();
+    const [verifyOTP] = useLazyVerifyOTPQuery();
+    const [resetPassword] = useResetPasswordMutation();
+    const navigate = useNavigate();
+
+    const {
+        messageType,
+        message: msg,
+        isShow,
+    } = useAppSelector((state) => state.notification);
+    const { loading, error, message, otp } =
+        useAppSelector((state) => state.auth);
+    const { step } = useAppSelector((state) => state.step);
+
     const [userPass, setUserPass] = useState<INewPassForm>({
+        email: "",
         password: "",
         confirmPassword: "",
     });
@@ -41,212 +56,387 @@ export default function ResetPassword() {
         [key: string]: string | null | undefined;
     }>({});
 
-// console.log(userPass)
-    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        dispatch(setResetEmail(e.target.value.trim()))
-        setEmailError('')
-    };
+    // Filtered Error
+    const fieldError = Object.keys(errors).map((key) => errors[key]);
+    const filteredError = fieldError.filter((msg) => msg);
 
+    // handle Change function to take sign-up information
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setUserPass({ ...userPass, [e.target.name]: e.target.value });
-        setErrors({
-            ...errors,
-            [e.target.id]: "",
-        });
-
-        if (
-            e.target.name === "password" ||
-            e.target.name === "confirmPassword"
-        ) {
-            if (
-                e.target.name === "confirmPassword" &&
-                userPass.password &&
-                e.target.value !== userPass.password
-            ) {
-                setErrors((prevErrors) => ({
-                    ...prevErrors,
-                    confirmPassword:
-                        "Password and confirm password do not match!",
-                }));
-            } else if (
-                e.target.name === "password" &&
-                userPass.confirmPassword &&
-                userPass.confirmPassword !== e.target.value
-            ) {
-                setErrors((prevErrors) => ({
-                    ...prevErrors,
-                    confirmPassword:
-                        "Password and confirm password does not match!",
-                }));
-            } else {
-                setErrors((prevErrors) => ({
-                    ...prevErrors,
-                    confirmPassword: "",
-                }));
+        const { name, value } = e.target;
+        setUserPass({ ...userPass, [name]: value });
+        setErrors({ ...errors, [name]: "" });
+        // validateInput(e);
+        dispatch(setError(''))
+        dispatch(setMessages({message:"", type:'', isShow:false}))
+    };
+    console.log(errors)
+    // Handle Input validation (onBlur)
+    const validateInput = (e: any) => {
+        const { name, value } = e.target;
+        setErrors((prev: any) => {
+            const stateObj = { ...prev, [name]: "" };
+            if (step === 0) {
+                if (name === "email") {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!value) {
+                        stateObj[name] = "Please enter email.";
+                    } else if (!emailRegex.test(value)) {
+                        stateObj[name] = "Please enter a valid email.";
+                    }
+                }
+            } else if (step === 2) {
+                if (name === "password") {
+                    if (!value) {
+                        stateObj[name] = "Please enter Password.";
+                    } else if (userPass.confirmPassword && value !== userPass.confirmPassword) {
+                        stateObj["confirmPassword"] = "Password and Confirm Password do not match.";
+                    } else {
+                        stateObj["confirmPassword"] = userPass.confirmPassword ? "" : errors.confirmPassword;
+                    }
+                } else if (name === "confirmPassword") {
+                    if (!value) {
+                        stateObj[name] = "Please enter Confirm Password.";
+                    } else if (userPass.password && value !== userPass.password) {
+                        stateObj[name] = "Password and Confirm Password do not match.";
+                    }
+                }
             }
-        }
-    }
-    const validation = () => {
-        let error: {
-            email: string | null | undefined;
-        } = {
-            email: undefined,
-        };
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!resetEmail.trim()) {
-            error.email = "E-mail is required";
-        } else if (!emailRegex.test(resetEmail)) {
-            error.email = "Please enter a valid email address";
-        }
-        if (error) {
-            setEmailError(error?.email)
-        }
-        const hasErrors = Object.values(error).some(
-            (error) => error !== undefined
-        );
-        return !hasErrors;
-    }
-    const validateChangePassword = () => {
-        let errors: {
-            password: string | null | undefined;
-            confirmPassword: string | null | undefined;
-        } = {
-            password: undefined,
-            confirmPassword: undefined,
-        };
-        
-        if (!userPass.password) {
-            errors.password = "Password is required";
-        } else if (userPass.password.length < 0) {
-            errors.password = "Password must be at least 6 characters long";
-        }
-        if (!userPass.confirmPassword) {
-            errors.confirmPassword = "Confirm password is required";
-        } else if (userPass.password.length < 0) {
-            errors.confirmPassword =
-                "Confirm password must be at least 6 characters long";
-        }
-        setErrors(errors);
-
-        const hasErrors = Object.values(errors).some(
-            (error) => error !== undefined
-        );
-        return !hasErrors;
+            return stateObj;
+        });
     };
 
-    const handleSubmit =  async (e: { preventDefault: () => void; }) => {
-        e.preventDefault()
-        if (step === 0) {
-            if (validation()) {
-                await sentOTP({ email: resetEmail }).then(res => {
-                    if(res.data) {
-                        const timer = setTimeout(() => {
-                            dispatch(setIsShow(false));
-                            dispatch(setMessageType(''));
-                            dispatch(setMessage(''));                            
-                            dispatch(setStep(step + 1))                            
-                        }, 2000);
-                        return () => clearTimeout(timer);
-                    }
-                })
+    // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    //     e.preventDefault();
+    //     let allValid = true;
+        
+    //     Object.keys(userPass).forEach(async (key: any) => {
+    //         const typedKey = key as keyof {
+    //             email: string;
+    //             password: string;
+    //             confirmPassword: string;
+    //         };
+            
+    //         const value = userPass[typedKey];
+    //         if ((step === 0 && typedKey === "email") || (step === 2 && (typedKey === "password" || typedKey === "confirmPassword"))) {
+    //             const event = {
+    //                 target: {
+    //                     name: key,
+    //                     value: userPass[typedKey],
+    //                 },
+    //             };
+    //             validateInput(event);
+    //             if (!value) {
+    //                 allValid = false;
+    //             }
+    //         }
+            
+    //     });
+        
+
+    //     if (allValid) {
+    //         try {
+    //             if (step === 0) {
+    //                 await sentOTP({ email: userPass.email }).then((res) => {
+    //                     if (res?.data) {
+    //                         const timer = setTimeout(() => {
+    //                             dispatch(
+    //                                 setMessages({
+    //                                     type: "",
+    //                                     isShow: false,
+    //                                     message: "",
+    //                                 })
+    //                             );
+    //                             dispatch(setAuthMessage(''))
+    //                             dispatch(setStep(step + 1));
+
+    //                         }, 2000);
+    //                         return () => clearTimeout(timer);
+    //                     }
+    //                 })
+    //             }
+    //             else if (step === 1) {
+    //                 if (userPass.email !== ""  && otp.join('') !== '' &&  otp.join('').length >= 6) {
+    //                     await verifyOTP({ email: userPass.email, otp: otp.join("") }).then(res => {
+    //                         if (res?.data) {
+    //                             const timer = setTimeout(() => {
+    //                                 dispatch(
+    //                                     setMessages({
+    //                                         type: "",
+    //                                         isShow: false,
+    //                                         message: "",
+    //                                     })
+    //                                 );
+    //                                 dispatch(setAuthMessage(''))
+    //                                 dispatch(setStep(step + 1));
+    
+    //                             }, 2000);
+    //                             return () => clearTimeout(timer);
+    //                         }
+    //                     })
+    //                 } else {
+    //                     dispatch(
+    //                         setMessages({
+    //                             type: 'FIELD_ERROR',
+    //                             isShow: true,
+    //                             message:
+    //                                 "OTP is required! insert your otp code in this field.",
+    //                         })
+    //                     );
+    //                 }
+    //             }
+    //             else if (step === 2) {
+    //                 const resetObj = {
+    //                     newPassword: userPass.password,
+    //                     confirmPassword: userPass.confirmPassword,
+    //                     email: userPass.email,
+    //                 };
+                    
+    //                 await resetPassword(resetObj).then(res => {
+    //                     if (res?.data) {
+    //                         const timer = setTimeout(() => {
+    //                             dispatch(
+    //                                 setMessages({
+    //                                     type: "",
+    //                                     isShow: false,
+    //                                     message: "",
+    //                                 })
+    //                             );
+    //                             dispatch(setAuthMessage(''))
+    //                             dispatch(setStep(0))
+    //                             dispatch(setOtp(Array(6).fill("")));
+    //                             navigate("/auth/login");
+
+    //                         }, 2000);
+    //                         return () => clearTimeout(timer);
+    //                     }
+    //                 })
+    //             }
+    //         } catch (error) {
+    //             console.log("login error", error);
+    //         }
+    //     }
+    // };
+    const validateStep = () => {
+        let allValid = true;
+        Object.keys(userPass).forEach((key) => {
+            const typedKey = key as keyof INewPassForm;
+            const value = userPass[typedKey];
+    
+            // Validate only the relevant fields for each step
+            if ((step === 0 && typedKey === "email") || (step === 2 && (typedKey === "password" || typedKey === "confirmPassword"))) {
+                const event = {
+                    target: {
+                        name: key,
+                        value,
+                    },
+                };
+                validateInput(event);
+                if (!value) allValid = false;
             }
-        } else if (step === 1) {
-            if (resetEmail !== '' && otp.join('') !== '' && otp.join('').length >= 6) {
-                await verifyOTP({email:resetEmail, otp: otp.join('')}).then(res => {
-                    if(res.data) {
-                        const timer = setTimeout(() => {
-                            dispatch(setIsShow(false));
-                            dispatch(setMessageType(''));
-                            dispatch(setMessage(''));                            
-                            dispatch(setStep(step + 1))                            
-                        }, 2000);
-                        return () => clearTimeout(timer);
-                    }
-                })
-            }else{
-                dispatch(setIsShow(true))
-                dispatch(setMessageType(ERROR))
-                dispatch(setMessage('OTP is required! insert your otp code in this field.'))
+        });
+        return allValid;
+    };
+    
+    const handleSendOTP = async () => {
+        try {
+            const res = await sentOTP({ email: userPass.email });
+            if (res?.data) {
+                
+                const timer = setTimeout(() => {
+                    dispatch(setMessages({ type: "", isShow: false, message: "" }));
+                    dispatch(setAuthMessage(''));
+                    dispatch(setStep(step + 1));
+                }, 2000);
+                return () => clearTimeout(timer);
             }
-        }else if(step === 2){
-            if(validateChangePassword()){
-                const resetObj = {
-                    newPassword: userPass.password,
-                    confirmPassword: userPass.confirmPassword,
-                    email: resetEmail
-                  }
-                await resetPassword(resetObj).then(res => {
-                    if (!res.error) {
-                        const timer = setTimeout(() => {
-                            dispatch(setIsShow(false));
-                            dispatch(setMessageType(''));
-                            dispatch(setMessage(''));                            
-                            navigate('/auth/login')
-                            dispatch(setStep(0))
-                            dispatch(setResetEmail(''))
-                            dispatch(setOtp(Array(6).fill("")))
-                        }, 2000);
-                        return () => clearTimeout(timer);
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-            }
+        } catch (error) {
+            console.error("Error sending OTP:", error);
         }
-    }
+    };
+    
+    const handleVerifyOTP = async () => {
+        if (userPass.email && otp.join('') && otp.join('').length >= 6) {
+            try {
+                const res = await verifyOTP({ email: userPass.email, otp: otp.join("") });
+                if (res?.data) {
+                    
+                    const timer = setTimeout(() => {
+                        dispatch(setMessages({ type: "", isShow: false, message: "" }));
+                        dispatch(setAuthMessage(''));
+                        dispatch(setStep(step + 1));
+                    }, 2000);
+                    return () => clearTimeout(timer);
+                }
+            } catch (error) {
+                console.error("Error verifying OTP:", error);
+            }
+        } else {
+            dispatch(setMessages({
+                type: 'FIELD_ERROR',
+                isShow: true,
+                message: "OTP is required! Insert your OTP code.",
+            }));
+        }
+    };
+    
+    const handleResetPassword = async () => {
+        const resetObj = {
+            newPassword: userPass.password,
+            confirmPassword: userPass.confirmPassword,
+            email: userPass.email,
+        };
+        try {
+            const res = await resetPassword(resetObj);
+            if (res?.data) {
+                
+                const timer = setTimeout(() => {
+                    dispatch(setMessages({ type: "", isShow: false, message: "" }));
+                    dispatch(setAuthMessage(''));                    
+                    navigate("/auth/login");
+                    dispatch(setStep(0));
+                    dispatch(setOtp(Array(6).fill("")));
+
+                }, 2000);
+                return () => clearTimeout(timer);
+            }
+        } catch (error) {
+            console.error("Error resetting password:", error);
+        }
+    };
+    
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+    
+        if (!validateStep()) return;
+    
+        if (step === 0) {
+            await handleSendOTP();
+        } else if (step === 1) {
+            await handleVerifyOTP();
+        } else if (step === 2) {
+            await handleResetPassword();
+        }
+    };
+
 
     const renderStepContent = () => {
         switch (step) {
             case 0:
-                return <GetOTPByEmail error={emailError} handleChange={handleEmailChange} />;
+                return (
+                    <GetOTPByEmail
+                        userInfo={userPass}
+                        error={errors.email}
+                        handleChange={handleChange}
+                        validateInput={validateInput}
+                    />
+                );
             case 1:
-                return <OTP otpMessageShow={false} />
+                return <OTP otpMessageShow={false} />;
             case 2:
-                return <NewPassword userPass={userPass} handleChange={handleChange} errors={errors}/>
+                return (
+                    <NewPassword
+                        userPass={userPass}
+                        handleChange={handleChange}
+                        errors={errors}
+                        validateInput={validateInput}
+                    />
+                );
             default:
-                return null
+                return null;
         }
     };
-    useEffect(() => {
-        if (success || error) {
-        if(success){
-            dispatch(setError(''))
+    
+
+    const checkingFieldErrorOrApiError = () => {
+        if (message && message !== null) {
+            return {
+                msg: message,
+                type: SUCCESS,
+                isShow: true,
+            };
         }
-        dispatch(setIsShow(true))
-        dispatch(setMessageType(success ? SUCCESS : ERROR))
-        dispatch(setMessage(success ? message : error))        
-    }
-    }, [error, success])
+        if (filteredError.length > 0 || msg !== '') {
+            return {
+                msg: filteredError[0] || msg,
+                type: "FIELD_ERROR",
+                isShow: true,
+            };
+        } else if (error && error !== null) {
+            return {
+                msg: error,
+                type: ERROR,
+                isShow: true,
+            };
+        }
+        return {
+            isShow: false,
+            msg: "",
+            type: "",
+        };
+    };
 
     useEffect(() => {
-        dispatch(setIsShow(false))
-        dispatch(setMessageType(''))
-        dispatch(setMessage(''))
-    }, [location.pathname, dispatch])
+        const { isShow, msg, type } = checkingFieldErrorOrApiError();
+        if (isShow && msg) {
+            dispatch(setMessages({ type, isShow, message: msg }));
+        } else {
+            dispatch(setMessages({ type: "", isShow: false, message: "" }));
+        }
+    }, [filteredError, error, message, msg]);
     return (
         <div>
-            <div className="container h-[777px] bg-white shadow-custom-box-shadow flex items-center mb-10">
-                <div className="w-1/2 flex items-center justify-center">
-                    <Image src={authVector} alt="Book Vector" />
-                </div>
-                <div className="w-1/2 flex items-center justify-center">
-                    <div className="w-8/12">
-                        <h2 className="text-primary text-[20px] font-medium mb-6">
-                            {step === 1 ? "Verify OTP" : "Forgot Password"}
-                        </h2>
-                        <form onSubmit={(e) => handleSubmit(e)}>
-                            {renderStepContent()}
-                            <div className="mt-4">
-                            <MessageToastify isShow={isShow} type={messageType} value={msg} />
-                            </div>
-                            <Button type="submit" className="text-white font-medium text-sm w-full bg-primary py-2 mt-3">
-                                {loading ? 'Loading...' : 'Continue'}
-                            </Button>
-                        </form>
+            <div className="container h-svh relative">
+                <div className="pt-4 pb-6 flex items-center gap-2">
+                    <div
+                        className="cursor-pointer w-5"
+                        onClick={() => navigate("/auth/login")}
+                    >
+                        <Image src={leftArrowIcon} alt="left" />
                     </div>
+                    <h3 className="font-sofia text-base font-medium ">
+                        Forget Password
+                    </h3>
                 </div>
+                {
+                    <form
+                        onSubmit={(e) => handleSubmit(e)}
+                        className={`${step === 1
+                            ? "bg-white absolute bottom-0 left-0 w-full h-[80vh] rounded-t-3xl"
+                            : ""
+                            }`}
+                    >
+                        {step === 1 && (
+                            <div className="text-center py-6 border-b border-[#E6E6E6]">
+                                <h1>Confirm you Email</h1>
+                            </div>
+                        )}
+                        <div className={`${step === 1 && "px-6"}`}>
+                            {step === 1 && (
+                                <p className="text-sm font-light font-sofia text-center pt-8 pb-10">
+                                    Enter the code we’ve sent to your Email
+                                </p>
+                            )}
+                            {renderStepContent()}
+
+                            {isShow && (
+                                <div className="mb-2 mt-2">
+                                    <MessageToastify
+                                        isShow={isShow}
+                                        type={messageType}
+                                        value={msg}
+                                    />
+                                </div>
+                            )}
+                            <Button
+                                type="submit"
+                                className="w-full h-[48px] px-4 font-normal text-white bg-primary rounded-2xl text-sm mt-4"
+                            >
+                                {loading ? "Loading..." : "Continue"}
+                            </Button>
+                        </div>
+                    </form>
+                }
             </div>
         </div>
-    )
+    );
 }
