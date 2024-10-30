@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { RouterProvider } from 'react-router-dom'
+import Loader from './components/shared/Loader'
 import { useAuthenticateMutation } from './redux/feature/auth/authApi'
 import routes from './routes/route'
 import { isTokenExpired } from './utility/getUser'
@@ -31,7 +32,7 @@ export default function Authenticate() {
     }, [])
 
     // Global Loading Return
-    if(isLoading) return <p>Loading...</p>
+    if(isLoading) return <Loader/>
 
     // Routes return
     return (

@@ -8,10 +8,10 @@ import ResetPassword from "../pages/auth/resetPassword";
 import BookDetails from "../pages/bookDetails";
 import Books from "../pages/books";
 import Profile from "../pages/profile";
+import EditProfile from "../pages/profile/components/EditProfile";
 import UserProfile from "../pages/profile/components/UserProfile";
 import Authenticate from "./Aunthenticate";
 import PrivateRoute from "./PrivateRoute";
-import EditProfile from "../pages/profile/components/EditProfile";
 
 const routes = createBrowserRouter([
   {
@@ -44,6 +44,7 @@ const routes = createBrowserRouter([
         ),
         children: [
           {
+            loader: ()=> <p>Loading...</p>,
             index: true,
             path: "user-profile",
             element: <UserProfile />,

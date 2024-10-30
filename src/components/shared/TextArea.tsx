@@ -12,7 +12,7 @@ export default function TextArea({
     placeholder?: string
 }) {
   return (
-    <textarea name={name} onChange={onChange} value={value} placeholder={placeholder} className='w-full border border-[#E6E6E6] focus:border-none outline-none p-4 text-sm font-sofia font-light rounded-lg'>
+    <textarea name={name} onChange={onChange} value={value} placeholder={placeholder} className='w-full border border-[#E6E6E6] focus:border-none outline-none p-4 text-sm font-sofia font-light rounded-lg text-grayDark'>
 
     </textarea>
   )

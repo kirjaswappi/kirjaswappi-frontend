@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import bookDetailsBg from "../../../assets/bookdetailsbg.jpg";
 import editIcon from "../../../assets/editBlue.png";
@@ -9,9 +10,19 @@ import userprofile from "../../../assets/userprofile.png";
 import BookCard from "../../../components/shared/BookCard";
 import Button from "../../../components/shared/Button";
 import Image from '../../../components/shared/Image';
+import SideDrawer from "./SideDrawer";
 
 export default function UserProfile() {
   const navigate = useNavigate()
+  const [isOpen, setIsOpen] = useState(false);
+
+    const toggleDrawer = () => {
+      setIsOpen(!isOpen);
+    };
+  
+    const closeDrawer = () => {
+      setIsOpen(false);
+    };
   return (
     <div>
       <div className="absolute left-0 top-4 w-full flex justify-between px-4">
@@ -19,9 +30,11 @@ export default function UserProfile() {
           <h2>My profile</h2>
         </div>
         <div className="flex items-center gap-4">
-          <Image src={rightMenu} alt="icon" />
+          <Image src={rightMenu} alt="icon" onClick={toggleDrawer} />
         </div>
       </div>
+      {/* Side Drawer */}
+      <SideDrawer isOpen={isOpen} onClose={closeDrawer} />
       <div className="w-full h-[124px] z-0">
         <Image src={bookDetailsBg} className="w-full h-full" />
       </div>
