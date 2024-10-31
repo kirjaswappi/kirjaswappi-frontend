@@ -272,6 +272,9 @@ export default function ResetPassword() {
             dispatch(setMessages({ type: "", isShow: false, message: "" }));
         }
     }, [filteredError, error, message, msg]);
+    useEffect(() => {
+        dispatch(setMessages({ type: '', isShow: false, message: '' }))
+    }, [location.pathname, dispatch]);
     return (
         <div>
             <div className="container h-svh relative">

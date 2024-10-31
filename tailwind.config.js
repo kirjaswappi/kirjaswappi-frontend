@@ -32,7 +32,8 @@ export default {
         black: "#000000",
         night:"#363739",
         gray:"#CCCCCC",
-        grayDark:"#808080"
+        grayDark:"#808080",
+        platinum:'#E6E6E6'
       },
       // fontSize: {
 

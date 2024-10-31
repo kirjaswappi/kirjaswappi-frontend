@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import bookDetailsBg from "../../../assets/bookdetailsbg.jpg";
 import editIcon from "../../../assets/editBlue.png";
@@ -10,19 +10,20 @@ import userprofile from "../../../assets/userprofile.png";
 import BookCard from "../../../components/shared/BookCard";
 import Button from "../../../components/shared/Button";
 import Image from '../../../components/shared/Image';
-import SideDrawer from "./SideDrawer";
+import { setOpen } from "../../../redux/feature/open/openSlice";
+import { useAppSelector } from "../../../redux/hooks";
+import { goToTop } from "../../../utility/helper";
+import Settings from "./MoreOptions";
 
 export default function UserProfile() {
   const navigate = useNavigate()
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
+  const {userInformation} = useAppSelector(state => state.auth)
+  const { open } = useAppSelector(state => state.open)
+  const dispatch = useDispatch()
 
-    const toggleDrawer = () => {
-      setIsOpen(!isOpen);
-    };
-  
-    const closeDrawer = () => {
-      setIsOpen(false);
-    };
+
+  goToTop()
   return (
     <div>
       <div className="absolute left-0 top-4 w-full flex justify-between px-4">
@@ -30,11 +31,10 @@ export default function UserProfile() {
           <h2>My profile</h2>
         </div>
         <div className="flex items-center gap-4">
-          <Image src={rightMenu} alt="icon" onClick={toggleDrawer} />
+          <Image src={rightMenu} alt="icon" onClick={() => dispatch(setOpen(!open))} />
         </div>
       </div>
-      {/* Side Drawer */}
-      <SideDrawer isOpen={isOpen} onClose={closeDrawer} />
+      <Settings />
       <div className="w-full h-[124px] z-0">
         <Image src={bookDetailsBg} className="w-full h-full" />
       </div>
@@ -47,7 +47,7 @@ export default function UserProfile() {
       <div className="container mt-20">
         <div className="text-center my-5 ">
           <h1 className="font-medium text-black text-sm leading-none mb-2 font-sofia">
-            Raisa Binte Hossain
+            {userInformation.firstName + " " + userInformation.lastName}
           </h1>
           <p className="text-black font-light text-xs font-sofia">
             Biography | Autobiography | Personal narrative
