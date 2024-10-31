@@ -18,7 +18,7 @@ export default function BookDetails() {
     goToTop()
     return (
         <div>
-            <SwapModal />
+            {/* <SwapModal /> */}
             <div className="absolute left-0 top-4 w-full flex justify-between px-4">
                 <div className="flex items-center gap-4">
                     <Image src={leftArrowIcon} alt="icon" onClick={()=> navigate(-1)}  />

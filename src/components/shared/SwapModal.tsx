@@ -83,7 +83,7 @@ export default function SwapModal() {
                             <div className="flex items-center gap-4">
                                 <Image src={giveWayIcon} alt="Book" />
                                 <h4 className="text-sm font-sofia text-[#1A1A1A]">
-                                    Giveaway for nothing
+                                    Ask to giveaway for free
                                 </h4>
                             </div>
                             <input
