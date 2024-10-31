@@ -38,6 +38,7 @@ const routes = createBrowserRouter([
       {
         path: "/profile",
         element: (
+
           <PrivateRoute>
             <Profile />
           </PrivateRoute>
@@ -72,6 +73,7 @@ const routes = createBrowserRouter([
         element: (
           <Authenticate>
             <Login />
+
           </Authenticate>
         ),
       },

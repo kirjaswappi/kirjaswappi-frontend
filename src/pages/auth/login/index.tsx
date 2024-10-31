@@ -171,7 +171,9 @@ export default function Login() {
     }, [location.pathname, dispatch]);
     return (
         <div className="relative">
+
             {/* <div className="absolute left-0 top-4 w-full flex justify-between px-4">
+
                 <div className="flex items-center gap-4">
                     <h2>My profile</h2>
                 </div>
