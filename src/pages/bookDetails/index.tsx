@@ -12,7 +12,6 @@ import BookCard from "../../components/shared/BookCard";
 import Button from "../../components/shared/Button";
 import Image from "../../components/shared/Image";
 import { goToTop } from "../../utility/helper";
-import SwapModal from "../../components/shared/SwapModal";
 export default function BookDetails() {
     const navigate = useNavigate();
     goToTop()
