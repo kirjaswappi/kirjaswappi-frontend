@@ -1,21 +1,26 @@
+import { useNavigate } from "react-router-dom";
 import book from "../../assets/book.jpg";
 import bookDetailsBg from "../../assets/bookdetailsbg.jpg";
+import BookMarkIcon from "../../assets/icon_bookmark.png";
+import leftArrowIcon from "../../assets/leftArrow.png";
 import locationIcon from "../../assets/location-icon.png";
 import conditionIcon from "../../assets/offerBookIcon.png";
 import profileIcon from "../../assets/profile.png";
-import upArrowIcon from "../../assets/upArrow.png";
-import leftArrowIcon from "../../assets/leftArrow.png";
 import shareIcon from "../../assets/share-icon.png";
-import BookMarkIcon from "../../assets/icon_bookmark.png";
-import Image from "../../components/shared/Image";
-import Button from "../../components/shared/Button";
+import upArrowIcon from "../../assets/upArrow.png";
 import BookCard from "../../components/shared/BookCard";
+import Button from "../../components/shared/Button";
+import Image from "../../components/shared/Image";
+import { goToTop } from "../../utility/helper";
 export default function BookDetails() {
+    const navigate = useNavigate();
+    goToTop()
     return (
         <div>
+            {/* <SwapModal /> */}
             <div className="absolute left-0 top-4 w-full flex justify-between px-4">
                 <div className="flex items-center gap-4">
-                    <Image src={leftArrowIcon} alt="icon" />
+                    <Image src={leftArrowIcon} alt="icon" onClick={()=> navigate(-1)}  />
                     <h2 className="text-black text-base font-medium leading-none mt-[3px]">Book Details</h2>
                 </div>
                 <div className="flex items-center gap-4">

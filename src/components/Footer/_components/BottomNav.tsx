@@ -4,8 +4,10 @@ import Image from "../../shared/Image";
 
 export default function BottomNav() {
     const location = useLocation();
+    const ignorePath =['/profile/edit-user']
+    const isHeaderShow = ignorePath.find((path) => path === location.pathname)
     return (
-        <div className="h-20 flex items-center gap-5 justify-between text-xs font-normal px-6 ">
+        <div className={`${isHeaderShow && 'hidden'} h-20 flex items-center gap-5 justify-between text-xs font-normal px-6 `}>
             {menu.map((menuItem) => {
                 const isActive = location.pathname === menuItem?.route;
                 return (

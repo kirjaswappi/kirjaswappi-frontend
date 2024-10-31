@@ -33,7 +33,7 @@ export const menu = [
       icon: profile,
       selected: profile,
       value: "Profile",
-      route: "/profile",
+      route: "/profile/user-profile",
       isRoute: true,
     },
   ];

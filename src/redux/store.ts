@@ -6,6 +6,7 @@ import { api } from "./api/apiSlice"
 import authSlice, { IInitialState, initialState } from "./feature/auth/authSlice"
 import notificationSlice, { INotificationInitialState } from "./feature/notification/notificationSlice"
 import stepSlice, { IStepInitialState } from "./feature/step/stepSlice"
+import openSlice, { IOpenInitialState } from './feature/open/openSlice';
 
 
 
@@ -24,9 +25,10 @@ const preloadedState = {
 
 const store: EnhancedStore<
   {
-    api: CombinedState<{}, never, 'api'>
-    auth: IInitialState
-    step: IStepInitialState
+    api: CombinedState<{}, never, 'api'>;
+    auth: IInitialState;
+    step: IStepInitialState;
+    open: IOpenInitialState;
     notification: INotificationInitialState
   },
   UnknownAction,
@@ -51,6 +53,7 @@ const store: EnhancedStore<
     [api.reducerPath]: api.reducer,
     auth: authSlice,
     step: stepSlice,
+    open: openSlice,
     notification: notificationSlice
   },
   preloadedState,

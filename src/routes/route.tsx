@@ -8,6 +8,8 @@ import ResetPassword from "../pages/auth/resetPassword";
 import BookDetails from "../pages/bookDetails";
 import Books from "../pages/books";
 import Profile from "../pages/profile";
+import EditProfile from "../pages/profile/components/EditProfile";
+import UserProfile from "../pages/profile/components/UserProfile";
 import Authenticate from "./Aunthenticate";
 import PrivateRoute from "./PrivateRoute";
 
@@ -30,25 +32,40 @@ const routes = createBrowserRouter([
       {
         path: "/book-details/:id",
         element: (
-          <BookDetails/>
+          <BookDetails />
         ),
       },
       {
         path: "/profile",
         element: (
-          <PrivateRoute><Profile/></PrivateRoute>
+
+          <PrivateRoute>
+            <Profile />
+          </PrivateRoute>
         ),
+        children: [
+          {
+            loader: ()=> <p>Loading...</p>,
+            index: true,
+            path: "user-profile",
+            element: <UserProfile />,
+          },
+          {
+            path: "edit-user",
+            element: <EditProfile />,
+          },
+        ],
       },
       {
         path: "/map",
         element: (
-          <Profile/>
+          <Profile />
         ),
       },
       {
         path: "/message",
         element: (
-          <Profile/>
+          <Profile />
         ),
       },
       {
@@ -56,7 +73,8 @@ const routes = createBrowserRouter([
         element: (
           <Authenticate>
             <Login />
-           </Authenticate>
+
+          </Authenticate>
         ),
       },
       {

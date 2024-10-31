@@ -5,7 +5,6 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import bookDetailsBg from "../../../assets/bookdetailsbg.jpg";
 import profileIcon from "../../../assets/profileIcon.png";
-import rightMenu from "../../../assets/rightmenu.png";
 import Image from "../../../components/shared/Image";
 import Input from "../../../components/shared/Input";
 import MessageToastify from "../../../components/shared/MessageToastify";
@@ -80,7 +79,6 @@ export default function Login() {
         const { name, value } = e.target;
         setUserInfo({ ...userInfo, [name]: value });
         setErrors({ ...errors, [name]: "" });
-        validateInput(e);
         dispatch(setError(''))
     };
 
@@ -173,14 +171,16 @@ export default function Login() {
     }, [location.pathname, dispatch]);
     return (
         <div className="relative">
-            <div className="absolute left-0 top-4 w-full flex justify-between px-4">
+
+            {/* <div className="absolute left-0 top-4 w-full flex justify-between px-4">
+
                 <div className="flex items-center gap-4">
                     <h2>My profile</h2>
                 </div>
                 <div className="flex items-center gap-4">
                     <Image src={rightMenu} alt="icon" />
                 </div>
-            </div>
+            </div> */}
             <div className="absolute top-[18%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] rounded-full  bg-white flex items-center justify-center">
                 <Image src={profileIcon} className=" " />
             </div>

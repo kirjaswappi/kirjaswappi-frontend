@@ -69,7 +69,7 @@ export default function ResetPassword() {
         dispatch(setError(''))
         dispatch(setMessages({message:"", type:'', isShow:false}))
     };
-    console.log(errors)
+
     // Handle Input validation (onBlur)
     const validateInput = (e: any) => {
         const { name, value } = e.target;
@@ -105,117 +105,6 @@ export default function ResetPassword() {
         });
     };
 
-    // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    //     e.preventDefault();
-    //     let allValid = true;
-        
-    //     Object.keys(userPass).forEach(async (key: any) => {
-    //         const typedKey = key as keyof {
-    //             email: string;
-    //             password: string;
-    //             confirmPassword: string;
-    //         };
-            
-    //         const value = userPass[typedKey];
-    //         if ((step === 0 && typedKey === "email") || (step === 2 && (typedKey === "password" || typedKey === "confirmPassword"))) {
-    //             const event = {
-    //                 target: {
-    //                     name: key,
-    //                     value: userPass[typedKey],
-    //                 },
-    //             };
-    //             validateInput(event);
-    //             if (!value) {
-    //                 allValid = false;
-    //             }
-    //         }
-            
-    //     });
-        
-
-    //     if (allValid) {
-    //         try {
-    //             if (step === 0) {
-    //                 await sentOTP({ email: userPass.email }).then((res) => {
-    //                     if (res?.data) {
-    //                         const timer = setTimeout(() => {
-    //                             dispatch(
-    //                                 setMessages({
-    //                                     type: "",
-    //                                     isShow: false,
-    //                                     message: "",
-    //                                 })
-    //                             );
-    //                             dispatch(setAuthMessage(''))
-    //                             dispatch(setStep(step + 1));
-
-    //                         }, 2000);
-    //                         return () => clearTimeout(timer);
-    //                     }
-    //                 })
-    //             }
-    //             else if (step === 1) {
-    //                 if (userPass.email !== ""  && otp.join('') !== '' &&  otp.join('').length >= 6) {
-    //                     await verifyOTP({ email: userPass.email, otp: otp.join("") }).then(res => {
-    //                         if (res?.data) {
-    //                             const timer = setTimeout(() => {
-    //                                 dispatch(
-    //                                     setMessages({
-    //                                         type: "",
-    //                                         isShow: false,
-    //                                         message: "",
-    //                                     })
-    //                                 );
-    //                                 dispatch(setAuthMessage(''))
-    //                                 dispatch(setStep(step + 1));
-    
-    //                             }, 2000);
-    //                             return () => clearTimeout(timer);
-    //                         }
-    //                     })
-    //                 } else {
-    //                     dispatch(
-    //                         setMessages({
-    //                             type: 'FIELD_ERROR',
-    //                             isShow: true,
-    //                             message:
-    //                                 "OTP is required! insert your otp code in this field.",
-    //                         })
-    //                     );
-    //                 }
-    //             }
-    //             else if (step === 2) {
-    //                 const resetObj = {
-    //                     newPassword: userPass.password,
-    //                     confirmPassword: userPass.confirmPassword,
-    //                     email: userPass.email,
-    //                 };
-                    
-    //                 await resetPassword(resetObj).then(res => {
-    //                     if (res?.data) {
-    //                         const timer = setTimeout(() => {
-    //                             dispatch(
-    //                                 setMessages({
-    //                                     type: "",
-    //                                     isShow: false,
-    //                                     message: "",
-    //                                 })
-    //                             );
-    //                             dispatch(setAuthMessage(''))
-    //                             dispatch(setStep(0))
-    //                             dispatch(setOtp(Array(6).fill("")));
-    //                             navigate("/auth/login");
-
-    //                         }, 2000);
-    //                         return () => clearTimeout(timer);
-    //                     }
-    //                 })
-    //             }
-    //         } catch (error) {
-    //             console.log("login error", error);
-    //         }
-    //     }
-    // };
     const validateStep = () => {
         let allValid = true;
         Object.keys(userPass).forEach((key) => {
@@ -383,13 +272,25 @@ export default function ResetPassword() {
             dispatch(setMessages({ type: "", isShow: false, message: "" }));
         }
     }, [filteredError, error, message, msg]);
+
+    useEffect(() => {
+        dispatch(setMessages({ type: '', isShow: false, message: '' }))
+    }, [location.pathname, dispatch]);
+
     return (
         <div>
             <div className="container h-svh relative">
                 <div className="pt-4 pb-6 flex items-center gap-2">
                     <div
                         className="cursor-pointer w-5"
-                        onClick={() => navigate("/auth/login")}
+                        onClick={() => {
+                            if(step === 0){
+                                navigate("/auth/login")
+                            }else{
+                                dispatch(setStep(step-1))
+                            }
+                        }}
+
                     >
                         <Image src={leftArrowIcon} alt="left" />
                     </div>
