@@ -62,16 +62,27 @@ export default function OTP({ otpMessageShow = true }: { otpMessageShow?: boolea
             dispatch(setMessages({ type: "", isShow: false, message: "" }))
         }
     };
-
+    const handleCut = (_e: React.ClipboardEvent<HTMLInputElement>, index: number) => {
+        const newOtp = [...otp];
+        newOtp[index] = "";
+        dispatch(setOtp(newOtp));
+        dispatch(setMessages({ type: "", isShow: false, message: "" }));
+        setTimeout(() => {
+            if (index > 0) {
+                inputs.current[index - 1]?.focus();
+            }
+        }, 50); 
+    }
     return (
         <div>
             <div className="flex gap-2 justify-between">
-                {otp.map((_, index: number) => (
+                {Array.from({ length: 6 }, (_, index) => (
                     <input
                         key={index}
                         type="text"
                         maxLength={1}
                         value={otp[index]}
+                        onCut={(e) => handleCut(e, index)}
                         onChange={(e) => handleChange(e, index)}
                         onKeyDown={(e) => handleKeyDown(e, index)}
                         onPaste={handlePaste}
