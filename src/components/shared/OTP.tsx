@@ -66,7 +66,7 @@ export default function OTP({ otpMessageShow = true }: { otpMessageShow?: boolea
     return (
         <div>
             <div className="flex gap-2 justify-between">
-                {Array.from({ length: 6 }, (_, index) => (
+                {otp.map((_, index: number) => (
                     <input
                         key={index}
                         type="text"
