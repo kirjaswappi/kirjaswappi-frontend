@@ -67,7 +67,7 @@ export default function ResetPassword() {
         setErrors({ ...errors, [name]: "" });
         // validateInput(e);
         dispatch(setError(''))
-        dispatch(setMessages({message:"", type:'', isShow:false}))
+        dispatch(setMessages({ message: "", type: '', isShow: false }))
     };
 
     // Handle Input validation (onBlur)
@@ -104,13 +104,12 @@ export default function ResetPassword() {
             return stateObj;
         });
     };
-
     const validateStep = () => {
         let allValid = true;
         Object.keys(userPass).forEach((key) => {
             const typedKey = key as keyof INewPassForm;
             const value = userPass[typedKey];
-    
+
             // Validate only the relevant fields for each step
             if ((step === 0 && typedKey === "email") || (step === 2 && (typedKey === "password" || typedKey === "confirmPassword"))) {
                 const event = {
@@ -125,12 +124,12 @@ export default function ResetPassword() {
         });
         return allValid;
     };
-    
+
     const handleSendOTP = async () => {
         try {
             const res = await sentOTP({ email: userPass.email });
             if (res?.data) {
-                
+
                 const timer = setTimeout(() => {
                     dispatch(setMessages({ type: "", isShow: false, message: "" }));
                     dispatch(setAuthMessage(''));
@@ -142,13 +141,13 @@ export default function ResetPassword() {
             console.error("Error sending OTP:", error);
         }
     };
-    
+
     const handleVerifyOTP = async () => {
         if (userPass.email && otp.join('') && otp.join('').length >= 6) {
             try {
                 const res = await verifyOTP({ email: userPass.email, otp: otp.join("") });
                 if (res?.data) {
-                    
+
                     const timer = setTimeout(() => {
                         dispatch(setMessages({ type: "", isShow: false, message: "" }));
                         dispatch(setAuthMessage(''));
@@ -161,13 +160,13 @@ export default function ResetPassword() {
             }
         } else {
             dispatch(setMessages({
-                type: 'FIELD_ERROR',
+                type: ERROR,
                 isShow: true,
                 message: "OTP is required! Insert your OTP code.",
             }));
         }
     };
-    
+
     const handleResetPassword = async () => {
         const resetObj = {
             newPassword: userPass.password,
@@ -177,10 +176,10 @@ export default function ResetPassword() {
         try {
             const res = await resetPassword(resetObj);
             if (res?.data) {
-                
+
                 const timer = setTimeout(() => {
                     dispatch(setMessages({ type: "", isShow: false, message: "" }));
-                    dispatch(setAuthMessage(''));                    
+                    dispatch(setAuthMessage(''));
                     navigate("/auth/login");
                     dispatch(setStep(0));
                     dispatch(setOtp(Array(6).fill("")));
@@ -192,12 +191,12 @@ export default function ResetPassword() {
             console.error("Error resetting password:", error);
         }
     };
-    
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-    
+
         if (!validateStep()) return;
-    
+
         if (step === 0) {
             await handleSendOTP();
         } else if (step === 1) {
@@ -234,7 +233,7 @@ export default function ResetPassword() {
                 return null;
         }
     };
-    
+
 
     const checkingFieldErrorOrApiError = () => {
         if (message && message !== null) {
@@ -243,16 +242,9 @@ export default function ResetPassword() {
                 type: SUCCESS,
                 isShow: true,
             };
-        }
-        if (filteredError.length > 0 || msg !== '') {
+        } if (error && error !== null || filteredError.length > 0 || msg !== '') {
             return {
-                msg: filteredError[0] || msg,
-                type: "FIELD_ERROR",
-                isShow: true,
-            };
-        } else if (error && error !== null) {
-            return {
-                msg: error,
+                msg: error || filteredError[0] || msg,
                 type: ERROR,
                 isShow: true,
             };
@@ -275,6 +267,7 @@ export default function ResetPassword() {
 
     useEffect(() => {
         dispatch(setMessages({ type: '', isShow: false, message: '' }))
+        dispatch(setError(''))
     }, [location.pathname, dispatch]);
 
     return (
@@ -284,10 +277,10 @@ export default function ResetPassword() {
                     <div
                         className="cursor-pointer w-5"
                         onClick={() => {
-                            if(step === 0){
+                            if (step === 0) {
                                 navigate("/auth/login")
-                            }else{
-                                dispatch(setStep(step-1))
+                            } else {
+                                dispatch(setStep(step - 1))
                             }
                         }}
 

@@ -100,7 +100,7 @@ export default function Login() {
                 allValid = false;
             }
         });
-        // e.preventDefault();
+
         if (allValid) {
             try {
                 await login(userInfo).then(async (res) => {
@@ -124,11 +124,7 @@ export default function Login() {
 
 
     // !Important message
-    // Check it out. Is it a field error or an API error?  [type_off_error: ['FIELD_ERROR', 'ERROR]]
-    // If field error? we will show the error message message in toastify. Until filed not fill up  (FIELD_ERROR)
-    // If I will get an error form API then, it will show message for 10's. After 10s it will auto clear out redux state. also turn of toastify
-    // If I will get Success from API then it will show message for 2's. After 10s it will auto clear out redux state also. turn of toastify
-    // console.log(filteredError)
+    // Check it out. Is it a field error or an API error?  [type_off_error: [SUCCESS, 'ERROR]]
     const checkingFieldErrorOrApiError = () => {
         if (message && message !== null) {
             return {
@@ -136,16 +132,9 @@ export default function Login() {
                 type: SUCCESS,
                 isShow: true,
             };
-        }
-        if (filteredError.length > 0) {
+        } if (error && error !== null || filteredError.length > 0) {
             return {
-                msg: filteredError[0],
-                type: "FIELD_ERROR",
-                isShow: true,
-            };
-        } else if (error && error !== null) {
-            return {
-                msg: error,
+                msg: error || filteredError[0],
                 type: ERROR,
                 isShow: true,
             };
@@ -168,6 +157,7 @@ export default function Login() {
 
     useEffect(() => {
         dispatch(setMessages({type: '', isShow: false, message:''}))
+        dispatch(setError(''))
     }, [location.pathname, dispatch]);
     return (
         <div className="relative">

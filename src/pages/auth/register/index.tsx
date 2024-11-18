@@ -1,13 +1,14 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import leftArrowIcon from "../../../assets/leftArrow.png";
 import Image from "../../../components/shared/Image";
 import { setMessages } from "../../../redux/feature/notification/notificationSlice";
+import { setStep } from "../../../redux/feature/step/stepSlice";
 import { useAppSelector } from "../../../redux/hooks";
 import ConfirmOTP from "./_components/ConfirmOTP";
 import RegisterForm from "./_components/RegisterForm";
-import { useNavigate } from "react-router-dom";
-import { setStep } from "../../../redux/feature/step/stepSlice";
+import { setError } from "../../../redux/feature/auth/authSlice";
 
 
 export default function Register() {
@@ -29,6 +30,7 @@ export default function Register() {
 
     useEffect(() => {
         dispatch(setMessages({ type: '', isShow: false, message: '' }))
+        dispatch(setError(''))
     }, [location.pathname, dispatch]);
     return (
         <div>

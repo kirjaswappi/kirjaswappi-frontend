@@ -59,7 +59,7 @@ export default function RegisterForm() {
 
         setErrors((prev: any) => {
             const stateObj = { ...prev, [name]: "" };
-        
+
             if (name === "firstName") {
                 if (!value) {
                     stateObj[name] = "Please enter first name.";
@@ -90,19 +90,19 @@ export default function RegisterForm() {
                     stateObj[name] = "Password and Confirm Password do not match.";
                 }
             }
-        
+
             return stateObj;
         });
     };
-    
+
 
     // Handle submit
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         let allValid = true;
-        Object.keys(userInfo).forEach((key: any) => {         
+        Object.keys(userInfo).forEach((key: any) => {
             const typedKey = key as keyof IRegisterForm;
-            
+
             const event = {
                 target: {
                     name: key,
@@ -114,7 +114,7 @@ export default function RegisterForm() {
             if (!userInfo[typedKey]) {
                 allValid = false;
             }
-            if(userInfo.password !== userInfo.confirmPassword){
+            if (userInfo.password !== userInfo.confirmPassword) {
                 allValid = false
             }
         });
@@ -149,10 +149,8 @@ export default function RegisterForm() {
     };
 
     // !Important message
-    // Check it out. Is it a field error or an API error?  [type_off_error: ['FIELD_ERROR', 'ERROR]]
-    // If field error? we will show the error message message in toastify. Until filed not fill up  (FIELD_ERROR)
-    // If I will get an error form API then, it will show message for 10's. After 10s it will auto clear out redux state. also turn of toastify
-    // If I will get Success from API then it will show message for 2's. After 10s it will auto clear out redux state also. turn of toastify
+    // Check it out. Is it a field error or an API error?  [type_off_error: ['SUCCESS', 'ERROR]]
+    
     const checkingFieldErrorOrApiError = () => {
         if (message && message !== null) {
             return {
@@ -160,16 +158,9 @@ export default function RegisterForm() {
                 type: SUCCESS,
                 isShow: true,
             };
-        }
-        if (filteredError.length > 0) {
+        } if (error && error !== null || filteredError.length > 0) {
             return {
-                msg: filteredError[0],
-                type: "FIELD_ERROR",
-                isShow: true,
-            };
-        } else if (error && error !== null) {
-            return {
-                msg: error,
+                msg: error || filteredError[0],
                 type: ERROR,
                 isShow: true,
             };
@@ -180,7 +171,7 @@ export default function RegisterForm() {
             type: "",
         };
     };
-    
+
     useEffect(() => {
         const { isShow, msg, type } = checkingFieldErrorOrApiError();
         if (isShow && msg) {
