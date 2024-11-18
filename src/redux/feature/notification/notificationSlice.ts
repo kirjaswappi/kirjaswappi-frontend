@@ -21,17 +21,8 @@ const notificationSlice = createSlice({
             state.message = message
             state.messageType = type 
         },
-        setIsShow: (state, action: PayloadAction<boolean>) => {
-            state.isShow = action.payload
-        },
-        setMessageType: (state, action: PayloadAction<string>) => {
-            state.messageType = action.payload
-        },
-        setMessage: (state, action: PayloadAction<string | null | undefined>) => {
-            state.message = action.payload
-        },
     },
 });
 
-export const { setIsShow, setMessageType, setMessage, setMessages } = notificationSlice.actions;
+export const { setMessages } = notificationSlice.actions;
 export default notificationSlice.reducer;

@@ -1,45 +1,39 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { ERROR } from "../../constant/MESSAGETYPE";
-import { setAuthMessage, setError } from "../../redux/feature/auth/authSlice";
-import { setIsShow, setMessage, setMessageType } from "../../redux/feature/notification/notificationSlice";
+import { SUCCESS } from "../../constant/MESSAGETYPE";
+import { setAuthMessage, setAuthSuccess } from "../../redux/feature/auth/authSlice";
 
 interface IMessageToastify {
-    type: string | 'SUCCESS' | 'ERROR' | 'WARNING' | 'FIELD_ERROR' | '';
+    type: string | 'SUCCESS' | 'ERROR' | 'WARNING' | '';
     value: string | null | undefined;
     isShow: boolean
 }
 
 export default function MessageToastify({ type, value, isShow = false }: IMessageToastify) {
-    
     const dispatch = useDispatch()
+
     const getColorClass = () => {
         switch (type) {
             case 'SUCCESS':
                 return 'bg-green-100 text-green-600 ';
             case 'ERROR':
                 return 'bg-rose-100 text-rose-600';
-            case 'FIELD_ERROR':
-            return 'bg-rose-100 text-rose-600';
             case 'WARNING':
                 return 'bg-yellow-100 text-yellow-600';
             default:
                 return '';
         }
     };
-    // console.log({type, value, isShow})
+    
     useEffect(() => {
-        if(type !== 'FIELD_ERROR' ){
-            const timer = setTimeout(() => {
-                dispatch(setIsShow(false));
-                dispatch(setMessageType(''));
-                dispatch(setMessage(''));
-                dispatch(setError(''))
+        const timer = setTimeout(() => {
+            if(type === SUCCESS){
+                dispatch(setAuthSuccess(false))
                 dispatch(setAuthMessage(''))
-            }, type !== ERROR ? 2000 : 10000);
-        
-            return () => clearTimeout(timer);
-        }
+            }
+        }, 2000);
+    
+        return () => clearTimeout(timer);
     }, [isShow, type])
 
     return (

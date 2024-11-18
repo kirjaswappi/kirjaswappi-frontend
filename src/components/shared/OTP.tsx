@@ -4,13 +4,14 @@ import { setOtp } from "../../redux/feature/auth/authSlice";
 import { setMessages } from "../../redux/feature/notification/notificationSlice";
 import { useAppSelector } from "../../redux/hooks";
 import MessageToastify from "./MessageToastify";
+import { ERROR } from "../../constant/MESSAGETYPE";
 
 export default function OTP({ otpMessageShow = true }: { otpMessageShow?: boolean }) {
     const dispatch = useDispatch()
     const { otp } = useAppSelector(state => state.auth)
     const { messageType, message, isShow } = useAppSelector(state => state.notification)
     const inputs = useRef<(HTMLInputElement | null)[]>([]);
-console.log({message, isShow, messageType})
+
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement>,
         index: number
@@ -41,14 +42,13 @@ console.log({message, isShow, messageType})
             if (index > 0) inputs.current[index - 1]?.focus();
             dispatch(
                 setMessages({
-                    type: 'FIELD_ERROR',
+                    type: 'ERROR',
                     isShow: true,
                     message:
                         "OTP is required! insert your otp code in this field.",
                 })
             );
         }
-
     };
     const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
         const pasteData = e.clipboardData.getData('text').trim();
@@ -62,21 +62,32 @@ console.log({message, isShow, messageType})
             dispatch(setMessages({ type: "", isShow: false, message: "" }))
         }
     };
-
+    const handleCut = (_e: React.ClipboardEvent<HTMLInputElement>, index: number) => {
+        const newOtp = [...otp];
+        newOtp[index] = "";
+        dispatch(setOtp(newOtp));
+        dispatch(setMessages({ type: "", isShow: false, message: "" }));
+        setTimeout(() => {
+            if (index > 0) {
+                inputs.current[index - 1]?.focus();
+            }
+        }, 50); 
+    }
     return (
         <div>
             <div className="flex gap-2 justify-between">
-                {otp.map((_, index: number) => (
+                {Array.from({ length: 6 }, (_, index) => (
                     <input
                         key={index}
                         type="text"
                         maxLength={1}
                         value={otp[index]}
+                        onCut={(e) => handleCut(e, index)}
                         onChange={(e) => handleChange(e, index)}
                         onKeyDown={(e) => handleKeyDown(e, index)}
                         onPaste={handlePaste}
                         ref={(el) => (inputs.current[index] = el)}
-                        className={`max-w-10 h-10  bg-[#E7E7E7] ${messageType === 'FIELD_ERROR' ? "border border-rose-500" : ""
+                        className={`max-w-10 h-10  bg-[#E7E7E7] ${messageType === ERROR ? "border border-rose-500" : ""
                             } rounded-md text-center text-base`}
                         placeholder="-"
                     />

@@ -6,6 +6,7 @@ import setting from "../../../assets/settings.png";
 import Image from "../../../components/shared/Image";
 import { logout } from "../../../redux/feature/auth/authSlice";
 import SideDrawer from "./SideDrawer";
+import { setOpen } from "../../../redux/feature/open/openSlice";
 
 const profileSetting = [
     {
@@ -41,6 +42,7 @@ export default function MoreOptions() {
                         onClick={() => {
                             if (item.name.toLocaleLowerCase() === "logout")
                                 dispatch(logout());
+                                dispatch(setOpen(false))
                         }}
                     >
                         <button>

@@ -41,7 +41,7 @@ export default function ConfirmOTP() {
         } else {
             dispatch(
                 setMessages({
-                    type: 'FIELD_ERROR',
+                    type: ERROR,
                     isShow: true,
                     message:
                         "OTP is required! insert your otp code in this field.",
