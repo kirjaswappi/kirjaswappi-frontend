@@ -40,7 +40,10 @@ export default function Register() {
                         className="cursor-pointer w-5"
                         onClick={() => {
                             if (step === 0) navigate("/auth/login")
-                            else if (step === 1) dispatch(setStep(step - 1));
+                            else if (step === 1) {
+                                dispatch(setStep(step - 1))
+                                dispatch(setError(''))
+                            };
                         }}
                     >
                         <Image src={leftArrowIcon} alt="left" />
