@@ -196,7 +196,6 @@ export default function ResetPassword() {
         e.preventDefault();
 
         if (!validateStep()) return;
-
         if (step === 0) {
             await handleSendOTP();
         } else if (step === 1) {
@@ -265,6 +264,7 @@ export default function ResetPassword() {
         }
     }, [filteredError, error, message, msg]);
 
+    // clean-up
     useEffect(() => {
         dispatch(setMessages({ type: '', isShow: false, message: '' }))
         dispatch(setError(''))
@@ -281,6 +281,7 @@ export default function ResetPassword() {
                                 navigate("/auth/login")
                             } else {
                                 dispatch(setStep(step - 1))
+                                dispatch(setError(''))
                             }
                         }}
 

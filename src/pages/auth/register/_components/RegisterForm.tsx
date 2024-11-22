@@ -7,7 +7,7 @@ import MessageToastify from "../../../../components/shared/MessageToastify";
 import PasswordInput from "../../../../components/shared/PasswordInput";
 import { ERROR, SUCCESS } from "../../../../constant/MESSAGETYPE";
 import { useRegisterMutation } from "../../../../redux/feature/auth/authApi";
-import { setAuthMessage, setError, setUserEmail } from "../../../../redux/feature/auth/authSlice";
+import { setAuthMessage, setError, setOtp, setUserEmail } from "../../../../redux/feature/auth/authSlice";
 import { setMessages } from "../../../../redux/feature/notification/notificationSlice";
 import { setStep } from "../../../../redux/feature/step/stepSlice";
 import { useAppSelector } from "../../../../redux/hooks";
@@ -133,6 +133,7 @@ export default function RegisterForm() {
                                 );
                                 dispatch(setAuthMessage(''))
                                 dispatch(setUserEmail(userInfo.email))
+                                dispatch(setOtp(Array(6).fill("")));
                                 dispatch(setStep(step + 1));
 
                             }, 2000);
