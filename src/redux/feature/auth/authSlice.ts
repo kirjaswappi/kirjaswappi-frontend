@@ -25,7 +25,7 @@ export interface IInitialState {
         country?: null;
         phoneNumber?: null;
         aboutMe?: null;
-        favGenres?: null;
+        favGenres?: string[];
     };
     otp: any[];
     userEmail: string;
@@ -49,7 +49,7 @@ export const initialState: IInitialState = {
         country: null,
         phoneNumber: null,
         aboutMe: null,
-        favGenres: null,
+        favGenres: [],
     },
     otp: Array(6).fill(""),
     userEmail: "",
@@ -87,6 +87,9 @@ const authSlice = createSlice({
         setAuthSuccess: (state, action: PayloadAction<boolean>) => {
             state.success = action.payload;
         },
+        setUserInformation : (state, action) => {
+            state.userInformation = { ...initialState.userInformation, ...action.payload }
+        }
     },
     extraReducers: (builder) => {
         builder.addMatcher(authApi.endpoints.login.matchPending, (state) => {
@@ -97,10 +100,12 @@ const authSlice = createSlice({
         builder.addMatcher(
             authApi.endpoints.login.matchFulfilled,
             (state, action) => {
+                console.log(action.payload)
+                const { id, email } = action.payload
                 state.loading = false;
                 state.error = null;
                 state.success = true;
-                state.userInformation = { ...action.payload };
+                state.userInformation = { ...initialState.userInformation, id, email };
                 state.message = 'Login Successfully Done.'
             }
         );
@@ -127,8 +132,7 @@ const authSlice = createSlice({
         });
         builder.addMatcher(
             authApi.endpoints.register.matchFulfilled,
-            (state, action) => {
-                console.log(action.payload)
+            (state) => {
                 state.loading = false;
                 state.error = null;
                 state.success = true;
@@ -284,5 +288,5 @@ const authSlice = createSlice({
     },
 });
 
-export const { setOtp, setUserEmail, setError, logout, setAuthMessage, setAuthSuccess } = authSlice.actions;
+export const { setOtp, setUserEmail, setError, logout, setAuthMessage, setAuthSuccess, setUserInformation } = authSlice.actions;
 export default authSlice.reducer;

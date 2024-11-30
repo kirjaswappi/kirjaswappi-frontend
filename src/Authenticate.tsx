@@ -1,15 +1,20 @@
 import React, { useEffect, useRef } from 'react'
+import { useDispatch } from 'react-redux'
 import { RouterProvider } from 'react-router-dom'
 import Loader from './components/shared/Loader'
-import { useAuthenticateMutation } from './redux/feature/auth/authApi'
+import { useAuthenticateMutation, useGetUserByIdQuery } from './redux/feature/auth/authApi'
+import { setUserInformation } from './redux/feature/auth/authSlice'
+import { useAppSelector } from './redux/hooks'
 import routes from './routes/route'
 import { isTokenExpired } from './utility/getUser'
 import { getToken } from './utility/localStorage'
 
 export default function Authenticate() {
+    const dispatch = useDispatch()
     const [authenticate, {isLoading}] = useAuthenticateMutation()
+    const { userInformation } = useAppSelector((state)=> state.auth)
+    const {data} = useGetUserByIdQuery(userInformation.id, {skip: !userInformation.id})
     const hasFetched = useRef(false)
-    
     useEffect(() => {
         const auth = async () => {
             try {
@@ -30,7 +35,15 @@ export default function Authenticate() {
             }
         }
     }, [])
-
+    
+    useEffect(() => {
+        if(data){
+            dispatch(setUserInformation(data))
+        }
+        console.log(data)
+    }, [data])
+    
+// console.log(data)
     // Global Loading Return
     if(isLoading) return <Loader/>
 
