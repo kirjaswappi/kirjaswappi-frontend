@@ -26,6 +26,6 @@ export const api = createApi({
             return headers;
         },
     }),
-    tagTypes: ['AddProfileImage'],
+    tagTypes: ['AddProfileImage', 'UpdateUser', 'AddCoverImage'],
     endpoints: () => ({}),
 });

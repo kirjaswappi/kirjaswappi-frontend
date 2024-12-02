@@ -14,107 +14,172 @@ import InputLabel from "../../../components/shared/InputLabel";
 import Loader from "../../../components/shared/Loader";
 import TextArea from "../../../components/shared/TextArea";
 import {
+    useGetUserCoverImageQuery,
     useGetUserProfileImageQuery,
-    useUploadProfileImageMutation
+    useUpdateUserByIdMutation,
+    useUploadCoverImageMutation,
+    useUploadProfileImageMutation,
 } from "../../../redux/feature/auth/authApi";
 import { setOpen } from "../../../redux/feature/open/openSlice";
 import { useAppSelector } from "../../../redux/hooks";
 import AddGenre from "./AddGenre";
 
 interface IEditInfo {
+    id: string | undefined;
     firstName: string | undefined;
     lastName: string | undefined;
     aboutMe: string | undefined;
-    streetName: string | undefined,
-    houseNumber: string | undefined,
-    zipCode: number | undefined,
-    city: string | undefined,
-    country: string | undefined,
-    phoneNumber: string | undefined,
-    favGenres: string[] | undefined
+    streetName: string | undefined;
+    houseNumber: string | undefined;
+    zipCode: number | undefined;
+    city: string | undefined;
+    country: string | undefined;
+    phoneNumber: string | undefined;
+    favGenres: string[] | undefined;
 }
 
 export default function EditProfile() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const profileRef = useRef(null);
-    const [profileModal, setProfileModal] = useState<boolean>(false)
-    const [isEditValuesChanged, setEditValuesChanged] = useState<boolean>(false)
+    const coverRef = useRef(null);
+    const [profileModal, setProfileModal] = useState<boolean>(false);
+    const [coverModal, setCoverModal] = useState<boolean>(false);
+    const [isEditValuesChanged, setEditValuesChanged] =
+        useState<boolean>(false);
     const { open } = useAppSelector((state) => state.open);
     const { userInformation } = useAppSelector((state) => state.auth);
-    const [uploadProfileImage] = useUploadProfileImageMutation()
-    const { data: imageData, isLoading, isSuccess } = useGetUserProfileImageQuery(
+    const [uploadProfileImage] = useUploadProfileImageMutation();
+    const [uploadCoverImage] = useUploadCoverImageMutation()
+    const [updateUserById] = useUpdateUserByIdMutation();
+    
+    const {data: coverImageData, isSuccess: coverSuccess} = useGetUserCoverImageQuery({
+        userId: userInformation.id,
+    },
+    { skip: !userInformation.id })
+    const {
+        data: imageData,
+        isLoading,
+        isSuccess,
+    } = useGetUserProfileImageQuery(
         {
             userId: userInformation.id,
         },
         { skip: !userInformation.id }
     );
     const [editImage, setEditImage] = useState<string>("");
+    const [editCoverImage, setEditCoverImage] = useState<string>("");
     const [profileFile, setProfileFile] = useState("");
-    const [error, setError] = useState<string>('')
+    const [coverFile, setCoverFile] = useState("");
+    const [error, setError] = useState<string>("");
+    const [coverError, setCoverError] = useState<string>("");
+    // const { error  } = useImage()
     const [editInfo, setEditInfo] = useState<IEditInfo>({
+        id: userInformation.id,
         firstName: "",
         lastName: "",
-        aboutMe: "",
+        aboutMe: "as",
         streetName: "",
         houseNumber: "",
         zipCode: 0,
         city: "",
         country: "",
         phoneNumber: "",
-        favGenres: []
+        favGenres: ["Biography", "Autobiography", "Personal narrative"],
     });
-
+    const allowedTypes = ["image/jpeg", "image/png"];
     const maxsize = 1024 * 1024 * 2;
-    // const { clicked, reference, setClicked } = useMouseClick();
-    const allowedTypes = ['image/jpeg', 'image/png']
-    const handleChange = (e: { target: { name: any; value: any } }) => {
+    const handleChange = (e) => {
         setEditInfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-        setEditValuesChanged(true)
+        setEditValuesChanged(true);
     };
 
     const handleClick = () => {
         profileRef.current.click();
     };
+    const handleCoverClick = () => {
+        coverRef.current.click();
+    };
     const uploadProfileImageHandler = (e: { target: { files: any } }) => {
-        setProfileModal(false)
-        const file = e.target.files[0]
+        setProfileModal(false);
+        const file = e.target.files[0];
         let errorMessage: string[] = [];
         // checking file type
         if (!allowedTypes.includes(file.type)) {
-            errorMessage.push(`Please upload .jpeg or .png files. `)
+            errorMessage.push(`Please upload .jpeg or .png files. `);
         }
         // checking file size
         if (file.size > maxsize) {
-            errorMessage.push(`File size limit ${maxsize / (1024 * 1024)}MB.`)
+            errorMessage.push(`File size limit ${maxsize / (1024 * 1024)}MB.`);
         }
         //  console.log(errorMessage)
         if (errorMessage.length > 0) {
-            setError(errorMessage.join(' '))
-            return
+            setError(errorMessage.join(" "));
+            return;
         }
         // reset error in state and store file in state
-        setError('')
+        setError("");
         setEditImage(URL.createObjectURL(file)); // preview image
-        setProfileFile(file);
+        // setProfileFile(file);
+    };
+    const uploadCoverImageHandler = (e: { target: { files: any } }) => {
+        setCoverModal(false);
+        const file = e.target.files[0];
+        let errorMessage: string[] = [];
+        // checking file type
+        if (!allowedTypes.includes(file.type)) {
+            errorMessage.push(`Please upload .jpeg or .png files. `);
+        }
+        // checking file size
+        if (file.size > maxsize) {
+            errorMessage.push(`File size limit ${maxsize / (1024 * 1024)}MB.`);
+        }
+        //  console.log(errorMessage)
+        if (errorMessage.length > 0) {
+            setCoverError(errorMessage.join(" "));
+            return;
+        }
+        // reset error in state and store file in state
+        setCoverError("");
+        setEditCoverImage(URL.createObjectURL(file)); // preview image
+        setCoverFile(file)
     };
 
     const handleEditSaveFn = async () => {
-        // 1. if image change then hit the image an api
+        // 1. if image is not empty then hit the image an api
         if (profileFile !== "") {
             // request to api
             if (userInformation.id) {
                 const formdata = new FormData();
                 formdata.append("image", profileFile);
-                await uploadProfileImage({ id: userInformation.id, image: formdata })
-                    .then(() => setProfileFile(''))
+                await uploadProfileImage({
+                    id: userInformation.id,
+                    image: formdata,
+                })
+                    .then(() => setProfileFile(""))
                     .catch((error) => console.log(error));
             }
         }
-
-        // 2. if users information has changed then hit the users api
+        // 2. if cover image is not empty then hit the image an api
+        if (coverFile !== "") {
+            // request to api
+            if (userInformation.id) {
+                const formdata = new FormData();
+                formdata.append("image", coverFile);
+                await uploadCoverImage({
+                    id: userInformation.id,
+                    image: formdata,
+                })
+                    .then(() => setCoverFile(""))
+                    .catch((error) => console.log(error));
+            }
+        }
+        // 3. if users information has changed then hit the users api
         if (isEditValuesChanged) {
-            
+            console.log(editInfo);
+            updateUserById({ id: userInformation.id, data: editInfo })
+                .then((res) => console.log(res))
+                .catch((error) => console.log(error));
         }
         // 3. Genre is add
     };
@@ -136,7 +201,11 @@ export default function EditProfile() {
             setEditImage(imageData as string);
         }
     }, [imageData, isSuccess]);
-
+    useEffect(() => {
+        if (coverImageData !== undefined) {
+            setEditCoverImage(coverImageData as string);
+        }
+    }, [coverImageData, coverSuccess]);
     if (isLoading) return <Loader />;
     return (
         <div>
@@ -182,15 +251,18 @@ export default function EditProfile() {
                             <div
                                 className="w-7 h-7 bg-white cursor-pointer z-[99999999px] absolute bottom-0 right-2 rounded-full flex items-center justify-center shadow-sm"
                                 // ref={reference}
-                                onClick={() => setProfileModal(!profileModal)}
+                                onClick={() => {
+                                    setProfileModal(!profileModal)
+                                    setCoverModal(false)
+                                }}
                             >
-                                {/* <Image src={editIcon} alt="edit" /> */}
                                 <IoCamera className="text-primary" />
-
                             </div>
                         </div>
                         <div
-                            className={`${profileModal ? 'block' : "hidden"} w-[128px] max-w-auto bg-white text-center font-medium text-sm px-1 shadow-2xl rounded-lg`}
+                            className={`${
+                                profileModal ? "block" : "hidden"
+                            } w-[128px] max-w-auto bg-white text-center font-medium text-sm px-1 shadow-2xl rounded-lg`}
                         >
                             <button
                                 className="border-b border-platinum py-2 font-sofia text-black flex items-center justify-center w-full "
@@ -199,9 +271,9 @@ export default function EditProfile() {
                                 Upload profile
                                 <input
                                     type="file"
+                                    ref={profileRef}
                                     accept="image/*"
                                     className="hidden"
-                                    ref={profileRef}
                                     onChange={uploadProfileImageHandler}
                                 />
                             </button>
@@ -213,24 +285,67 @@ export default function EditProfile() {
                             </button>
                         </div>
                     </div>
-                    {error && <p className="text-center text-sm font-sofia text-rose-600 mb-2">{error}</p>}
+                    {error && (
+                        <p className="text-center text-sm font-sofia text-rose-600 mb-2">
+                            {error}
+                        </p>
+                    )}
                 </div>
-                <div className="border-b border-[#111010] pb-4">
-                    <div className="flex items-center justify-between py-4">
+                <div className="border-b border-[#E4E4E4] pb-4">
+                    <div className="flex items-center justify-between py-4 relative">
                         <h1 className="font-sofia text-sm font-medium leading-none">
                             Cover Picture
                         </h1>
-                        <Button className="text-[#3879E9] font-sofia font-medium text-sm leading-none underline">
+                        <Button onClick={() => {
+                            setCoverModal(!coverModal)
+                            setProfileModal(false)
+                        }} className="text-[#3879E9] font-sofia font-medium text-sm leading-none underline relative">
                             Change
                         </Button>
+                        <div
+                            className={`${coverModal ? 'block':"hidden"}  absolute right-0 top-8 w-[128px] max-w-auto bg-white text-center font-medium text-sm px-1 shadow-2xl rounded-lg`}
+                        >
+                            <button
+                                className="border-b border-platinum py-2 font-sofia text-black flex items-center justify-center w-full "
+                                onClick={handleCoverClick}
+                            >
+                                Upload profile
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    ref={coverRef}
+                                    className="hidden"
+                                    onChange={uploadCoverImageHandler}
+                                />
+                            </button>
+                            <button
+                                className="border-b border-platinum py-2 font-sofia text-black flex items-center justify-center w-full "
+                                onClick={() => setEditCoverImage("")}
+                            >
+                                Remove profile
+                            </button>
+                        </div>
                     </div>
                     <div className="h-[124px] w-full">
-                        <Image
-                            src={bg}
-                            alt="edit"
-                            className="w-full h-full bg-cover"
-                        />
+                        {editCoverImage === "" ? (
+                            <Image
+                                src={bg}
+                                alt="edit"
+                                className="w-full h-full bg-cover"
+                            />
+                        ) : (
+                            <Image
+                                src={editCoverImage}
+                                alt="edit"
+                                className="w-full h-full bg-cover"
+                            />
+                        )}
                     </div>
+                    {coverError && (
+                        <p className="text-center text-sm font-sofia text-rose-600 mb-2">
+                            {coverError}
+                        </p>
+                    )}
                 </div>
                 <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
                     <InputLabel label="First Name" />
@@ -257,8 +372,10 @@ export default function EditProfile() {
                 <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
                     <InputLabel label="Bio" />
                     <TextArea
+                        name="aboutMe"
                         placeholder="Write here..."
-                    // value={editInfo.aboutMe}
+                        value={editInfo.aboutMe}
+                        onChange={handleChange}
                     />
                 </div>
                 <div>
@@ -273,25 +390,27 @@ export default function EditProfile() {
                             Add
                         </button>
                     </div>
-                    <div className="flex flex-col gap-2 pb-4">
-                        {Array.from({ length: 6 }, (_, index) => (
-                            <div
-                                key={index}
-                                className="flex items-center justify-between px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg"
-                            >
-                                <h3 className="font-sofia text-sm font-light">
-                                    Biography
-                                </h3>
-                                <button>
-                                    <Image
-                                        src={closeIcon}
-                                        alt="close"
-                                        className="h-2"
-                                    />
-                                </button>
-                            </div>
-                        ))}
-                    </div>
+                    {editInfo.favGenres && editInfo.favGenres.length > 0 && (
+                        <div className="flex flex-col gap-2 pb-4">
+                            {editInfo.favGenres.map((favItem, index) => (
+                                <div
+                                    key={index}
+                                    className="flex items-center justify-between px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg"
+                                >
+                                    <h3 className="font-sofia text-sm font-light">
+                                        {favItem}
+                                    </h3>
+                                    <button>
+                                        <Image
+                                            src={closeIcon}
+                                            alt="close"
+                                            className="h-2"
+                                        />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
                 <div className="pb-8">
                     <div className="flex items-center justify-between py-4">

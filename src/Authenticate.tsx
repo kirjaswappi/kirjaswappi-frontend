@@ -40,7 +40,7 @@ export default function Authenticate() {
         if(data){
             dispatch(setUserInformation(data))
         }
-        console.log(data)
+        
     }, [data])
     
 // console.log(data)

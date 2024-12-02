@@ -10,7 +10,10 @@ import upArrowIcon from "../../../assets/upArrow.png";
 import BookCard from "../../../components/shared/BookCard";
 import Button from "../../../components/shared/Button";
 import Image from "../../../components/shared/Image";
-import { useGetUserProfileImageQuery } from "../../../redux/feature/auth/authApi";
+import {
+    useGetUserCoverImageQuery,
+    useGetUserProfileImageQuery,
+} from "../../../redux/feature/auth/authApi";
 import { setOpen } from "../../../redux/feature/open/openSlice";
 import { useAppSelector } from "../../../redux/hooks";
 import Settings from "./MoreOptions";
@@ -19,11 +22,14 @@ export default function UserProfile() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { open } = useAppSelector((state) => state.open);
-    const { userInformation: {id, firstName, lastName, favGenres, aboutMe} } = useAppSelector((state) => state.auth);
+    const {
+        userInformation: { id, firstName, lastName, favGenres, aboutMe },
+    } = useAppSelector((state) => state.auth);
     const { data: imageData, isLoading } = useGetUserProfileImageQuery({
         userId: id,
     });
-    
+    const {data: coverImage} = useGetUserCoverImageQuery({ userId: id}, { skip: !id });
+
     return (
         <div>
             <div className="absolute left-0 top-4 w-full flex justify-between px-4">
@@ -40,7 +46,8 @@ export default function UserProfile() {
             </div>
             <Settings />
             <div className="w-full h-[124px] z-0">
-                <Image src={bookDetailsBg} className="w-full h-full" />
+                {coverImage === undefined ? <Image src={bookDetailsBg} className="w-full h-full" /> : <Image src={coverImage as string} className="w-full h-full" />}
+                
             </div>
 
             <div className="absolute top-4/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] rounded-full  bg-white">
@@ -52,7 +59,7 @@ export default function UserProfile() {
                             <FaRegUser size={72} className="text-night" />
                         ) : (
                             <Image
-                                src={imageData}
+                                src={imageData as string}
                                 className="w-[120px] h-[120px] object-cover relative rounded-full"
                             />
                         )}
@@ -68,13 +75,18 @@ export default function UserProfile() {
             <div className="container mt-20">
                 <div className="text-center my-5 ">
                     <h1 className="font-medium text-black text-sm leading-none mb-2 font-sofia">
-                        {firstName +
-                            " " +
-                            lastName}
+                        {firstName + " " + lastName}
                     </h1>
-                    {favGenres?.map((favItem, index) => <p key={index} className="text-black font-light text-xs font-sofia">
-                        {favItem}
-                    </p>)}
+                    <div className="flex items-center gap-2 justify-center">
+                        {favGenres?.map((favItem, index) => (
+                            <p
+                                key={index}
+                                className="text-black font-light text-xs font-sofia"
+                            >
+                                {favItem}
+                            </p>
+                        ))}
+                    </div>
                 </div>
                 <div className="mt-6">
                     <Button className="bg-primary-light text-primary p-2  rounded-full text-sm font-sofia font-normal">
@@ -88,9 +100,11 @@ export default function UserProfile() {
                     </Button>
                 </div>
                 <div className="bg-[#E4E4E4] w-full h-[1px] mt-2 mb-5"></div>
-                {aboutMe && <p className="text-xs font-light font-sofia text-grayDark">
-                    {aboutMe}
-                </p>}
+                {aboutMe && (
+                    <p className="text-xs font-light font-sofia text-grayDark">
+                        {aboutMe}
+                    </p>
+                )}
                 <div className="bg-white py-2 px-5 grid grid-cols-3 my-5 rounded-2xl">
                     <div className="relative">
                         <div className="text-center after:absolute after:right-0 after:top-0 after:h-[30px] after:w-[1px] after:bg-[#E4E4E4]">

@@ -113,6 +113,18 @@ export const authApi = api.injectEndpoints({
                     method: "GET",
                 };
             },
+            providesTags: ["UpdateUser"],
+        }),
+        updateUserById: builder.mutation({
+            query: ({ id, data }) => {
+                console.log(data);
+                return {
+                    url: `/users/${id}`,
+                    method: "PUT",
+                    body: data,
+                };
+            },
+            invalidatesTags: ["UpdateUser"],
         }),
         getUserProfileImage: builder.query({
             query: ({ userId }) => {
@@ -138,6 +150,30 @@ export const authApi = api.injectEndpoints({
             },
             invalidatesTags: ["AddProfileImage"],
         }),
+        getUserCoverImage: builder.query({
+            query: ({ userId }) => {
+                return {
+                    url: `/photos/cover/by-id?userId=${userId}`,
+                    method: "GET",
+                    responseHandler: (response) => response.blob(),
+                };
+            },
+            async transformResponse(blob) {
+                const base64String = await blobToBase64(blob);
+                return base64String;
+            },
+            providesTags: ["AddCoverImage"],
+        }),
+        uploadCoverImage: builder.mutation({
+            query: ({ id, image }) => {
+                return {
+                    url: `/photos/cover?userId=${id}`,
+                    method: "POST",
+                    body: image,
+                };
+            },
+            invalidatesTags: ["AddCoverImage"],
+        }),
     }),
 });
 
@@ -162,4 +198,7 @@ export const {
     useGetUserProfileImageQuery,
     useGetUserByIdQuery,
     useUploadProfileImageMutation,
+    useUpdateUserByIdMutation,
+    useGetUserCoverImageQuery,
+    useUploadCoverImageMutation,
 } = authApi;
