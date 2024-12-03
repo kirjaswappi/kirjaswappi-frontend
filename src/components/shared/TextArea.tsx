@@ -8,7 +8,7 @@ export default function TextArea({
 }: {
     name?: string;
     onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-    value?: string;
+    value?: string | undefined;
     placeholder?: string;
     max?: number
 }) {

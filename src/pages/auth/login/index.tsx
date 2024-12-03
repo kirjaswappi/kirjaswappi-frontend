@@ -257,6 +257,7 @@ export default function Login() {
                         </div>
                         <button
                             type="submit"
+                            disabled={isLoading}
                             className="w-full h-[48px] px-4 font-normal text-white bg-primary rounded-2xl text-sm"
                         >
                             {isLoading ? "Loading..." : "Continue"}

@@ -45,9 +45,11 @@ export const authApi = api.injectEndpoints({
             },
             onQueryStarted: async (_args, { queryFulfilled }) => {
                 try {
-                    const { data } = await queryFulfilled;
-                    if (data) {
-                        setCookie("user", data, 24);
+                    const {
+                        data: { id, email },
+                    } = await queryFulfilled;
+                    if (id && email) {
+                        setCookie("user", { id, email }, 24);
                     }
                 } catch (error) {
                     console.error("Can't set data in cookie. failed:", error);
@@ -87,7 +89,7 @@ export const authApi = api.injectEndpoints({
                 const reset_password_data = {
                     newPassword: data?.newPassword,
                     confirmPassword: data?.confirmPassword,
-                }
+                };
                 return {
                     url: `/users/reset-password/${email}`,
                     method: "POST",
@@ -101,13 +103,87 @@ export const authApi = api.injectEndpoints({
                 return {
                     url: `/users/${id}`,
                     method: "DELETE",
-                    // body: data,
-                    headers: applicationJSON,
                 };
             },
         }),
+        getUserById: builder.query({
+            query: (id) => {
+                return {
+                    url: `/users/${id}`,
+                    method: "GET",
+                };
+            },
+            providesTags: ["UpdateUser"],
+        }),
+        updateUserById: builder.mutation({
+            query: ({ id, data }) => {
+                return {
+                    url: `/users/${id}`,
+                    method: "PUT",
+                    body: data,
+                };
+            },
+            invalidatesTags: ["UpdateUser"],
+        }),
+        getUserProfileImage: builder.query({
+            query: ({ userId }) => {
+                return {
+                    url: `/photos/profile/by-id?userId=${userId}`,
+                    method: "GET",
+                    responseHandler: (response) => response.blob(),
+                };
+            },
+            async transformResponse(blob) {
+                const base64String = await blobToBase64(blob);
+                return base64String;
+            },
+            providesTags: ["AddProfileImage"],
+        }),
+        uploadProfileImage: builder.mutation({
+            query: ({ id, image }) => {
+                return {
+                    url: `/photos/profile?userId=${id}`,
+                    method: "POST",
+                    body: image,
+                };
+            },
+            invalidatesTags: ["AddProfileImage"],
+        }),
+        getUserCoverImage: builder.query({
+            query: ({ userId }) => {
+                return {
+                    url: `/photos/cover/by-id?userId=${userId}`,
+                    method: "GET",
+                    responseHandler: (response) => response.blob(),
+                };
+            },
+            async transformResponse(blob) {
+                const base64String = await blobToBase64(blob);
+                return base64String;
+            },
+            providesTags: ["AddCoverImage"],
+        }),
+        uploadCoverImage: builder.mutation({
+            query: ({ id, image }) => {
+                return {
+                    url: `/photos/cover?userId=${id}`,
+                    method: "POST",
+                    body: image,
+                };
+            },
+            invalidatesTags: ["AddCoverImage"],
+        }),
     }),
 });
+
+const blobToBase64 = (blob: any) => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
+};
 
 export const {
     useAuthenticateMutation,
@@ -118,4 +194,10 @@ export const {
     useLazySentOTPQuery,
     useLazyVerifyOTPQuery,
     useResetPasswordMutation,
+    useGetUserProfileImageQuery,
+    useGetUserByIdQuery,
+    useUploadProfileImageMutation,
+    useUpdateUserByIdMutation,
+    useGetUserCoverImageQuery,
+    useUploadCoverImageMutation,
 } = authApi;
