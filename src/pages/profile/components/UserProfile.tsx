@@ -25,10 +25,14 @@ export default function UserProfile() {
     const {
         userInformation: { id, firstName, lastName, favGenres, aboutMe },
     } = useAppSelector((state) => state.auth);
-    const { data: imageData, isLoading } = useGetUserProfileImageQuery({
-        userId: id,
-    });
-    const {data: coverImage} = useGetUserCoverImageQuery({ userId: id}, { skip: !id });
+    const { data: imageData, isLoading } = useGetUserProfileImageQuery(
+        { userId: id },
+        { skip: !id }
+    );
+    const { data: coverImage } = useGetUserCoverImageQuery(
+        { userId: id },
+        { skip: !id }
+    );
 
     return (
         <div>
@@ -46,8 +50,14 @@ export default function UserProfile() {
             </div>
             <Settings />
             <div className="w-full h-[124px] z-0">
-                {coverImage === undefined ? <Image src={bookDetailsBg} className="w-full h-full" /> : <Image src={coverImage as string} className="w-full h-full" />}
-                
+                {coverImage === undefined ? (
+                    <Image src={bookDetailsBg} className="w-full h-full" />
+                ) : (
+                    <Image
+                        src={coverImage as string}
+                        className="w-full h-full"
+                    />
+                )}
             </div>
 
             <div className="absolute top-4/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] rounded-full  bg-white">
@@ -77,14 +87,25 @@ export default function UserProfile() {
                     <h1 className="font-medium text-black text-sm leading-none mb-2 font-sofia">
                         {firstName + " " + lastName}
                     </h1>
-                    <div className="flex items-center gap-2 justify-center">
+                    <div className="flex items-center justify-center">
                         {favGenres?.map((favItem, index) => (
-                            <p
-                                key={index}
-                                className="text-black font-light text-xs font-sofia"
-                            >
-                                {favItem}
-                            </p>
+                            <div className="flex items-center">
+                                <p
+                                    key={index}
+                                    className="text-black font-light text-xs font-sofia"
+                                >
+                                    {favItem}
+                                </p>
+                                <span
+                                    className={`${
+                                        favGenres.length - 1 === index
+                                            ? "hidden"
+                                            : "block"
+                                    } inline-block mx-2 font-sofia font-light text-sm`}
+                                >
+                                    |
+                                </span>
+                            </div>
                         ))}
                     </div>
                 </div>

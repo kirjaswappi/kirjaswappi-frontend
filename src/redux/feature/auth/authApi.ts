@@ -117,7 +117,6 @@ export const authApi = api.injectEndpoints({
         }),
         updateUserById: builder.mutation({
             query: ({ id, data }) => {
-                console.log(data);
                 return {
                     url: `/users/${id}`,
                     method: "PUT",

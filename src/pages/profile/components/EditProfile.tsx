@@ -11,8 +11,9 @@ import Button from "../../../components/shared/Button";
 import Image from "../../../components/shared/Image";
 import Input from "../../../components/shared/Input";
 import InputLabel from "../../../components/shared/InputLabel";
-import Loader from "../../../components/shared/Loader";
+import Spinner from "../../../components/shared/Spinner";
 import TextArea from "../../../components/shared/TextArea";
+import { useImageUpload } from "../../../hooks/useImageUpload";
 import {
     useGetUserCoverImageQuery,
     useGetUserProfileImageQuery,
@@ -41,39 +42,55 @@ interface IEditInfo {
 export default function EditProfile() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const profileRef = useRef(null);
-    const coverRef = useRef(null);
-    const [profileModal, setProfileModal] = useState<boolean>(false);
-    const [coverModal, setCoverModal] = useState<boolean>(false);
+    const profileRef = useRef<HTMLInputElement | null>(null);
+    const coverRef = useRef<HTMLInputElement | null>(null);
     const [isEditValuesChanged, setEditValuesChanged] =
         useState<boolean>(false);
     const { open } = useAppSelector((state) => state.open);
     const { userInformation } = useAppSelector((state) => state.auth);
-    const [uploadProfileImage] = useUploadProfileImageMutation();
-    const [uploadCoverImage] = useUploadCoverImageMutation()
-    const [updateUserById] = useUpdateUserByIdMutation();
-    
-    const {data: coverImageData, isSuccess: coverSuccess} = useGetUserCoverImageQuery({
-        userId: userInformation.id,
-    },
-    { skip: !userInformation.id })
-    const {
-        data: imageData,
-        isLoading,
-        isSuccess,
-    } = useGetUserProfileImageQuery(
+    const [uploadProfileImage, { isLoading: profileLoading }] =
+        useUploadProfileImageMutation();
+    const [uploadCoverImage, { isLoading: coverLoading }] =
+        useUploadCoverImageMutation();
+    const [updateUserById, { isLoading: updateUserLoading }] =
+        useUpdateUserByIdMutation();
+    const { data: coverImageData, isSuccess: coverSuccess } =
+        useGetUserCoverImageQuery(
+            {
+                userId: userInformation.id,
+            },
+            { skip: !userInformation.id }
+        );
+    const { data: imageData, isSuccess } = useGetUserProfileImageQuery(
         {
             userId: userInformation.id,
         },
         { skip: !userInformation.id }
     );
-    const [editImage, setEditImage] = useState<string>("");
-    const [editCoverImage, setEditCoverImage] = useState<string>("");
-    const [profileFile, setProfileFile] = useState("");
-    const [coverFile, setCoverFile] = useState("");
-    const [error, setError] = useState<string>("");
-    const [coverError, setCoverError] = useState<string>("");
-    // const { error  } = useImage()
+    const {
+        imageFile: profileFile,
+        handleImageFile: uploadProfileImageHandler,
+        error,
+        previewImage: editImage,
+        handleRemove: handleRemoveProfile,
+        handleSetPreviewImage: setPreviewProfileImage,
+        handleClearState: clearProfileState,
+        isShowModal: profileModal,
+        handleShowModal: handleProfileToggle,
+        setShowModal: setProfileToggle,
+    } = useImageUpload();
+    const {
+        imageFile: coverFile,
+        handleImageFile: uploadCoverImageHandler,
+        error: coverError,
+        previewImage: editCoverImage,
+        handleRemove: handleRemoveCover,
+        handleSetPreviewImage: setPreviewCoverImage,
+        handleClearState: clearCoverState,
+        isShowModal: coverModal,
+        handleShowModal: handleCoverToggle,
+        setShowModal: setCoverToggle,
+    } = useImageUpload();
     const [editInfo, setEditInfo] = useState<IEditInfo>({
         id: userInformation.id,
         firstName: "",
@@ -87,101 +104,85 @@ export default function EditProfile() {
         phoneNumber: "",
         favGenres: ["Biography", "Autobiography", "Personal narrative"],
     });
-    const allowedTypes = ["image/jpeg", "image/png"];
-    const maxsize = 1024 * 1024 * 2;
-    const handleChange = (e) => {
+
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
         setEditInfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
         setEditValuesChanged(true);
     };
 
     const handleClick = () => {
-        profileRef.current.click();
+        if (profileRef.current) {
+            profileRef.current.click();
+        }
     };
     const handleCoverClick = () => {
-        coverRef.current.click();
+        if (coverRef.current) {
+            coverRef.current.click();
+        }
     };
-    const uploadProfileImageHandler = (e: { target: { files: any } }) => {
-        setProfileModal(false);
-        const file = e.target.files[0];
-        let errorMessage: string[] = [];
-        // checking file type
-        if (!allowedTypes.includes(file.type)) {
-            errorMessage.push(`Please upload .jpeg or .png files. `);
-        }
-        // checking file size
-        if (file.size > maxsize) {
-            errorMessage.push(`File size limit ${maxsize / (1024 * 1024)}MB.`);
-        }
-        //  console.log(errorMessage)
-        if (errorMessage.length > 0) {
-            setError(errorMessage.join(" "));
-            return;
-        }
-        // reset error in state and store file in state
-        setError("");
-        setEditImage(URL.createObjectURL(file)); // preview image
-        // setProfileFile(file);
-    };
-    const uploadCoverImageHandler = (e: { target: { files: any } }) => {
-        setCoverModal(false);
-        const file = e.target.files[0];
-        let errorMessage: string[] = [];
-        // checking file type
-        if (!allowedTypes.includes(file.type)) {
-            errorMessage.push(`Please upload .jpeg or .png files. `);
-        }
-        // checking file size
-        if (file.size > maxsize) {
-            errorMessage.push(`File size limit ${maxsize / (1024 * 1024)}MB.`);
-        }
-        //  console.log(errorMessage)
-        if (errorMessage.length > 0) {
-            setCoverError(errorMessage.join(" "));
-            return;
-        }
-        // reset error in state and store file in state
-        setCoverError("");
-        setEditCoverImage(URL.createObjectURL(file)); // preview image
-        setCoverFile(file)
+
+    const isLoading = () => {
+        if (profileLoading) return true;
+        if (coverLoading) return true;
+        if (updateUserLoading) return true;
+        else return false;
     };
 
     const handleEditSaveFn = async () => {
-        // 1. if image is not empty then hit the image an api
-        if (profileFile !== "") {
-            // request to api
-            if (userInformation.id) {
-                const formdata = new FormData();
-                formdata.append("image", profileFile);
-                await uploadProfileImage({
-                    id: userInformation.id,
-                    image: formdata,
-                })
-                    .then(() => setProfileFile(""))
-                    .catch((error) => console.log(error));
+        try {
+            const requests = [];
+            // 1. if image is not empty then hit the image an api
+            if (profileFile && profileFile !== "") {
+                // request to api
+                if (userInformation.id) {
+                    const formdata = new FormData();
+                    formdata.append("image", profileFile);
+                    const profileRequest = uploadProfileImage({
+                        id: userInformation.id,
+                        image: formdata,
+                    }).unwrap();
+                    requests.push(profileRequest);
+                }
             }
-        }
-        // 2. if cover image is not empty then hit the image an api
-        if (coverFile !== "") {
-            // request to api
-            if (userInformation.id) {
-                const formdata = new FormData();
-                formdata.append("image", coverFile);
-                await uploadCoverImage({
-                    id: userInformation.id,
-                    image: formdata,
-                })
-                    .then(() => setCoverFile(""))
-                    .catch((error) => console.log(error));
+            // 2. if cover image is not empty then hit the image an api
+            if (coverFile && coverFile !== "") {
+                // request to api
+                if (userInformation.id) {
+                    const formdata = new FormData();
+                    formdata.append("image", coverFile);
+                    const coverRequest = uploadCoverImage({
+                        id: userInformation.id,
+                        image: formdata,
+                    }).unwrap();
+                    requests.push(coverRequest);
+                }
             }
+            // 3. if users information has changed then hit the users api
+            if (isEditValuesChanged) {
+                const updateRequest = updateUserById({
+                    id: userInformation.id,
+                    data: editInfo,
+                }).unwrap();
+                requests.push(updateRequest);
+            }
+            const results = await Promise.allSettled(requests);
+
+            results.forEach((result, index) => {
+                if (result.status === "rejected") {
+                    console.error(`Request ${index} failed:`, result.reason);
+                }
+            });
+
+            clearProfileState();
+            clearCoverState();
+            navigate("/profile/user-profile");
+        } catch (error) {
+            console.log(error);
         }
-        // 3. if users information has changed then hit the users api
-        if (isEditValuesChanged) {
-            console.log(editInfo);
-            updateUserById({ id: userInformation.id, data: editInfo })
-                .then((res) => console.log(res))
-                .catch((error) => console.log(error));
-        }
-        // 3. Genre is add
+
+        // 4. Genre is add
     };
 
     // Initialization in state
@@ -198,18 +199,27 @@ export default function EditProfile() {
 
     useEffect(() => {
         if (imageData !== undefined) {
-            setEditImage(imageData as string);
+            setPreviewProfileImage(imageData as string);
         }
     }, [imageData, isSuccess]);
     useEffect(() => {
         if (coverImageData !== undefined) {
-            setEditCoverImage(coverImageData as string);
+            setPreviewCoverImage(coverImageData as string);
         }
     }, [coverImageData, coverSuccess]);
-    if (isLoading) return <Loader />;
+    const isSaveActive: boolean =
+        coverLoading ||
+        profileLoading ||
+        updateUserLoading ||
+        isEditValuesChanged ||
+        !!profileFile ||
+        !!coverFile;
+
     return (
         <div>
             {/* ADD Genre Modal */}
+
+            {isLoading() && <Spinner />}
             <AddGenre />
             <div className="absolute left-0 top-4 w-full flex justify-between px-4 border-b border-[#E4E4E4] pb-3">
                 <div className="flex items-center gap-2">
@@ -225,7 +235,12 @@ export default function EditProfile() {
                 </div>
                 <div>
                     <Button
-                        className="text-[#3879E9] font-sofia font-medium text-base"
+                        disabled={!isSaveActive}
+                        className={` ${
+                            isSaveActive
+                                ? " text-[#3879E9] cursor-pointer"
+                                : "text-[#3879e985]"
+                        } font-sofia font-medium text-base`}
                         onClick={handleEditSaveFn}
                     >
                         Save
@@ -250,10 +265,9 @@ export default function EditProfile() {
                             )}
                             <div
                                 className="w-7 h-7 bg-white cursor-pointer z-[99999999px] absolute bottom-0 right-2 rounded-full flex items-center justify-center shadow-sm"
-                                // ref={reference}
                                 onClick={() => {
-                                    setProfileModal(!profileModal)
-                                    setCoverModal(false)
+                                    handleProfileToggle();
+                                    setCoverToggle(false);
                                 }}
                             >
                                 <IoCamera className="text-primary" />
@@ -262,7 +276,7 @@ export default function EditProfile() {
                         <div
                             className={`${
                                 profileModal ? "block" : "hidden"
-                            } w-[128px] max-w-auto bg-white text-center font-medium text-sm px-1 shadow-2xl rounded-lg`}
+                            } w-[128px] max-w-auto bg-white text-center font-medium text-sm px-1 shadow-2xl rounded-lg absolute top-30 z-50`}
                         >
                             <button
                                 className="border-b border-platinum py-2 font-sofia text-black flex items-center justify-center w-full "
@@ -279,7 +293,7 @@ export default function EditProfile() {
                             </button>
                             <button
                                 className="border-b border-platinum py-2 font-sofia text-black flex items-center justify-center w-full "
-                                onClick={() => setEditImage("")}
+                                onClick={handleRemoveProfile}
                             >
                                 Remove profile
                             </button>
@@ -296,14 +310,19 @@ export default function EditProfile() {
                         <h1 className="font-sofia text-sm font-medium leading-none">
                             Cover Picture
                         </h1>
-                        <Button onClick={() => {
-                            setCoverModal(!coverModal)
-                            setProfileModal(false)
-                        }} className="text-[#3879E9] font-sofia font-medium text-sm leading-none underline relative">
+                        <Button
+                            onClick={() => {
+                                handleCoverToggle();
+                                setProfileToggle(false);
+                            }}
+                            className="text-[#3879E9] font-sofia font-medium text-sm leading-none underline relative"
+                        >
                             Change
                         </Button>
                         <div
-                            className={`${coverModal ? 'block':"hidden"}  absolute right-0 top-8 w-[128px] max-w-auto bg-white text-center font-medium text-sm px-1 shadow-2xl rounded-lg`}
+                            className={`${
+                                coverModal ? "block" : "hidden"
+                            }  absolute right-0 top-8 w-[128px] max-w-auto bg-white text-center font-medium text-sm px-1 shadow-2xl rounded-lg`}
                         >
                             <button
                                 className="border-b border-platinum py-2 font-sofia text-black flex items-center justify-center w-full "
@@ -320,7 +339,7 @@ export default function EditProfile() {
                             </button>
                             <button
                                 className="border-b border-platinum py-2 font-sofia text-black flex items-center justify-center w-full "
-                                onClick={() => setEditCoverImage("")}
+                                onClick={handleRemoveCover}
                             >
                                 Remove profile
                             </button>
