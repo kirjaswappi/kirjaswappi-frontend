@@ -1,42 +1,80 @@
-import { useState } from "react";
+import React, { SetStateAction } from "react";
 import plusIcon from "../../../assets/plusIcon.png";
+import tickMarkIcon from "../../../assets/tickmark.png";
 import Button from "../../../components/shared/Button";
 import Image from "../../../components/shared/Image";
+import Loader from "../../../components/shared/Loader";
+import { useGetGenreQuery } from "../../../redux/feature/genre/genreApi";
+import { IEditInfo, IGenreItemType } from "../interface/interface";
 import SideDrawer from "./SideDrawer";
 
+export default function AddGenre({
+    editInfo,
+    setEditInfo,
+    setEditValuesChanged
+}: {
+    editInfo: IEditInfo;
+    setEditInfo: React.Dispatch<SetStateAction<IEditInfo>>;
+    setEditValuesChanged: React.Dispatch<SetStateAction<boolean>>
+}) {
+    const { data, isLoading } = useGetGenreQuery(undefined);
 
+    const { favGenres } = editInfo;
 
-export default function AddGenre() {
-    const [genre, _setGenre] = useState([
-        { id: 1, title: "Good", active: false },
-        { id: 2, title: "Bad", active: true },
-        { id: 3, title: "Very Good", active: false },
-    ])
+    const handleAddGenre = (genreValue: string) => {
+        if (!favGenres?.includes(genreValue)) {
+            setEditInfo((prev) => ({
+              ...prev,
+              favGenres: [...prev.favGenres?? [], genreValue],
+            }));
+            setEditValuesChanged(true)
+          }
+    };
 
-    // const handleAddGenre = (id: number) => {
-        
-    // }
-
-    // 
-    const onSave = () => {
-        console.log('click')
-    }
+    if (isLoading) return <Loader />;
     return (
-        <SideDrawer title="Genre" isShowSave={true} onSave={onSave}>
+        <SideDrawer title="Genre">
             <div className="flex flex-col gap-2 pb-4 mt-8">
-                {genre.map(genreItem => <div key={genreItem.id} className="flex items-center justify-between px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg">
-                    <h3 className="font-sofia text-sm font-light">{genreItem.title}</h3>
-                    <Button  >
-                        <Image src={plusIcon} alt="close" className="h-auto" />
-                    </Button>
-                </div>)}
-                {/* {Array.from({ length: 6 }, (_, index) => <div key={index} className="flex items-center justify-between px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg">
-                    <h3 className="font-sofia text-sm font-light">Biography</h3>
-                    <Button onClick={() => handleAddGenre(index)} >
-                        <Image src={plusIcon} alt="close" className="h-auto" />
-                    </Button>
-                </div>)} */}
+                {data?.map(
+                    (
+                        genreItem: IGenreItemType,
+                        index: string | number
+                    ) => {
+                        const isGenActive = favGenres?.includes(genreItem.name);
+                        return (
+                            <div
+                                key={index}
+                                className="flex items-center justify-between px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg"
+                            >
+                                <h3 className="font-sofia text-sm font-light">
+                                    {genreItem.name}
+                                </h3>
+                                {isGenActive ? (
+                                    <Button>
+                                        <Image
+                                            src={tickMarkIcon}
+                                            alt="Selected"
+                                            className="h-auto"
+                                        />
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        onClick={() =>
+                                            handleAddGenre(genreItem.name)
+                                        }
+                                    >
+                                        <Image
+                                            src={plusIcon}
+                                            alt="Add"
+                                            className="h-auto"
+                                        />
+                                    </Button>
+                                )}
+                            </div>
+                        );
+                    }
+                )}
             </div>
         </SideDrawer>
-    )
+    );
 }

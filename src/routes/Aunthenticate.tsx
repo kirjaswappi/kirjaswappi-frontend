@@ -9,7 +9,7 @@ const Authenticate = ({ children }: { children: any }) => {
   const location = useLocation();
   const { pathname, state } = location;
   const { userInformation } = useAppSelector((state) => state.auth);
-console.log(userInformation)
+
   if (!userInformation.email) {
     return children;
   }

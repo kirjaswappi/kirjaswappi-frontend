@@ -4,20 +4,23 @@ import bookIcon from "../../assets/bookIcon.png";
 import close from "../../assets/close.svg";
 import giveWayIcon from "../../assets/givewayIcon.png";
 import sendMessageIcon from "../../assets/sendMessageIcon.png";
+import { setSwapModal } from "../../redux/feature/open/openSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import Button from "./Button";
 import Image from "./Image";
 import TextArea from "./TextArea";
 export default function SwapModal() {
-    
+    const { swapModal } = useAppSelector(state => state.open)
+    const dispatch = useAppDispatch()
     // console.log(selectedOption)
     return (
-        <div className="bg-black bg-opacity-50 inset-0 w-full h-screen fixed top-0 left-0 z-50 flex items-center justify-center">
+        <div className={`${swapModal ? "block" :"hidden"} bg-black bg-opacity-50 inset-0 w-full h-screen fixed top-0 left-0 z-50 flex items-center justify-center`}>
             <div className="w-11/12 bg-white rounded-md ">
                 <div className="py-4 border-b border-platinum relative">
                     <h3 className="font-sofia font-normal text-base text-center leading-none">
                         Swap Request
                     </h3>
-                    <Button className="border border-platinum rounded-full p-2 absolute right-4 top-3">
+                    <Button onClick={() => dispatch(setSwapModal(false))} className="border border-platinum rounded-full p-2 absolute right-4 top-3">
                         <Image src={close} alt="close" />
                     </Button>
                 </div>
