@@ -1,11 +1,11 @@
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import bookImg from "../../assets/book.jpg";
 import editIcon from "../../assets/editWhite.png";
-import Button from "./Button";
-import Image from "./Image";
-import { useDispatch } from "react-redux";
 import { setSwapModal } from "../../redux/feature/open/openSlice";
 import { useAppSelector } from "../../redux/hooks";
+import Button from "./Button";
+import Image from "./Image";
 interface IBookCard {
     image?: string;
     title?: string;
@@ -20,7 +20,9 @@ export default function BookCard({ title, by, isProfile = false }: IBookCard) {
     return (
         <div className="max-w-[168px] flex flex-col">
             <div
-                onClick={() => navigate("/book-details/12")}
+                onClick={() => navigate("/book-details/12", {
+                    state:"book-details"
+                })}
                 className="cursor-pointer"
             >
                 <div className=" max-h-[190px] rounded-[8px] mb-2">

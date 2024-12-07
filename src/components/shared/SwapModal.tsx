@@ -100,7 +100,7 @@ export default function SwapModal() {
                     </div>
                     <div>
                         <h1 className="text-center font-sofia text-sm font-medium mb-2 mt-3">Note</h1>
-                        <TextArea placeholder="Write a short note" />
+                        <TextArea onChange={(e) => console.log(e.target.value)} placeholder="Write a short note" />
                     </div>
                     <div className="flex justify-center border-t border-platinum pt-2">
                         <Button className="bg-primary text-white font-medium text-xs py-2 w-7/12 h-[30px] rounded-[8px] font-sofia flex justify-center items-center gap-2 ">
