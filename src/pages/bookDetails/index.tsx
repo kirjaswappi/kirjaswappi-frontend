@@ -17,7 +17,6 @@ export default function BookDetails() {
     goToTop()
     return (
         <div>
-            {/* <SwapModal /> */}
             <div className="absolute left-0 top-4 w-full flex justify-between px-4">
                 <div className="flex items-center gap-4">
                     <Image src={leftArrowIcon} alt="icon" onClick={()=> navigate(-1)}  />
@@ -112,6 +111,19 @@ export default function BookDetails() {
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
                     {Array.from({ length: 4 }, (_, index) => <BookCard key={index} />)}
+                </div>
+            </div>
+            <div className="h-16 flex items-center gap-5 justify-between text-xs font-normal px-6 fixed bottom-0  bg-white w-full" style={{
+                boxShadow:"0px 0px 1px 0px #33333345"
+            }}>
+                <div>
+                    <p className="text-xs font-poppins">
+                        Offered by
+                    </p>
+                    <h3 className="text-sm font-poppins underline">Raisa Hossain</h3>
+                </div>
+                <div>
+                    <Button className="bg-primary text-white px-14 py-3 font-poppins font-medium rounded-md">Request Swap</Button>
                 </div>
             </div>
         </div>
