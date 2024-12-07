@@ -23,21 +23,9 @@ import {
 } from "../../../redux/feature/auth/authApi";
 import { setOpen } from "../../../redux/feature/open/openSlice";
 import { useAppSelector } from "../../../redux/hooks";
+import { IEditInfo } from "../interface/interface";
 import AddGenre from "./AddGenre";
 
-interface IEditInfo {
-    id: string | undefined;
-    firstName: string | undefined;
-    lastName: string | undefined;
-    aboutMe: string | undefined;
-    streetName: string | undefined;
-    houseNumber: string | undefined;
-    zipCode: number | undefined;
-    city: string | undefined;
-    country: string | undefined;
-    phoneNumber: string | undefined;
-    favGenres: string[] | undefined;
-}
 
 export default function EditProfile() {
     const navigate = useNavigate();
@@ -95,14 +83,14 @@ export default function EditProfile() {
         id: userInformation.id,
         firstName: "",
         lastName: "",
-        aboutMe: "as",
+        aboutMe: "",
         streetName: "",
         houseNumber: "",
         zipCode: 0,
         city: "",
         country: "",
         phoneNumber: "",
-        favGenres: ["Biography", "Autobiography", "Personal narrative"],
+        favGenres: [],
     });
 
     const handleChange = (
@@ -111,6 +99,14 @@ export default function EditProfile() {
         setEditInfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
         setEditValuesChanged(true);
     };
+
+    const handleRemoveGenre = (genreValue: string) => {
+        setEditInfo((prev) => ({
+          ...prev,
+          favGenres: prev?.favGenres?.filter((favGen) => favGen !== genreValue),
+        }));
+        setEditValuesChanged(true)
+      };
 
     const handleClick = () => {
         if (profileRef.current) {
@@ -181,8 +177,6 @@ export default function EditProfile() {
         } catch (error) {
             console.log(error);
         }
-
-        // 4. Genre is add
     };
 
     // Initialization in state
@@ -193,6 +187,7 @@ export default function EditProfile() {
                 firstName: userInformation.firstName,
                 lastName: userInformation.lastName,
                 aboutMe: userInformation.aboutMe ?? "",
+                favGenres: userInformation.favGenres
             }));
         }
     }, [userInformation]);
@@ -207,6 +202,7 @@ export default function EditProfile() {
             setPreviewCoverImage(coverImageData as string);
         }
     }, [coverImageData, coverSuccess]);
+
     const isSaveActive: boolean =
         coverLoading ||
         profileLoading ||
@@ -220,7 +216,7 @@ export default function EditProfile() {
             {/* ADD Genre Modal */}
 
             {isLoading() && <Spinner />}
-            <AddGenre />
+            <AddGenre  editInfo={editInfo} setEditInfo={setEditInfo} setEditValuesChanged={setEditValuesChanged} />
             <div className="absolute left-0 top-4 w-full flex justify-between px-4 border-b border-[#E4E4E4] pb-3">
                 <div className="flex items-center gap-2">
                     <div
@@ -419,13 +415,13 @@ export default function EditProfile() {
                                     <h3 className="font-sofia text-sm font-light">
                                         {favItem}
                                     </h3>
-                                    <button>
+                                    <Button onClick={() => handleRemoveGenre(favItem)}>
                                         <Image
                                             src={closeIcon}
                                             alt="close"
                                             className="h-2"
                                         />
-                                    </button>
+                                    </Button>
                                 </div>
                             ))}
                         </div>

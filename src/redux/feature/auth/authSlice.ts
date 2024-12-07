@@ -89,7 +89,8 @@ const authSlice = createSlice({
         },
         setUserInformation : (state, action) => {
             state.userInformation = { ...initialState.userInformation, ...action.payload }
-        }
+        },
+        
     },
     extraReducers: (builder) => {
         builder.addMatcher(authApi.endpoints.login.matchPending, (state) => {

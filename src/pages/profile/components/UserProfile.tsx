@@ -89,9 +89,9 @@ export default function UserProfile() {
                     </h1>
                     <div className="flex items-center justify-center">
                         {favGenres?.map((favItem, index) => (
-                            <div className="flex items-center">
+                            <div key={index} className="flex items-center">
                                 <p
-                                    key={index}
+                                    
                                     className="text-black font-light text-xs font-sofia"
                                 >
                                     {favItem}
@@ -184,7 +184,7 @@ export default function UserProfile() {
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
                     {Array.from({ length: 4 }, (_, index) => (
-                        <BookCard key={index} />
+                        <BookCard key={index} isProfile />
                     ))}
                 </div>
             </div>
