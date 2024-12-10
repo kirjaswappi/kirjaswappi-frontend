@@ -125,22 +125,7 @@ const authSlice = createSlice({
                 state.success = false;
             }
         );
-        builder.addMatcher(authApi.endpoints.getUserProfileImage.matchPending, (state, action) => {
-            console.log(state, action)
-        });
-        builder.addMatcher(
-            authApi.endpoints.getUserProfileImage.matchFulfilled,
-            (state, action) => {
-                // console.log(action.payload)
-                
-            }
-        );
-        builder.addMatcher(
-            authApi.endpoints.getUserProfileImage.matchRejected,
-            (state, action: PayloadAction<any>) => {
-                console.log(state, action)
-            }
-        );
+        
         builder.addMatcher(authApi.endpoints.register.matchPending, (state) => {
             state.loading = true;
             state.error = null;

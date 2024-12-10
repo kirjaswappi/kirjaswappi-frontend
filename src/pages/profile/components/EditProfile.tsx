@@ -46,9 +46,9 @@ export default function EditProfile() {
         useUploadCoverImageMutation();
     const [updateUserById, { isLoading: updateUserLoading }] =
         useUpdateUserByIdMutation();
-    const [deleteProfileImage, { isLoading: deleteLoading, error: er }] =
+    const [_deleteProfileImage, { isLoading: deleteLoading }] =
         useDeleteProfileImageMutation();
-    const [deleteCoverImage, { isLoading: deleteCoverLoading }] = useDeleteCoverImageMutation()
+    const [_deleteCoverImage] = useDeleteCoverImageMutation()
     const { data: coverImageData, isSuccess: coverSuccess } =
         useGetUserCoverImageQuery(
             {
