@@ -125,6 +125,7 @@ const authSlice = createSlice({
                 state.success = false;
             }
         );
+        
         builder.addMatcher(authApi.endpoints.register.matchPending, (state) => {
             state.loading = true;
             state.error = null;
@@ -204,11 +205,9 @@ const authSlice = createSlice({
             (state, action: PayloadAction<any>) => {
                 const error = (action.payload?.data as IErrorPayload)?.error;
                 let errorMessage: string | undefined;
-                console.log(error)
                 if (typeof error === "object" && error !== null) {
                     errorMessage = error.message;
                 }
-                console.log(errorMessage);
                 state.loading = false;
                 state.error = errorMessage;
                 state.message = "";

@@ -2,12 +2,16 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface IOpenInitialState {
     open: boolean;
-    swapModal: boolean
+    swapModal: boolean;
+    showAlert: boolean;
+    message: string;
 }
 
 const initialState: IOpenInitialState = {
     open: false,
-    swapModal: false
+    swapModal: false,
+    showAlert: false,
+    message: "",
 };
 const openSlice = createSlice({
     name: "open",
@@ -18,7 +22,7 @@ const openSlice = createSlice({
         },
         setSwapModal: (state, action: PayloadAction<boolean>) => {
             state.swapModal = action.payload;
-        }
+        },
     },
 });
 

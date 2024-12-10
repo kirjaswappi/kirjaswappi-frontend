@@ -10,17 +10,24 @@ import Button from "./Button";
 import Image from "./Image";
 import TextArea from "./TextArea";
 export default function SwapModal() {
-    const { swapModal } = useAppSelector(state => state.open)
-    const dispatch = useAppDispatch()
+    const { swapModal } = useAppSelector((state) => state.open);
+    const dispatch = useAppDispatch();
     // console.log(selectedOption)
     return (
-        <div className={`${swapModal ? "block" :"hidden"} bg-black bg-opacity-50 inset-0 w-full h-screen fixed top-0 left-0 z-50 flex items-center justify-center`}>
+        <div
+            className={`${
+                swapModal ? "block" : "hidden"
+            } bg-black bg-opacity-50 inset-0 w-full h-screen fixed top-0 left-0 z-50 flex items-center justify-center`}
+        >
             <div className="w-11/12 bg-white rounded-md ">
                 <div className="py-4 border-b border-platinum relative">
                     <h3 className="font-sofia font-normal text-base text-center leading-none">
                         Swap Request
                     </h3>
-                    <Button onClick={() => dispatch(setSwapModal(false))} className="border border-platinum rounded-full p-2 absolute right-4 top-3">
+                    <Button
+                        onClick={() => dispatch(setSwapModal(false))}
+                        className="border border-platinum rounded-full p-2 absolute right-4 top-3"
+                    >
                         <Image src={close} alt="close" />
                     </Button>
                 </div>
@@ -65,20 +72,36 @@ export default function SwapModal() {
                         <div className={` grid grid-cols-2 mt-3`}>
                             <div className="max-w-[100px] max-h-[160px] rounded-[8px] mb-2">
                                 <div className="mb-2">
-                                    <Image className="mx-auto" src={book3} alt={`'Your favorite book'`} />
+                                    <Image
+                                        className="mx-auto"
+                                        src={book3}
+                                        alt={`'Your favorite book'`}
+                                    />
                                 </div>
                                 <div>
-                                    <h1 className="font-medium text-black text-sm leading-none mb-1 font-sofia">{'Man’s Search for Meaning'}</h1>
-                                    <p className="text-black font-light text-xs font-sofia">by {"Viktor Frankl's"}</p>
+                                    <h1 className="font-medium text-black text-sm leading-none mb-1 font-sofia">
+                                        {"Man’s Search for Meaning"}
+                                    </h1>
+                                    <p className="text-black font-light text-xs font-sofia">
+                                        by {"Viktor Frankl's"}
+                                    </p>
                                 </div>
                             </div>
                             <div className="max-w-[100px] max-h-[160px] rounded-[8px] mb-2">
                                 <div className="mb-2">
-                                    <Image className="mx-auto" src={book3} alt={`'Your favorite book'`} />
+                                    <Image
+                                        className="mx-auto"
+                                        src={book3}
+                                        alt={`'Your favorite book'`}
+                                    />
                                 </div>
                                 <div>
-                                    <h1 className="font-medium text-black text-sm leading-none mb-1 font-sofia">{'Man’s Search for Meaning'}</h1>
-                                    <p className="text-black font-light text-xs font-sofia">by {"Viktor Frankl's"}</p>
+                                    <h1 className="font-medium text-black text-sm leading-none mb-1 font-sofia">
+                                        {"Man’s Search for Meaning"}
+                                    </h1>
+                                    <p className="text-black font-light text-xs font-sofia">
+                                        by {"Viktor Frankl's"}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -94,17 +117,22 @@ export default function SwapModal() {
                                 value="giveaway"
                                 checked
                                 name="radio"
-                                
                             />
                         </label>
                     </div>
                     <div>
-                        <h1 className="text-center font-sofia text-sm font-medium mb-2 mt-3">Note</h1>
-                        <TextArea onChange={(e) => console.log(e.target.value)} placeholder="Write a short note" />
+                        <h1 className="text-center font-sofia text-sm font-medium mb-2 mt-3">
+                            Note
+                        </h1>
+                        <TextArea
+                            onChange={(e) => console.log(e.target.value)}
+                            placeholder="Write a short note"
+                        />
                     </div>
                     <div className="flex justify-center border-t border-platinum pt-2">
                         <Button className="bg-primary text-white font-medium text-xs py-2 w-7/12 h-[30px] rounded-[8px] font-sofia flex justify-center items-center gap-2 ">
-                            <Image src={sendMessageIcon} alt="Book" /> Send Request
+                            <Image src={sendMessageIcon} alt="Book" /> Send
+                            Request
                         </Button>
                     </div>
                 </div>

@@ -7,6 +7,7 @@ import bg from "../../../assets/bookdetailsbg.jpg";
 import closeIcon from "../../../assets/close.svg";
 import leftArrowIcon from "../../../assets/leftArrow.png";
 import locationIcon from "../../../assets/location-icon.png";
+import AlertModal from "../../../components/shared/AlertModal";
 import Button from "../../../components/shared/Button";
 import Image from "../../../components/shared/Image";
 import Input from "../../../components/shared/Input";
@@ -15,17 +16,19 @@ import Spinner from "../../../components/shared/Spinner";
 import TextArea from "../../../components/shared/TextArea";
 import { useImageUpload } from "../../../hooks/useImageUpload";
 import {
+    useDeleteCoverImageMutation,
+    useDeleteProfileImageMutation,
     useGetUserCoverImageQuery,
     useGetUserProfileImageQuery,
     useUpdateUserByIdMutation,
     useUploadCoverImageMutation,
     useUploadProfileImageMutation,
 } from "../../../redux/feature/auth/authApi";
+import { setAlert } from "../../../redux/feature/notification/notificationSlice";
 import { setOpen } from "../../../redux/feature/open/openSlice";
 import { useAppSelector } from "../../../redux/hooks";
 import { IEditInfo } from "../interface/interface";
 import AddGenre from "./AddGenre";
-
 
 export default function EditProfile() {
     const navigate = useNavigate();
@@ -35,6 +38,7 @@ export default function EditProfile() {
     const [isEditValuesChanged, setEditValuesChanged] =
         useState<boolean>(false);
     const { open } = useAppSelector((state) => state.open);
+    const { alertType } = useAppSelector((state) => state.notification);
     const { userInformation } = useAppSelector((state) => state.auth);
     const [uploadProfileImage, { isLoading: profileLoading }] =
         useUploadProfileImageMutation();
@@ -42,6 +46,9 @@ export default function EditProfile() {
         useUploadCoverImageMutation();
     const [updateUserById, { isLoading: updateUserLoading }] =
         useUpdateUserByIdMutation();
+    const [_deleteProfileImage, { isLoading: deleteLoading }] =
+        useDeleteProfileImageMutation();
+    const [_deleteCoverImage] = useDeleteCoverImageMutation()
     const { data: coverImageData, isSuccess: coverSuccess } =
         useGetUserCoverImageQuery(
             {
@@ -102,11 +109,13 @@ export default function EditProfile() {
 
     const handleRemoveGenre = (genreValue: string) => {
         setEditInfo((prev) => ({
-          ...prev,
-          favGenres: prev?.favGenres?.filter((favGen) => favGen !== genreValue),
+            ...prev,
+            favGenres: prev?.favGenres?.filter(
+                (favGen) => favGen !== genreValue
+            ),
         }));
-        setEditValuesChanged(true)
-      };
+        setEditValuesChanged(true);
+    };
 
     const handleClick = () => {
         if (profileRef.current) {
@@ -179,6 +188,49 @@ export default function EditProfile() {
         }
     };
 
+    
+
+    
+
+    // const handleNavigateToBack = () => {
+    //     // Edit value changed so, you can't redirect to user/profile page. You have to save values or reset everything
+    //     if(isEditValuesChanged || !!profileFile || !!coverFile){
+    //         dispatch(setAlert(true))
+    //         return;
+    //     }
+    //     // if information not changed it will navigate to profile
+    //     navigate("/profile/user-profile")
+    // }
+
+    const handleShowDeleteModalProfilePicture = (isProfileOrCover: string) => {
+        setProfileToggle(false);
+        setCoverToggle(false);
+        dispatch(
+            setAlert({
+                showAlert: true,
+                message: `Do you want to delete ${isProfileOrCover} picture?`,
+                alertType: isProfileOrCover,
+            })
+        );
+    };
+    const handleDeleteFn = () => {
+        const alert = alertType?.toLocaleLowerCase();
+        if (alert === "profile") {
+            // deleteProfileImage({ id: userInformation.id }).unwrap()
+            handleRemoveProfile();
+            dispatch(setAlert({showAlert: false,message: ``,alertType: "",}));
+        } else if (alert === "cover") {
+            handleRemoveCover();
+                dispatch(
+                    setAlert({
+                        showAlert: false,
+                        message: ``,
+                        alertType: "",
+                    })
+                );
+        }
+    };
+
     // Initialization in state
     useEffect(() => {
         if (userInformation) {
@@ -187,7 +239,7 @@ export default function EditProfile() {
                 firstName: userInformation.firstName,
                 lastName: userInformation.lastName,
                 aboutMe: userInformation.aboutMe ?? "",
-                favGenres: userInformation.favGenres
+                favGenres: userInformation.favGenres,
             }));
         }
     }, [userInformation]);
@@ -195,11 +247,15 @@ export default function EditProfile() {
     useEffect(() => {
         if (imageData !== undefined) {
             setPreviewProfileImage(imageData as string);
+        }else{
+            setPreviewProfileImage("")
         }
     }, [imageData, isSuccess]);
     useEffect(() => {
         if (coverImageData !== undefined) {
             setPreviewCoverImage(coverImageData as string);
+        }else{
+            setPreviewCoverImage("")
         }
     }, [coverImageData, coverSuccess]);
 
@@ -213,10 +269,19 @@ export default function EditProfile() {
 
     return (
         <div>
-            {/* ADD Genre Modal */}
-
             {isLoading() && <Spinner />}
-            <AddGenre  editInfo={editInfo} setEditInfo={setEditInfo} setEditValuesChanged={setEditValuesChanged} />
+            <AlertModal
+                yes={handleDeleteFn}
+                yesBtnValue="Yes"
+                noBtnValue="No"
+                no={() => dispatch(setAlert({ showAlert: false, message: "" }))}
+                loading={deleteLoading}
+            />
+            <AddGenre
+                editInfo={editInfo}
+                setEditInfo={setEditInfo}
+                setEditValuesChanged={setEditValuesChanged}
+            />
             <div className="absolute left-0 top-4 w-full flex justify-between px-4 border-b border-[#E4E4E4] pb-3">
                 <div className="flex items-center gap-2">
                     <div
@@ -289,7 +354,11 @@ export default function EditProfile() {
                             </button>
                             <button
                                 className="border-b border-platinum py-2 font-sofia text-black flex items-center justify-center w-full "
-                                onClick={handleRemoveProfile}
+                                onClick={() =>
+                                    handleShowDeleteModalProfilePicture(
+                                        "profile"
+                                    )
+                                }
                             >
                                 Remove profile
                             </button>
@@ -335,7 +404,9 @@ export default function EditProfile() {
                             </button>
                             <button
                                 className="border-b border-platinum py-2 font-sofia text-black flex items-center justify-center w-full "
-                                onClick={handleRemoveCover}
+                                onClick={() =>
+                                    handleShowDeleteModalProfilePicture("cover")
+                                }
                             >
                                 Remove profile
                             </button>
@@ -415,7 +486,11 @@ export default function EditProfile() {
                                     <h3 className="font-sofia text-sm font-light">
                                         {favItem}
                                     </h3>
-                                    <Button onClick={() => handleRemoveGenre(favItem)}>
+                                    <Button
+                                        onClick={() =>
+                                            handleRemoveGenre(favItem)
+                                        }
+                                    >
                                         <Image
                                             src={closeIcon}
                                             alt="close"
