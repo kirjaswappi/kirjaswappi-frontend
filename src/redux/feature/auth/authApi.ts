@@ -149,6 +149,15 @@ export const authApi = api.injectEndpoints({
             },
             invalidatesTags: ["AddProfileImage"],
         }),
+        deleteProfileImage: builder.mutation({
+            query: ({ id }) => {
+                return {
+                    url: `/photos/profile?userId=${id}`,
+                    method: "DELETE",
+                };
+            },
+            invalidatesTags: ['DeleteProfileImage']
+        }),
         getUserCoverImage: builder.query({
             query: ({ userId }) => {
                 return {
@@ -171,7 +180,16 @@ export const authApi = api.injectEndpoints({
                     body: image,
                 };
             },
-            invalidatesTags: ["AddCoverImage"],
+            invalidatesTags: ["AddCoverImage", "DeleteCoverImage"],
+        }),
+        deleteCoverImage: builder.mutation({
+            query: ({ id }) => {
+                return {
+                    url: `/photos/cover?userId=${id}`,
+                    method: "DELETE",
+                };
+            },
+            invalidatesTags: ["DeleteCoverImage"],
         }),
     }),
 });
@@ -197,7 +215,9 @@ export const {
     useGetUserProfileImageQuery,
     useGetUserByIdQuery,
     useUploadProfileImageMutation,
+    useDeleteProfileImageMutation,
     useUpdateUserByIdMutation,
     useGetUserCoverImageQuery,
     useUploadCoverImageMutation,
+    useDeleteCoverImageMutation,
 } = authApi;

@@ -123,7 +123,7 @@ export default function BookDetails() {
                     <h3 className="text-sm font-poppins underline">Raisa Hossain</h3>
                 </div>
                 <div>
-                    <Button className="bg-primary text-white px-14 py-3 font-poppins font-medium rounded-md">Request Swap</Button>
+                    <Button className="bg-primary text-white w-full px-6 py-3 font-poppins font-medium rounded-md">Request Swap</Button>
                 </div>
             </div>
         </div>
