@@ -18,7 +18,7 @@ export default function BookCard({ title, by, isProfile = false }: IBookCard) {
     const dispatch = useDispatch()
     const { swapModal } = useAppSelector((state)=> state.open)
     return (
-        <div className="max-w-[168px] flex flex-col">
+        <div className="max-w-[168px] max-h-[264px] flex flex-col">
             <div
                 onClick={() => navigate("/book-details/12", {
                     state:"book-details"

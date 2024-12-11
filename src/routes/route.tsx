@@ -12,6 +12,7 @@ import EditProfile from "../pages/profile/components/EditProfile";
 import UserProfile from "../pages/profile/components/UserProfile";
 import Authenticate from "./Aunthenticate";
 import PrivateRoute from "./PrivateRoute";
+import AddBook from "../pages/AddBook";
 
 const routes = createBrowserRouter([
   {
@@ -35,6 +36,7 @@ const routes = createBrowserRouter([
           <BookDetails />
         ),
       },
+      
       {
         path: "/profile",
         element: (
@@ -53,6 +55,10 @@ const routes = createBrowserRouter([
           {
             path: "edit-user",
             element: <EditProfile />,
+          },
+          {
+            path: "add-book",
+            element: <AddBook />,
           },
         ],
       },
