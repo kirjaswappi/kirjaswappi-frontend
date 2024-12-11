@@ -282,7 +282,7 @@ export default function EditProfile() {
                 setEditInfo={setEditInfo}
                 setEditValuesChanged={setEditValuesChanged}
             />
-            <div className="absolute left-0 top-4 w-full flex justify-between px-4 border-b border-[#E4E4E4] pb-3">
+            <div className="fixed left-0 top-0 w-full h-[48px] flex items-center justify-between px-4 border-b border-[#E4E4E4] bg-light z-30 ">
                 <div className="flex items-center gap-2">
                     <div
                         className="cursor-pointer w-5"

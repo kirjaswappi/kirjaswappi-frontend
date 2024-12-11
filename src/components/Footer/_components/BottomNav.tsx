@@ -4,7 +4,7 @@ import Image from "../../shared/Image";
 
 export default function BottomNav() {
     const location = useLocation();
-    const ignorePath =['/profile/edit-user', "book-details"]
+    const ignorePath =['/profile/edit-user', "/profile/add-book"]
     const isFooterBarShow = ignorePath.includes(location.state || location.pathname)
     
     return (
