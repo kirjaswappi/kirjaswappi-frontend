@@ -150,8 +150,7 @@ export default function RegisterForm() {
     };
 
     // !Important message
-    // Check it out. Is it a field error or an API error?  [type_off_error: ['SUCCESS', 'ERROR]]
-    
+    // Check it out. Is it a field error or an API error?  [type_off_error: ['SUCCESS', 'ERROR]]    
     const checkingFieldErrorOrApiError = () => {
         if (message && message !== null) {
             return {

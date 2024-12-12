@@ -1,12 +1,12 @@
 import React, { SetStateAction } from "react";
-import plusIcon from "../../../assets/plusIcon.png";
-import tickMarkIcon from "../../../assets/tickmark.png";
-import Button from "../../../components/shared/Button";
-import Image from "../../../components/shared/Image";
-import Loader from "../../../components/shared/Loader";
-import { useGetGenreQuery } from "../../../redux/feature/genre/genreApi";
-import { IEditInfo, IGenreItemType } from "../interface/interface";
-import SideDrawer from "./SideDrawer";
+import plusIcon from "../../assets/plusIcon.png";
+import tickMarkIcon from "../../assets/tickmark.png";
+import SideDrawer from "../../pages/profile/components/SideDrawer";
+import { IEditInfo, IGenreItemType } from "../../pages/profile/interface/interface";
+import { useGetGenreQuery } from "../../redux/feature/genre/genreApi";
+import Button from "./Button";
+import Image from "./Image";
+import Loader from "./Loader";
 
 export default function AddGenre({
     editInfo,

@@ -7,6 +7,7 @@ import bg from "../../../assets/bookdetailsbg.jpg";
 import closeIcon from "../../../assets/close.svg";
 import leftArrowIcon from "../../../assets/leftArrow.png";
 import locationIcon from "../../../assets/location-icon.png";
+import AddGenre from "../../../components/shared/AddGenre";
 import AlertModal from "../../../components/shared/AlertModal";
 import Button from "../../../components/shared/Button";
 import Image from "../../../components/shared/Image";
@@ -28,7 +29,6 @@ import { setAlert } from "../../../redux/feature/notification/notificationSlice"
 import { setOpen } from "../../../redux/feature/open/openSlice";
 import { useAppSelector } from "../../../redux/hooks";
 import { IEditInfo } from "../interface/interface";
-import AddGenre from "./AddGenre";
 
 export default function EditProfile() {
     const navigate = useNavigate();
@@ -239,7 +239,7 @@ export default function EditProfile() {
                 firstName: userInformation.firstName,
                 lastName: userInformation.lastName,
                 aboutMe: userInformation.aboutMe ?? "",
-                favGenres: userInformation.favGenres,
+                favGenres: userInformation.favGenres?? [],
             }));
         }
     }, [userInformation]);
@@ -469,12 +469,12 @@ export default function EditProfile() {
                         <h1 className="font-sofia text-sm font-medium leading-none">
                             Genre
                         </h1>
-                        <button
+                        <Button
                             onClick={() => dispatch(setOpen(!open))}
                             className="text-[#3879E9] font-sofia font-medium text-sm leading-none underline"
                         >
                             Add
-                        </button>
+                        </Button>
                     </div>
                     {editInfo.favGenres && editInfo.favGenres.length > 0 && (
                         <div className="flex flex-col gap-2 pb-4">
