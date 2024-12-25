@@ -1,5 +1,6 @@
 import { setCookie } from "../../../utility/cookies";
 import { applicationJSON } from "../../../utility/headersConstant";
+import { blobToBase64 } from "../../../utility/helper";
 import { setTokens } from "../../../utility/localStorage";
 
 import { api } from "../../api/apiSlice";
@@ -194,14 +195,7 @@ export const authApi = api.injectEndpoints({
     }),
 });
 
-const blobToBase64 = (blob: any) => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-    });
-};
+
 
 export const {
     useAuthenticateMutation,

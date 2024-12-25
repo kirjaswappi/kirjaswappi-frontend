@@ -15,6 +15,7 @@ import { useImageUpload } from "../../hooks/useImageUpload";
 import { setOpen } from "../../redux/feature/open/openSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { options } from "./constant";
+import { useAddBookMutation } from "../../redux/feature/book/bookApi";
 interface IAddBookInterface {
     ownerId?: string;
     title?: string | undefined | null;
@@ -26,9 +27,11 @@ interface IAddBookInterface {
 }
 
 export default function AddBook() {
-    const bookPicture = useRef<HTMLInputElement | null>(null);
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const  [addBook] = useAddBookMutation()
+    const { userInformation: {id} } = useAppSelector(state => state.auth)
+    const bookPicture = useRef<HTMLInputElement | null>(null);
     const { open } = useAppSelector((state) => state.open);
     const [isEditValuesChanged, setEditValuesChanged] =
         useState<boolean>(false);
@@ -48,7 +51,8 @@ export default function AddBook() {
         handleImageFile: uploadImageImageHandler,
         previewImage,
         imageFile: bookFile,
-        error
+        error,
+        setError
     } = useImageUpload();
     const handleRemoveGenre = (genreValue: string) => {
         setAddBookInfo((prev) => ({
@@ -102,7 +106,7 @@ export default function AddBook() {
             bookPicture.current.click();
         }
     };
-
+console.log(...addBookInfo.favGenres)
     // Handle submit
     const handleSaveFn = () => {
         let allValid: boolean = true;
@@ -120,9 +124,30 @@ export default function AddBook() {
                 allValid = false;
             }
         });
+        if(!bookFile){
+            setError("Book Image is required.")
+            allValid = false;
+        }else {
+            allValid = true;
+        }
+
+        // final all valid 
         if (allValid) {
             try {
-                //
+                const form = new FormData()
+                form.append('ownerId', id!)
+                form.append('title', addBookInfo.title!)
+                form.append('author', addBookInfo.author!)
+                form.append('description', addBookInfo.description!)
+                form.append('condition', addBookInfo.condition!)
+                form.append('language', addBookInfo.language!)
+                form.append('coverPhoto', bookFile!)
+                const genres = addBookInfo.favGenres;
+                // console.log(genres)
+                form.append('genres', genres.join(", ")); 
+
+                // form.append('genres', ...addBookInfo.favGenres!)
+                addBook(form).then((res) => console.log(res)).catch(error => console.log(error))
             } catch (error) {
                 console.log("Error", error);
             }
