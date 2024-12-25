@@ -1,6 +1,5 @@
 import React from "react";
 
-// Input Interface
 interface IInputFieldProps {
     id?: string;
     type: "text" | "password" | "email";
