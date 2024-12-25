@@ -49,7 +49,6 @@ export default function RegisterForm() {
         const { name, value } = e.target;
         setUserInfo({ ...userInfo, [name]: value });
         setErrors({ ...errors, [name]: "" });
-        // validateInput(e);
         dispatch(setError(''))
     };
 

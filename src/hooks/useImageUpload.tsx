@@ -7,7 +7,7 @@ export function useImageUpload(){
     const [error, setError] = useState<string>("")
     const [isShowModal, setShowModal] = useState<boolean>(false)
     const allowedTypes = ["image/jpeg", "image/png"];
-    const maxsize = 1024 * 1024 * 2;
+    const maxsize = 1024 * 1024 * 10;
 
     const handleImageFile = (e: React.ChangeEvent<HTMLInputElement>) => {
         setShowModal(false)

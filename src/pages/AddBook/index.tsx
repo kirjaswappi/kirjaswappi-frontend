@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import closeIcon from "../../assets/close.svg";
 import leftArrowIcon from "../../assets/leftArrow.png";
 import locationIcon from "../../assets/location-icon.png";
+import plusIcon from "../../assets/plus.png";
 import AddGenre from "../../components/shared/AddGenre";
 import Button from "../../components/shared/Button";
 import Image from "../../components/shared/Image";
@@ -10,18 +11,22 @@ import Input from "../../components/shared/Input";
 import InputLabel from "../../components/shared/InputLabel";
 import Select from "../../components/shared/Select";
 import TextArea from "../../components/shared/TextArea";
+import { useImageUpload } from "../../hooks/useImageUpload";
 import { setOpen } from "../../redux/feature/open/openSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { options } from "./constant";
-
 interface IAddBookInterface {
-    bookTitle?: string | undefined | null;
-    authorName?: string | undefined | null;
+    ownerId?: string;
+    title?: string | undefined | null;
+    author?: string | undefined | null;
     description?: string | undefined | null;
+    language?: string | undefined | null;
     favGenres: string[];
+    condition?: string;
 }
 
 export default function AddBook() {
+    const bookPicture = useRef<HTMLInputElement | null>(null);
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const { open } = useAppSelector((state) => state.open);
@@ -31,23 +36,34 @@ export default function AddBook() {
         [key: string]: string | null | undefined;
     }>({});
     const [addBookInfo, setAddBookInfo] = useState<IAddBookInterface>({
-        bookTitle: "",
-        authorName: "",
+        ownerId: "",
+        title: "",
+        author: "",
         description: "",
+        condition: "",
+        language: "",
         favGenres: [],
     });
+    const {
+        handleImageFile: uploadImageImageHandler,
+        previewImage,
+        imageFile: bookFile,
+        error
+    } = useImageUpload();
     const handleRemoveGenre = (genreValue: string) => {
         setAddBookInfo((prev) => ({
             ...prev,
             favGenres: prev?.favGenres?.filter(
                 (favGen) => favGen !== genreValue
-            ) ,
+            ),
         }));
         setEditValuesChanged(true);
     };
 
     const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+        e: React.ChangeEvent<
+            HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+        >
     ) => {
         const { name, value } = e.target;
         setAddBookInfo((prev) => ({ ...prev, [name]: value }));
@@ -56,11 +72,10 @@ export default function AddBook() {
     };
     const validateInput = (e: any) => {
         const { name, value } = e.target;
-
         setErrors((prev: any) => {
             const stateObj = { ...prev, [name]: "" };
 
-            if (name === "bookTitle") {
+            if (name === "title") {
                 if (!value) {
                     stateObj[name] = "Please enter book title.";
                 }
@@ -68,16 +83,29 @@ export default function AddBook() {
                 if (!value) {
                     stateObj[name] = "Please enter description.";
                 }
+            } else if (name === "condition") {
+                if (!value) {
+                    stateObj[name] = "Please select book condition.";
+                }
+            } else if (name === "language") {
+                if (!value) {
+                    stateObj[name] = "Please enter book language.";
+                }
             }
 
             return stateObj;
         });
     };
 
+    const handleClick = () => {
+        if (bookPicture.current) {
+            bookPicture.current.click();
+        }
+    };
+
     // Handle submit
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        let allValid = true;
+    const handleSaveFn = () => {
+        let allValid: boolean = true;
         Object.keys(addBookInfo).forEach((key: any) => {
             const typedKey = key as keyof IAddBookInterface;
             const event = {
@@ -100,7 +128,7 @@ export default function AddBook() {
             }
         }
     };
-
+    const isSaveActive: boolean = isEditValuesChanged || !!bookFile;
     return (
         <div>
             <AddGenre
@@ -121,7 +149,15 @@ export default function AddBook() {
                     </h3>
                 </div>
                 <div>
-                    <Button className="text-[#3879E9] font-sofia font-medium text-base leading-none">
+                    <Button
+                        disabled={!isSaveActive}
+                        className={` ${
+                            isSaveActive
+                                ? " text-[#3879E9] cursor-pointer"
+                                : "text-[#3879e985]"
+                        } font-sofia font-medium text-base`}
+                        onClick={handleSaveFn}
+                    >
                         Save
                     </Button>
                 </div>
@@ -133,23 +169,69 @@ export default function AddBook() {
                         <InputLabel label="Book Title" required />
                         <Input
                             type="text"
-                            name="bookTitle"
+                            name="title"
                             placeholder="Book Title"
                             className="rounded-md"
+                            error={errors.title}
+                            showErrorMessage={!!errors.title}
                             // value={editInfo.firstName}
-                            // onChange={handleChange}
+                            onChange={handleChange}
+                            onBlur={validateInput}
                         />
                     </div>
                     <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
                         <InputLabel label="Author Name" />
                         <Input
                             type="text"
-                            name="authorName"
+                            name="author"
                             placeholder="Author Name"
                             className="rounded-md"
                             // value={editInfo.firstName}
-                            // onChange={handleChange}
+                            onChange={handleChange}
                         />
+                    </div>
+                    <div className="border-b border-[#E4E4E4] mt-4 pb-4">
+                        <h1 className="font-medium font-sofia text-sm leading-none">
+                            Book Cover<span className="text-red-600">*</span>
+                        </h1>
+                        <div
+                            className="mx-auto w-[126px] h-[150px] my-4 relative border border-grayDark border-dashed flex items-center justify-center rounded-lg overflow-hidden"
+                            onClick={handleClick}
+                        >
+                            {previewImage && previewImage ? (
+                                <div className="w-[126px] h-[150px] ">
+                                    <Image
+                                        src={previewImage}
+                                        alt="Book"
+                                        className="object-cover  w-full h-full"
+                                    />
+                                </div>
+                            ) : (
+                                <div
+                                    className={`flex flex-col items-center gap-2`}
+                                >
+                                    <Image src={plusIcon} alt="Plus" />
+                                    <button
+                                        type="button"
+                                        className=" font-sofia font-medium text-xs text-grayDark flex items-center justify-center w-full "
+                                    >
+                                        Upload Picture
+                                        <input
+                                            type="file"
+                                            ref={bookPicture}
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={uploadImageImageHandler}
+                                        />
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                        {error && (
+                        <p className="text-center text-sm font-sofia text-rose-600 mb-2">
+                            {error}
+                        </p>
+                    )}
                     </div>
                     <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
                         <InputLabel label="Short Description" required />
@@ -157,27 +239,38 @@ export default function AddBook() {
                             name="description"
                             placeholder="Write here..."
                             // value={editInfo.aboutMe}
-                            // onChange={handleChange}
+                            onBlur={validateInput}
+                            onChange={handleChange}
+                            error={errors.description}
+                            showErrorMessage={!!errors.description}
+                            className="rounded-md h-[83px]"
                         />
                     </div>
                     <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
-                        <InputLabel label="Book Language" />
+                        <InputLabel label="Book Language" required />
                         <Input
                             type="text"
-                            name="authorName"
+                            name="language"
                             placeholder="Enter Book Language"
                             className="rounded-md"
                             // value={editInfo.firstName}
-                            // onChange={handleChange}
+                            onBlur={validateInput}
+                            onChange={handleChange}
+                            error={errors.language}
+                            showErrorMessage={!!errors.language}
                         />
                     </div>
                     <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
                         <InputLabel label="Book Condition" />
                         <Select
-                            name="bookCondition"
-                            value="acceptable"
+                            onChange={handleChange}
+                            onBlur={validateInput}
+                            name="condition"
+                            // value={}
                             options={options}
                             className="bg-white"
+                            error={errors.condition}
+                            showErrorMessage={!!errors.condition}
                         />
                     </div>
                 </form>

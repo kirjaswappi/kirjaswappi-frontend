@@ -26,7 +26,7 @@ export default function Select({
             <select
                 value={value}
                 name={name}
-                className={`w-full rounded-md px-[14px] py-4 outline-none text-sm text-[#31373D] ${
+                className={`w-full border rounded-md px-[14px] py-4 outline-none text-sm  text-[#31373D] border-[#E6E6E6]  ${error ? "border border-rose-500" : ""}  ${
                     className && className
                 }`}
                 onChange={onChange}
