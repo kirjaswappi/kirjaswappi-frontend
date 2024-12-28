@@ -1,4 +1,3 @@
-
 import { api } from "../../api/apiSlice";
 
 export const bookApi = api.injectEndpoints({
@@ -11,10 +10,25 @@ export const bookApi = api.injectEndpoints({
                     body: data,
                 };
             },
+            invalidatesTags: ["AddBook",],
+        }),
+        getSupportLanguage: builder.query({
+            query: () => {
+                return {
+                    url: "/books/supported-languages",
+                    method: "GET",
+                };
+            },
+        }),
+        getSupportCondition: builder.query({
+            query: () => {
+                return {
+                    url: "/books/supported-conditions",
+                    method: "GET",
+                };
+            },
         }),
     }),
 });
 
-
-
-export const { useAddBookMutation } = bookApi;
+export const { useAddBookMutation, useGetSupportLanguageQuery, useGetSupportConditionQuery } = bookApi;

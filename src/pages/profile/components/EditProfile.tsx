@@ -188,19 +188,6 @@ export default function EditProfile() {
         }
     };
 
-    
-
-    
-
-    // const handleNavigateToBack = () => {
-    //     // Edit value changed so, you can't redirect to user/profile page. You have to save values or reset everything
-    //     if(isEditValuesChanged || !!profileFile || !!coverFile){
-    //         dispatch(setAlert(true))
-    //         return;
-    //     }
-    //     // if information not changed it will navigate to profile
-    //     navigate("/profile/user-profile")
-    // }
 
     const handleShowDeleteModalProfilePicture = (isProfileOrCover: string) => {
         setProfileToggle(false);

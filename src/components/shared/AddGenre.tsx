@@ -11,17 +11,19 @@ import Loader from "./Loader";
 export default function AddGenre({
     editInfo,
     setEditInfo,
-    setEditValuesChanged
+    setEditValuesChanged,
+
 }: {
     editInfo: IEditInfo;
     setEditInfo: React.Dispatch<SetStateAction<IEditInfo>>;
-    setEditValuesChanged: React.Dispatch<SetStateAction<boolean>>
+    setEditValuesChanged: React.Dispatch<SetStateAction<boolean>>;
 }) {
     const { data, isLoading } = useGetGenreQuery(undefined);
 
     const { favGenres } = editInfo;
 
     const handleAddGenre = (genreValue: string) => {
+        
         if (!favGenres?.includes(genreValue)) {
             setEditInfo((prev) => ({
               ...prev,

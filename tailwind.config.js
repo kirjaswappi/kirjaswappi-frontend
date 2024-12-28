@@ -72,6 +72,20 @@ export default {
         'custom-box-shadow':"0px 0px 5px #64646439"
       },
       dropShadow: {},
+      animation: {
+        fadeIn: "fadeIn 0.5s ease-out",
+        fadeOut: "fadeOut 0.5s ease-out",
+      },
+      keyframes: {
+        fadeIn: {
+          "0%": { opacity: 0, transform: "translateY(-20px)" },
+          "100%": { opacity: 1, transform: "translateY(0)" },
+        },
+        fadeOut: {
+          "0%": { opacity: 1, transform: "translateY(0)" },
+          "100%": { opacity: 0, transform: "translateY(-20px)" },
+        },
+      }
     },
   },
   plugins: [],

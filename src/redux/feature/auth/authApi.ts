@@ -114,7 +114,7 @@ export const authApi = api.injectEndpoints({
                     method: "GET",
                 };
             },
-            providesTags: ["UpdateUser"],
+            providesTags: ["UpdateUser", "AddBook"],
         }),
         updateUserById: builder.mutation({
             query: ({ id, data }) => {
@@ -129,14 +129,9 @@ export const authApi = api.injectEndpoints({
         getUserProfileImage: builder.query({
             query: ({ userId }) => {
                 return {
-                    url: `/photos/profile/by-id?userId=${userId}`,
+                    url: `/photos/profile/by-id/${userId}`,
                     method: "GET",
-                    responseHandler: (response) => response.blob(),
                 };
-            },
-            async transformResponse(blob) {
-                const base64String = await blobToBase64(blob);
-                return base64String;
             },
             providesTags: ["AddProfileImage"],
         }),
@@ -162,7 +157,7 @@ export const authApi = api.injectEndpoints({
         getUserCoverImage: builder.query({
             query: ({ userId }) => {
                 return {
-                    url: `/photos/cover/by-id?userId=${userId}`,
+                    url: `/photos/cover/by-id/${userId}`,
                     method: "GET",
                     responseHandler: (response) => response.blob(),
                 };
