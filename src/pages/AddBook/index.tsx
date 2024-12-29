@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import closeIcon from "../../assets/close.svg";
 import leftArrowIcon from "../../assets/leftArrow.png";
@@ -9,12 +9,14 @@ import Button from "../../components/shared/Button";
 import Image from "../../components/shared/Image";
 import Input from "../../components/shared/Input";
 import InputLabel from "../../components/shared/InputLabel";
+import Loader from "../../components/shared/Loader";
 import Select from "../../components/shared/Select";
+import Spinner from "../../components/shared/Spinner";
 import TextArea from "../../components/shared/TextArea";
 import { useImageUpload } from "../../hooks/useImageUpload";
+import { useAddBookMutation, useGetSupportConditionQuery, useGetSupportLanguageQuery } from "../../redux/feature/book/bookApi";
 import { setOpen } from "../../redux/feature/open/openSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { options } from "./constant";
 interface IAddBookInterface {
     ownerId?: string;
     title?: string | undefined | null;
@@ -26,9 +28,13 @@ interface IAddBookInterface {
 }
 
 export default function AddBook() {
-    const bookPicture = useRef<HTMLInputElement | null>(null);
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const [addBook, {isLoading}] = useAddBookMutation()
+    const { data: languageDataOptions, isLoading: languageLoading } = useGetSupportLanguageQuery(undefined)
+    const { data: conditionDataOptions, isLoading: conditionLoading } = useGetSupportConditionQuery(undefined)
+    const { userInformation: { id } } = useAppSelector(state => state.auth)
+    const bookPicture = useRef<HTMLInputElement | null>(null);
     const { open } = useAppSelector((state) => state.open);
     const [isEditValuesChanged, setEditValuesChanged] =
         useState<boolean>(false);
@@ -48,7 +54,8 @@ export default function AddBook() {
         handleImageFile: uploadImageImageHandler,
         previewImage,
         imageFile: bookFile,
-        error
+        error,
+        setError
     } = useImageUpload();
     const handleRemoveGenre = (genreValue: string) => {
         setAddBookInfo((prev) => ({
@@ -79,6 +86,10 @@ export default function AddBook() {
                 if (!value) {
                     stateObj[name] = "Please enter book title.";
                 }
+            }else if (name === "author") {
+                if (!value) {
+                    stateObj[name] = "Please enter description.";
+                }
             } else if (name === "description") {
                 if (!value) {
                     stateObj[name] = "Please enter description.";
@@ -105,7 +116,7 @@ export default function AddBook() {
 
     // Handle submit
     const handleSaveFn = () => {
-        let allValid: boolean = true;
+        let allValid: boolean = false;
         Object.keys(addBookInfo).forEach((key: any) => {
             const typedKey = key as keyof IAddBookInterface;
             const event = {
@@ -120,17 +131,77 @@ export default function AddBook() {
                 allValid = false;
             }
         });
+        if (!bookFile) {
+            setError("Book Image is required.")
+            setEditValuesChanged(false)
+            // allValid = false;
+        }        
+        if (addBookInfo.favGenres.length <= 0) {
+            // allValid = false;
+            setErrors((prev) => ({ ...prev, genres: "At least one genre is required" }))
+            setEditValuesChanged(false)
+        }else{
+            setErrors((prev) => ({ ...prev, genres: null }))
+        }
+
+        if(bookFile && addBookInfo.favGenres.length > 0){
+            setEditValuesChanged(true)
+            allValid = true
+        }
+        
+        // final all valid 
         if (allValid) {
             try {
-                //
+                const genres = addBookInfo.favGenres;
+                const form = new FormData()
+                form.append('ownerId', id!)
+                form.append('title', addBookInfo.title!)
+                form.append('author', addBookInfo.author!)
+                form.append('description', addBookInfo.description!)
+                form.append('condition', addBookInfo.condition!)
+                form.append('language', addBookInfo.language!)
+                form.append('coverPhoto', bookFile!)
+                form.append('genres', genres.join(", "));
+                addBook(form).unwrap().then(res => {
+                    if (!res.error) {
+                        const timer = setTimeout(() => {
+                            navigate("/profile/user-profile");
+                        }, 0);
+                        return () => clearTimeout(timer);
+                    }
+                })
+
             } catch (error) {
                 console.log("Error", error);
             }
         }
     };
+    // Clear an error of genres
+    useEffect(() => {
+        if (addBookInfo.favGenres.length > 0) setErrors((prev) => ({ ...prev, genres: null }))
+    }, [addBookInfo.favGenres])
+
+    const options = (options: string[]) => {
+        if(options && options?.length > 0){
+            const option = options?.map((item: string)=> {
+                return { label: item, value: item }
+            })
+            return option
+        }
+    }
+    const languages = options(languageDataOptions)
+    const conditions = options(conditionDataOptions)
     const isSaveActive: boolean = isEditValuesChanged || !!bookFile;
+
+    const loading = () => {
+        if (languageLoading) return true;
+        if (conditionLoading) return true;
+        else return false;
+    };
+    if (loading()) return <Loader />;
     return (
         <div>
+            {isLoading && <Spinner />}
             <AddGenre
                 editInfo={addBookInfo}
                 setEditInfo={setAddBookInfo}
@@ -151,11 +222,10 @@ export default function AddBook() {
                 <div>
                     <Button
                         disabled={!isSaveActive}
-                        className={` ${
-                            isSaveActive
+                        className={` ${isSaveActive
                                 ? " text-[#3879E9] cursor-pointer"
                                 : "text-[#3879e985]"
-                        } font-sofia font-medium text-base`}
+                            } font-sofia font-medium text-base`}
                         onClick={handleSaveFn}
                     >
                         Save
@@ -188,6 +258,9 @@ export default function AddBook() {
                             className="rounded-md"
                             // value={editInfo.firstName}
                             onChange={handleChange}
+                            onBlur={validateInput}
+                            error={errors.author}
+                            showErrorMessage={!!errors.author}
                         />
                     </div>
                     <div className="border-b border-[#E4E4E4] mt-4 pb-4">
@@ -228,10 +301,10 @@ export default function AddBook() {
                             )}
                         </div>
                         {error && (
-                        <p className="text-center text-sm font-sofia text-rose-600 mb-2">
-                            {error}
-                        </p>
-                    )}
+                            <p className="text-center text-sm font-sofia text-rose-600 mb-2">
+                                {error}
+                            </p>
+                        )}
                     </div>
                     <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
                         <InputLabel label="Short Description" required />
@@ -248,14 +321,13 @@ export default function AddBook() {
                     </div>
                     <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
                         <InputLabel label="Book Language" required />
-                        <Input
-                            type="text"
-                            name="language"
-                            placeholder="Enter Book Language"
-                            className="rounded-md"
-                            // value={editInfo.firstName}
-                            onBlur={validateInput}
+                        <Select
                             onChange={handleChange}
+                            onBlur={validateInput}
+                            name="language"
+                            // value={addBookInfo.language}
+                            options={languages || []}
+                            className="bg-white"
                             error={errors.language}
                             showErrorMessage={!!errors.language}
                         />
@@ -266,11 +338,11 @@ export default function AddBook() {
                             onChange={handleChange}
                             onBlur={validateInput}
                             name="condition"
-                            // value={}
-                            options={options}
+                            options={conditions || []}
                             className="bg-white"
                             error={errors.condition}
                             showErrorMessage={!!errors.condition}
+                            value={addBookInfo.condition}
                         />
                     </div>
                 </form>
@@ -306,7 +378,13 @@ export default function AddBook() {
                                 </Button>
                             </div>
                         ))}
+
                     </div>
+                )}
+                {errors?.genres && (
+                    <p className="text-left text-sm font-sofia text-rose-600 mb-2">
+                        {errors.genres}
+                    </p>
                 )}
                 <div className="pb-8">
                     <div className="flex items-center justify-between py-4">

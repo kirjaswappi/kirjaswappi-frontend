@@ -18,7 +18,6 @@ export default function SideDrawer({
 }) {
     const dispatch = useDispatch();
     const { open } = useAppSelector((state) => state.open);
-    console.log(open)
     return (
         <div
             className={`fixed top-0 right-0 w-full h-screen bg-light shadow-lg transition-transform duration-300 transform z-50 ${

@@ -53,7 +53,7 @@ export function useImageUpload(){
     const handleShowModal = () => {
         setShowModal(prev => !prev)
     }
-
+    
     return {
         imageFile,
         previewImage,
@@ -64,6 +64,7 @@ export function useImageUpload(){
         handleSetPreviewImage,
         isShowModal,
         setShowModal,
-        handleShowModal
+        handleShowModal,
+        setError
     }
 }

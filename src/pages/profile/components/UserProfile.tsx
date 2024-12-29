@@ -60,11 +60,11 @@ export default function UserProfile() {
                     <div className="w-full h-full bg-platinum animate-pulse rounded-full shadow-sm"></div>
                 ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                        {imageData === undefined ? (
+                        {imageData?.imageUrl === undefined ? (
                             <FaRegUser size={72} className="text-night" />
                         ) : (
                             <Image
-                                src={imageData as string}
+                                src={imageData?.imageUrl as string}
                                 className="w-[120px] h-[120px] object-cover relative rounded-full"
                             />
                         )}

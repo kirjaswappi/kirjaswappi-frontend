@@ -1,5 +1,6 @@
 import { setCookie } from "../../../utility/cookies";
 import { applicationJSON } from "../../../utility/headersConstant";
+import { blobToBase64 } from "../../../utility/helper";
 import { setTokens } from "../../../utility/localStorage";
 
 import { api } from "../../api/apiSlice";
@@ -113,7 +114,7 @@ export const authApi = api.injectEndpoints({
                     method: "GET",
                 };
             },
-            providesTags: ["UpdateUser"],
+            providesTags: ["UpdateUser", "AddBook"],
         }),
         updateUserById: builder.mutation({
             query: ({ id, data }) => {
@@ -128,14 +129,9 @@ export const authApi = api.injectEndpoints({
         getUserProfileImage: builder.query({
             query: ({ userId }) => {
                 return {
-                    url: `/photos/profile/by-id?userId=${userId}`,
+                    url: `/photos/profile/by-id/${userId}`,
                     method: "GET",
-                    responseHandler: (response) => response.blob(),
                 };
-            },
-            async transformResponse(blob) {
-                const base64String = await blobToBase64(blob);
-                return base64String;
             },
             providesTags: ["AddProfileImage"],
         }),
@@ -161,7 +157,7 @@ export const authApi = api.injectEndpoints({
         getUserCoverImage: builder.query({
             query: ({ userId }) => {
                 return {
-                    url: `/photos/cover/by-id?userId=${userId}`,
+                    url: `/photos/cover/by-id/${userId}`,
                     method: "GET",
                     responseHandler: (response) => response.blob(),
                 };
@@ -194,14 +190,7 @@ export const authApi = api.injectEndpoints({
     }),
 });
 
-const blobToBase64 = (blob: any) => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-    });
-};
+
 
 export const {
     useAuthenticateMutation,

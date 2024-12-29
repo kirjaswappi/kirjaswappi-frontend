@@ -39,6 +39,7 @@ export const api = createApi({
         "AddCoverImage",
         "DeleteCoverImage",
         "DeleteProfileImage",
+        "AddBook"
     ],
     endpoints: () => ({}),
 });
