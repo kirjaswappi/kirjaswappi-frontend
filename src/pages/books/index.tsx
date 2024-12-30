@@ -10,7 +10,7 @@ export default function Books() {
     return (
         <section>
             <div className="container min-h-[80vh]">
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-6 gap-2">
                     {isLoading
                         ? Array.from({ length: 10 }, (_, index) => (
                               <BookSkeleton key={index} />

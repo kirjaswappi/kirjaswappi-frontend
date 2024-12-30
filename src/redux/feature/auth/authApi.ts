@@ -1,6 +1,5 @@
 import { setCookie } from "../../../utility/cookies";
 import { applicationJSON } from "../../../utility/headersConstant";
-import { blobToBase64 } from "../../../utility/helper";
 import { setTokens } from "../../../utility/localStorage";
 
 import { api } from "../../api/apiSlice";
@@ -159,13 +158,8 @@ export const authApi = api.injectEndpoints({
                 return {
                     url: `/photos/cover/by-id/${userId}`,
                     method: "GET",
-                    responseHandler: (response) => response.blob(),
                 };
-            },
-            async transformResponse(blob) {
-                const base64String = await blobToBase64(blob);
-                return base64String;
-            },
+            },            
             providesTags: ["AddCoverImage"],
         }),
         uploadCoverImage: builder.mutation({
