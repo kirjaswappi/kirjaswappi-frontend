@@ -37,7 +37,7 @@ export default function BottomNav() {
                                 }}
                             />
                         </div>
-                        <p className="leading-none text-xs font-normal font-sofia">
+                        <p className="leading-none text-xs font-normal font-poppins">
                             {menuItem?.value}
                         </p>
                     </Link>

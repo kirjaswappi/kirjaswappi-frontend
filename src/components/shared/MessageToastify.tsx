@@ -37,6 +37,6 @@ export default function MessageToastify({ type, value, isShow = false }: IMessag
     }, [isShow, type])
 
     return (
-        <div className={`p-2 rounded-lg font-sofia  ${isShow ? 'block' : 'hidden'} ${getColorClass()} text-center text-sm`} role="alert" aria-live="assertive">{value}</div>
+        <div className={`p-2 rounded-lg font-poppins  ${isShow ? 'block' : 'hidden'} ${getColorClass()} text-center text-sm`} role="alert" aria-live="assertive">{value}</div>
     )
 }

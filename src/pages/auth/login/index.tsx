@@ -179,7 +179,7 @@ export default function Login() {
             </div>
             <div className="container h-[calc(80vh-128px)]">
                 <div>
-                    <h2 className="text-black text-base font-sofia, font-normal text-center mt-24 mb-4">
+                    <h2 className="text-black text-base font-poppins, font-normal text-center mt-24 mb-4">
                         Sign In
                     </h2>
                     <form onSubmit={handleSubmit} className="flex flex-col">
@@ -243,14 +243,14 @@ export default function Login() {
                                 />
                                 <label
                                     htmlFor="remember"
-                                    className="cursor-pointer text-sm font-light font-sofia text-grayDark"
+                                    className="cursor-pointer text-sm font-light font-poppins text-grayDark"
                                 >
                                     Remember me
                                 </label>
                             </div>
                             <Link
                                 to="/password/reset"
-                                className="text-black font-light text-sm underline font-sofia"
+                                className="text-black font-light text-sm underline font-poppins"
                             >
                                 Forgot Password ?
                             </Link>
@@ -263,11 +263,11 @@ export default function Login() {
                             {isLoading ? "Loading..." : "Continue"}
                         </button>
                         <div className=" flex items-center justify-center gap-1 mt-4">
-                            <p className="text-black text-sm font-light font-sofia">
+                            <p className="text-black text-sm font-light font-poppins">
                                 Don’t have an account?
                             </p>
                             <button
-                                className="text-black text-sm font-light font-sofia underline"
+                                className="text-black text-sm font-light font-poppins underline"
                                 onClick={(e) => {
                                     e.preventDefault();
                                     navigate("/auth/register");

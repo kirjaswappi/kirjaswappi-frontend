@@ -48,7 +48,7 @@ export default function AddGenre({
                                 key={index}
                                 className="flex items-center justify-between px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg"
                             >
-                                <h3 className="font-sofia text-sm font-light">
+                                <h3 className="font-poppins text-sm font-light">
                                     {genreItem.name}
                                 </h3>
                                 {isGenActive ? (

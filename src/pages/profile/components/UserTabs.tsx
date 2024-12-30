@@ -28,7 +28,7 @@ export default function UserTabs() {
                     <Button
                         key={index}
                         onClick={() => setActiveTab(index)}
-                        className={` p-2 rounded-full text-sm font-sofia font-normal ${
+                        className={` p-2 rounded-full text-sm font-poppins font-normal ${
                             index === activeTab
                                 ? "text-primary bg-primary-light"
                                 : "text-grayDark"

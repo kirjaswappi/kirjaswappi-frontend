@@ -28,7 +28,15 @@ export const bookApi = api.injectEndpoints({
                 };
             },
         }),
+        getAllBooks: builder.query({
+            query: () => {
+                return {
+                    url: "/books",
+                    method: "GET",
+                };
+            },
+        })
     }),
 });
 
-export const { useAddBookMutation, useGetSupportLanguageQuery, useGetSupportConditionQuery } = bookApi;
+export const { useAddBookMutation, useGetSupportLanguageQuery, useGetSupportConditionQuery, useGetAllBooksQuery } = bookApi;

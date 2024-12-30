@@ -215,7 +215,7 @@ export default function AddBook() {
                     >
                         <Image src={leftArrowIcon} alt="left" />
                     </div>
-                    <h3 className="font-sofia text-base font-medium ">
+                    <h3 className="font-poppins text-base font-medium ">
                         Add Book
                     </h3>
                 </div>
@@ -225,7 +225,7 @@ export default function AddBook() {
                         className={` ${isSaveActive
                                 ? " text-[#3879E9] cursor-pointer"
                                 : "text-[#3879e985]"
-                            } font-sofia font-medium text-base`}
+                            } font-poppins font-medium text-base`}
                         onClick={handleSaveFn}
                     >
                         Save
@@ -264,7 +264,7 @@ export default function AddBook() {
                         />
                     </div>
                     <div className="border-b border-[#E4E4E4] mt-4 pb-4">
-                        <h1 className="font-medium font-sofia text-sm leading-none">
+                        <h1 className="font-medium font-poppins text-sm leading-none">
                             Book Cover<span className="text-red-600">*</span>
                         </h1>
                         <div
@@ -286,7 +286,7 @@ export default function AddBook() {
                                     <Image src={plusIcon} alt="Plus" />
                                     <button
                                         type="button"
-                                        className=" font-sofia font-medium text-xs text-grayDark flex items-center justify-center w-full "
+                                        className=" font-poppins font-medium text-xs text-grayDark flex items-center justify-center w-full "
                                     >
                                         Upload Picture
                                         <input
@@ -301,7 +301,7 @@ export default function AddBook() {
                             )}
                         </div>
                         {error && (
-                            <p className="text-center text-sm font-sofia text-rose-600 mb-2">
+                            <p className="text-center text-sm font-poppins text-rose-600 mb-2">
                                 {error}
                             </p>
                         )}
@@ -347,12 +347,12 @@ export default function AddBook() {
                     </div>
                 </form>
                 <div className="flex items-center justify-between py-4">
-                    <h1 className="font-sofia text-sm font-medium leading-none">
+                    <h1 className="font-poppins text-sm font-medium leading-none">
                         Genre
                     </h1>
                     <button
                         onClick={() => dispatch(setOpen(!open))}
-                        className="text-[#3879E9] font-sofia font-medium text-sm leading-none underline"
+                        className="text-[#3879E9] font-poppins font-medium text-sm leading-none underline"
                     >
                         Add
                     </button>
@@ -364,7 +364,7 @@ export default function AddBook() {
                                 key={index}
                                 className="flex items-center justify-between px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg"
                             >
-                                <h3 className="font-sofia text-sm font-light">
+                                <h3 className="font-poppins text-sm font-light">
                                     {favItem}
                                 </h3>
                                 <Button
@@ -382,21 +382,21 @@ export default function AddBook() {
                     </div>
                 )}
                 {errors?.genres && (
-                    <p className="text-left text-sm font-sofia text-rose-600 mb-2">
+                    <p className="text-left text-sm font-poppins text-rose-600 mb-2">
                         {errors.genres}
                     </p>
                 )}
                 <div className="pb-8">
                     <div className="flex items-center justify-between py-4">
-                        <h1 className="font-sofia text-sm font-medium leading-none">
+                        <h1 className="font-poppins text-sm font-medium leading-none">
                             Location
                         </h1>
-                        <Button className="text-[#3879E9] font-sofia font-medium text-sm leading-none underline">
+                        <Button className="text-[#3879E9] font-poppins font-medium text-sm leading-none underline">
                             Change
                         </Button>
                     </div>
                     <div>
-                        <p className="flex items-center font-sofia font-normal text-xs gap-1">
+                        <p className="flex items-center font-poppins font-normal text-xs gap-1">
                             <Image src={locationIcon} alt="location" /> Dhaka
                             bangladesh
                         </p>

@@ -48,7 +48,7 @@ export default function Register() {
                     >
                         <Image src={leftArrowIcon} alt="left" />
                     </div>
-                    <h3 className="font-sofia text-base font-medium ">
+                    <h3 className="font-poppins text-base font-medium ">
                         log in or Signup
                     </h3>
                 </div>

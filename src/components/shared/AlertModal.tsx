@@ -33,7 +33,7 @@ export default function AlertModal({
         >
             <div className="w-11/12 bg-white rounded-md ">
                 <div className="border-b border-[#E4E4E4] flex items-center justify-between px-4 py-2 relative">
-                    <h3 className="font-sofia font-normal text-base text-center leading-none">
+                    <h3 className="font-poppins font-normal text-base text-center leading-none">
                         {alertTitle}
                     </h3>
                     <Button
@@ -43,17 +43,17 @@ export default function AlertModal({
                         <Image src={close} alt="close" />
                     </Button>
                 </div>
-                <p className="px-3 py-3  text-base font-sofia">{message}</p>
+                <p className="px-3 py-3  text-base font-poppins">{message}</p>
                 <div className="px-3 pb-3 flex justify-end">
                     <Button
                         onClick={no}
-                        className="font-medium text-xs px-4 py-2 h-[30px] rounded-[8px] font-sofia flex justify-center items-center gap-2 "
+                        className="font-medium text-xs px-4 py-2 h-[30px] rounded-[8px] font-poppins flex justify-center items-center gap-2 "
                     >
                         {noBtnValue}
                     </Button>
                     <Button
                         onClick={yes}
-                        className=" bg-primary text-white  font-medium text-xs px-4 py-2 h-[30px] rounded-[8px] font-sofia flex justify-center items-center gap-2 "
+                        className=" bg-primary text-white  font-medium text-xs px-4 py-2 h-[30px] rounded-[8px] font-poppins flex justify-center items-center gap-2 "
                     >
                         {loading ? (
                             <div className=" w-4 h-4 border-2 border-transparent border-t-2 border-t-primary border-r-2 border-r-white rounded-full animate-spin" />

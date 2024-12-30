@@ -263,7 +263,7 @@ export default function RegisterForm() {
                 />
                 <label
                     htmlFor="remember"
-                    className="cursor-pointer text-sm font-light font-sofia text-grayDark"
+                    className="cursor-pointer text-sm font-light font-poppins text-grayDark"
                 >
                     Remember me
                 </label>
@@ -275,11 +275,11 @@ export default function RegisterForm() {
                 {loading ? "Loading..." : "Continue"}
             </Button>
             <div className=" flex items-center justify-center gap-1 mt-4">
-                <p className="text-black text-sm font-light font-sofia">
+                <p className="text-black text-sm font-light font-poppins">
                     Already have an account?
                 </p>
                 <button
-                    className="text-black text-sm font-light font-sofia underline"
+                    className="text-black text-sm font-light font-poppins underline"
                     onClick={(e) => {
                         e.preventDefault();
                         navigate("/auth/login");

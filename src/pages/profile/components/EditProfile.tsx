@@ -277,7 +277,7 @@ export default function EditProfile() {
                     >
                         <Image src={leftArrowIcon} alt="left" />
                     </div>
-                    <h3 className="font-sofia text-base font-medium ">
+                    <h3 className="font-poppins text-base font-medium ">
                         Edit Profile
                     </h3>
                 </div>
@@ -288,7 +288,7 @@ export default function EditProfile() {
                             isSaveActive
                                 ? " text-[#3879E9] cursor-pointer"
                                 : "text-[#3879e985]"
-                        } font-sofia font-medium text-base`}
+                        } font-poppins font-medium text-base`}
                         onClick={handleEditSaveFn}
                     >
                         Save
@@ -298,7 +298,7 @@ export default function EditProfile() {
 
             <div className="container pt-16">
                 <div className="border-b border-[#E4E4E4]">
-                    <h1 className="font-medium font-sofia text-sm leading-none">
+                    <h1 className="font-medium font-poppins text-sm leading-none">
                         Profile Picture
                     </h1>
                     <div className="mx-auto w-[120px] h-[120px] rounded-full  bg-white my-4 relative">
@@ -327,7 +327,7 @@ export default function EditProfile() {
                             } w-[128px] max-w-auto bg-white text-center font-medium text-sm px-1 shadow-2xl rounded-lg absolute top-30 z-50`}
                         >
                             <button
-                                className="border-b border-platinum py-2 font-sofia text-black flex items-center justify-center w-full "
+                                className="border-b border-platinum py-2 font-poppins text-black flex items-center justify-center w-full "
                                 onClick={handleClick}
                             >
                                 Upload profile
@@ -340,7 +340,7 @@ export default function EditProfile() {
                                 />
                             </button>
                             <button
-                                className="border-b border-platinum py-2 font-sofia text-black flex items-center justify-center w-full "
+                                className="border-b border-platinum py-2 font-poppins text-black flex items-center justify-center w-full "
                                 onClick={() =>
                                     handleShowDeleteModalProfilePicture(
                                         "profile"
@@ -352,14 +352,14 @@ export default function EditProfile() {
                         </div>
                     </div>
                     {error && (
-                        <p className="text-center text-sm font-sofia text-rose-600 mb-2">
+                        <p className="text-center text-sm font-poppins text-rose-600 mb-2">
                             {error}
                         </p>
                     )}
                 </div>
                 <div className="border-b border-[#E4E4E4] pb-4">
                     <div className="flex items-center justify-between py-4 relative">
-                        <h1 className="font-sofia text-sm font-medium leading-none">
+                        <h1 className="font-poppins text-sm font-medium leading-none">
                             Cover Picture
                         </h1>
                         <Button
@@ -367,7 +367,7 @@ export default function EditProfile() {
                                 handleCoverToggle();
                                 setProfileToggle(false);
                             }}
-                            className="text-[#3879E9] font-sofia font-medium text-sm leading-none underline relative"
+                            className="text-[#3879E9] font-poppins font-medium text-sm leading-none underline relative"
                         >
                             Change
                         </Button>
@@ -377,7 +377,7 @@ export default function EditProfile() {
                             }  absolute right-0 top-8 w-[128px] max-w-auto bg-white text-center font-medium text-sm px-1 shadow-2xl rounded-lg`}
                         >
                             <button
-                                className="border-b border-platinum py-2 font-sofia text-black flex items-center justify-center w-full "
+                                className="border-b border-platinum py-2 font-poppins text-black flex items-center justify-center w-full "
                                 onClick={handleCoverClick}
                             >
                                 Upload profile
@@ -390,7 +390,7 @@ export default function EditProfile() {
                                 />
                             </button>
                             <button
-                                className="border-b border-platinum py-2 font-sofia text-black flex items-center justify-center w-full "
+                                className="border-b border-platinum py-2 font-poppins text-black flex items-center justify-center w-full "
                                 onClick={() =>
                                     handleShowDeleteModalProfilePicture("cover")
                                 }
@@ -415,7 +415,7 @@ export default function EditProfile() {
                         )}
                     </div>
                     {coverError && (
-                        <p className="text-center text-sm font-sofia text-rose-600 mb-2">
+                        <p className="text-center text-sm font-poppins text-rose-600 mb-2">
                             {coverError}
                         </p>
                     )}
@@ -453,12 +453,12 @@ export default function EditProfile() {
                 </div>
                 <div>
                     <div className="flex items-center justify-between py-4">
-                        <h1 className="font-sofia text-sm font-medium leading-none">
+                        <h1 className="font-poppins text-sm font-medium leading-none">
                             Genre
                         </h1>
                         <Button
                             onClick={() => dispatch(setOpen(!open))}
-                            className="text-[#3879E9] font-sofia font-medium text-sm leading-none underline"
+                            className="text-[#3879E9] font-poppins font-medium text-sm leading-none underline"
                         >
                             Add
                         </Button>
@@ -470,7 +470,7 @@ export default function EditProfile() {
                                     key={index}
                                     className="flex items-center justify-between px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg"
                                 >
-                                    <h3 className="font-sofia text-sm font-light">
+                                    <h3 className="font-poppins text-sm font-light">
                                         {favItem}
                                     </h3>
                                     <Button
@@ -491,15 +491,15 @@ export default function EditProfile() {
                 </div>
                 <div className="pb-8">
                     <div className="flex items-center justify-between py-4">
-                        <h1 className="font-sofia text-sm font-medium leading-none">
+                        <h1 className="font-poppins text-sm font-medium leading-none">
                             Location
                         </h1>
-                        <Button className="text-[#3879E9] font-sofia font-medium text-sm leading-none underline">
+                        <Button className="text-[#3879E9] font-poppins font-medium text-sm leading-none underline">
                             Change
                         </Button>
                     </div>
                     <div>
-                        <p className="flex items-center font-sofia font-normal text-xs gap-1">
+                        <p className="flex items-center font-poppins font-normal text-xs gap-1">
                             <Image src={locationIcon} alt="location" /> Dhaka
                             bangladesh
                         </p>
