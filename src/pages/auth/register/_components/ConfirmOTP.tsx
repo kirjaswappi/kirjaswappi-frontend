@@ -67,7 +67,7 @@ export default function ConfirmOTP() {
                 <h1>Confirm you Email</h1>
             </div>
             <div className="px-6">
-                <p className="text-sm font-light font-sofia text-center pt-8 pb-10">
+                <p className="text-sm font-light font-poppins text-center pt-8 pb-10">
                     Enter the code we’ve sent to your Email
                 </p>
                 <OTP />
@@ -79,7 +79,7 @@ export default function ConfirmOTP() {
                 >
                     {loading ? "Loading..." : "OTP Verify"}
                 </Button>
-                <div className="flex items-center justify-center mt-10 gap-2 text-grayDark text-sm font-sofia">
+                <div className="flex items-center justify-center mt-10 gap-2 text-grayDark text-sm font-poppins">
                     <p>Haven’t received a code? </p>{" "}
                     <Button className="underline text-sm">Sent again</Button>
                 </div>

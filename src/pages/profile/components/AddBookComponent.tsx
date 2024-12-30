@@ -9,7 +9,7 @@ export default function AddBookComponent() {
             className="max-w-[168px] h-[264px] flex flex-col items-center justify-center gap-2 border border-grayDark border-dashed"
         >
             <Image src={plus} alt="Plus" />
-            <p className="font-sofia text-sm font-medium text-grayDark">
+            <p className="font-poppins text-sm font-medium text-grayDark">
                 Add a book
             </p>
         </div>

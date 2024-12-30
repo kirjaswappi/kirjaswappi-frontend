@@ -21,7 +21,7 @@ export default function SwapModal() {
         >
             <div className="w-11/12 bg-white rounded-md ">
                 <div className="py-4 border-b border-platinum relative">
-                    <h3 className="font-sofia font-normal text-base text-center leading-none">
+                    <h3 className="font-poppins font-normal text-base text-center leading-none">
                         Swap Request
                     </h3>
                     <Button
@@ -37,16 +37,16 @@ export default function SwapModal() {
                             <Image src={book2} alt="Book" />
                         </div>
                         <div>
-                            <h1 className="font-medium text-black text-sm leading-none mb-1 font-sofia">
+                            <h1 className="font-medium text-black text-sm leading-none mb-1 font-poppins">
                                 Man’s Search for Meaning'
                             </h1>
-                            <p className="text-black font-light text-xs font-sofia">
+                            <p className="text-black font-light text-xs font-poppins">
                                 by Viktor Frankl's
                             </p>
-                            <p className="text-black font-light text-xs font-sofia mt-1">
+                            <p className="text-black font-light text-xs font-poppins mt-1">
                                 Biography | Autobiography | Personal narrative
                             </p>
-                            <p className="text-black font-normal text-xs font-sofia mt-1">
+                            <p className="text-black font-normal text-xs font-poppins mt-1">
                                 <span className="font-light">
                                     Book Conditions:
                                 </span>{" "}
@@ -58,7 +58,7 @@ export default function SwapModal() {
                         <label className="flex items-center justify-between">
                             <div className="flex items-center gap-4">
                                 <Image src={bookIcon} alt="Book" />
-                                <h4 className="text-sm font-sofia text-[#1A1A1A]">
+                                <h4 className="text-sm font-poppins text-[#1A1A1A]">
                                     Swap with
                                 </h4>
                             </div>
@@ -79,10 +79,10 @@ export default function SwapModal() {
                                     />
                                 </div>
                                 <div>
-                                    <h1 className="font-medium text-black text-sm leading-none mb-1 font-sofia">
+                                    <h1 className="font-medium text-black text-sm leading-none mb-1 font-poppins">
                                         {"Man’s Search for Meaning"}
                                     </h1>
-                                    <p className="text-black font-light text-xs font-sofia">
+                                    <p className="text-black font-light text-xs font-poppins">
                                         by {"Viktor Frankl's"}
                                     </p>
                                 </div>
@@ -96,10 +96,10 @@ export default function SwapModal() {
                                     />
                                 </div>
                                 <div>
-                                    <h1 className="font-medium text-black text-sm leading-none mb-1 font-sofia">
+                                    <h1 className="font-medium text-black text-sm leading-none mb-1 font-poppins">
                                         {"Man’s Search for Meaning"}
                                     </h1>
-                                    <p className="text-black font-light text-xs font-sofia">
+                                    <p className="text-black font-light text-xs font-poppins">
                                         by {"Viktor Frankl's"}
                                     </p>
                                 </div>
@@ -108,7 +108,7 @@ export default function SwapModal() {
                         <label className="flex items-center justify-between mt-5">
                             <div className="flex items-center gap-4">
                                 <Image src={giveWayIcon} alt="Book" />
-                                <h4 className="text-sm font-sofia text-[#1A1A1A]">
+                                <h4 className="text-sm font-poppins text-[#1A1A1A]">
                                     Ask to giveaway for free
                                 </h4>
                             </div>
@@ -121,7 +121,7 @@ export default function SwapModal() {
                         </label>
                     </div>
                     <div>
-                        <h1 className="text-center font-sofia text-sm font-medium mb-2 mt-3">
+                        <h1 className="text-center font-poppins text-sm font-medium mb-2 mt-3">
                             Note
                         </h1>
                         <TextArea
@@ -130,7 +130,7 @@ export default function SwapModal() {
                         />
                     </div>
                     <div className="flex justify-center border-t border-platinum pt-2">
-                        <Button className="bg-primary text-white font-medium text-xs py-2 w-7/12 h-[30px] rounded-[8px] font-sofia flex justify-center items-center gap-2 ">
+                        <Button className="bg-primary text-white font-medium text-xs py-2 w-7/12 h-[30px] rounded-[8px] font-poppins flex justify-center items-center gap-2 ">
                             <Image src={sendMessageIcon} alt="Book" /> Send
                             Request
                         </Button>

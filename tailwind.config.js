@@ -35,15 +35,17 @@ export default {
         grayDark:"#808080",
         platinum:'#E6E6E6'
       },
+      fontSize:{
+        sx:"10px"
+      },
       // fontSize: {
-
+      //   xxs: "10px"
       // },
       borderRadius: {
         '5px':"5px"
       },
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],
-        sofia: ['Sofia Sans Condensed', 'sans-serif']
       },
       screens: {
         xsm: "320px",

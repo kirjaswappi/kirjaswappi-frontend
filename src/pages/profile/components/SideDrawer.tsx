@@ -33,14 +33,14 @@ export default function SideDrawer({
                         >
                             <Image src={leftArrowIcon} alt="left" />
                         </div>
-                        <h3 className="font-sofia text-base font-medium ">
+                        <h3 className="font-poppins text-base font-medium ">
                             {title} 
                         </h3>
                     </div>
                     {isShowSave && (
                         <Button
                             onClick={onSave}
-                            className="text-primary underline font-sofia font-normal text-sm"
+                            className="text-primary underline font-poppins font-normal text-sm"
                         >
                             Save
                         </Button>

@@ -5,8 +5,8 @@ import privacy from "../../../assets/privacy.png";
 import setting from "../../../assets/settings.png";
 import Image from "../../../components/shared/Image";
 import { logout } from "../../../redux/feature/auth/authSlice";
-import SideDrawer from "./SideDrawer";
 import { setOpen } from "../../../redux/feature/open/openSlice";
+import SideDrawer from "./SideDrawer";
 
 const profileSetting = [
     {
@@ -52,7 +52,7 @@ export default function MoreOptions() {
                                 className="h-auto"
                             />
                         </button>
-                        <h3 className="font-sofia text-sm font-normal capitalize">
+                        <h3 className="font-poppins text-sm font-normal capitalize">
                             {item.name}
                         </h3>
                     </div>

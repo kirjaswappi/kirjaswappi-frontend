@@ -79,13 +79,13 @@ export default function UserProfile() {
             </div>
             <div className="container mt-20 pb-28">
                 <div className="text-center my-5 ">
-                    <h1 className="font-medium text-black text-sm leading-none mb-2 font-sofia">
+                    <h1 className="font-medium text-black text-sm leading-none mb-2 font-poppins">
                         {firstName + " " + lastName}
                     </h1>
                     <div className="flex items-center justify-center">
                         {favGenres?.map((favItem, index) => (
                             <div key={index} className="flex items-center">
-                                <p className="text-black font-light text-xs font-sofia">
+                                <p className="text-black font-light text-xs font-poppins">
                                     {favItem}
                                 </p>
                                 <span
@@ -93,7 +93,7 @@ export default function UserProfile() {
                                         favGenres.length - 1 === index
                                             ? "hidden"
                                             : "block"
-                                    } inline-block mx-2 font-sofia font-light text-sm`}
+                                    } inline-block mx-2 font-poppins font-light text-sm`}
                                 >
                                     |
                                 </span>

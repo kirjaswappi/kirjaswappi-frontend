@@ -10,27 +10,27 @@ export default function About() {
     return (
         <div>
             {aboutMe && (
-                <p className="text-xs font-light font-sofia text-grayDark">
+                <p className="text-xs font-light font-poppins text-grayDark">
                     {aboutMe}
                 </p>
             )}
             <div className="bg-white py-2 px-5 grid grid-cols-3 my-5 rounded-2xl">
                 <div className="relative">
                     <div className="text-center after:absolute after:right-0 after:top-0 after:h-[30px] after:w-[1px] after:bg-[#E4E4E4]">
-                        <p className="text-grayDark text-xs font-sofia font-normal">
+                        <p className="text-grayDark text-xs font-poppins font-normal">
                             Total Swaps
                         </p>
-                        <h3 className="text-black text-xs font-normal font-sofia">
+                        <h3 className="text-black text-xs font-normal font-poppins">
                             3
                         </h3>
                     </div>
                 </div>
                 <div className="relative">
                     <div className="text-center flex flex-col items-center after:absolute after:right-0 after:top-0 after:h-[30px] after:w-[1px] after:bg-[#E4E4E4]">
-                        <p className="text-grayDark text-xs font-sofia font-normal ">
+                        <p className="text-grayDark text-xs font-poppins font-normal ">
                             Users Reviews
                         </p>
-                        <h3 className="text-black text-xs font-normal font-sofia flex items-center gap-1">
+                        <h3 className="text-black text-xs font-normal font-poppins flex items-center gap-1">
                             <Image src={rating} alt="rating" />{" "}
                             <span className="inline-block mt-[2px]">4.3</span>
                         </h3>
@@ -38,32 +38,32 @@ export default function About() {
                 </div>
 
                 <div className="text-center">
-                    <p className="text-grayDark text-xs font-sofia font-normal">
+                    <p className="text-grayDark text-xs font-poppins font-normal">
                         Books Listed
                     </p>
-                    <h3 className="text-black text-xs font-normal font-sofia">
+                    <h3 className="text-black text-xs font-normal font-poppins">
                         8
                     </h3>
                 </div>
             </div>
             <div className="flex items-center gap-1 my-5">
                 <Image src={locationIcon} alt="location" />
-                <p className="text-xs font-sofia font-normal">
+                <p className="text-xs font-poppins font-normal">
                     Senate Square, Helsinki
                 </p>
             </div>
             <div className="flex items-center gap-1">
                 <Image src={upArrowIcon} alt="profile" />
-                <p className="text-xs font-normal font-sofia text-black">
+                <p className="text-xs font-normal font-poppins text-black">
                     95% Positive Swaps
                 </p>
             </div>
             <div className="bg-[#E4E4E4] w-full h-[1px] my-5"></div>
                 <div className="flex items-center justify-between mb-4">
-                    <h1 className="text-base text-black font-medium font-sofia">
+                    <h1 className="text-base text-black font-medium font-poppins">
                         My Library
                     </h1>
-                    <Button className="text-primary underline font-sofia font-normal text-sm">
+                    <Button className="text-primary underline font-poppins font-normal text-sm">
                         See all
                     </Button>
                 </div>

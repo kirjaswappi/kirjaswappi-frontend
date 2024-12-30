@@ -10,7 +10,7 @@ export default function InputLabel({
     return (
         <div>
             {label && (
-                <p className={`text-black text-sm mb-1 font-sofia ${mb}`}>
+                <p className={`text-black text-sm mb-1 font-poppins ${mb}`}>
                     {label}
                     {required && <span className="text-red-600">*</span>}
                 </p>

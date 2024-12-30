@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { IBook } from "../../../pages/books/interface";
 import { clearCookie } from "../../../utility/cookies";
 import { authApi } from "./authApi";
 interface IErrorPayload {
@@ -26,6 +27,7 @@ export interface IInitialState {
         phoneNumber?: null;
         aboutMe?: null;
         favGenres?: string[];
+        books: IBook[]
     };
     otp: any[];
     userEmail: string;
@@ -50,6 +52,7 @@ export const initialState: IInitialState = {
         phoneNumber: null,
         aboutMe: null,
         favGenres: [],
+        books: []
     },
     otp: Array(6).fill(""),
     userEmail: "",
@@ -93,6 +96,15 @@ const authSlice = createSlice({
         
     },
     extraReducers: (builder) => {
+        builder.addMatcher(authApi.endpoints.getUserById.matchPending, (state) => {
+            state.loading = true;
+        });
+        builder.addMatcher(authApi.endpoints.getUserById.matchFulfilled, (state) => {
+            state.loading = false;
+        });
+        builder.addMatcher(authApi.endpoints.getUserById.matchRejected, (state) => {
+            state.loading = false;
+        });
         builder.addMatcher(authApi.endpoints.login.matchPending, (state) => {
             state.loading = true;
             state.error = null;

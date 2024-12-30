@@ -288,7 +288,7 @@ export default function ResetPassword() {
                     >
                         <Image src={leftArrowIcon} alt="left" />
                     </div>
-                    <h3 className="font-sofia text-base font-medium ">
+                    <h3 className="font-poppins text-base font-medium ">
                         Forget Password
                     </h3>
                 </div>
@@ -307,7 +307,7 @@ export default function ResetPassword() {
                         )}
                         <div className={`${step === 1 && "px-6"}`}>
                             {step === 1 && (
-                                <p className="text-sm font-light font-sofia text-center pt-8 pb-10">
+                                <p className="text-sm font-light font-poppins text-center pt-8 pb-10">
                                     Enter the code we’ve sent to your Email
                                 </p>
                             )}
