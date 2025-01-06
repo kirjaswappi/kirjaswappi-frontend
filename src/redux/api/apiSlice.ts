@@ -1,6 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { isTokenExpired } from "../../utility/getUser";
-import { getTokens, setToken } from "../../utility/localStorage";
+import { getCookie, isCookieExpired, setCookie } from "../../utility/cookies";
 
 export const api = createApi({
     reducerPath: "api",
@@ -8,13 +7,40 @@ export const api = createApi({
         baseUrl: import.meta.env.VITE_REACT_MAIN_API,
         prepareHeaders: async (headers, { endpoint }) => {
             if (endpoint === "authenticate") return headers;
-            const { jwtToken, refreshToken } = getTokens();
+            const jwtToken = getCookie("jwtToken");
             let token = jwtToken;
-            if (token && isTokenExpired(token)) {
+            
+            if (!token) {
+                const data = JSON.stringify({
+                    username: "user",
+                    password: "mak12345",
+                });
+                await fetch(
+                    `${import.meta.env.VITE_REACT_MAIN_API}/authenticate`,
+                    {
+                        method: "POST",
+                        body: data,
+                        headers: { "Content-Type": "application/json" },
+                    }
+                )
+                    .then((res) => res.json())
+                    .then((data) => {
+                        const { jwtToken, refreshToken } = data;
+                        token = jwtToken;
+                        setCookie("jwtToken", jwtToken, 1);
+                        setCookie("refreshToken", refreshToken, 1);
+                    })
+                    .catch((error) =>
+                        console.log("authenticate error ->", error)
+                    );
+            }
+            else if (token && isCookieExpired('jwtToken')) {
+                const refreshToken = getCookie("refreshToken");
                 await fetch(
                     `${
                         import.meta.env.VITE_REACT_MAIN_API
                     }/authenticate/refresh`,
+
                     {
                         method: "POST",
                         body: JSON.stringify({ refreshToken }),
@@ -23,7 +49,7 @@ export const api = createApi({
                 )
                     .then((res) => res.json())
                     .then((data) => {
-                        setToken("jwtToken", data?.jwtToken);
+                        setCookie("jwtToken", data?.jwtToken, 1);
                         token = data?.jwtToken;
                     });
             }
@@ -39,7 +65,7 @@ export const api = createApi({
         "AddCoverImage",
         "DeleteCoverImage",
         "DeleteProfileImage",
-        "AddBook"
+        "AddBook",
     ],
     endpoints: () => ({}),
 });

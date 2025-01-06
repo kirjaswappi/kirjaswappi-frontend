@@ -1,6 +1,5 @@
 import { setCookie } from "../../../utility/cookies";
 import { applicationJSON } from "../../../utility/headersConstant";
-import { setTokens } from "../../../utility/localStorage";
 
 import { api } from "../../api/apiSlice";
 
@@ -19,7 +18,8 @@ export const authApi = api.injectEndpoints({
                 try {
                     const { data } = await queryFulfilled;
                     if (data) {
-                        setTokens(data.jwtToken, data.refreshToken);
+                        setCookie('jwtToken', data.jwtToken, 1)
+                        setCookie('refreshToken', data.refreshToken, 1)
                     }
                 } catch (error) {
                     console.error("Authentication failed:", error);

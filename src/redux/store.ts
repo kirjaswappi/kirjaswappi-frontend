@@ -11,7 +11,8 @@ import openSlice, { IOpenInitialState } from './feature/open/openSlice';
 
 
 const cookieUser = getCookie('user');
-const user = cookieUser ? JSON.parse(cookieUser) : {};
+console.log(cookieUser)
+const user = cookieUser ? cookieUser : {};
 
 const preloadedState = {
   auth: {
