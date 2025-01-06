@@ -5,8 +5,10 @@ import { goToTop } from "../../utility/helper";
 import { IBook } from "./interface";
 
 export default function Books() {
-    const { data: booksData, isLoading } = useGetAllBooksQuery(undefined);
+    const { data, isError, isLoading } = useGetAllBooksQuery(undefined);
     goToTop();
+    console.log(data)
+    if(isError) return <p>Something went wrong</p>
     return (
         <section>
             <div className="container min-h-[80vh]">
@@ -15,8 +17,8 @@ export default function Books() {
                         ? Array.from({ length: 10 }, (_, index) => (
                               <BookSkeleton key={index} />
                           ))
-                        : booksData &&
-                          booksData?.map((book: IBook, index: number) => (
+                        : data &&
+                        data?._embedded?.books?.map((book: IBook, index: number) => (
                               <BookCard key={index} book={book} />
                           ))}
                 </div>

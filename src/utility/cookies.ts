@@ -1,14 +1,14 @@
 import CryptoJS from "crypto-js";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 
 export const setCookie = (name: string, value: any, time: number) => {
-
     const encryptedValue = CryptoJS.AES.encrypt(
         JSON.stringify(value),
         import.meta.env.VITE_REACT_SECRET_KEY
     ).toString();
 
     const date = new Date();
-    date.setTime(date.getTime() + time * 60 * 60 * 1000);
+    date.setTime(date.getTime() + time * 60 * 1000);
     const expires = "expires=" + date.toUTCString();
     document.cookie = `${name}=${encryptedValue}; ${expires}; path=/; Secure`;
 };
@@ -28,8 +28,7 @@ export const getCookie = (name: string) => {
                 encryptedValue,
                 import.meta.env.VITE_REACT_SECRET_KEY
             ).toString(CryptoJS.enc.Utf8);
-
-            return decryptedValue;
+            return JSON.parse(decryptedValue);
         }
     }
     return null;
@@ -39,14 +38,24 @@ export const clearCookie = (name: string) => {
     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; Secure; SameSite=Strict;`;
 };
 
-const isCookieExpired = (name: string) => {
+export const isCookieExpired = (name: string): boolean => {
     const cookie = getCookie(name);
-
     if (!cookie) {
         console.log("Cookie has expired or is not set.");
-        return true; // Cookie is expired or doesn't exist
+        return true;
     }
-    return false; // Cookie is still valid
+    try {
+        const decodedToken: JwtPayload = jwtDecode<JwtPayload>(cookie);
+        const currentTime = Date.now() / 1000;
+        if (!decodedToken.exp) {
+            console.log("Token does not have an expiration field.");
+            return true;
+        }
+        return decodedToken.exp < currentTime;
+    } catch (error) {
+        console.log("isCookieExpired", error);
+        return true;
+    }
 };
 
 // Function to handle cookie expiration (remove expired cookies)
