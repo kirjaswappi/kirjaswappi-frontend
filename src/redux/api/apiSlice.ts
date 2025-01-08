@@ -14,7 +14,7 @@ export const api = createApi({
             if (endpoint === "authenticate") return headers;
 
             let token = getCookie("jwtToken");
-            console.log("get jwt token -> ", token)
+            console.log("get jwt token -> ", isCookieExpired("jwtToken"))
             if (!token || isCookieExpired("jwtToken")) {
                 if (!isAuthenticating) {
                     isAuthenticating = true;
@@ -38,8 +38,8 @@ export const api = createApi({
                                     }
                                 );
                                 const { jwtToken, refreshToken } = await resp.json();
-                                setCookie("jwtToken", jwtToken, 0.5); // 1 hour
-                                setCookie("refreshToken", refreshToken, 2); // 2 hour
+                                setCookie("jwtToken", jwtToken, 100); // 1 hour
+                                setCookie("refreshToken", refreshToken, 200); // 2 hour
                                 return jwtToken
                             } else{
                                 console.log('insert in refresh token logic')
@@ -53,7 +53,7 @@ export const api = createApi({
                                     }
                                 );
                                 const data = await res.json();
-                                setCookie("jwtToken", data.jwtToken, 1);
+                                setCookie("jwtToken", data.jwtToken, 100);
                                 return data.jwtToken;
                             }
                         } catch (error) {
