@@ -1,31 +1,30 @@
 import { setCookie } from "../../../utility/cookies";
-import { applicationJSON } from "../../../utility/headersConstant";
 
 import { api } from "../../api/apiSlice";
 
 export const authApi = api.injectEndpoints({
     endpoints: (builder) => ({
-        authenticate: builder.mutation<any, any>({
-            query: (data) => {
-                return {
-                    url: "/authenticate",
-                    method: "POST",
-                    body: data,
-                    headers: applicationJSON,
-                };
-            },
-            onQueryStarted: async (_args, { queryFulfilled }) => {
-                try {
-                    const { data } = await queryFulfilled;
-                    if (data) {
-                        setCookie('jwtToken', data.jwtToken, 1)
-                        setCookie('refreshToken', data.refreshToken, 1)
-                    }
-                } catch (error) {
-                    console.error("Authentication failed:", error);
-                }
-            },
-        }),
+        // authenticate: builder.mutation<any, any>({
+        //     query: (data) => {
+        //         return {
+        //             url: "/authenticate",
+        //             method: "POST",
+        //             body: data,
+        //             headers: applicationJSON,
+        //         };
+        //     },
+        //     onQueryStarted: async (_args, { queryFulfilled }) => {
+        //         try {
+        //             const { data } = await queryFulfilled;
+        //             if (data) {
+        //                 setCookie('jwtToken', data.jwtToken, 1)
+        //                 setCookie('refreshToken', data.refreshToken, 1)
+        //             }
+        //         } catch (error) {
+        //             console.error("Authentication failed:", error);
+        //         }
+        //     },
+        // }),
         register: builder.mutation({
             query: (data) => {
                 return {
@@ -187,7 +186,6 @@ export const authApi = api.injectEndpoints({
 
 
 export const {
-    useAuthenticateMutation,
     useRegisterMutation,
     useLoginMutation,
     useDeleteUserMutation,
