@@ -17,6 +17,7 @@ import { useImageUpload } from "../../hooks/useImageUpload";
 import { useAddBookMutation, useGetSupportConditionQuery, useGetSupportLanguageQuery } from "../../redux/feature/book/bookApi";
 import { setOpen } from "../../redux/feature/open/openSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import Stepper from "./_components/Stepper";
 interface IAddBookInterface {
     ownerId?: string;
     title?: string | undefined | null;
@@ -198,6 +199,11 @@ export default function AddBook() {
         if (conditionLoading) return true;
         else return false;
     };
+    const [steps, setSteps] = useState([
+        { label: 'Book Details', isCompleted: true, isActive: false },
+        { label: 'Other Details', isCompleted: true, isActive: false },
+        { label: 'Ex. Conditions', isCompleted: true, isActive: false },
+      ]);
     if (loading()) return <Loader />;
     return (
         <div>
@@ -207,6 +213,10 @@ export default function AddBook() {
                 setEditInfo={setAddBookInfo}
                 setEditValuesChanged={setEditValuesChanged}
             />
+        <div className="pt-20 px-4">
+      <Stepper steps={steps} />
+    </div>
+
             <div className="fixed left-0 top-0 w-full h-[48px] flex items-center justify-between px-4 border-b border-[#E4E4E4] bg-light z-30 ">
                 <div className="flex items-center gap-2">
                     <div
