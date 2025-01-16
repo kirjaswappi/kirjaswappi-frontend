@@ -3,7 +3,8 @@ import Input from "../../../components/shared/Input";
 import TextArea from "../../../components/shared/TextArea";
 import Select from "../../../components/shared/Select";
 
-export default function BookDetailsStep() {
+export default function BookDetailsStep({errors, addBookInfo, handleChange, validateInput}) {
+  console.log('editInfo', addBookInfo)
   return (
     <div>
       <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
@@ -13,11 +14,11 @@ export default function BookDetailsStep() {
           name="title"
           placeholder="Book Title"
           className="rounded-md"
-          //   error={errors.title}
-          //   showErrorMessage={!!errors.title}
-          // value={editInfo.firstName}
-          //   onChange={handleChange}
-          //   onBlur={validateInput}
+            error={errors.title}
+            showErrorMessage={!!errors.title}
+          value={addBookInfo.firstName}
+            onChange={handleChange}
+            onBlur={validateInput}
         />
       </div>
       <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
@@ -27,11 +28,11 @@ export default function BookDetailsStep() {
           name="author"
           placeholder="Author Name"
           className="rounded-md"
-          // value={editInfo.firstName}
-          //   onChange={handleChange}
-          //   onBlur={validateInput}
-          //   error={errors.author}
-          //   showErrorMessage={!!errors.author}
+          value={addBookInfo.firstName}
+            onChange={handleChange}
+            onBlur={validateInput}
+            error={errors.author}
+            showErrorMessage={!!errors.author}
         />
       </div>
       <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
@@ -39,11 +40,11 @@ export default function BookDetailsStep() {
         <TextArea
           name="description"
           placeholder="Write here..."
-          // value={editInfo.aboutMe}
-          //   onBlur={validateInput}
-          //   onChange={handleChange}
-          //   error={errors.description}
-          //   showErrorMessage={!!errors.description}
+          value={addBookInfo.aboutMe}
+            onBlur={validateInput}
+            onChange={handleChange}
+            error={errors.description}
+            showErrorMessage={!!errors.description}
           className="rounded-md h-[83px]"
         />
       </div>

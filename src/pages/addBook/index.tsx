@@ -12,7 +12,7 @@ import {
   useGetSupportConditionQuery,
   useGetSupportLanguageQuery
 } from "../../redux/feature/book/bookApi";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import {  useAppSelector } from "../../redux/hooks";
 import Stepper from "./_components/Stepper";
 import BookDetailsStep from "./_components/BookDetailsStep";
 import OtherDetailsStep from "./_components/OtherDetailsStep";
@@ -53,31 +53,18 @@ export default function AddBook() {
     language: "",
     favGenres: []
   });
-  const {
-    handleImageFile: uploadImageImageHandler,
-    previewImage,
-    imageFile: bookFile,
-    error,
-    setError
-  } = useImageUpload();
-//   const handleRemoveGenre = (genreValue: string) => {
-//     setAddBookInfo((prev) => ({
-//       ...prev,
-//       favGenres: prev?.favGenres?.filter((favGen) => favGen !== genreValue)
-//     }));
-//     setEditValuesChanged(true);
-//   };
+  const [active, setActive] = useState<number>(0)
 
-//   const handleChange = (
-//     e: React.ChangeEvent<
-//       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-//     >
-//   ) => {
-//     const { name, value } = e.target;
-//     setAddBookInfo((prev) => ({ ...prev, [name]: value }));
-//     setErrors({ ...errors, [name]: "" });
-//     setEditValuesChanged(true);
-//   };
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setAddBookInfo((prev) => ({ ...prev, [name]: value }));
+    setErrors({ ...errors, [name]: "" });
+    setEditValuesChanged(true);
+  };
   const validateInput = (e: any) => {
     const { name, value } = e.target;
     setErrors((prev: any) => {
@@ -108,7 +95,25 @@ export default function AddBook() {
       return stateObj;
     });
   };
+// console.log(errors)
 
+  
+  const {
+    handleImageFile: uploadImageImageHandler,
+    previewImage,
+    imageFile: bookFile,
+    error,
+    setError
+  } = useImageUpload();
+//   const handleRemoveGenre = (genreValue: string) => {
+//     setAddBookInfo((prev) => ({
+//       ...prev,
+//       favGenres: prev?.favGenres?.filter((favGen) => favGen !== genreValue)
+//     }));
+//     setEditValuesChanged(true);
+//   };
+
+  
 //   const handleClick = () => {
 //     if (bookPicture.current) {
 //       bookPicture.current.click();
@@ -116,71 +121,49 @@ export default function AddBook() {
 //   };
 
   // Handle submit
-//   const handleSaveFn = () => {
-//     let allValid: boolean = false;
-//     Object.keys(addBookInfo).forEach((key: any) => {
-//       const typedKey = key as keyof IAddBookInterface;
-//       const event = {
-//         target: {
-//           name: key,
-//           value: addBookInfo[typedKey]
-//         }
-//       };
-//       validateInput(event);
+  const handleSaveFn = () => {
+    console.log('click on save button')
+    // let allValid: boolean = false;
+    if(active === 0){
+      Object.keys(addBookInfo).forEach((key: any) => {
+        const typedKey = key as keyof IAddBookInterface;
+        const event = {
+          target: {
+            name: key,
+            value: addBookInfo[typedKey]
+          }
+        };
+        validateInput(event);
+  
+      });
+    }
+  };
+// console.log(addBookInfo)
+  const steps = [
+    {
+      label: "Book Details",
+      isCompleted: false,
+      isActive: true,
+      content: <BookDetailsStep errors={errors} addBookInfo={addBookInfo} handleChange={handleChange} validateInput={validateInput} />
+    },
+    {
+      label: "Other Details",
+      isCompleted: false,
+      isActive: false,
+      content: <OtherDetailsStep />
+    },
+    {
+      label: "Ex. Conditions",
+      isCompleted: false,
+      isActive: false,
+      content: <ConditionsStep />
+    }
+  ]
 
-//       if (!addBookInfo[typedKey]) {
-//         allValid = false;
-//       }
-//     });
-//     if (!bookFile) {
-//       setError("Book Image is required.");
-//       setEditValuesChanged(false);
-//       // allValid = false;
-//     }
-//     if (addBookInfo.favGenres.length <= 0) {
-//       // allValid = false;
-//       setErrors((prev) => ({
-//         ...prev,
-//         genres: "At least one genre is required"
-//       }));
-//       setEditValuesChanged(false);
-//     } else {
-//       setErrors((prev) => ({ ...prev, genres: null }));
-//     }
 
-//     if (bookFile && addBookInfo.favGenres.length > 0) {
-//       setEditValuesChanged(true);
-//       allValid = true;
-//     }
 
-//     // final all valid
-//     if (allValid) {
-//       try {
-//         const genres = addBookInfo.favGenres;
-//         const form = new FormData();
-//         form.append("ownerId", id!);
-//         form.append("title", addBookInfo.title!);
-//         form.append("author", addBookInfo.author!);
-//         form.append("description", addBookInfo.description!);
-//         form.append("condition", addBookInfo.condition!);
-//         form.append("language", addBookInfo.language!);
-//         form.append("coverPhoto", bookFile!);
-//         form.append("genres", genres.join(", "));
-//         addBook(form)
-//           .unwrap()
-//           .then((res) => {
-//             if (!res.error) {
-//               const timer = setTimeout(() => {
-//                 navigate("/profile/user-profile");
-//               }, 0);
-//               return () => clearTimeout(timer);
-//             }
-//           });
-//       } catch (error) {
-//         console.log("Error", error);
-//       }
-//     }
-//   };
+
+
   // Clear an error of genres
   useEffect(() => {
     if (addBookInfo.favGenres.length > 0)
@@ -204,27 +187,7 @@ export default function AddBook() {
     if (conditionLoading) return true;
     else return false;
   };
-  const [active, setActive] = useState<number>(1)
-  const [steps, setSteps] = useState([
-    {
-      label: "Book Details",
-      isCompleted: false,
-      isActive: true,
-      content: <BookDetailsStep />
-    },
-    {
-      label: "Other Details",
-      isCompleted: false,
-      isActive: false,
-      content: <OtherDetailsStep />
-    },
-    {
-      label: "Ex. Conditions",
-      isCompleted: false,
-      isActive: false,
-      content: <ConditionsStep />
-    }
-  ]);
+  
   if (loading()) return <Loader />;
   return (
     <div>
@@ -255,7 +218,7 @@ export default function AddBook() {
       </div>
         <form>
             {steps[active].content}
-            <Button className="w-full bg-primary font-poppins font-medium text-base text-white py-3 mb-3 rounded-lg">Next</Button>
+            <Button onClick={handleSaveFn} type="button" className="w-full bg-primary font-poppins font-medium text-base text-white py-3 mb-3 rounded-lg">{active === 2 ? "Confirm":"Next"}</Button>
           {/* <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
             <InputLabel label="Book Title" required />
             <Input

@@ -113,7 +113,6 @@ const authSlice = createSlice({
         builder.addMatcher(
             authApi.endpoints.login.matchFulfilled,
             (state, action) => {
-                console.log(action.payload)
                 const { id, email } = action.payload
                 state.loading = false;
                 state.error = null;
