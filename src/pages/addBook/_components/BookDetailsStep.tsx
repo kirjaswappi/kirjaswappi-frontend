@@ -1,77 +1,60 @@
 import InputLabel from "../../../components/shared/InputLabel";
-import Input from "../../../components/shared/Input";
-import TextArea from "../../../components/shared/TextArea";
-import Select from "../../../components/shared/Select";
 
-export default function BookDetailsStep({errors, addBookInfo, handleChange, validateInput}) {
-  console.log('editInfo', addBookInfo)
+import ControlledInputField from "./ControllerField";
+
+type TOptions = {
+  label: string;
+  value: string;
+};
+interface IBookDetailsProps {
+  languageOptions: TOptions[] | undefined;
+  conditionOptions: TOptions[] | undefined;
+}
+
+export default function BookDetailsStep({languageOptions, conditionOptions}: IBookDetailsProps) {
   return (
     <div>
       <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
         <InputLabel label="Book Title" required />
-        <Input
-          type="text"
+        <ControlledInputField
           name="title"
-          placeholder="Book Title"
+          placeholder="Enter your title"
           className="rounded-md"
-            error={errors.title}
-            showErrorMessage={!!errors.title}
-          value={addBookInfo.firstName}
-            onChange={handleChange}
-            onBlur={validateInput}
         />
       </div>
       <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
         <InputLabel label="Author Name" />
-        <Input
-          type="text"
+        <ControlledInputField
           name="author"
-          placeholder="Author Name"
+          placeholder="Enter your author"
           className="rounded-md"
-          value={addBookInfo.firstName}
-            onChange={handleChange}
-            onBlur={validateInput}
-            error={errors.author}
-            showErrorMessage={!!errors.author}
         />
       </div>
       <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
         <InputLabel label="Short Description" required />
-        <TextArea
+        <ControlledInputField
+        type="textarea"
           name="description"
-          placeholder="Write here..."
-          value={addBookInfo.aboutMe}
-            onBlur={validateInput}
-            onChange={handleChange}
-            error={errors.description}
-            showErrorMessage={!!errors.description}
+          placeholder="Enter your description"
           className="rounded-md h-[83px]"
         />
       </div>
       <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
         <InputLabel label="Book Language" required />
-        <Select
-          //   onChange={handleChange}
-          //   onBlur={validateInput}
+        <ControlledInputField
+          type="select"
           name="language"
-          // value={addBookInfo.language}
-          options={[]}
-          className="bg-white"
-          //   error={errors.language}
-          //   showErrorMessage={!!errors.language}
+          className="rounded-md bg-white"
+          options={languageOptions}
         />
       </div>
       <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
         <InputLabel label="Book Condition" />
-        <Select
-          //   onChange={handleChange}
-          //   onBlur={validateInput}
+        <ControlledInputField
+          type="select"
           name="condition"
-          options={[]}
-          className="bg-white"
-          //   error={errors.condition}
-          //   showErrorMessage={!!errors.condition}
-          //   value={addBookInfo.condition}
+          className="rounded-md bg-white"
+          options={conditionOptions}
         />
       </div>
     </div>

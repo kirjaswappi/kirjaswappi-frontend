@@ -2,37 +2,30 @@ import React, { SetStateAction } from "react";
 import plusIcon from "../../assets/plusIcon.png";
 import tickMarkIcon from "../../assets/tickmark.png";
 import SideDrawer from "../../pages/profile/components/SideDrawer";
-import { IEditInfo, IGenreItemType } from "../../pages/profile/interface/interface";
+import { IGenreItemType } from "../../pages/profile/interface/interface";
 import { useGetGenreQuery } from "../../redux/feature/genre/genreApi";
 import Button from "./Button";
 import Image from "./Image";
 import Loader from "./Loader";
 
 export default function AddGenre({
-    editInfo,
-    setEditInfo,
     setEditValuesChanged,
-
+    genresValue,
+    setValue
 }: {
-    editInfo: IEditInfo;
-    setEditInfo: React.Dispatch<SetStateAction<IEditInfo>>;
     setEditValuesChanged: React.Dispatch<SetStateAction<boolean>>;
+    genresValue: string[];
+    setValue?: any
 }) {
     const { data, isLoading } = useGetGenreQuery(undefined);
 
-    const { favGenres } = editInfo;
-
-    const handleAddGenre = (genreValue: string) => {
-        
-        if (!favGenres?.includes(genreValue)) {
-            setEditInfo((prev) => ({
-              ...prev,
-              favGenres: [...prev.favGenres?? [], genreValue],
-            }));
+    const handleAddGenre = (genreValue: string) => {       
+        if (!genresValue?.includes(genreValue)) {
+            const updatedGenres = [...genresValue, genreValue];
+            setValue("favGenres", updatedGenres); 
             setEditValuesChanged(true)
           }
     };
-
     if (isLoading) return <Loader />;
     return (
         <SideDrawer title="Genre">
@@ -42,7 +35,7 @@ export default function AddGenre({
                         genreItem: IGenreItemType,
                         index: string | number
                     ) => {
-                        const isGenActive = favGenres?.includes(genreItem.name);
+                        const isGenActive = genresValue?.includes(genreItem.name);
                         return (
                             <div
                                 key={index}

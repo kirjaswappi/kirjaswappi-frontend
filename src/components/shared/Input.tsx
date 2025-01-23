@@ -2,7 +2,7 @@ import React from "react";
 
 interface IInputFieldProps {
     id?: string;
-    type: "text" | "password" | "email";
+    type?: "text" | "password" | "email";
     value?: string;
     name?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
