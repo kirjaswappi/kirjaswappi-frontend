@@ -12,7 +12,8 @@ interface ControlledInputFieldProps {
   options?: {
     label: string;
     value: string;
-  }[]
+  }[],
+  inputType?: string
 }
 
 const ControlledInputField: React.FC<ControlledInputFieldProps> = ({
@@ -20,7 +21,8 @@ const ControlledInputField: React.FC<ControlledInputFieldProps> = ({
   type = "input",
   placeholder,
   className,
-  options
+  options, 
+  inputType
 }) => {
   const { control } = useFormContext();
 

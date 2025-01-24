@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import leftArrowIcon from "../../assets/leftArrow.png";
 import Image from "../../components/shared/Image";
@@ -11,7 +11,6 @@ import yup from "yup";
 import Stepper from "./_components/Stepper";
 import BookDetailsStep from "./_components/BookDetailsStep";
 import OtherDetailsStep from "./_components/OtherDetailsStep";
-import ConditionsStep from "./_components/ConditionsStep";
 import { options } from "../../utility/helper";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -19,6 +18,7 @@ import { validationSchemas } from "./Schema";
 
 import AddGenre from "../../components/shared/AddGenre";
 import Button from "../../components/shared/Button";
+import ConditionsStep from "./_components/ConditionsStep";
 
 export default function AddBook() {
   const navigate = useNavigate();
@@ -33,9 +33,16 @@ export default function AddBook() {
     mode: "onBlur",
     defaultValues: {
       favGenres: [],
-    }
+    },
   });
-  const { handleSubmit, trigger, watch, setValue, formState: {errors}, getValues } = methods;
+  const {
+    handleSubmit,
+    trigger,
+    watch,
+    setValue,
+    formState: { errors },
+    getValues,
+  } = methods;
   const favGenres = watch("favGenres");
   const languages = options(languageDataOptions);
   const conditions = options(conditionDataOptions);
@@ -61,27 +68,29 @@ export default function AddBook() {
       languageOptions={languages}
       conditionOptions={conditions}
     />,
-    <OtherDetailsStep errors={errors} />,
+    <OtherDetailsStep errors={errors} getValues={getValues} setValue={setValue} />,
     <ConditionsStep />,
   ];
-
 
   const handleNext = async () => {
     const valid = await trigger();
     if (valid) {
-      setSteps((prevStep) => prevStep.map((step, index) =>{
-        if(index === active){
-          return {...step, isActive: false, isCompleted: true }
-        }else if(index === active + 1){
-          return {...step, isActive: true}
-        }
-        return step
-      }))
+      setSteps((prevStep) =>
+        prevStep.map((step, index) => {
+          if (index === active) {
+            return { ...step, isActive: false, isCompleted: true };
+          } else if (index === active + 1) {
+            return { ...step, isActive: true };
+          }
+          return step;
+        })
+      );
       setActive((prev) => prev + 1);
     }
   };
 
-console.log(getValues('favGenres'))
+  
+
   const loading = () => {
     if (languageLoading) return true;
     if (conditionLoading) return true;
@@ -91,7 +100,6 @@ console.log(getValues('favGenres'))
   return (
     <div>
       {/* {isLoading && <Spinner />} */}
-      
 
       <div className="fixed left-0 top-0 w-full h-[48px] flex items-center justify-between px-4 border-b border-[#E4E4E4] bg-light z-30 ">
         <div className="flex items-center justify-center w-full relative">

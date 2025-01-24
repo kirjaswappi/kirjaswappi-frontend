@@ -14,5 +14,10 @@ const otherDetails = yup.object().shape({
     .min(1, "Please select at least one genre.")
     .required("Genres are required."),
 });
+const conditionDetails = yup.object().shape({
+  conditionType: yup.string().required("Condition type is required"),
+  
+});
 
-export const validationSchemas = [bookDetails, otherDetails];
+
+export const validationSchemas = [bookDetails, otherDetails, conditionDetails];
