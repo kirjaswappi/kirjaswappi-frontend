@@ -1,7 +1,7 @@
+import { Noop, RefCallBack } from "react-hook-form";
+
 interface IRadio {
-    value: string;
-    onChange?: () => void;
-    className?: string;
+  value: string | undefined; onChange: (event: any) => void; onBlur: Noop; name: string; ref: RefCallBack
 }
 export default function Radio({value, onChange}: IRadio) {
   return (

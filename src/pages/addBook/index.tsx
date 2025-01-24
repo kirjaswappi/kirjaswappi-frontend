@@ -69,9 +69,9 @@ export default function AddBook() {
       conditionOptions={conditions}
     />,
     <OtherDetailsStep errors={errors} getValues={getValues} setValue={setValue} />,
-    <ConditionsStep />,
+    <ConditionsStep watch={watch} />,
   ];
-
+console.log(errors)
   const handleNext = async () => {
     const valid = await trigger();
     if (valid) {

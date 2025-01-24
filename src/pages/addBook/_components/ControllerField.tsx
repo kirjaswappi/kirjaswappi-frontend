@@ -13,7 +13,7 @@ interface ControlledInputFieldProps {
     label: string;
     value: string;
   }[],
-  inputType?: string
+  radioOptions?: any
 }
 
 const ControlledInputField: React.FC<ControlledInputFieldProps> = ({
@@ -21,8 +21,8 @@ const ControlledInputField: React.FC<ControlledInputFieldProps> = ({
   type = "input",
   placeholder,
   className,
-  options, 
-  inputType
+  options,
+  radioOptions
 }) => {
   const { control } = useFormContext();
 
@@ -44,7 +44,21 @@ const ControlledInputField: React.FC<ControlledInputFieldProps> = ({
                       className={className}
                       showErrorMessage={!!error}
                     />
-                  ) : (
+                  ) : type === "radio" && radioOptions ? (
+                    <div>
+                      {radioOptions.map((radio:{value: string; label: string}) => (
+                        <label key={radio.value} style={{ marginRight: "16px" }}>
+                          <input
+                            type="radio"
+                            value={radio.value}
+                            checked={field.value === radio.value} 
+                            onChange={(e) => field.onChange(e.target.value)}
+                          />
+                          {radio.label}
+                        </label>
+                      ))}
+                      {error && <p style={{ color: "red", fontSize: "12px" }}>{error.message}</p>}
+                    </div>) :  (
                     <TextArea
                       {...field}
                       placeholder={placeholder}

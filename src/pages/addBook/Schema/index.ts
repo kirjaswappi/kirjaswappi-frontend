@@ -5,19 +5,32 @@ const bookDetails = yup.object().shape({
   author: yup.string().required("Author name is required"),
   description: yup.string().required("Description is required"),
   language: yup.string().required("Language is required"),
-  condition: yup.string().required("Condition is required")
+  condition: yup.string().required("Condition is required"),
 });
 
 const otherDetails = yup.object().shape({
-  favGenres: yup.array()
+  favGenres: yup
+    .array()
     .of(yup.string())
     .min(1, "Please select at least one genre.")
     .required("Genres are required."),
 });
 const conditionDetails = yup.object().shape({
   conditionType: yup.string().required("Condition type is required"),
-  
+  bookTitle: yup.string().when("conditionType", {
+    is: "byBook",
+    then: () => yup.string().required("Book title is required"),
+  }),
+  authorName: yup.string().when("conditionType", {
+    is: "byBook",
+    then: () => yup.string().required("Author name is required"),
+  }),
+  favGenres: yup.array()
+  .of(yup.string())
+  .when("conditionType", {
+    is: "byGenre",
+    then: (schema) => yup.array().required("is required")
+  }),
 });
-
 
 export const validationSchemas = [bookDetails, otherDetails, conditionDetails];
