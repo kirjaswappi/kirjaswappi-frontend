@@ -1,8 +1,7 @@
-import Radio from "../../../components/shared/Radio";
 import { radioOptions } from "../constant";
 import ControlledInputField from "./ControllerField";
 
-export default function ConditionsStep({watch}) {
+export default function ConditionsStep() {
 
   return (
     <div>

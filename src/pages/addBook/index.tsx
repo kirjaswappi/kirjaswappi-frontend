@@ -69,7 +69,7 @@ export default function AddBook() {
       conditionOptions={conditions}
     />,
     <OtherDetailsStep errors={errors} getValues={getValues} setValue={setValue} />,
-    <ConditionsStep watch={watch} />,
+    <ConditionsStep  />,
   ];
 console.log(errors)
   const handleNext = async () => {
@@ -128,7 +128,7 @@ console.log(errors)
             />
             {content[active]}
             <div className="mt-4 flex justify-between">
-              {active < 2 ? (
+              {active < 1 ? (
                 <Button
                   type="button"
                   onClick={handleNext}

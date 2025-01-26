@@ -3,13 +3,12 @@ import Image from "../../../components/shared/Image";
 import { setOpen } from "../../../redux/feature/open/openSlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import closeIcon from "../../../assets/close.svg";
+import { FieldErrors, UseFormGetValues, UseFormSetValue } from "react-hook-form";
 export default function OtherDetailsStep({
   errors,
   getValues,
   setValue,
-}: {
-  errors: any;
-}) {
+}: { errors: FieldErrors<any>; getValues: UseFormGetValues<any>; setValue: UseFormSetValue<any>; }) {
   const { open } = useAppSelector((state) => state.open);
   const dispatch = useAppDispatch();
   console.log(getValues("favGenres"));
