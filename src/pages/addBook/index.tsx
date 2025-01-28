@@ -33,6 +33,7 @@ export default function AddBook() {
     mode: "onBlur",
     defaultValues: {
       favGenres: [],
+      conditionType: "byBook"
     },
   });
   const {
@@ -69,9 +70,9 @@ export default function AddBook() {
       conditionOptions={conditions}
     />,
     <OtherDetailsStep errors={errors} getValues={getValues} setValue={setValue} />,
-    <ConditionsStep  />,
+    <ConditionsStep watch={watch}  />,
   ];
-console.log(errors)
+  
   const handleNext = async () => {
     const valid = await trigger();
     if (valid) {
@@ -128,7 +129,7 @@ console.log(errors)
             />
             {content[active]}
             <div className="mt-4 flex justify-between">
-              {active < 1 ? (
+              {active < 2 ? (
                 <Button
                   type="button"
                   onClick={handleNext}

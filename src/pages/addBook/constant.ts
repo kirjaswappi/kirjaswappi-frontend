@@ -5,8 +5,3 @@ export const options = [
     { value: "acceptable", label: "Used - Acceptable" },
   ];
 
- export const radioOptions = [
-    { label: "Open to Offer", value: "openToOffer" },
-    { label: "By Book", value: "byBook" },
-    { label: "By Genre", value: "byGenre" },
-  ];
