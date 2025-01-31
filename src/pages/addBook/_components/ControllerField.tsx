@@ -51,24 +51,7 @@ const ControlledInputField: React.FC<ControlledInputFieldProps> = ({
               className={className}
               showErrorMessage={!!error}
             />
-          ) : type === "radio" ? (
-            <div>
-              <label key={radioValue} className="flex flex-row gap-2">
-                <input
-                  type="radio"
-                  value={radioValue}
-                  checked={field.value === radioValue}
-                  onChange={(e) => field.onChange(e.target.value)}
-                />
-                {radioLabel}
-              </label>
-              {error && (
-                <p style={{ color: "red", fontSize: "12px" }}>
-                  {error.message}
-                </p>
-              )}
-            </div>
-          ) : (
+          ) :  (
             <TextArea
               {...field}
               placeholder={placeholder}

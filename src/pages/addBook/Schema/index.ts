@@ -1,7 +1,7 @@
 import * as yup from "yup";
 
 const bookDetails = yup.object().shape({
-  title: yup.string().min(20).required("Book title is required"),
+  title: yup.string().min(10).required("Book title is required"),
   author: yup.string().required("Author name is required"),
   description: yup.string().required("Description is required"),
   language: yup.string().required("Language is required"),
@@ -20,6 +20,7 @@ const conditionDetails = yup.object().shape({
   bookTitle: yup.string().when("conditionType", {
     is: "byBook",
     then: () => yup.string().required("Book title is required"),
+    otherwise: (schema) => schema.nullable().notRequired(),
   }),
   authorName: yup.string().when("conditionType", {
     is: "byBook",
@@ -28,7 +29,8 @@ const conditionDetails = yup.object().shape({
   favGenres: yup.array()
   .of(yup.string()).when("conditionType", {
     is:"byGenre",
-    then: () => yup.array().min(1, "Please select at least one genre.").required("sd"),
+    then: () => yup.array().min(1, "Please select at least one genre.").required("Please select at least one genre."),
+    
   })
 });
 

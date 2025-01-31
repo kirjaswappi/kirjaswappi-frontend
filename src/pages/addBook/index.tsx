@@ -30,7 +30,7 @@ export default function AddBook() {
 
   const methods = useForm({
     resolver: yupResolver(validationSchemas[active] as yup.ObjectSchema<any>),
-    mode: "onBlur",
+    mode: "onSubmit",
     defaultValues: {
       favGenres: [],
       conditionType: "byBook"
@@ -72,7 +72,7 @@ export default function AddBook() {
     <OtherDetailsStep errors={errors} getValues={getValues} setValue={setValue} />,
     <ConditionsStep watch={watch}  />,
   ];
-  
+  console.log(errors)
   const handleNext = async () => {
     const valid = await trigger();
     if (valid) {
@@ -89,7 +89,21 @@ export default function AddBook() {
       setActive((prev) => prev + 1);
     }
   };
-
+  const handleBack = () => {
+    if (active > 0) {
+      setSteps((prevSteps) =>
+        prevSteps.map((step, index) => {
+          if (index === active) {
+            return { ...step, isActive: false, isCompleted: false };
+          } else if (index === active - 1) {
+            return { ...step, isActive: true, isCompleted: false };
+          }
+          return step;
+        })
+      );
+      setActive((prev) => prev - 1);
+    }
+  };
   
 
   const loading = () => {
@@ -101,7 +115,11 @@ export default function AddBook() {
   return (
     <div>
       {/* {isLoading && <Spinner />} */}
-
+      <AddGenre
+              genresValue={favGenres}
+              setEditValuesChanged={() => console.log("Genres updated")}
+              setValue={setValue}
+            />
       <div className="fixed left-0 top-0 w-full h-[48px] flex items-center justify-between px-4 border-b border-[#E4E4E4] bg-light z-30 ">
         <div className="flex items-center justify-center w-full relative">
           <div
@@ -122,13 +140,17 @@ export default function AddBook() {
         </div>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit((data) => console.log(data))}>
-            <AddGenre
-              genresValue={favGenres}
-              setEditValuesChanged={() => console.log("Genres updated")}
-              setValue={setValue}
-            />
+            
             {content[active]}
             <div className="mt-4 flex justify-between">
+            {active >= 1 && <button
+            type="button"
+            className="px-4 py-2 bg-gray-300 rounded-md"
+            onClick={handleBack}
+            disabled={active === 0}
+          >
+            Back
+          </button>}
               {active < 2 ? (
                 <Button
                   type="button"
