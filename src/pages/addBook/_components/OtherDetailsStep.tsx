@@ -3,14 +3,11 @@ import Image from "../../../components/shared/Image";
 import { setOpen } from "../../../redux/feature/open/openSlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import closeIcon from "../../../assets/close.svg";
-import { FieldErrors, UseFormGetValues, UseFormSetValue } from "react-hook-form";
-export default function OtherDetailsStep({
-  errors,
-  getValues,
-  setValue,
-}: { errors: FieldErrors<any>; getValues: UseFormGetValues<any>; setValue: UseFormSetValue<any>; }) {
+import { useFormContext } from "react-hook-form";
+export default function OtherDetailsStep({errors}:{errors: any}) {
   const { open } = useAppSelector((state) => state.open);
   const dispatch = useAppDispatch();
+  const {  getValues,  setValue } = useFormContext();
   const favGenres = getValues("favGenres");
   const handleRemoveGenre = (genreValue: string) => {
     if (!genreValue) return;
@@ -28,6 +25,7 @@ export default function OtherDetailsStep({
             Genre
           </h1>
           <button
+          type="button"
             onClick={() => dispatch(setOpen(!open))}
             className="text-[#3879E9] font-poppins font-medium text-sm leading-none underline"
           >

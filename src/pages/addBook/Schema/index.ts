@@ -29,9 +29,9 @@ const conditionDetails = yup.object().shape({
   favGenres: yup.array()
   .of(yup.string()).when("conditionType", {
     is:"byGenre",
-    then: () => yup.array().min(1, "Please select at least one genre.").required("Please select at least one genre."),
+    then: () => yup.array().min(1, "Please select at least one genre."),
     
   })
 });
 
-export const validationSchemas = [bookDetails,otherDetails, conditionDetails];
+export const validationSchemas = [bookDetails, otherDetails, conditionDetails];

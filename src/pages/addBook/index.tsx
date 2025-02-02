@@ -30,10 +30,10 @@ export default function AddBook() {
 
   const methods = useForm({
     resolver: yupResolver(validationSchemas[active] as yup.ObjectSchema<any>),
-    mode: "onSubmit",
+    mode: "onChange",
     defaultValues: {
       favGenres: [],
-      conditionType: "byBook"
+      conditionType: "byBook",
     },
   });
   const {
@@ -42,11 +42,11 @@ export default function AddBook() {
     watch,
     setValue,
     formState: { errors },
-    getValues,
   } = methods;
   const favGenres = watch("favGenres");
   const languages = options(languageDataOptions);
   const conditions = options(conditionDataOptions);
+
   const [steps, setSteps] = useState([
     {
       label: "Book Details",
@@ -64,15 +64,6 @@ export default function AddBook() {
       isActive: false,
     },
   ]);
-  const content = [
-    <BookDetailsStep
-      languageOptions={languages}
-      conditionOptions={conditions}
-    />,
-    <OtherDetailsStep errors={errors} getValues={getValues} setValue={setValue} />,
-    <ConditionsStep watch={watch}  />,
-  ];
-  console.log(errors)
   const handleNext = async () => {
     const valid = await trigger();
     if (valid) {
@@ -89,22 +80,21 @@ export default function AddBook() {
       setActive((prev) => prev + 1);
     }
   };
-  const handleBack = () => {
-    if (active > 0) {
-      setSteps((prevSteps) =>
-        prevSteps.map((step, index) => {
-          if (index === active) {
-            return { ...step, isActive: false, isCompleted: false };
-          } else if (index === active - 1) {
-            return { ...step, isActive: true, isCompleted: false };
-          }
-          return step;
-        })
-      );
-      setActive((prev) => prev - 1);
-    }
-  };
-  
+  // const handleBack = () => {
+  //   if (active > 0) {
+  //     setSteps((prevSteps) =>
+  //       prevSteps.map((step, index) => {
+  //         if (index === active) {
+  //           return { ...step, isActive: false, isCompleted: false };
+  //         } else if (index === active - 1) {
+  //           return { ...step, isActive: true, isCompleted: false };
+  //         }
+  //         return step;
+  //       })
+  //     );
+  //     setActive((prev) => prev - 1);
+  //   }
+  // };
 
   const loading = () => {
     if (languageLoading) return true;
@@ -116,10 +106,11 @@ export default function AddBook() {
     <div>
       {/* {isLoading && <Spinner />} */}
       <AddGenre
-              genresValue={favGenres}
-              setEditValuesChanged={() => console.log("Genres updated")}
-              setValue={setValue}
-            />
+        genresValue={favGenres}
+        setEditValuesChanged={() => console.log("Genres updated")}
+        setValue={setValue}
+        trigger={trigger}
+      />
       <div className="fixed left-0 top-0 w-full h-[48px] flex items-center justify-between px-4 border-b border-[#E4E4E4] bg-light z-30 ">
         <div className="flex items-center justify-center w-full relative">
           <div
@@ -133,40 +124,36 @@ export default function AddBook() {
           </h3>
         </div>
       </div>
-
       <div className="container">
         <div className="pt-16 border-b border-[#E4E4E4] pb-4">
           <Stepper steps={steps} />
         </div>
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit((data) => console.log(data))}>
-            
-            {content[active]}
+          <form onSubmit={handleSubmit((data) => console.log({data}))}>
+            {active === 0 && (
+              <BookDetailsStep
+                languageOptions={languages}
+                conditionOptions={conditions}
+              />
+            )}
+            {active === 1 && <OtherDetailsStep errors={errors} />}
+            {active === 2 && <ConditionsStep errors={errors} />}
             <div className="mt-4 flex justify-between">
-            {active >= 1 && <button
-            type="button"
-            className="px-4 py-2 bg-gray-300 rounded-md"
-            onClick={handleBack}
-            disabled={active === 0}
-          >
-            Back
-          </button>}
-              {active < 2 ? (
-                <Button
-                  type="button"
-                  onClick={handleNext}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-md"
-                >
-                  Next
-                </Button>
-              ) : (
-                <Button
+              {active <= 1 && <Button
+                onClick={handleNext}
+                type="button"
+                className="bg-primary text-white w-full py-4 rounded-lg"
+              >
+                Next
+              </Button>}
+              {
+                  active === 2 && <Button
                   type="submit"
-                  className="px-4 py-2 bg-green-500 text-white rounded-md"
+                  className="bg-primary text-white w-full py-4 rounded-lg"
                 >
-                  Submit
+                  Confirm
                 </Button>
-              )}
+                }
             </div>
           </form>
         </FormProvider>

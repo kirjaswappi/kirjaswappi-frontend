@@ -11,11 +11,13 @@ import Loader from "./Loader";
 export default function AddGenre({
     setEditValuesChanged,
     genresValue,
-    setValue
+    setValue,
+    trigger
 }: {
     setEditValuesChanged: React.Dispatch<SetStateAction<boolean>>;
     genresValue: string[];
-    setValue?: any
+    setValue?: any;
+    trigger?: any
 }) {
     const { data, isLoading } = useGetGenreQuery(undefined);
 
@@ -24,6 +26,7 @@ export default function AddGenre({
             const updatedGenres = [...genresValue, genreValue];
             setValue("favGenres", updatedGenres); 
             setEditValuesChanged(true)
+            trigger("favGenres")
           }
     };
     if (isLoading) return <Loader />;
