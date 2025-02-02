@@ -14,6 +14,10 @@ const otherDetails = yup.object().shape({
     .of(yup.string())
     .min(1, "Please select at least one genre.")
     .required("Genres are required."),
+  bookCover: yup.mixed().test("required", "Book Cover is required.", (file) =>{
+    if(file) return true
+    return false
+  })
 });
 const conditionDetails = yup.object().shape({
   conditionType: yup.string().required("Condition type is required"),
