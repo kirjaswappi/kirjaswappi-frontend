@@ -14,7 +14,7 @@ interface IBookDetailsProps {
 export default function BookDetailsStep({languageOptions, conditionOptions}: IBookDetailsProps) {
   return (
     <div>
-      <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
+      <div className="mt-4 pb-4 border-b border-platinumDark">
         <InputLabel label="Book Title" required />
         <ControlledInputField
           name="title"
@@ -22,7 +22,7 @@ export default function BookDetailsStep({languageOptions, conditionOptions}: IBo
           className="rounded-md"
         />
       </div>
-      <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
+      <div className="mt-4 pb-4 border-b border-platinumDark">
         <InputLabel label="Author Name" />
         <ControlledInputField
           name="author"
@@ -30,7 +30,7 @@ export default function BookDetailsStep({languageOptions, conditionOptions}: IBo
           className="rounded-md"
         />
       </div>
-      <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
+      <div className="mt-4 pb-4 border-b border-platinumDark">
         <InputLabel label="Short Description" required />
         <ControlledInputField
         type="textarea"
@@ -39,7 +39,7 @@ export default function BookDetailsStep({languageOptions, conditionOptions}: IBo
           className="rounded-md h-[83px]"
         />
       </div>
-      <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
+      <div className="mt-4 pb-4 border-b border-platinumDark">
         <InputLabel label="Book Language" required />
         <ControlledInputField
           type="select"
@@ -48,7 +48,7 @@ export default function BookDetailsStep({languageOptions, conditionOptions}: IBo
           options={languageOptions}
         />
       </div>
-      <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
+      <div className="mt-4 pb-4 border-b border-platinumDark">
         <InputLabel label="Book Condition" />
         <ControlledInputField
           type="select"

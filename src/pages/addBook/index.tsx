@@ -111,7 +111,7 @@ export default function AddBook() {
         setValue={setValue}
         trigger={trigger}
       />
-      <div className="fixed left-0 top-0 w-full h-[48px] flex items-center justify-between px-4 border-b border-[#E4E4E4] bg-light z-30 ">
+      <div className="fixed left-0 top-0 w-full h-[48px] flex items-center justify-between px-4 border-b border-[#E4E4E4] bg-white z-30 ">
         <div className="flex items-center justify-center w-full relative">
           <div
             className="cursor-pointer w-5 absolute left-0 top-0"

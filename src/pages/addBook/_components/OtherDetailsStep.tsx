@@ -4,10 +4,11 @@ import { setOpen } from "../../../redux/feature/open/openSlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import closeIcon from "../../../assets/close.svg";
 import { useFormContext } from "react-hook-form";
-export default function OtherDetailsStep({errors}:{errors: any}) {
+import ImageFileInput from "./ImageControllerField";
+export default function OtherDetailsStep({ errors }: { errors: any }) {
   const { open } = useAppSelector((state) => state.open);
   const dispatch = useAppDispatch();
-  const {  getValues,  setValue } = useFormContext();
+  const { getValues, setValue } = useFormContext();
   const favGenres = getValues("favGenres");
   const handleRemoveGenre = (genreValue: string) => {
     if (!genreValue) return;
@@ -17,16 +18,22 @@ export default function OtherDetailsStep({errors}:{errors: any}) {
       favGenres?.filter((favGen: string) => favGen !== genreValue)
     );
   };
-  console.log(errors)
+  console.log(errors);
   return (
     <div>
       <div>
-        <div className="flex items-center justify-between py-4">
+        <div className="pt-4">
+          <h1 className="font-poppins text-sm font-medium leading-none pb-4">
+            Book Cover
+          </h1>
+          <ImageFileInput name="bookCover" />
+        </div>
+        <div className="flex items-center justify-between py-4 border-b border-platinumDark">
           <h1 className="font-poppins text-sm font-medium leading-none">
             Genre
           </h1>
           <button
-          type="button"
+            type="button"
             onClick={() => dispatch(setOpen(!open))}
             className="text-[#3879E9] font-poppins font-medium text-sm leading-none underline"
           >
@@ -51,11 +58,10 @@ export default function OtherDetailsStep({errors}:{errors: any}) {
           )}
           {errors && errors["favGenres"] && (
             <div className="text-rose-500 text-xs mt-1 pl-2">
-              {errors["favGenres"]?.message} 
+              {errors["favGenres"]?.message}
             </div>
           )}
         </div>
-        
       </div>
     </div>
   );
