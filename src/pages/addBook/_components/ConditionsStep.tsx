@@ -6,6 +6,7 @@ import Image from "../../../components/shared/Image";
 import closeIcon from "../../../assets/close.svg";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { setOpen } from "../../../redux/feature/open/openSlice";
+import ImageFileInput from "./ImageControllerField";
 export default function ConditionsStep({ errors }: { errors: any }) {
   const dispatch = useAppDispatch();
   const { open } = useAppSelector((state) => state.open);
@@ -67,6 +68,12 @@ export default function ConditionsStep({ errors }: { errors: any }) {
       </div>
       {conditionType === "byBook" && (
         <div>
+          <div className="pt-4">
+          <h1 className="font-poppins text-sm font-medium leading-none pb-4">
+            Book Cover
+          </h1>
+          <ImageFileInput name="byBookCover" />
+        </div>
           <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
             <InputLabel label="Book Title" required />
             <ControlledInputField

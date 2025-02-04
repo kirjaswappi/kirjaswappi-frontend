@@ -42,7 +42,7 @@ export default function OtherDetailsStep({ errors }: { errors: any }) {
         </div>
         <div>
           {favGenres && favGenres.length > 0 && (
-            <div className="flex flex-col gap-2 pb-4">
+            <div className="flex flex-col gap-2 pt-4">
               {favGenres.map((favItem: string, index: number) => (
                 <div
                   key={index}
