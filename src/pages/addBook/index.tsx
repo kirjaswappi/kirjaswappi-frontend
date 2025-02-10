@@ -103,7 +103,7 @@ export default function AddBook() {
   };
   if (loading()) return <Loader />;
   return (
-    <div>
+    <div  className="min-h-screen">
       {/* {isLoading && <Spinner />} */}
       <AddGenre
         genresValue={favGenres}
@@ -138,7 +138,7 @@ export default function AddBook() {
             )}
             {active === 1 && <OtherDetailsStep errors={errors} />}
             {active === 2 && <ConditionsStep errors={errors} />}
-            <div className="mt-4 flex justify-between">
+            <div className="mt-4 flex justify-between pb-4">
               {active <= 1 && <Button
                 onClick={handleNext}
                 type="button"

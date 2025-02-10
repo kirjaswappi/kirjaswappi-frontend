@@ -23,7 +23,7 @@ export default function BookDetailsStep({languageOptions, conditionOptions}: IBo
         />
       </div>
       <div className="mt-4 pb-4 border-b border-platinumDark">
-        <InputLabel label="Author Name" />
+        <InputLabel label="Author Name" required />
         <ControlledInputField
           name="author"
           placeholder="Enter your author"

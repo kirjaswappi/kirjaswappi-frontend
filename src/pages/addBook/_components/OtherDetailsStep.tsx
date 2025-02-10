@@ -5,22 +5,14 @@ import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import closeIcon from "../../../assets/close.svg";
 import { useFormContext } from "react-hook-form";
 import ImageFileInput from "./ImageControllerField";
-import { useEffect, useState } from "react";
-import Modal from "../../../components/shared/Modal";
+import InputLabel from "../../../components/shared/InputLabel";
 export default function OtherDetailsStep({ errors }: { errors: any }) {
-  const [selectedColor, setSelectedColor] = useState("");
   const { open } = useAppSelector((state) => state.open);
   const dispatch = useAppDispatch();
   const { getValues, setValue } = useFormContext();
   const favGenres = getValues("favGenres");
 
-  const colors = [
-    { id: 3, color: "#7433ff" },
-    { id: 2, color: "#33c1ff" },
-    { id: 1, color: "#ff5733" },
-    // Add more colors as needed
-  ];
-
+  
   const handleRemoveGenre = (genreValue: string) => {
     if (!genreValue) return;
     const favGenres = getValues("favGenres");
@@ -30,56 +22,17 @@ export default function OtherDetailsStep({ errors }: { errors: any }) {
     );
   };
 
-  const handleColorSelect = (color: string) => {
-    setSelectedColor(color);
-  };
 
-   
-  useEffect(() => {
-    setSelectedColor(colors[0].color);
-  }, []);
+
   return (
     <div>
       <div>
         <div className="py-4 border-b border-platinumDark">
-          <h1 className="font-poppins text-sm font-medium leading-none pb-4">
-            Book Cover
-          </h1>
+          <InputLabel label="Book Cover" required />
           <ImageFileInput name="bookCover" />
         </div>
-        <div className="py-4">
-          <div className="flex items-center justify-between pb-4">
-          <h1 className="font-poppins text-sm font-medium leading-none">
-            Cover Picture
-          </h1>
-          <button type="button" className="text-primary">Change</button>
-          </div>
-          <div
-            style={{
-              background: selectedColor,
-            }}
-            className="h-[124px] w-full rounded-lg"
-          ></div>
-          
-          {/* {colors.map(({color}) => (
-        <div
-          key={color}
-          style={{
-            background: color
-          }}
-          className={`relative w-16 h-16 rounded-full cursor-pointer flex items-center justify-center ${
-            selectedColor === color ? "ring-4 ring-white" : ""
-          }`}
-          onClick={() => handleColorSelect(color)}
-        >
-         
-        </div>
-      ))} */}
-        </div>
         <div className="flex items-center justify-between py-4 border-b border-platinumDark">
-          <h1 className="font-poppins text-sm font-medium leading-none">
-            Genre
-          </h1>
+          <InputLabel label="Genre" required />
           <button
             type="button"
             onClick={() => dispatch(setOpen(!open))}

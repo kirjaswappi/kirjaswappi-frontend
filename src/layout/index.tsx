@@ -5,7 +5,7 @@ import SwapModal from "../components/shared/SwapModal";
 
 export default function Layout() {
     return (
-        <div className="bg-light">
+        <div className="bg-light ">
             <Header />
             <main>
                 <SwapModal/>

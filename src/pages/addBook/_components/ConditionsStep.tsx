@@ -7,6 +7,8 @@ import closeIcon from "../../../assets/close.svg";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { setOpen } from "../../../redux/feature/open/openSlice";
 import ImageFileInput from "./ImageControllerField";
+import BookIcon from "../../../assets/bookIcon.svg"
+
 export default function ConditionsStep({ errors }: { errors: any }) {
   const dispatch = useAppDispatch();
   const { open } = useAppSelector((state) => state.open);
@@ -16,7 +18,9 @@ export default function ConditionsStep({ errors }: { errors: any }) {
 
   return (
     <div>
-      <h3>Condition Type</h3>
+      <div className="pt-4">
+      <InputLabel label="Condition Type" required />
+      </div>
       <div className="flex flex-col gap-2">
         <Controller
           name="conditionType"
@@ -69,9 +73,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
       {conditionType === "byBook" && (
         <div>
           <div className="pt-4">
-          <h1 className="font-poppins text-sm font-medium leading-none pb-4">
-            Book Cover
-          </h1>
+          <InputLabel label="Book Cover" required />
           <ImageFileInput name="byBookCover" />
         </div>
           <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
@@ -83,7 +85,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
             />
           </div>
           <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
-            <InputLabel label="Author Name" />
+            <InputLabel label="Author Name" required />
             <ControlledInputField
               name="authorName"
               placeholder="Enter your author"
@@ -95,9 +97,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
       {conditionType === "byGenre" && (
         <div>
           <div className="flex items-center justify-between py-4">
-            <h1 className="font-poppins text-sm font-medium leading-none">
-              Genre
-            </h1>
+            <InputLabel label="Genre" required />
             < Button
               type="button"
               onClick={() => dispatch(setOpen(!open))}
@@ -128,6 +128,10 @@ export default function ConditionsStep({ errors }: { errors: any }) {
           )}
         </div>
       )}
+      {conditionType === "openToOffer" && (<div className="h-[200px] border-t border-[#E4E4E4] mt-4 flex flex-col items-center justify-center gap-2">
+        <Image src={BookIcon} alt="book icon" />
+        <p className="text-center font-poppins font-normal text-sm">You will receive offers<br/> of all sorts of books</p>
+      </div>)}
     </div>
   );
 }
