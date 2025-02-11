@@ -26,7 +26,7 @@ export default function AddGenre({
             const updatedGenres = [...genresValue, genreValue];
             setValue("favGenres", updatedGenres); 
             setEditValuesChanged(true)
-            trigger("favGenres")
+            if(trigger) trigger("favGenres")
           }
     };
     if (isLoading) return <Loader />;

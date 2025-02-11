@@ -232,15 +232,15 @@ export default function EditProfile() {
     }, [userInformation]);
 
     useEffect(() => {
-        if (imageData !== undefined) {
-            setPreviewProfileImage(imageData as string);
+        if (imageData?.imageUrl !== undefined) {
+            setPreviewProfileImage(imageData?.imageUrl as string);
         }else{
             setPreviewProfileImage("")
         }
     }, [imageData, isSuccess]);
     useEffect(() => {
-        if (coverImageData !== undefined) {
-            setPreviewCoverImage(coverImageData as string);
+        if (coverImageData?.imageUrl !== undefined) {
+            setPreviewCoverImage(coverImageData?.imageUrl as string);
         }else{
             setPreviewCoverImage("")
         }
@@ -265,9 +265,12 @@ export default function EditProfile() {
                 loading={deleteLoading}
             />
             <AddGenre
-                editInfo={editInfo}
-                setEditInfo={setEditInfo}
                 setEditValuesChanged={setEditValuesChanged}
+                genresValue={editInfo.favGenres}
+                setValue={(key:string, values: string[]) => setEditInfo((prev) => ({
+                    ...prev,
+                    favGenres: values ?? [],
+                }))}
             />
             <div className="fixed left-0 top-0 w-full h-[48px] flex items-center justify-between px-4 border-b border-[#E4E4E4] bg-light z-30 ">
                 <div className="flex items-center gap-2">
