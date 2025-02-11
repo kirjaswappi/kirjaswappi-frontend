@@ -10,9 +10,9 @@ import Books from "../pages/books";
 import Profile from "../pages/profile";
 import EditProfile from "../pages/profile/components/EditProfile";
 import UserProfile from "../pages/profile/components/UserProfile";
-import Authenticate from "./Aunthenticate";
+import Authenticate from "./Authenticate";
 import PrivateRoute from "./PrivateRoute";
-import AddBook from "../pages/AddBook";
+import AddBook from "../pages/addBook";
 
 const routes = createBrowserRouter([
   {

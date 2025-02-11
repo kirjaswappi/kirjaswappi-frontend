@@ -33,7 +33,8 @@ export default {
         night:"#363739",
         gray:"#CCCCCC",
         grayDark:"#808080",
-        platinum:'#E6E6E6'
+        platinum:'#E6E6E6',
+        platinumDark:'#E4E4E4'
       },
       fontSize:{
         sx:"10px"
