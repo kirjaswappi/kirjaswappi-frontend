@@ -1,4 +1,4 @@
-import home from "../assets/material-symbols_book-outline.svg";
+import home from "../assets/bookIcon.svg";
 import message from "../assets/message.svg";
 import profile from "../assets/profile.svg";
 import map from "../assets/uiw_map.svg";
