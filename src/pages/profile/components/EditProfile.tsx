@@ -267,7 +267,7 @@ export default function EditProfile() {
             <AddGenre
                 setEditValuesChanged={setEditValuesChanged}
                 genresValue={editInfo.favGenres}
-                setValue={(key:string, values: string[]) => setEditInfo((prev) => ({
+                setValue={(_key:string, values: string[]) => setEditInfo((prev) => ({
                     ...prev,
                     favGenres: values ?? [],
                 }))}
