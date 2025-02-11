@@ -3,7 +3,7 @@ import Input from "../../../components/shared/Input";
 import TextArea from "../../../components/shared/TextArea";
 import Select from "../../../components/shared/Select";
 
-export default function BookDetailsStep({errors, addBookInfo, handleChange, validateInput}) {
+export default function BookDetailsStep({errors, addBookInfo, handleChange, validateInput}: any) {
   console.log('editInfo', addBookInfo)
   return (
     <div>

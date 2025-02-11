@@ -1,18 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import leftArrowIcon from "../../assets/leftArrow.png";
 import AddGenre from "../../components/shared/AddGenre";
 import Button from "../../components/shared/Button";
 import Image from "../../components/shared/Image";
 import Loader from "../../components/shared/Loader";
-import Spinner from "../../components/shared/Spinner";
-import { useImageUpload } from "../../hooks/useImageUpload";
 import {
-  useAddBookMutation,
   useGetSupportConditionQuery,
   useGetSupportLanguageQuery
 } from "../../redux/feature/book/bookApi";
-import {  useAppSelector } from "../../redux/hooks";
 import Stepper from "./_components/Stepper";
 import BookDetailsStep from "./_components/BookDetailsStep";
 import OtherDetailsStep from "./_components/OtherDetailsStep";
@@ -30,15 +26,15 @@ interface IAddBookInterface {
 export default function AddBook() {
   const navigate = useNavigate();
 //   const dispatch = useAppDispatch();
-  const [addBook, { isLoading }] = useAddBookMutation();
-  const { data: languageDataOptions, isLoading: languageLoading } =
+  // const [addBook, { isLoading }] = useAddBookMutation();
+  const { isLoading: languageLoading } =
     useGetSupportLanguageQuery(undefined);
-  const { data: conditionDataOptions, isLoading: conditionLoading } =
+  const { isLoading: conditionLoading } =
     useGetSupportConditionQuery(undefined);
-  const {
-    userInformation: { id }
-  } = useAppSelector((state) => state.auth);
-  const bookPicture = useRef<HTMLInputElement | null>(null);
+  // const {
+  //   userInformation: { id }
+  // } = useAppSelector((state) => state.auth);
+  // const bookPicture = useRef<HTMLInputElement | null>(null);
 //   const { open } = useAppSelector((state) => state.open);
   const [isEditValuesChanged, setEditValuesChanged] = useState<boolean>(false);
   const [errors, setErrors] = useState<{
@@ -54,7 +50,7 @@ export default function AddBook() {
     favGenres: []
   });
   const [active, setActive] = useState<number>(0)
-
+console.log(isEditValuesChanged, setActive )
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -95,30 +91,6 @@ export default function AddBook() {
       return stateObj;
     });
   };
-// console.log(errors)
-
-  
-  const {
-    handleImageFile: uploadImageImageHandler,
-    previewImage,
-    imageFile: bookFile,
-    error,
-    setError
-  } = useImageUpload();
-//   const handleRemoveGenre = (genreValue: string) => {
-//     setAddBookInfo((prev) => ({
-//       ...prev,
-//       favGenres: prev?.favGenres?.filter((favGen) => favGen !== genreValue)
-//     }));
-//     setEditValuesChanged(true);
-//   };
-
-  
-//   const handleClick = () => {
-//     if (bookPicture.current) {
-//       bookPicture.current.click();
-//     }
-//   };
 
   // Handle submit
   const handleSaveFn = () => {
@@ -170,17 +142,17 @@ export default function AddBook() {
       setErrors((prev) => ({ ...prev, genres: null }));
   }, [addBookInfo.favGenres]);
 
-  const options = (options: string[]) => {
-    if (options && options?.length > 0) {
-      const option = options?.map((item: string) => {
-        return { label: item, value: item };
-      });
-      return option;
-    }
-  };
-  const languages = options(languageDataOptions);
-  const conditions = options(conditionDataOptions);
-  const isSaveActive: boolean = isEditValuesChanged || !!bookFile;
+  // const options = (options: string[]) => {
+  //   if (options && options?.length > 0) {
+  //     const option = options?.map((item: string) => {
+  //       return { label: item, value: item };
+  //     });
+  //     return option;
+  //   }
+  // };
+  // const languages = options(languageDataOptions);
+  // const conditions = options(conditionDataOptions);
+  // const isSaveActive: boolean = isEditValuesChanged || !!bookFile;
 
   const loading = () => {
     if (languageLoading) return true;
@@ -191,7 +163,7 @@ export default function AddBook() {
   if (loading()) return <Loader />;
   return (
     <div>
-      {isLoading && <Spinner />}
+      {/* {isLoading && <Spinner />} */}
       <AddGenre
         editInfo={addBookInfo}
         setEditInfo={setAddBookInfo}
