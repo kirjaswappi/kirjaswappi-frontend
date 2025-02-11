@@ -5,6 +5,61 @@ let isAuthenticating = false;
 let pendingAuthPromise: Promise<any> | null = null;
 
 
+const fetchToken = async () => {
+    const data = JSON.stringify({
+        username: "user",
+        password: "mak12345",
+    });
+    const response = await fetch(`${import.meta.env.VITE_REACT_MAIN_API}/authenticate`, {
+        method: "POST",
+        body: data,
+        headers: { "Content-Type": "application/json" },
+    });
+    const { jwtToken, refreshToken } = await response.json();
+    setCookie("jwtToken", jwtToken, 200); // 1 hour
+    setCookie("refreshToken", refreshToken, 100); // 2 hours
+    return jwtToken;
+};
+
+
+const refreshAuthToken = async () => {
+    const refreshToken = getCookie("refreshToken");
+    if (!refreshToken || isCookieExpired("refreshToken")) {
+        return fetchToken();
+    }
+
+    const response = await fetch(`${import.meta.env.VITE_REACT_MAIN_API}/authenticate/refresh`, {
+        method: "POST",
+        body: JSON.stringify({ refreshToken }),
+        headers: { "Content-Type": "application/json" },
+    });
+    const data = await response.json();
+    setCookie("jwtToken", data.jwtToken, 100); // 1 hour
+    return data.jwtToken;
+};
+
+const getToken = async () => {
+    let token = getCookie("jwtToken");
+
+    if (!token || isCookieExpired("jwtToken")) {
+        if (!isAuthenticating) {
+            isAuthenticating = true;
+            pendingAuthPromise = (async () => {
+                try {
+                    return token ? await refreshAuthToken() : await fetchToken();
+                } catch (error) {
+                    console.error("Authentication error:", error);
+                } finally {
+                    isAuthenticating = false;
+                    pendingAuthPromise = null;
+                }
+            })();
+        }
+        token = await pendingAuthPromise;
+    }
+
+    return token;
+};
 
 export const api = createApi({
     reducerPath: "api",
@@ -13,108 +68,9 @@ export const api = createApi({
         prepareHeaders: async (headers, { endpoint }) => {
             if (endpoint === "authenticate") return headers;
 
-            let token = getCookie("jwtToken");
-            console.log("get jwt token -> ", isCookieExpired("jwtToken"))
-            if (!token || isCookieExpired("jwtToken")) {
-                if (!isAuthenticating) {
-                    isAuthenticating = true;
-                    pendingAuthPromise = (async () => {
-                        try {
-                            if (!token) {
-                                const data = JSON.stringify({
-                                    username: "user",
-                                    password: "mak12345",
-                                });
-                                const resp = await fetch(
-                                    `${
-                                        import.meta.env.VITE_REACT_MAIN_API
-                                    }/authenticate`,
-                                    {
-                                        method: "POST",
-                                        body: data,
-                                        headers: {
-                                            "Content-Type": "application/json",
-                                        },
-                                    }
-                                );
-                                const { jwtToken, refreshToken } = await resp.json();
-                                setCookie("jwtToken", jwtToken, 100); // 1 hour
-                                setCookie("refreshToken", refreshToken, 200); // 2 hour
-                                return jwtToken
-                            } else{
-                                console.log('insert in refresh token logic')
-                                const refreshToken = getCookie("refreshToken");
-                                const res = await fetch(
-                                    `${import.meta.env.VITE_REACT_MAIN_API}/authenticate/refresh`,
-                                    {
-                                        method: "POST",
-                                        body: JSON.stringify({ refreshToken }),
-                                        headers: { "Content-Type": "application/json" },
-                                    }
-                                );
-                                const data = await res.json();
-                                setCookie("jwtToken", data.jwtToken, 100);
-                                return data.jwtToken;
-                            }
-                        } catch (error) {
-                            console.log("Authenticate error", error)
-                            
-                        } finally{
-                            isAuthenticating = false
-                            pendingAuthPromise = null
-                        }
-                    })();
-                }
-                token = await pendingAuthPromise;
-            }
-            // if (!token) {
-            //     console.dir("insert in token")
-            //     const data = JSON.stringify({
-            //         username: "user",
-            //         password: "mak12345",
-            //     });
-            //     await fetch(
-            //         `${import.meta.env.VITE_REACT_MAIN_API}/authenticate`,
-            //         {
-            //             method: "POST",
-            //             body: data,
-            //             headers: { "Content-Type": "application/json" },
-            //         }
-            //     )
-            //         .then((res) => res.json())
-            //         .then((data) => {
-            //             const { jwtToken, refreshToken } = data;
-            //             token = jwtToken;
-            //             setCookie("jwtToken", jwtToken, 60); // 1 hour
-            //             setCookie("refreshToken", refreshToken, 120); // 2 hour
-            //         })
-            //         .catch((error) =>
-            //             console.dir("authenticate error ->", error)
-            //         );
-            // }
-            // else if (token && isCookieExpired('jwtToken')) {
-            //     console.dir("insert in refresh token")
-            //     const refreshToken = getCookie("refreshToken");
-            //     await fetch(
-            //         `${
-            //             import.meta.env.VITE_REACT_MAIN_API
-            //         }/authenticate/refresh`,
+            const token = await getToken();
+            if (token) headers.set("Authorization", `Bearer ${token}`);
 
-            //         {
-            //             method: "POST",
-            //             body: JSON.stringify({ refreshToken }),
-            //             headers: { "Content-Type": "application/json" },
-            //         }
-            //     )
-            //         .then((res) => res.json())
-            //         .then((data) => {
-            //             setCookie("jwtToken", data?.jwtToken, EXPIRE_TIME);
-            //             token = data?.jwtToken;
-            //         });
-            // }
-            if (token) {
-                headers.set("Authorization", `Bearer ${token}`);
-            }
             return headers;
         },
     }),
