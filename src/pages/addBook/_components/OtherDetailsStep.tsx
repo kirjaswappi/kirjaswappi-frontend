@@ -63,7 +63,7 @@ export default function OtherDetailsStep({ errors }: { errors: any }) {
           )}
           {errors && errors["favGenres"] && (
             <div className="text-rose-500 text-xs mt-1 pl-2">
-              {errors["favGenres"]?.message}
+              {errors["favGenres"]?.message} 
             </div>
           )}
         </div>
