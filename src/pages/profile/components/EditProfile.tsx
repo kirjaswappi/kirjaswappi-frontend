@@ -413,7 +413,7 @@ export default function EditProfile() {
                             <Image
                                 src={editCoverImage}
                                 alt="edit"
-                                className="w-full h-full bg-cover"
+                                className="w-full h-full object-cover"
                             />
                         )}
                     </div>
