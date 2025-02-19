@@ -47,15 +47,15 @@ export default function UserProfile() {
             <Settings />
             <div className="w-full h-[124px] z-0">
                 {coverImage === undefined ? (
-                    <Image src={bookDetailsBg} className="w-full h-full" />
+                    <Image src={bookDetailsBg} className="w-full h-full " />
                 ) : (
                     <Image
                         src={coverImage?.imageUrl as string}
-                        className="w-full h-full"
+                        className="w-full h-full object-cover"
                     />
                 )}
             </div>
-            <div className="absolute top-4/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] rounded-full  bg-white">
+            <div className="absolute top-4/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] rounded-full bg-white">
                 {isLoading ? (
                     <div className="w-full h-full bg-platinum animate-pulse rounded-full shadow-sm"></div>
                 ) : (
@@ -82,7 +82,7 @@ export default function UserProfile() {
                     <h1 className="font-medium text-black text-sm leading-none mb-2 font-poppins">
                         {firstName + " " + lastName}
                     </h1>
-                    <div className="flex items-center justify-center">
+                    <div className="flex items-center justify-center flex-wrap">
                         {favGenres?.map((favItem, index) => (
                             <div key={index} className="flex items-center">
                                 <p className="text-black font-light text-xs font-poppins">
