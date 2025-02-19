@@ -50,7 +50,7 @@ export default function UserProfile() {
                     <Image src={bookDetailsBg} className="w-full h-full" />
                 ) : (
                     <Image
-                        src={coverImage as string}
+                        src={coverImage?.imageUrl as string}
                         className="w-full h-full"
                     />
                 )}
