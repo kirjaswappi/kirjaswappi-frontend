@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import leftArrowIcon from "../../assets/leftArrow.png";
 import Image from "../../components/shared/Image";
 import Loader from "../../components/shared/Loader";
@@ -20,8 +20,9 @@ import AddGenre from "../../components/shared/AddGenre";
 import Button from "../../components/shared/Button";
 import ConditionsStep from "./_components/ConditionsStep";
 
-export default function AddBook() {
+export default function AddUpdateBook() {
   const navigate = useNavigate();
+  const {id} = useParams()
   const [active, setActive] = useState<number>(0);
   const { data: languageDataOptions, isLoading: languageLoading } =
     useGetSupportLanguageQuery(undefined);
@@ -80,6 +81,7 @@ export default function AddBook() {
       setActive((prev) => prev + 1);
     }
   };
+  console.log({id})
   // const handleBack = () => {
   //   if (active > 0) {
   //     setSteps((prevSteps) =>
@@ -120,7 +122,7 @@ export default function AddBook() {
             <Image src={leftArrowIcon} alt="left" />
           </div>
           <h3 className="font-poppins text-base font-normal text-center ">
-            Add Book
+            {id ? "Update": "Add"} Book
           </h3>
         </div>
       </div>

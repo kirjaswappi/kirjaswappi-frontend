@@ -12,6 +12,14 @@ export const bookApi = api.injectEndpoints({
             },
             invalidatesTags: ["AddBook",],
         }),
+        getBookById: builder.query({
+            query: ({id}) => {
+                return {
+                    url: `/books/${id}`,
+                    method: "GET"
+                };
+            },
+        }),
         getSupportLanguage: builder.query({
             query: () => {
                 return {
