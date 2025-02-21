@@ -32,12 +32,17 @@ export default function AddUpdateBook() {
   const {data: bookData, isLoading: bookLoading} = useGetBookByIdQuery({id: id, }, { skip: !id });
 
   const defaultValues = {
-    favGenres: [],
+    favGenres:  bookData?.genres || [],
       conditionType: "byBook",
       language: bookData?.language || "",
-      title: bookData?.title || ""
+      title: bookData?.title || "",
+      genre: bookData?.genre || [],
+      condition: bookData?.condition || '',
+      description: bookData?.description || "",
+      author: bookData?.author || "",
+      bookCover: bookData?.coverPhotoUrl || ""
   }
-  console.log({defaultValues})
+
   const methods = useForm({
     resolver: yupResolver(validationSchemas[active] as yup.ObjectSchema<any>),
     mode: "onChange",
@@ -58,10 +63,15 @@ export default function AddUpdateBook() {
   useEffect(() => {
     if (bookData) {
       reset({
-        favGenres: bookData.favGenres || [],
+        favGenres: bookData.genres || [],
         conditionType: "byBook",
         language: bookData.language || "",
-        title: bookData.title || ""
+        title: bookData.title || "",
+        genres: bookData?.genres || [],
+        condition: bookData?.condition || '',
+        description: bookData?.description || "",
+        author: bookData?.author || "",
+        bookCover: bookData?.coverPhotoUrl || ""        
       });
     }
   }, [bookData, reset]);

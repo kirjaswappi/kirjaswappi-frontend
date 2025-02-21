@@ -14,7 +14,6 @@ export const bookApi = api.injectEndpoints({
     }),
     getBookById: builder.query({
       query: ({ id }) => {
-        console.log(id);
         return {
           url: `/books/${id}`,
           method: "GET",
