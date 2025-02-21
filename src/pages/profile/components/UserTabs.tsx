@@ -12,7 +12,7 @@ export default function UserTabs() {
             content: <About />,
         },
         {
-            label: "My Library",
+            label: "Books Listed",
             content: <MyLibrary/>,
         },
         {
@@ -23,15 +23,15 @@ export default function UserTabs() {
 
     return (
         <div>
-            <div className="flex">
+            <div className="flex gap-1 sm:gap-2">
                 {tabs?.map((tab, index) => (
                     <Button
                         key={index}
                         onClick={() => setActiveTab(index)}
-                        className={` p-2 rounded-full text-sm font-poppins font-normal ${
+                        className={`px-2 sm:px-3 py-2 rounded-full text-xs font-poppins font-medium ${
                             index === activeTab
-                                ? "text-primary bg-primary-light"
-                                : "text-grayDark"
+                                ? "bg-primary text-white"
+                                : "text-grayDark border border-grayDark"
                         }`}
                     >
                         {tab.label}

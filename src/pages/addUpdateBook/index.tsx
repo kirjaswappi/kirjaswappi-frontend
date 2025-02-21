@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import leftArrowIcon from "../../assets/leftArrow.png";
 import Image from "../../components/shared/Image";
 import Loader from "../../components/shared/Loader";
 import {
+  useGetBookByIdQuery,
   useGetSupportConditionQuery,
   useGetSupportLanguageQuery,
 } from "../../redux/feature/book/bookApi";
@@ -20,33 +21,60 @@ import AddGenre from "../../components/shared/AddGenre";
 import Button from "../../components/shared/Button";
 import ConditionsStep from "./_components/ConditionsStep";
 
-export default function AddBook() {
+export default function AddUpdateBook() {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [active, setActive] = useState<number>(0);
   const { data: languageDataOptions, isLoading: languageLoading } =
     useGetSupportLanguageQuery(undefined);
   const { data: conditionDataOptions, isLoading: conditionLoading } =
     useGetSupportConditionQuery(undefined);
+  const {data: bookData, isLoading: bookLoading} = useGetBookByIdQuery({id: id, }, { skip: !id });
+
+  const defaultValues = {
+    favGenres:  bookData?.genres || [],
+      conditionType: "byBook",
+      language: bookData?.language || "",
+      title: bookData?.title || "",
+      genre: bookData?.genre || [],
+      condition: bookData?.condition || '',
+      description: bookData?.description || "",
+      author: bookData?.author || "",
+      bookCover: bookData?.coverPhotoUrl || ""
+  }
 
   const methods = useForm({
     resolver: yupResolver(validationSchemas[active] as yup.ObjectSchema<any>),
     mode: "onChange",
-    defaultValues: {
-      favGenres: [],
-      conditionType: "byBook",
-    },
+    defaultValues: defaultValues,
   });
   const {
     handleSubmit,
     trigger,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = methods;
   const favGenres = watch("favGenres");
   const languages = options(languageDataOptions);
   const conditions = options(conditionDataOptions);
 
+  useEffect(() => {
+    if (bookData) {
+      reset({
+        favGenres: bookData.genres || [],
+        conditionType: "byBook",
+        language: bookData.language || "",
+        title: bookData.title || "",
+        genres: bookData?.genres || [],
+        condition: bookData?.condition || '',
+        description: bookData?.description || "",
+        author: bookData?.author || "",
+        bookCover: bookData?.coverPhotoUrl || ""        
+      });
+    }
+  }, [bookData, reset]);
   const [steps, setSteps] = useState([
     {
       label: "Book Details",
@@ -99,11 +127,12 @@ export default function AddBook() {
   const loading = () => {
     if (languageLoading) return true;
     if (conditionLoading) return true;
+    if (bookLoading) return true
     else return false;
   };
   if (loading()) return <Loader />;
   return (
-    <div  className="min-h-screen">
+    <div className="min-h-screen">
       {/* {isLoading && <Spinner />} */}
       <AddGenre
         genresValue={favGenres}
@@ -120,7 +149,7 @@ export default function AddBook() {
             <Image src={leftArrowIcon} alt="left" />
           </div>
           <h3 className="font-poppins text-base font-normal text-center ">
-            Add Book
+            {id ? "Update" : "Add"} Book
           </h3>
         </div>
       </div>
@@ -129,7 +158,7 @@ export default function AddBook() {
           <Stepper steps={steps} />
         </div>
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit((data) => console.log({data}))}>
+          <form onSubmit={handleSubmit((data) => console.log({ data }))}>
             {active === 0 && (
               <BookDetailsStep
                 languageOptions={languages}
@@ -139,21 +168,23 @@ export default function AddBook() {
             {active === 1 && <OtherDetailsStep errors={errors} />}
             {active === 2 && <ConditionsStep errors={errors} />}
             <div className="mt-4 flex justify-between pb-4">
-              {active <= 1 && <Button
-                onClick={handleNext}
-                type="button"
-                className="bg-primary text-white w-full py-4 rounded-lg"
-              >
-                Next
-              </Button>}
-              {
-                  active === 2 && <Button
+              {active <= 1 && (
+                <Button
+                  onClick={handleNext}
+                  type="button"
+                  className="bg-primary text-white w-full py-4 rounded-lg"
+                >
+                  Next
+                </Button>
+              )}
+              {active === 2 && (
+                <Button
                   type="submit"
                   className="bg-primary text-white w-full py-4 rounded-lg"
                 >
                   Confirm
                 </Button>
-                }
+              )}
             </div>
           </form>
         </FormProvider>
