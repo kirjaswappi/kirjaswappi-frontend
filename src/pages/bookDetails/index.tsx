@@ -18,20 +18,33 @@ import Loader from "../../components/shared/Loader";
 import { useState } from "react";
 import Exchanges from "./components/Exchanges";
 import { useGetUserProfileImageQuery } from "../../redux/feature/auth/authApi";
+import SwapModal from "../../components/shared/SwapModal";
+import { useAppDispatch } from "../../redux/hooks";
+import { setSwapModal } from "../../redux/feature/open/openSlice";
+import { FormProvider, useForm } from "react-hook-form";
 export default function BookDetails() {
   const MAX_LENGTH = 95;
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [isExpanded, setIsExpanded] = useState(false);
   const isProfile = location.pathname.startsWith("/profile");
   const { data: bookData, isLoading: bookLoading } = useGetBookByIdQuery(
     { id: id },
     { skip: !id }
   );
-  const { data: userProfile } = useGetUserProfileImageQuery({userId: bookData?.owner?.id}, {
-          skip: !bookData?.owner?.id,
-      });
+  const { data: userProfile } = useGetUserProfileImageQuery(
+    { userId: bookData?.owner?.id },
+    {
+      skip: !bookData?.owner?.id,
+    }
+  );
+  const methods = useForm({
+      mode: "onChange",
+      defaultValues: { radio: "swap" },
+    });
+  const { handleSubmit } = methods;
   const handleEditOrSave = () => {
     if (isProfile) {
       navigate(`/profile/update-book/${id}`);
@@ -42,11 +55,17 @@ export default function BookDetails() {
     setIsExpanded(!isExpanded);
   };
 
-  console.log(userProfile?.imageUrl);
+  
   if (bookLoading) return <Loader />;
   goToTop();
   return (
     <div>
+      <FormProvider {...methods}>
+      <form onSubmit={handleSubmit((data) => console.log({ data }))}>
+          <SwapModal />
+        </form>
+      </FormProvider>
+        
       <div className="absolute left-0 top-0 w-full flex justify-between px-4 bg-white h-14">
         <div className="flex items-center gap-4">
           <Image
@@ -105,20 +124,19 @@ export default function BookDetails() {
             </h3>
             <p className="text-[10px] text-[#404040]">Either one of these</p>
           </div>
-          
         </div>
-          <div className="pl-4">
+        <div className="pl-4">
           <Exchanges />
-          </div>
+        </div>
         <div className="container text-left mb-5">
-            <h3 className="text-sm font-normal font-poppins text-smokyBlack mt-5 mb-2 ">
-              Book Description
-            </h3>
-            <p className="text-xs font-light font-poppins text-grayDark">
-              {isExpanded || bookData?.description?.length <= MAX_LENGTH
-                ? bookData?.description
-                : `${bookData?.description.substring(0, MAX_LENGTH)}...`}
-                {bookData?.description.length > MAX_LENGTH && (
+          <h3 className="text-sm font-normal font-poppins text-smokyBlack mt-5 mb-2 ">
+            Book Description
+          </h3>
+          <p className="text-xs font-light font-poppins text-grayDark">
+            {isExpanded || bookData?.description?.length <= MAX_LENGTH
+              ? bookData?.description
+              : `${bookData?.description.substring(0, MAX_LENGTH)}...`}
+            {bookData?.description.length > MAX_LENGTH && (
               <button
                 onClick={toggleReadMore}
                 className="text-primary ml-1 text-sm font-normal font-poppins"
@@ -126,8 +144,8 @@ export default function BookDetails() {
                 {isExpanded ? " More Less" : " More"}
               </button>
             )}
-            </p>
-          </div>
+          </p>
+        </div>
         <div className="bg-white py-6 grid grid-cols-3">
           <div className="flex flex-col items-center border-r border-platinumDark px-1">
             <p className="text-grayDark text-xs font-poppins font-light">
@@ -170,9 +188,16 @@ export default function BookDetails() {
             </h3>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1">
-                <Image className="w-4 h-4 rounded-full" src={userProfile?.imageUrl && userProfile?.imageUrl ||profileIcon} alt="profile" />
+                <Image
+                  className="w-4 h-4 rounded-full"
+                  src={
+                    (userProfile?.imageUrl && userProfile?.imageUrl) ||
+                    profileIcon
+                  }
+                  alt="profile"
+                />
                 <p className="text-xs font-normal font-poppins text-black">
-                 {bookData?.owner?.name}
+                  {bookData?.owner?.name}
                 </p>
               </div>
               <div className="flex items-center gap-1">
@@ -206,10 +231,15 @@ export default function BookDetails() {
       >
         <div>
           <p className="text-[8px] font-poppins ">Offered by</p>
-          <h3 className="text-sm font-poppins font-normal">{bookData.owner.name}</h3>
+          <h3 className="text-sm font-poppins font-normal">
+            {bookData.owner.name}
+          </h3>
         </div>
         <div>
-          <Button className="bg-primary text-white w-[130px] sm:w-[150px] py-2 text-sm font-poppins font-normal rounded-md">
+          <Button
+            onClick={() => dispatch(setSwapModal(true))}
+            className="bg-primary text-white w-[130px] sm:w-[150px] py-2 text-sm font-poppins font-normal rounded-md"
+          >
             Request Swap
           </Button>
         </div>
