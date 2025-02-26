@@ -35,7 +35,8 @@ export default {
         grayDark:"#808080",
         platinum:'#E6E6E6',
         platinumDark:'#E4E4E4',
-        arsenic:"#414141"
+        arsenic:"#414141",
+        smokyBlack:"#0D0D0D"
       },
       fontSize:{
         sx:"10px"
