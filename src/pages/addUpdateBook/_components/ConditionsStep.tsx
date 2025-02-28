@@ -1,6 +1,6 @@
 import { Controller, useFormContext } from "react-hook-form";
 import InputLabel from "../../../components/shared/InputLabel";
-import ControlledInputField from "./ControllerField";
+import ControlledInputField from "../../../components/shared/ControllerField";
 import Button from "../../../components/shared/Button";
 import Image from "../../../components/shared/Image";
 import closeIcon from "../../../assets/close.svg";

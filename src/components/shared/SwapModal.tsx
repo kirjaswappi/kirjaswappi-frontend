@@ -15,9 +15,9 @@ export default function SwapModal() {
   const context = useFormContext();
   const { swapModal } = useAppSelector((state) => state.open);
   if (!context) {
-    console.error(
-      "FormContext is not available, make sure the component is inside a FormProvider."
-    );
+    // console.error(
+    //   "FormContext is not available, make sure the component is inside a FormProvider."
+    // );
     return null;
   }
   const { watch, register } = context

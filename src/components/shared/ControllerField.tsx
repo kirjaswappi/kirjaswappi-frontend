@@ -1,8 +1,8 @@
 import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import Input from "../../../components/shared/Input";
-import Select from "../../../components/shared/Select";
-import TextArea from "../../../components/shared/TextArea";
+import Input from "./Input";
+import Select from "./Select";
+import TextArea from "./TextArea";
 
 interface ControlledInputFieldProps {
   name: string;

@@ -6,7 +6,7 @@ export default function AddBookComponent() {
     return (
         <div
             onClick={() => navigate("/profile/add-book")}
-            className="max-w-[168px] h-[229px] flex flex-col items-center justify-center gap-2 border border-primary border-dashed bg-white"
+            className="max-w-[168px] h-[229px] flex flex-col items-center justify-center gap-2 border border-primary border-dashed bg-white rounded-lg"
         >
             <Image src={plus} alt="Plus" />
             <p className="font-poppins text-sm font-medium text-primary">

@@ -1,6 +1,6 @@
 import InputLabel from "../../../components/shared/InputLabel";
 
-import ControlledInputField from "./ControllerField";
+import ControlledInputField from "../../../components/shared/ControllerField";
 
 type TOptions = {
   label: string;
