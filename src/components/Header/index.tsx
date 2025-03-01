@@ -8,6 +8,7 @@ import SideLeftDrawer from "./_components/LeftSideDrawer";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setOpen } from "../../redux/feature/open/openSlice";
 import BookFilter from "./_components/BookFilter";
+import { FormProvider, useForm } from "react-hook-form";
 export default function Header() {
   const location = useLocation();
   const dispatch = useAppDispatch();
@@ -16,13 +17,24 @@ export default function Header() {
   const isHeaderShow = showTopHeaderPath.find(
     (path) => path === location.pathname
   );
-
+  const methods = useForm({
+    mode: "onChange",
+    defaultValues:{
+      genre: [],
+      language: [],
+      condition:[] 
+    }
+  });
+  const { handleSubmit } = methods;
   return (
     <header className={`${isHeaderShow ? "pb-28" : "pb-0"}`}>
-      <SideLeftDrawer>
-        <BookFilter />        
-      </SideLeftDrawer>
-
+      <FormProvider {...methods}>
+        <SideLeftDrawer>
+          <form onSubmit={handleSubmit((data) => console.log({ data }))}>
+            <BookFilter />
+          </form>
+        </SideLeftDrawer>
+      </FormProvider>
       <div
         className={`${
           isHeaderShow ? "block bg-light" : "hidden"

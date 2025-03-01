@@ -2,6 +2,8 @@ import Button from "../../shared/Button";
 import Image from "../../shared/Image";
 import deleteIcon from "../../../assets/deleteIcon.png";
 import Line from "../../shared/Line";
+import InputLabel from "../../shared/InputLabel";
+import CheckboxControllerField from "./CheckboxInputControllerField";
 
 export default function BookFilter() {
   return (
@@ -17,7 +19,44 @@ export default function BookFilter() {
           Clear all
         </Button>
       </div>
-      <Line className="mt-4"/>
+      <Line className="my-4" />
+      <InputLabel label="Genre" className="mb-4" />
+      <div className="pl-3">
+        {[
+          "Fantasy",
+          "Romantic Novel",
+          "Thriller",
+          "Science Fiction",
+          "Historical",
+          "Psychology",
+        ].map((genre, index) => (
+          <CheckboxControllerField key={index} name="genre" value={genre} />
+        ))}
+      </div>
+      <Line className="my-4" />
+        <InputLabel label="Language" className="mb-4" />
+        <div className="pl-3">
+        {["All", "English", "Finnish", "Swedish"].map((language, index) => (
+          <CheckboxControllerField
+            key={index}
+            name="language"
+            value={language}
+          />
+        ))}
+        </div>
+        <Line className="my-4" />
+        <InputLabel label="Swap Condition" className="mb-4" />
+        <div className="pl-3">
+        {["Any", "Open to offer", "Specific Condition"].map(
+          (condition, index) => (
+            <CheckboxControllerField
+              key={index}
+              name="condition"
+              value={condition}
+            />
+          )
+        )}
+        </div>
     </div>
   );
 }
