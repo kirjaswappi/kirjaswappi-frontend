@@ -4,10 +4,19 @@ import deleteIcon from "../../../assets/deleteIcon.png";
 import Line from "../../shared/Line";
 import InputLabel from "../../shared/InputLabel";
 import CheckboxControllerField from "./CheckboxInputControllerField";
+import { useGetGenreQuery } from "../../../redux/feature/genre/genreApi";
+import GenreSkelton from "./GenreSkelton";
+
+import { useGetSupportLanguageQuery } from "../../../redux/feature/book/bookApi";
 
 export default function BookFilter() {
+  const { data: genreData = [], isLoading: genreLoading } =
+    useGetGenreQuery(undefined);
+  const { data: languageDataOptions, isLoading: languageLoading } =
+    useGetSupportLanguageQuery(undefined);
+  console.log(languageDataOptions);
   return (
-    <div>
+    <div className="overflow-y-scroll h-screen custom-scrollbar px-2">
       <div className="flex items-center justify-between">
         <h3 className="text-grayDark font-poppins font-medium text-sm">
           Book Filter
@@ -22,31 +31,46 @@ export default function BookFilter() {
       <Line className="my-4" />
       <InputLabel label="Genre" className="mb-4" />
       <div className="pl-3">
-        {[
-          "Fantasy",
-          "Romantic Novel",
-          "Thriller",
-          "Science Fiction",
-          "Historical",
-          "Psychology",
-        ].map((genre, index) => (
-          <CheckboxControllerField key={index} name="genre" value={genre} />
-        ))}
+        {genreLoading ? (
+          <div className="flex flex-col gap-2">
+            {Array.from({ length: 6 }, (_, index) => (
+              <GenreSkelton key={index} />
+            ))}
+          </div>
+        ) : (
+          genreData?.map(
+            (genre: { id: string; name: string }, index: number) => (
+              <CheckboxControllerField
+                key={index}
+                name="genre"
+                value={genre.name}
+              />
+            )
+          )
+        )}
       </div>
       <Line className="my-4" />
-        <InputLabel label="Language" className="mb-4" />
-        <div className="pl-3">
-        {["All", "English", "Finnish", "Swedish"].map((language, index) => (
-          <CheckboxControllerField
-            key={index}
-            name="language"
-            value={language}
-          />
-        ))}
-        </div>
-        <Line className="my-4" />
-        <InputLabel label="Swap Condition" className="mb-4" />
-        <div className="pl-3">
+      <InputLabel label="Language" className="mb-4" />
+      <div className="pl-3">
+        {languageLoading ? (
+          <div className="flex flex-col gap-2">
+            {Array.from({ length: 6 }, (_, index) => (
+              <GenreSkelton key={index} />
+            ))}
+          </div>
+        ) : (
+          languageDataOptions?.map((language: string, index: number) => (
+            <CheckboxControllerField
+              key={index}
+              name="language"
+              value={language}
+            />
+          ))
+        )}
+      </div>
+      <Line className="my-4" />
+      <InputLabel label="Swap Condition" className="mb-4" />
+      <div className="pl-3 pb-10">
         {["Any", "Open to offer", "Specific Condition"].map(
           (condition, index) => (
             <CheckboxControllerField
@@ -56,7 +80,7 @@ export default function BookFilter() {
             />
           )
         )}
-        </div>
+      </div>
     </div>
   );
 }
