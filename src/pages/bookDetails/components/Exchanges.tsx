@@ -39,7 +39,7 @@ export default function Exchanges() {
           return (
             <CarouselItem
               key={slider?.id}
-              className="basis-3/4 lg:basis-1/2"
+              className="w-[70%] lg:basis-1/2"
             >
                 <div className="relative w-full overflow-hidden h-[110px] rounded-lg bg-[#DEE7F5] flex items-center gap-3 px-[18px]">
                     <Image src={slider.image} />
