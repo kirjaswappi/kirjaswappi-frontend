@@ -10,7 +10,7 @@ export default function Search() {
       <input
         type="text"
         placeholder="Find Books"
-        className="w-full outline-none px-3 py-1 placeholder:pl-8 placeholder:text-grayDark placeholder:font-poppins placeholder:text-xs"
+        className="w-full outline-none px-3 py-1 placeholder:pl-3 md:placeholder:pl-8 placeholder:text-grayDark placeholder:font-poppins placeholder:text-xs"
       />
       <div className="flex items-center justify-between gap-1 rounded-full bg-primary-light w-[106px] h-[26px] px-2 text-primary py-1">
         {" "}
