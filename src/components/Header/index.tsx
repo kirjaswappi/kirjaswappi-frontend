@@ -5,32 +5,34 @@ import filterIcon from "../../assets/filter.png";
 
 import Image from "../shared/Image";
 import SideLeftDrawer from "./_components/LeftSideDrawer";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { setOpen } from "../../redux/feature/open/openSlice";
 import BookFilter from "./_components/BookFilter";
 import { FormProvider, useForm } from "react-hook-form";
+import { useMouseClick } from "../../hooks/useMouse";
 export default function Header() {
   const location = useLocation();
-  const dispatch = useAppDispatch();
-  const { open } = useAppSelector((state) => state.open);
+  const { clicked, setClicked, reference } = useMouseClick();
+
   const showTopHeaderPath = ["/"];
   const isHeaderShow = showTopHeaderPath.find(
     (path) => path === location.pathname
   );
   const methods = useForm({
     mode: "onChange",
-    defaultValues:{
+    defaultValues: {
       genre: [],
       language: [],
-      condition:[] 
-    }
+      condition: [],
+    },
   });
   const { handleSubmit } = methods;
   return (
     <header className={`${isHeaderShow ? "pb-28" : "pb-0"}`}>
       <FormProvider {...methods}>
-        <SideLeftDrawer>
-          <form onSubmit={handleSubmit((data) => console.log({ data }))}>
+        <SideLeftDrawer open={clicked}>
+          <form
+            ref={reference}
+            onSubmit={handleSubmit((data) => console.log({ data }))}
+          >
             <BookFilter />
           </form>
         </SideLeftDrawer>
@@ -43,7 +45,7 @@ export default function Header() {
         <TopBar />
         <div className="flex items-center gap-1">
           <div
-            onClick={() => dispatch(setOpen(!open))}
+            onClick={() => setClicked(true)}
             className="w-[48px] h-[42px] rounded-[24px] bg-primary flex items-center justify-center px-[10px] py-2"
           >
             <Image src={filterIcon} alt="filter icon" />

@@ -7,7 +7,7 @@ export default function CheckboxControllerField({
   name: string;
   value: string;
 }) {
-  const { control } = useFormContext();
+  const { control, reset } = useFormContext();
   return (
     <Controller
       key={value}
