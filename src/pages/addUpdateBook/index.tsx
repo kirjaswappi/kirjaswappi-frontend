@@ -108,6 +108,7 @@ export default function AddUpdateBook() {
       setActive((prev) => prev + 1);
     }
   };
+  // console.log(getValues)
   // const handleBack = () => {
   //   if (active > 0) {
   //     setSteps((prevSteps) =>
