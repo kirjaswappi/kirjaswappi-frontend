@@ -1,15 +1,16 @@
 import * as yup from "yup";
 
+const FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
+
 const bookDetails = yup.object().shape({
-  title: yup.string().min(10).required("Book title is required"),
+  title: yup.string().required("Book title is required"),
   author: yup.string().required("Author name is required"),
   description: yup.string().required("Description is required"),
   language: yup.string().required("Language is required"),
   condition: yup.string().required("Condition is required"),
 });
 
-const FILE_SIZE = 10 * 1024 * 1024; // 2MB
-const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
 const otherDetails = yup.object().shape({
   favGenres: yup
     .array()
@@ -19,7 +20,7 @@ const otherDetails = yup.object().shape({
     bookCover: yup
     .mixed<File | string>()
     .test("fileOrUrl", "Book cover is required", (value) => {
-      return !!value; // Ensures either a file or a URL is present
+      return value !== null && !!value;
     })
     .test("fileValidation", "Invalid file format or size", (value) => {
       if (!value || typeof value === "string") return true; // Allow any URL

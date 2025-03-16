@@ -22,8 +22,6 @@ export default function OtherDetailsStep({ errors }: { errors: any }) {
     );
   };
 
-
-
   return (
     <div>
       <div>
