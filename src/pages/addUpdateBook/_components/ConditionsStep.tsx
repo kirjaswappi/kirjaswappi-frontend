@@ -14,7 +14,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
   const { open } = useAppSelector((state) => state.open);
   const { control, getValues, watch } = useFormContext();
   const conditionType = watch("conditionType");
-  const favGenres = getValues("favGenres");
+  const favGenres = getValues("genres");
 
   return (
     <div>

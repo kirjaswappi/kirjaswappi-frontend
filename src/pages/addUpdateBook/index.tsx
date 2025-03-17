@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import leftArrowIcon from "../../assets/leftArrow.png";
 import Image from "../../components/shared/Image";
@@ -29,19 +29,22 @@ export default function AddUpdateBook() {
     useGetSupportLanguageQuery(undefined);
   const { data: conditionDataOptions, isLoading: conditionLoading } =
     useGetSupportConditionQuery(undefined);
-  const {data: bookData, isLoading: bookLoading} = useGetBookByIdQuery({id: id, }, { skip: !id });
+  const { data: bookData, isLoading: bookLoading } = useGetBookByIdQuery(
+    { id: id },
+    { skip: !id }
+  );
 
   const defaultValues = {
-    favGenres:  bookData?.genres || [],
-      conditionType: "byBook",
-      language: bookData?.language || "",
-      title: bookData?.title || "",
-      genre: bookData?.genre || [],
-      condition: bookData?.condition || '',
-      description: bookData?.description || "",
-      author: bookData?.author || "",
-      bookCover: bookData?.coverPhotoUrl || ""
-  }
+    favGenres: bookData?.genres || [],
+    conditionType: "byBook",
+    language: bookData?.language || "",
+    title: bookData?.title || "",
+    genres: bookData?.genre || [],
+    condition: bookData?.condition || "",
+    description: bookData?.description || "",
+    author: bookData?.author || "",
+    bookCover: bookData?.coverPhotoUrl || "",
+  };
 
   const methods = useForm({
     resolver: yupResolver(validationSchemas[active] as yup.ObjectSchema<any>),
@@ -53,28 +56,30 @@ export default function AddUpdateBook() {
     trigger,
     watch,
     setValue,
-    reset,
+    // reset,
+    getValues,
     formState: { errors },
   } = methods;
   const favGenres = watch("favGenres");
+  const genres = watch("genres");
   const languages = options(languageDataOptions);
   const conditions = options(conditionDataOptions);
 
-  useEffect(() => {
-    if (bookData) {
-      reset({
-        favGenres: bookData.genres || [],
-        conditionType: "byBook",
-        language: bookData.language || "",
-        title: bookData.title || "",
-        genres: bookData?.genres || [],
-        condition: bookData?.condition || '',
-        description: bookData?.description || "",
-        author: bookData?.author || "",
-        bookCover: bookData?.coverPhotoUrl || ""        
-      });
-    }
-  }, [bookData, reset]);
+  // useEffect(() => {
+  //   if (bookData) {
+  //     reset({
+  //       favGenres: bookData.genres || [],
+  //       conditionType: "byBook",
+  //       language: bookData.language || "",
+  //       title: bookData.title || "",
+  //       genres: bookData?.genres || [],
+  //       condition: bookData?.condition || '',
+  //       description: bookData?.description || "",
+  //       author: bookData?.author || "",
+  //       bookCover: bookData?.coverPhotoUrl || ""
+  //     });
+  //   }
+  // }, [bookData, reset]);
   const [steps, setSteps] = useState([
     {
       label: "Book Details",
@@ -108,7 +113,7 @@ export default function AddUpdateBook() {
       setActive((prev) => prev + 1);
     }
   };
-  // console.log(getValues)
+  console.log(getValues())
   // const handleBack = () => {
   //   if (active > 0) {
   //     setSteps((prevSteps) =>
@@ -128,7 +133,7 @@ export default function AddUpdateBook() {
   const loading = () => {
     if (languageLoading) return true;
     if (conditionLoading) return true;
-    if (bookLoading) return true
+    if (bookLoading) return true;
     else return false;
   };
   if (loading()) return <Loader />;
@@ -137,10 +142,18 @@ export default function AddUpdateBook() {
       {/* {isLoading && <Spinner />} */}
       <AddGenre
         genresValue={favGenres}
+        setEditValuesChanged={() => console.log("favGenres updated")}
+        setValue={setValue}
+        trigger={trigger}
+        addGenreName="favGenres"
+      />
+      {/* <AddGenre
+        genresValue={genres}
         setEditValuesChanged={() => console.log("Genres updated")}
         setValue={setValue}
         trigger={trigger}
-      />
+        addGenreName="genres"
+      /> */}
       <div className="fixed left-0 top-0 w-full h-[48px] flex items-center justify-between px-4 border-b border-[#E4E4E4] bg-white z-30 ">
         <div className="flex items-center justify-center w-full relative">
           <div

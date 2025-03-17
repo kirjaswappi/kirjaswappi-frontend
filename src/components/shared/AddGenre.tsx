@@ -12,21 +12,23 @@ export default function AddGenre({
     setEditValuesChanged,
     genresValue,
     setValue,
-    trigger
+    trigger,
+    addGenreName = "favGenres"
 }: {
     setEditValuesChanged: React.Dispatch<SetStateAction<boolean>>;
     genresValue: string[];
     setValue?: any;
-    trigger?: any
+    trigger?: any;
+    addGenreName?: string
 }) {
     const { data, isLoading } = useGetGenreQuery(undefined);
-
+console.log("addGenreName", addGenreName)
     const handleAddGenre = (genreValue: string) => {       
         if (!genresValue?.includes(genreValue)) {
             const updatedGenres = [...genresValue, genreValue];
-            setValue("favGenres", updatedGenres); 
+            setValue(`${addGenreName}`, updatedGenres); 
             setEditValuesChanged(true)
-            trigger("favGenres")
+            trigger(`${addGenreName}`)
           }
     };
     if (isLoading) return <Loader />;

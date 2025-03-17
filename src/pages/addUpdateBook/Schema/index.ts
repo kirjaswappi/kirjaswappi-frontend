@@ -17,7 +17,7 @@ const otherDetails = yup.object().shape({
     .of(yup.string())
     .min(1, "Please select at least one genre.")
     .required("Genres are required."),
-    bookCover: yup
+  bookCover: yup
     .mixed<File | string>()
     .test("fileOrUrl", "Book cover is required", (value) => {
       return value !== null && !!value;
@@ -41,24 +41,29 @@ const conditionDetails = yup.object().shape({
     otherwise: (schema) => schema.nullable().notRequired(),
   }),
   byBookCover: yup.mixed<File>().when("conditionType", {
-    is:"byBook",
-    then: () => yup.mixed<File>().required("Book cover is required")
-    .test(
-      "fileSize",
-      "File size must be less than 10MB",
-      (value) => value instanceof File && value.size <= FILE_SIZE
-    )
-    .test(
-      "fileType",
-      "Unsupported file format. Only JPG, PNG allowed",
-      (value) => value instanceof File && SUPPORTED_FORMATS.includes(value.type)
-    ),
-  }),  
+    is: "byBook",
+    then: () =>
+      yup
+        .mixed<File>()
+        .required("Book cover is required")
+        .test(
+          "fileSize",
+          "File size must be less than 10MB",
+          (value) => value instanceof File && value.size <= FILE_SIZE
+        )
+        .test(
+          "fileType",
+          "Unsupported file format. Only JPG, PNG allowed",
+          (value) =>
+            value instanceof File && SUPPORTED_FORMATS.includes(value.type)
+        ),
+    otherwise: () => yup.mixed().nullable().notRequired(),
+  }),
   authorName: yup.string().when("conditionType", {
     is: "byBook",
     then: () => yup.string().required("Author name is required"),
   }),
-  favGenres: yup
+  genres: yup
     .array()
     .of(yup.string())
     .when("conditionType", {

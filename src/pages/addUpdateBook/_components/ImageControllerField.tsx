@@ -47,13 +47,13 @@ const ImageFileInput = ({ name }: { name: string }) => {
       render={({ field, fieldState }) => {
         return (
           <div>
-            <div
-              
-              className="w-[126px] h-[150px] border-[1px] border-dashed border-grayDark rounded-lg cursor-pointer block mx-auto overflow-hidden"
-            >
+            <div className="w-[126px] h-[150px] border-[1px] border-dashed border-grayDark rounded-lg cursor-pointer block mx-auto overflow-hidden">
               {preview ? (
                 <div className="w-full h-full relative group">
-                  <div onClick={() => handleDelete(field)} className="absolute group-hover:bg-[#303030a4] duration-300 w-full h-full flex items-center justify-center">
+                  <div
+                    onClick={() => handleDelete(field)}
+                    className="absolute group-hover:bg-[#303030a4] duration-300 w-full h-full flex items-center justify-center"
+                  >
                     <Image
                       src={DeleteIcon}
                       alt="File Preview"
@@ -67,7 +67,10 @@ const ImageFileInput = ({ name }: { name: string }) => {
                   />
                 </div>
               ) : (
-                <label htmlFor="file" className="flex flex-col items-center justify-center h-full">
+                <label
+                  htmlFor="file"
+                  className="flex flex-col items-center justify-center h-full"
+                >
                   <span className="text-grayDark text-3xl font-poppins font-extralight">
                     +
                   </span>
