@@ -22,7 +22,6 @@ export default function AddGenre({
     addGenreName?: string
 }) {
     const { data, isLoading } = useGetGenreQuery(undefined);
-console.log("addGenreName", addGenreName)
     const handleAddGenre = (genreValue: string) => {       
         if (!genresValue?.includes(genreValue)) {
             const updatedGenres = [...genresValue, genreValue];

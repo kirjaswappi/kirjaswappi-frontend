@@ -4,6 +4,7 @@ import leftArrowIcon from "../../assets/leftArrow.png";
 import Image from "../../components/shared/Image";
 import Loader from "../../components/shared/Loader";
 import {
+  useAddBookMutation,
   useGetBookByIdQuery,
   useGetSupportConditionQuery,
   useGetSupportLanguageQuery,
@@ -21,6 +22,25 @@ import AddGenre from "../../components/shared/AddGenre";
 import Button from "../../components/shared/Button";
 import ConditionsStep from "./_components/ConditionsStep";
 
+interface IBook {
+  bookTitle: string;
+  authorName: string;
+  byBookCover: string | File; 
+}
+
+interface IAddUpdateBookData {
+  books: IBook[];
+  favGenres: string[];
+  conditionType: string;
+  language: string;
+  title: string;
+  genres: string[];
+  condition: string;
+  description: string;
+  author: string;
+  bookCover: string | File; 
+}
+
 export default function AddUpdateBook() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -33,8 +53,9 @@ export default function AddUpdateBook() {
     { id: id },
     { skip: !id }
   );
-
+  useAddBookMutation()
   const defaultValues = {
+    books: [{ bookTitle: "", authorName: "", byBookCover: null }],
     favGenres: bookData?.genres || [],
     conditionType: "byBook",
     language: bookData?.language || "",
@@ -42,8 +63,6 @@ export default function AddUpdateBook() {
     genres: bookData?.genre || [],
     condition: bookData?.condition || "",
     description: bookData?.description || "",
-    author: bookData?.author || "",
-    bookCover: bookData?.coverPhotoUrl || "",
   };
 
   const methods = useForm({
@@ -56,12 +75,9 @@ export default function AddUpdateBook() {
     trigger,
     watch,
     setValue,
-    // reset,
-    getValues,
     formState: { errors },
   } = methods;
-  const favGenres = watch("favGenres");
-  const genres = watch("genres");
+
   const languages = options(languageDataOptions);
   const conditions = options(conditionDataOptions);
 
@@ -97,6 +113,8 @@ export default function AddUpdateBook() {
       isActive: false,
     },
   ]);
+
+  
   const handleNext = async () => {
     const valid = await trigger();
     if (valid) {
@@ -113,7 +131,7 @@ export default function AddUpdateBook() {
       setActive((prev) => prev + 1);
     }
   };
-  console.log(getValues())
+  // console.log(getValues());
   // const handleBack = () => {
   //   if (active > 0) {
   //     setSteps((prevSteps) =>
@@ -129,7 +147,25 @@ export default function AddUpdateBook() {
   //     setActive((prev) => prev - 1);
   //   }
   // };
+  // console.log({errors})
+  const handleAddUpdateBookFn =  async <T extends IAddUpdateBookData> (data: T) => {
+    console.log(data)
+    const formData = new FormData()
+    formData.append('title', data.title)
+    formData.append('description', data.description)
+    formData.append('author', data.author)
+    formData.append("genres", data.favGenres.join(","))
+    formData.append('language', data.language)
+    formData.append('condition', data.condition)
+    formData.append('bookCover', data.bookCover)
 
+    if(data.conditionType === 'byBook'){
+      // for(let book of data.books){
+
+      // }
+    } 
+    // formData.append('title', data.author)
+  }
   const loading = () => {
     if (languageLoading) return true;
     if (conditionLoading) return true;
@@ -139,21 +175,6 @@ export default function AddUpdateBook() {
   if (loading()) return <Loader />;
   return (
     <div className="min-h-screen">
-      {/* {isLoading && <Spinner />} */}
-      <AddGenre
-        genresValue={favGenres}
-        setEditValuesChanged={() => console.log("favGenres updated")}
-        setValue={setValue}
-        trigger={trigger}
-        addGenreName="favGenres"
-      />
-      {/* <AddGenre
-        genresValue={genres}
-        setEditValuesChanged={() => console.log("Genres updated")}
-        setValue={setValue}
-        trigger={trigger}
-        addGenreName="genres"
-      /> */}
       <div className="fixed left-0 top-0 w-full h-[48px] flex items-center justify-between px-4 border-b border-[#E4E4E4] bg-white z-30 ">
         <div className="flex items-center justify-center w-full relative">
           <div
@@ -172,7 +193,14 @@ export default function AddUpdateBook() {
           <Stepper steps={steps} />
         </div>
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit((data) => console.log({ data }))}>
+          <AddGenre
+            genresValue={active === 1 ? watch("favGenres"): watch("genres") }
+            setEditValuesChanged={() => console.log("favGenres updated")}
+            setValue={setValue}
+            trigger={trigger}
+            addGenreName={active === 1  ?  "favGenres" : "genres"}
+          />
+          <form onSubmit={handleSubmit((data) => handleAddUpdateBookFn(data))}>
             {active === 0 && (
               <BookDetailsStep
                 languageOptions={languages}
