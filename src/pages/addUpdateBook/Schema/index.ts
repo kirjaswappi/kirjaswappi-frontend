@@ -35,35 +35,6 @@ const otherDetails = yup.object().shape({
 });
 const conditionDetails = yup.object().shape({
   conditionType: yup.string().required("Condition type is required"),
-  // bookTitle: yup.string().when("conditionType", {
-  //   is: "byBook",
-  //   then: () => yup.string().required("Book title is required"),
-  //   otherwise: (schema) => schema.nullable().notRequired(),
-  // }),
-  // byBookCover: yup.mixed<File>().when("conditionType", {
-  //   is: "byBook",
-  //   then: () =>
-  //     yup
-  //       .mixed<File>()
-  //       .required("Book cover is required")
-  //       .test(
-  //         "fileSize",
-  //         "File size must be less than 10MB",
-  //         (value) => value instanceof File && value.size <= FILE_SIZE
-  //       )
-  //       .test(
-  //         "fileType",
-  //         "Unsupported file format. Only JPG, PNG allowed",
-  //         (value) =>
-  //           value instanceof File && SUPPORTED_FORMATS.includes(value.type)
-  //       ),
-  //   otherwise: () => yup.mixed().nullable().notRequired(),
-  // }),
-  // authorName: yup.string().when("conditionType", {
-  //   is: "byBook",
-  //   then: () => yup.string().required("Author name is required"),
-  // }),
-
   books: yup.array().when("conditionType", {
     is: "byBook",
     then: (schema) =>

@@ -21,11 +21,12 @@ import { validationSchemas } from "./Schema";
 import AddGenre from "../../components/shared/AddGenre";
 import Button from "../../components/shared/Button";
 import ConditionsStep from "./_components/ConditionsStep";
+import { useAppSelector } from "../../redux/hooks";
 
 interface IBook {
   bookTitle: string;
   authorName: string;
-  byBookCover: string | File; 
+  byBookCover: string | File;
 }
 
 interface IAddUpdateBookData {
@@ -38,13 +39,14 @@ interface IAddUpdateBookData {
   condition: string;
   description: string;
   author: string;
-  bookCover: string | File; 
+  bookCover: string | File;
 }
 
 export default function AddUpdateBook() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [active, setActive] = useState<number>(0);
+  const { userInformation } = useAppSelector((state) => state.auth);
   const { data: languageDataOptions, isLoading: languageLoading } =
     useGetSupportLanguageQuery(undefined);
   const { data: conditionDataOptions, isLoading: conditionLoading } =
@@ -53,7 +55,7 @@ export default function AddUpdateBook() {
     { id: id },
     { skip: !id }
   );
-  useAddBookMutation()
+  const [addBook, { isLoading }] = useAddBookMutation();
   const defaultValues = {
     books: [{ bookTitle: "", authorName: "", byBookCover: null }],
     favGenres: bookData?.genres || [],
@@ -76,8 +78,8 @@ export default function AddUpdateBook() {
     watch,
     setValue,
     formState: { errors },
+    reset,
   } = methods;
-
   const languages = options(languageDataOptions);
   const conditions = options(conditionDataOptions);
 
@@ -114,7 +116,6 @@ export default function AddUpdateBook() {
     },
   ]);
 
-  
   const handleNext = async () => {
     const valid = await trigger();
     if (valid) {
@@ -148,24 +149,74 @@ export default function AddUpdateBook() {
   //   }
   // };
   // console.log({errors})
-  const handleAddUpdateBookFn =  async <T extends IAddUpdateBookData> (data: T) => {
-    console.log(data)
-    const formData = new FormData()
-    formData.append('title', data.title)
-    formData.append('description', data.description)
-    formData.append('author', data.author)
-    formData.append("genres", data.favGenres.join(","))
-    formData.append('language', data.language)
-    formData.append('condition', data.condition)
-    formData.append('bookCover', data.bookCover)
+  const handleAddUpdateBookFn = async <T extends IAddUpdateBookData>(
+    data: T
+  ) => {
+    console.log(data);
+    const formData = new FormData();
+    if (userInformation.id) formData.append("ownerId", userInformation.id);
+    formData.append("title", data.title);
+    formData.append("author", data.author);
+    formData.append("description", data.description);
+    formData.append("genres", data.favGenres.join(","));
+    formData.append("language", data.language);
+    formData.append("condition", data.condition);
+    formData.append("coverPhoto", data.bookCover);
 
-    if(data.conditionType === 'byBook'){
-      // for(let book of data.books){
+    if (data.conditionType === "byBook") {
+      const exchangeCondition: {
+        openForOffers: boolean;
+        genres: null;
+        books: {
+          title: string;
+          author: string;
+          coverPhoto: File | string;
+        }[];
+      } = {
+        openForOffers: false,
+        genres: null,
+        books: [],
+      };
+      data.books.forEach((book) => {
+        const bookData: any = {
+          title: book.bookTitle,
+          author: book.authorName,
+        };
+        if (book.byBookCover instanceof File) {
+          bookData.coverPhoto = book.byBookCover;
+        }
+        exchangeCondition.books.push(bookData);
+      });
 
-      // }
-    } 
-    // formData.append('title', data.author)
-  }
+      formData.append("exchangeCondition", JSON.stringify(exchangeCondition));
+    } else if (data.conditionType === "openToOffer") {
+      formData.append(
+        "exchangeCondition",
+        JSON.stringify({
+          openForOffers: true,
+          genres: null,
+          books: null,
+        })
+      );
+    } else if (data.conditionType === "byGenre") {
+      formData.append(
+        "exchangeCondition",
+        JSON.stringify({
+          openForOffers: false,
+          genres: data.genres.join(","),
+          books: null,
+        })
+      );
+    }
+
+    try {
+      await addBook(formData).then(() => {
+        reset()
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const loading = () => {
     if (languageLoading) return true;
     if (conditionLoading) return true;
@@ -194,11 +245,11 @@ export default function AddUpdateBook() {
         </div>
         <FormProvider {...methods}>
           <AddGenre
-            genresValue={active === 1 ? watch("favGenres"): watch("genres") }
+            genresValue={active === 1 ? watch("favGenres") : watch("genres")}
             setEditValuesChanged={() => console.log("favGenres updated")}
             setValue={setValue}
             trigger={trigger}
-            addGenreName={active === 1  ?  "favGenres" : "genres"}
+            addGenreName={active === 1 ? "favGenres" : "genres"}
           />
           <form onSubmit={handleSubmit((data) => handleAddUpdateBookFn(data))}>
             {active === 0 && (
@@ -221,10 +272,12 @@ export default function AddUpdateBook() {
               )}
               {active === 2 && (
                 <Button
+                  disabled={isLoading}
                   type="submit"
                   className="bg-primary text-white w-full py-4 rounded-lg"
                 >
-                  Confirm
+                  {" "}
+                  {isLoading ? "Loading..." : "Confirm"}
                 </Button>
               )}
             </div>
