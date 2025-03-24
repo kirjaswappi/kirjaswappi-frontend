@@ -21,7 +21,6 @@ export default function OtherDetailsStep({ errors }: { errors: any }) {
       favGenres?.filter((favGen: string) => favGen !== genreValue)
     );
   };
-
   return (
     <div>
       <div>

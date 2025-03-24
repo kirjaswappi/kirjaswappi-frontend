@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import leftArrowIcon from "../../assets/leftArrow.png";
 import Image from "../../components/shared/Image";
 import Loader from "../../components/shared/Loader";
 import {
+  useAddBookMutation,
   useGetBookByIdQuery,
   useGetSupportConditionQuery,
   useGetSupportLanguageQuery,
@@ -20,28 +21,51 @@ import { validationSchemas } from "./Schema";
 import AddGenre from "../../components/shared/AddGenre";
 import Button from "../../components/shared/Button";
 import ConditionsStep from "./_components/ConditionsStep";
+import { useAppSelector } from "../../redux/hooks";
+
+interface IBook {
+  bookTitle: string;
+  authorName: string;
+  byBookCover: string | File;
+}
+
+interface IAddUpdateBookData {
+  books: IBook[];
+  favGenres: string[];
+  conditionType: string;
+  language: string;
+  title: string;
+  genres: string[];
+  condition: string;
+  description: string;
+  author: string;
+  bookCover: string | File;
+}
 
 export default function AddUpdateBook() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [active, setActive] = useState<number>(0);
+  const { userInformation } = useAppSelector((state) => state.auth);
   const { data: languageDataOptions, isLoading: languageLoading } =
     useGetSupportLanguageQuery(undefined);
   const { data: conditionDataOptions, isLoading: conditionLoading } =
     useGetSupportConditionQuery(undefined);
-  const {data: bookData, isLoading: bookLoading} = useGetBookByIdQuery({id: id, }, { skip: !id });
-
+  const { data: bookData, isLoading: bookLoading } = useGetBookByIdQuery(
+    { id: id },
+    { skip: !id }
+  );
+  const [addBook, { isLoading }] = useAddBookMutation();
   const defaultValues = {
-    favGenres:  bookData?.genres || [],
-      conditionType: "byBook",
-      language: bookData?.language || "",
-      title: bookData?.title || "",
-      genre: bookData?.genre || [],
-      condition: bookData?.condition || '',
-      description: bookData?.description || "",
-      author: bookData?.author || "",
-      bookCover: bookData?.coverPhotoUrl || ""
-  }
+    books: [{ bookTitle: "", authorName: "", byBookCover: null }],
+    favGenres: bookData?.genres || [],
+    conditionType: "byBook",
+    language: bookData?.language || "",
+    title: bookData?.title || "",
+    genres: bookData?.genre || [],
+    condition: bookData?.condition || "",
+    description: bookData?.description || "",
+  };
 
   const methods = useForm({
     resolver: yupResolver(validationSchemas[active] as yup.ObjectSchema<any>),
@@ -53,28 +77,27 @@ export default function AddUpdateBook() {
     trigger,
     watch,
     setValue,
-    reset,
     formState: { errors },
+    reset,
   } = methods;
-  const favGenres = watch("favGenres");
   const languages = options(languageDataOptions);
   const conditions = options(conditionDataOptions);
 
-  useEffect(() => {
-    if (bookData) {
-      reset({
-        favGenres: bookData.genres || [],
-        conditionType: "byBook",
-        language: bookData.language || "",
-        title: bookData.title || "",
-        genres: bookData?.genres || [],
-        condition: bookData?.condition || '',
-        description: bookData?.description || "",
-        author: bookData?.author || "",
-        bookCover: bookData?.coverPhotoUrl || ""        
-      });
-    }
-  }, [bookData, reset]);
+  // useEffect(() => {
+  //   if (bookData) {
+  //     reset({
+  //       favGenres: bookData.genres || [],
+  //       conditionType: "byBook",
+  //       language: bookData.language || "",
+  //       title: bookData.title || "",
+  //       genres: bookData?.genres || [],
+  //       condition: bookData?.condition || '',
+  //       description: bookData?.description || "",
+  //       author: bookData?.author || "",
+  //       bookCover: bookData?.coverPhotoUrl || ""
+  //     });
+  //   }
+  // }, [bookData, reset]);
   const [steps, setSteps] = useState([
     {
       label: "Book Details",
@@ -92,6 +115,7 @@ export default function AddUpdateBook() {
       isActive: false,
     },
   ]);
+
   const handleNext = async () => {
     const valid = await trigger();
     if (valid) {
@@ -108,7 +132,7 @@ export default function AddUpdateBook() {
       setActive((prev) => prev + 1);
     }
   };
-  // console.log(getValues)
+  // console.log(getValues());
   // const handleBack = () => {
   //   if (active > 0) {
   //     setSteps((prevSteps) =>
@@ -124,23 +148,84 @@ export default function AddUpdateBook() {
   //     setActive((prev) => prev - 1);
   //   }
   // };
+  // console.log({errors})
+  const handleAddUpdateBookFn = async <T extends IAddUpdateBookData>(
+    data: T
+  ) => {
+    console.log(data);
+    const formData = new FormData();
+    if (userInformation.id) formData.append("ownerId", userInformation.id);
+    formData.append("title", data.title);
+    formData.append("author", data.author);
+    formData.append("description", data.description);
+    formData.append("genres", data.favGenres.join(","));
+    formData.append("language", data.language);
+    formData.append("condition", data.condition);
+    formData.append("coverPhoto", data.bookCover);
 
+    if (data.conditionType === "byBook") {
+      const exchangeCondition: {
+        openForOffers: boolean;
+        genres: null;
+        books: {
+          title: string;
+          author: string;
+          coverPhoto: File | string;
+        }[];
+      } = {
+        openForOffers: false,
+        genres: null,
+        books: [],
+      };
+      data.books.forEach((book) => {
+        const bookData: any = {
+          title: book.bookTitle,
+          author: book.authorName,
+        };
+        if (book.byBookCover instanceof File) {
+          bookData.coverPhoto = book.byBookCover;
+        }
+        exchangeCondition.books.push(bookData);
+      });
+
+      formData.append("exchangeCondition", JSON.stringify(exchangeCondition));
+    } else if (data.conditionType === "openToOffer") {
+      formData.append(
+        "exchangeCondition",
+        JSON.stringify({
+          openForOffers: true,
+          genres: null,
+          books: null,
+        })
+      );
+    } else if (data.conditionType === "byGenre") {
+      formData.append(
+        "exchangeCondition",
+        JSON.stringify({
+          openForOffers: false,
+          genres: data.genres.join(","),
+          books: null,
+        })
+      );
+    }
+
+    try {
+      await addBook(formData).then(() => {
+        reset()
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const loading = () => {
     if (languageLoading) return true;
     if (conditionLoading) return true;
-    if (bookLoading) return true
+    if (bookLoading) return true;
     else return false;
   };
   if (loading()) return <Loader />;
   return (
     <div className="min-h-screen">
-      {/* {isLoading && <Spinner />} */}
-      <AddGenre
-        genresValue={favGenres}
-        setEditValuesChanged={() => console.log("Genres updated")}
-        setValue={setValue}
-        trigger={trigger}
-      />
       <div className="fixed left-0 top-0 w-full h-[48px] flex items-center justify-between px-4 border-b border-[#E4E4E4] bg-white z-30 ">
         <div className="flex items-center justify-center w-full relative">
           <div
@@ -159,7 +244,14 @@ export default function AddUpdateBook() {
           <Stepper steps={steps} />
         </div>
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit((data) => console.log({ data }))}>
+          <AddGenre
+            genresValue={active === 1 ? watch("favGenres") : watch("genres")}
+            setEditValuesChanged={() => console.log("favGenres updated")}
+            setValue={setValue}
+            trigger={trigger}
+            addGenreName={active === 1 ? "favGenres" : "genres"}
+          />
+          <form onSubmit={handleSubmit((data) => handleAddUpdateBookFn(data))}>
             {active === 0 && (
               <BookDetailsStep
                 languageOptions={languages}
@@ -180,10 +272,12 @@ export default function AddUpdateBook() {
               )}
               {active === 2 && (
                 <Button
+                  disabled={isLoading}
                   type="submit"
                   className="bg-primary text-white w-full py-4 rounded-lg"
                 >
-                  Confirm
+                  {" "}
+                  {isLoading ? "Loading..." : "Confirm"}
                 </Button>
               )}
             </div>
