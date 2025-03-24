@@ -210,8 +210,9 @@ export default function AddUpdateBook() {
     }
 
     try {
-      await addBook(formData).then(() => {
+      await addBook(formData).then((res) => {
         reset()
+        navigate(`/book-details/${res?.data?.id}`)
       });
     } catch (error) {
       console.log(error);
