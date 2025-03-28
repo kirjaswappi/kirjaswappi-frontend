@@ -13,7 +13,7 @@ import yup from "yup";
 import Stepper from "./_components/Stepper";
 import BookDetailsStep from "./_components/BookDetailsStep";
 import OtherDetailsStep from "./_components/OtherDetailsStep";
-import { options } from "../../utility/helper";
+import { blobToBase64, options } from "../../utility/helper";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { validationSchemas } from "./Schema";
@@ -78,7 +78,7 @@ export default function AddUpdateBook() {
     watch,
     setValue,
     formState: { errors },
-    reset,
+    // reset,
   } = methods;
   const languages = options(languageDataOptions);
   const conditions = options(conditionDataOptions);
@@ -175,18 +175,27 @@ export default function AddUpdateBook() {
       } = {
         openForOffers: false,
         genres: null,
-        books: [],
+        books: await Promise.all(data.books.map(async(book) => {
+          const bookData: any = {
+            title: book.bookTitle,
+            author: book.authorName,
+          };
+          if (book.byBookCover instanceof File) {
+            bookData.coverPhoto = await blobToBase64(book.byBookCover);
+          } 
+          return bookData
+        })),
       };
-      data.books.forEach((book) => {
-        const bookData: any = {
-          title: book.bookTitle,
-          author: book.authorName,
-        };
-        if (book.byBookCover instanceof File) {
-          bookData.coverPhoto = book.byBookCover;
-        }
-        exchangeCondition.books.push(bookData);
-      });
+      // data.books.forEach((book) => {
+      //   const bookData: any = {
+      //     title: book.bookTitle,
+      //     author: book.authorName,
+      //   };
+      //   if (book.byBookCover instanceof File) {
+      //     bookData.coverPhoto = book.byBookCover;
+      //   }
+      //   exchangeCondition.books.push(bookData);
+      // });
 
       formData.append("exchangeCondition", JSON.stringify(exchangeCondition));
     } else if (data.conditionType === "openToOffer") {
@@ -211,8 +220,9 @@ export default function AddUpdateBook() {
 
     try {
       await addBook(formData).then((res) => {
-        reset()
-        navigate(`/book-details/${res?.data?.id}`)
+        console.log(res)
+        // reset()
+        // navigate(`/book-details/${res?.data?.id}`)
       });
     } catch (error) {
       console.log(error);
