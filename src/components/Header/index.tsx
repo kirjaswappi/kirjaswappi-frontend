@@ -8,8 +8,16 @@ import SideLeftDrawer from "./_components/LeftSideDrawer";
 import BookFilter from "./_components/BookFilter";
 import { FormProvider, useForm } from "react-hook-form";
 import { useMouseClick } from "../../hooks/useMouse";
+import { useAppDispatch } from "../../redux/hooks";
+import {
+  setConditionFilter,
+  setGenreFilter,
+  setLanguageFilter,
+} from "../../redux/feature/filter/filterSlice";
+import { IFilterData } from "../../interface";
 export default function Header() {
   const location = useLocation();
+  const dispatch = useAppDispatch();
   const { clicked, setClicked, reference } = useMouseClick();
 
   const showTopHeaderPath = ["/"];
@@ -25,13 +33,18 @@ export default function Header() {
     },
   });
   const { handleSubmit } = methods;
+  const handleSubmitFn = async <T extends IFilterData>(data: T) => {
+    dispatch(setGenreFilter(data.genre));
+    dispatch(setConditionFilter(data.condition));
+    dispatch(setLanguageFilter(data.language));
+  };
   return (
     <header className={`${isHeaderShow ? "pb-28" : "pb-0"}`}>
       <FormProvider {...methods}>
         <SideLeftDrawer open={clicked}>
           <form
             ref={reference}
-            onSubmit={handleSubmit((data) => console.log({ data }))}
+            onSubmit={handleSubmit((data) => handleSubmitFn(data))}
           >
             <BookFilter />
           </form>

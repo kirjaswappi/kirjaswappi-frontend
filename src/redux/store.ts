@@ -7,6 +7,7 @@ import authSlice, { IInitialState, initialState } from "./feature/auth/authSlice
 import notificationSlice, { INotificationInitialState } from "./feature/notification/notificationSlice"
 import stepSlice, { IStepInitialState } from "./feature/step/stepSlice"
 import openSlice, { IOpenInitialState } from './feature/open/openSlice';
+import filterSlice, { IFilterInitialState } from './feature/filter/filterSlice';
 
 
 
@@ -29,7 +30,8 @@ const store: EnhancedStore<
     auth: IInitialState;
     step: IStepInitialState;
     open: IOpenInitialState;
-    notification: INotificationInitialState
+    notification: INotificationInitialState,
+    filter: IFilterInitialState
   },
   UnknownAction,
   Tuple<
@@ -54,7 +56,8 @@ const store: EnhancedStore<
     auth: authSlice,
     step: stepSlice,
     open: openSlice,
-    notification: notificationSlice
+    notification: notificationSlice,
+    filter: filterSlice
   },
   preloadedState,
   middleware: getDefaultMiddleware =>
