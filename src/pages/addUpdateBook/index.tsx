@@ -78,7 +78,7 @@ export default function AddUpdateBook() {
     watch,
     setValue,
     formState: { errors },
-    reset,
+    // reset,
   } = methods;
   const languages = options(languageDataOptions);
   const conditions = options(conditionDataOptions);
