@@ -60,7 +60,7 @@ export const bookApi = api.injectEndpoints({
         const queryParams = new URLSearchParams(
           queryParameter as Record<string, string>
         ).toString();
-        let url = `/books?${queryParams}`;
+        let url = `/books${queryParams && `?${queryParams}`}`;
         return {
           url: url,
           method: "GET",
