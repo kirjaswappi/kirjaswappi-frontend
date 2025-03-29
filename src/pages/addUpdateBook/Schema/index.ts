@@ -19,6 +19,7 @@ const otherDetails = yup.object().shape({
     .required("Genres are required."),
   bookCover: yup
     .mixed<File | string>()
+    .required("Please upload a book cover.")
     .test("fileOrUrl", "Book cover is required", (value) => {
       return value !== null && !!value;
     })

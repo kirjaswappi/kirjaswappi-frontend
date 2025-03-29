@@ -5,7 +5,7 @@ import MyLibrary from "./MyLibrary";
 import RatingAndReview from "./RatingAndReview";
 
 export default function UserTabs() {
-    const [activeTab, setActiveTab] = useState(0);
+    const [activeTab, setActiveTab] = useState(1);
     const tabs = [
         {
             label: "About",

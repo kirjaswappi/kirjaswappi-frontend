@@ -2,13 +2,15 @@
 import BookCard from "../../components/shared/BookCard";
 import BookSkeleton from "../../components/shared/skeleton/BookSkeleton";
 import { useGetAllBooksQuery } from "../../redux/feature/book/bookApi";
+import { useAppSelector } from "../../redux/hooks";
 import { goToTop } from "../../utility/helper";
 import { IBook } from "./interface";
 export default function Books() {
-    const { data, isError, isLoading } = useGetAllBooksQuery(undefined);
+    const {filter} = useAppSelector(state => state.filter)
+    const { data, isError, isLoading } = useGetAllBooksQuery(filter);
     goToTop();
     
-
+    // console.log(filter)
     if(isError) return <p>Something went wrong</p>
     return (
         <section>

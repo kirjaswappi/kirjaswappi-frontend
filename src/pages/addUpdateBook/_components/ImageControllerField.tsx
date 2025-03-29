@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import DeleteIcon from "../../../assets/Bin.png";
+import closeIcon from "../../../assets/close.png";
 import Image from "../../../components/shared/Image";
 const ImageFileInput = ({ name }: { name: string }) => {
   const { control, getValues, setValue } = useFormContext();
@@ -47,17 +47,17 @@ const ImageFileInput = ({ name }: { name: string }) => {
       render={({ field, fieldState }) => {
         return (
           <div>
-            <div className="w-[126px] h-[150px] border-[1px] border-dashed border-grayDark rounded-lg cursor-pointer block mx-auto overflow-hidden">
+            <div className="w-[126px] h-[150px] border-[1px] border-dashed border-grayDark rounded-lg cursor-pointer block mx-auto ">
               {preview ? (
                 <div className="w-full h-full relative group">
                   <div
                     onClick={() => handleDelete(field)}
-                    className="absolute group-hover:bg-[#303030a4] duration-300 w-full h-full flex items-center justify-center"
+                    className="absolute  w-6 h-6 flex items-center justify-center bg-[#0D0D0D] rounded-full p-1 -right-2 -top-2 "
                   >
                     <Image
-                      src={DeleteIcon}
+                      src={closeIcon}
                       alt="File Preview"
-                      className="w-7 h-7 opacity-0 invisible transition-opacity duration-300 group-hover:opacity-100 group-hover:visible"
+                      className="w-4 h-4"
                     />
                   </div>
                   <img
