@@ -78,7 +78,7 @@ export default function AddUpdateBook() {
     watch,
     setValue,
     formState: { errors },
-    // reset,
+    reset,
   } = methods;
   const languages = options(languageDataOptions);
   const conditions = options(conditionDataOptions);
@@ -220,9 +220,10 @@ export default function AddUpdateBook() {
 
     try {
       await addBook(formData).then((res) => {
-        console.log(res)
-        // reset()
-        // navigate(`/book-details/${res?.data?.id}`)
+        if(res?.data){
+          reset()
+          navigate(`/profile/user-profile`)
+        }
       });
     } catch (error) {
       console.log(error);
