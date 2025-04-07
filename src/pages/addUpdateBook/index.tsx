@@ -57,7 +57,20 @@ export default function AddUpdateBook() {
   );
   const [addBook, { isLoading }] = useAddBookMutation();
   const defaultValues = {
-    books: [{ bookTitle: "", authorName: "", byBookCover: null }],
+    books:
+      bookData?.exchangeCondition?.exchangeableBooks?.length > 0
+        ? bookData.exchangeCondition.exchangeableBooks.map(
+            (book: {
+              title: string;
+              author: string;
+              coverPhotoUrl: string;
+            }) => ({
+              bookTitle: book.title || "",
+              authorName: book.author || "",
+              byBookCover: book.coverPhotoUrl || null,
+            })
+          )
+        : [{ bookTitle: "", authorName: "", byBookCover: null }],
     favGenres: bookData?.genres || [],
     conditionType: "byBook",
     language: bookData?.language || "",
@@ -65,8 +78,10 @@ export default function AddUpdateBook() {
     genres: bookData?.genre || [],
     condition: bookData?.condition || "",
     description: bookData?.description || "",
+    author: bookData?.author || "",
+    bookCover: bookData?.coverPhotoUrl || "",
   };
-
+  console.log(bookData);
   const methods = useForm({
     resolver: yupResolver(validationSchemas[active] as yup.ObjectSchema<any>),
     mode: "onChange",
@@ -175,16 +190,18 @@ export default function AddUpdateBook() {
       } = {
         openForOffers: false,
         genres: null,
-        books: await Promise.all(data.books.map(async(book) => {
-          const bookData: any = {
-            title: book.bookTitle,
-            author: book.authorName,
-          };
-          if (book.byBookCover instanceof File) {
-            bookData.coverPhoto = await blobToBase64(book.byBookCover);
-          } 
-          return bookData
-        })),
+        books: await Promise.all(
+          data.books.map(async (book) => {
+            const bookData: any = {
+              title: book.bookTitle,
+              author: book.authorName,
+            };
+            if (book.byBookCover instanceof File) {
+              bookData.coverPhoto = await blobToBase64(book.byBookCover);
+            }
+            return bookData;
+          })
+        ),
       };
       // data.books.forEach((book) => {
       //   const bookData: any = {
@@ -220,9 +237,9 @@ export default function AddUpdateBook() {
 
     try {
       await addBook(formData).then((res) => {
-        if(res?.data){
-          reset()
-          navigate(`/profile/user-profile`)
+        if (res?.data) {
+          reset();
+          navigate(`/profile/user-profile`);
         }
       });
     } catch (error) {

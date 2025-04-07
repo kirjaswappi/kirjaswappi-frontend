@@ -73,4 +73,8 @@ const conditionDetails = yup.object().shape({
     }),
 });
 
+export type IBookDetailsType = yup.InferType<typeof bookDetails>;
+export type IOtherDetailsType = yup.InferType<typeof otherDetails>;
+export type IConditionDetailsType = yup.InferType<typeof conditionDetails>;
+
 export const validationSchemas = [bookDetails, otherDetails, conditionDetails];
