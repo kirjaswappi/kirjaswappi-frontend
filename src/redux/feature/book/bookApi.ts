@@ -40,22 +40,22 @@ export const bookApi = api.injectEndpoints({
     getAllBooks: builder.query({
       query: (filter: IFilterData) => {
         const queryParameter: {
-          genre?: string[];
-          condition?: string[];
-          language?: string[];
+          genres?: string[];
+          conditions?: string[];
+          languages?: string[];
           search?: string;
         } = {};
         if (filter.search && filter.search.length > 0) {
           queryParameter["search"] = filter.search;
         }
         if (filter.genre && filter.genre.length > 0) {
-          queryParameter["genre"] = filter.genre;
+          queryParameter["genres"] = filter.genre;
         }
         if (filter.condition && filter.condition.length > 0) {
-          queryParameter["condition"] = filter.condition;
+          queryParameter["conditions"] = filter.condition;
         }
         if (filter.language && filter.language.length > 0) {
-          queryParameter["language"] = filter.language;
+          queryParameter["languages"] = filter.language;
         }
         const queryParams = new URLSearchParams(
           queryParameter as Record<string, string>
