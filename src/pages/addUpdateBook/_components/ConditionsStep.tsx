@@ -25,7 +25,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
       append({ bookTitle: "", authorName: "", byBookCover: null });
     }
   }, [fields, append]);
-
+console.log({conditionType})
   return (
     <div>
       <div className="pt-4">
@@ -35,8 +35,9 @@ export default function ConditionsStep({ errors }: { errors: any }) {
         <Controller
           name="conditionType"
           control={control}
-          defaultValue="byBook"
+          defaultValue={conditionType}
           render={({ field }) => {
+            console.log({field})
             return (
               <div className="flex flex-col gap-4 mt-2">
                 <div className="px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg">

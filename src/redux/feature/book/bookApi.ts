@@ -13,6 +13,16 @@ export const bookApi = api.injectEndpoints({
       },
       invalidatesTags: ["AddBook"],
     }),
+    updateBook: builder.mutation<any, any>({
+      query: ({data, id}) => {
+        return {
+          url: `/books/${id}`,
+          method: "PUT",
+          body: data,
+        };
+      },
+      invalidatesTags: ["UpdateBook"],
+    }),
     getBookById: builder.query({
       query: ({ id }) => {
         return {
@@ -73,6 +83,7 @@ export const bookApi = api.injectEndpoints({
 
 export const {
   useAddBookMutation,
+  useUpdateBookMutation,
   useGetBookByIdQuery,
   useGetSupportLanguageQuery,
   useGetSupportConditionQuery,
