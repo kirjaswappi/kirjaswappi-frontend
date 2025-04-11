@@ -25,7 +25,6 @@ export default function BottomNav() {
         const isActive = location.pathname === menuItem?.route;
         return (
           <Link
-            // ref={reference}
             to={menuItem?.route || "#"}
             key={menuItem?.id}
             className={`flex flex-col items-center gap-1 w-14 min-w-14 h-14 min-h-14 p-2 ${

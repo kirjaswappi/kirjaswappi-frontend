@@ -64,7 +64,6 @@ export default function AddUpdateBook() {
   const [addBook, { isLoading }] = useAddBookMutation();
   const [updateBook] = useUpdateBookMutation();
 
-
   const testConditionType = () => {
     if(bookData?.exchangeCondition?.exchangeableBooks?.length > 0){
       return "byBook"
@@ -74,7 +73,7 @@ export default function AddUpdateBook() {
       return "openToOffer"
     }
   }
-console.log(testConditionType())
+
   const defaultValues = {
     books:
       bookData?.exchangeCondition?.exchangeableBooks?.length > 0
@@ -100,12 +99,13 @@ console.log(testConditionType())
     author: bookData?.author || "",
     bookCover: bookData?.coverPhotoUrl || "",
   };
-  // console.log(bookData?.coverPhotoUrl);
+
   const methods = useForm({
     resolver: yupResolver(validationSchemas[active] as yup.ObjectSchema<any>),
     mode: "onChange",
     defaultValues: defaultValues,
   });
+
   const {
     handleSubmit,
     trigger,
@@ -180,28 +180,10 @@ console.log(testConditionType())
       setActive((prev) => prev + 1);
     }
   };
-  // console.log(getValues());
-  // const handleBack = () => {
-  //   if (active > 0) {
-  //     setSteps((prevSteps) =>
-  //       prevSteps.map((step, index) => {
-  //         if (index === active) {
-  //           return { ...step, isActive: false, isCompleted: false };
-  //         } else if (index === active - 1) {
-  //           return { ...step, isActive: true, isCompleted: false };
-  //         }
-  //         return step;
-  //       })
-  //     );
-  //     setActive((prev) => prev - 1);
-  //   }
-  // };
-  // console.log({errors})
-  console.log({defaultValues})
+
   const handleAddUpdateBookFn = async <T extends IAddUpdateBookData>(
     data: T
   ) => {
-    // console.log(data);
     const formData = new FormData();
     if (userInformation.id) formData.append("ownerId", userInformation.id);
     if (bookData?.id) formData.append("id", bookData?.id);
@@ -211,7 +193,6 @@ console.log(testConditionType())
     formData.append("genres", data.favGenres.join(","));
     formData.append("language", data.language);
     formData.append("condition", data.condition);
-    console.log(typeof bookData?.coverPhotoUrl);
 
     // <========== If book cover type is URL we need to convert URL to File ==========>
     if (!isString(data.bookCover)) {
