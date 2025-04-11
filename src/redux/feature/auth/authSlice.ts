@@ -272,7 +272,7 @@ const authSlice = createSlice({
             authApi.endpoints.resetPassword.matchFulfilled,
             (state, action) => {
                 const data = action.payload
-                console.log(data)
+
                 state.loading = false;
                 state.error = null;
                 state.message = data?.message;
@@ -288,7 +288,6 @@ const authSlice = createSlice({
                 if (typeof error === "object" && error !== null) {
                     errorMessage = error.message;
                 }
-                // console.log(errorMessage);
                 state.loading = false;
                 state.error = errorMessage;
                 state.message = "";

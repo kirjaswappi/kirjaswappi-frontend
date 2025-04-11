@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import leftArrowIcon from "../../assets/leftArrow.png";
 import Image from "../../components/shared/Image";
@@ -8,12 +8,18 @@ import {
   useGetBookByIdQuery,
   useGetSupportConditionQuery,
   useGetSupportLanguageQuery,
+  useUpdateBookMutation,
 } from "../../redux/feature/book/bookApi";
 import yup from "yup";
 import Stepper from "./_components/Stepper";
 import BookDetailsStep from "./_components/BookDetailsStep";
 import OtherDetailsStep from "./_components/OtherDetailsStep";
-import { blobToBase64, options } from "../../utility/helper";
+import {
+  blobToBase64,
+  convertedURLToFile,
+  isString,
+  options,
+} from "../../utility/helper";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { validationSchemas } from "./Schema";
@@ -56,15 +62,42 @@ export default function AddUpdateBook() {
     { skip: !id }
   );
   const [addBook, { isLoading }] = useAddBookMutation();
+  const [updateBook] = useUpdateBookMutation();
+
+  const testConditionType = () => {
+    if(bookData?.exchangeCondition?.exchangeableBooks?.length > 0){
+      return "byBook"
+    }else if(bookData?.exchangeCondition?.exchangeableGenres?.length > 0){
+      return "byGenre"
+    }else {
+      return "openToOffer"
+    }
+  }
+
   const defaultValues = {
-    books: [{ bookTitle: "", authorName: "", byBookCover: null }],
+    books:
+      bookData?.exchangeCondition?.exchangeableBooks?.length > 0
+        ? bookData.exchangeCondition.exchangeableBooks.map(
+            (book: {
+              title: string;
+              author: string;
+              coverPhotoUrl: string;
+            }) => ({
+              bookTitle: book.title || "",
+              authorName: book.author || "",
+              byBookCover: book.coverPhotoUrl || null,
+            })
+          )
+        : [{ bookTitle: "", authorName: "", byBookCover: null }],
     favGenres: bookData?.genres || [],
-    conditionType: "byBook",
+    conditionType: testConditionType() || "byBook",
     language: bookData?.language || "",
     title: bookData?.title || "",
-    genres: bookData?.genre || [],
+    genres: bookData?.exchangeCondition?.exchangeableGenres?.length > 0 ? bookData?.exchangeCondition?.exchangeableGenres?.map((genre: { name: string; }) => genre?.name) : [],
     condition: bookData?.condition || "",
     description: bookData?.description || "",
+    author: bookData?.author || "",
+    bookCover: bookData?.coverPhotoUrl || "",
   };
 
   const methods = useForm({
@@ -72,6 +105,7 @@ export default function AddUpdateBook() {
     mode: "onChange",
     defaultValues: defaultValues,
   });
+
   const {
     handleSubmit,
     trigger,
@@ -82,22 +116,36 @@ export default function AddUpdateBook() {
   } = methods;
   const languages = options(languageDataOptions);
   const conditions = options(conditionDataOptions);
-
-  // useEffect(() => {
-  //   if (bookData) {
-  //     reset({
-  //       favGenres: bookData.genres || [],
-  //       conditionType: "byBook",
-  //       language: bookData.language || "",
-  //       title: bookData.title || "",
-  //       genres: bookData?.genres || [],
-  //       condition: bookData?.condition || '',
-  //       description: bookData?.description || "",
-  //       author: bookData?.author || "",
-  //       bookCover: bookData?.coverPhotoUrl || ""
-  //     });
-  //   }
-  // }, [bookData, reset]);
+  
+  useEffect(() => {
+    if (bookData) {
+      reset({
+        books:
+          bookData?.exchangeCondition?.exchangeableBooks?.length > 0
+            ? bookData.exchangeCondition.exchangeableBooks.map(
+                (book: {
+                  title: string;
+                  author: string;
+                  coverPhotoUrl: string;
+                }) => ({
+                  bookTitle: book.title || "",
+                  authorName: book.author || "",
+                  byBookCover: book.coverPhotoUrl || null,
+                })
+              )
+            : [{ bookTitle: "", authorName: "", byBookCover: null }],
+        favGenres: bookData?.genres || [],
+        conditionType: testConditionType() || "byBook",
+        language: bookData?.language || "",
+        title: bookData?.title || "",
+        genres: bookData?.exchangeCondition?.exchangeableGenres?.length > 0 ? bookData?.exchangeCondition?.exchangeableGenres?.map((genre: { name: string; }) => genre?.name) : [],
+        condition: bookData?.condition || "",
+        description: bookData?.description || "",
+        author: bookData?.author || "",
+        bookCover: bookData?.coverPhotoUrl || "",
+      });
+    }
+  }, [bookData, reset]);
   const [steps, setSteps] = useState([
     {
       label: "Book Details",
@@ -132,36 +180,29 @@ export default function AddUpdateBook() {
       setActive((prev) => prev + 1);
     }
   };
-  // console.log(getValues());
-  // const handleBack = () => {
-  //   if (active > 0) {
-  //     setSteps((prevSteps) =>
-  //       prevSteps.map((step, index) => {
-  //         if (index === active) {
-  //           return { ...step, isActive: false, isCompleted: false };
-  //         } else if (index === active - 1) {
-  //           return { ...step, isActive: true, isCompleted: false };
-  //         }
-  //         return step;
-  //       })
-  //     );
-  //     setActive((prev) => prev - 1);
-  //   }
-  // };
-  // console.log({errors})
+
   const handleAddUpdateBookFn = async <T extends IAddUpdateBookData>(
     data: T
   ) => {
-    console.log(data);
     const formData = new FormData();
     if (userInformation.id) formData.append("ownerId", userInformation.id);
+    if (bookData?.id) formData.append("id", bookData?.id);
     formData.append("title", data.title);
     formData.append("author", data.author);
     formData.append("description", data.description);
     formData.append("genres", data.favGenres.join(","));
     formData.append("language", data.language);
     formData.append("condition", data.condition);
-    formData.append("coverPhoto", data.bookCover);
+
+    // <========== If book cover type is URL we need to convert URL to File ==========>
+    if (!isString(data.bookCover)) {
+      formData.append("coverPhoto", data.bookCover);
+    } else {
+      const file = await convertedURLToFile(bookData?.coverPhotoUrl);
+      if (file) {
+        formData.append("coverPhoto", file);
+      }
+    }
 
     if (data.conditionType === "byBook") {
       const exchangeCondition: {
@@ -175,28 +216,19 @@ export default function AddUpdateBook() {
       } = {
         openForOffers: false,
         genres: null,
-        books: await Promise.all(data.books.map(async(book) => {
-          const bookData: any = {
-            title: book.bookTitle,
-            author: book.authorName,
-          };
-          if (book.byBookCover instanceof File) {
-            bookData.coverPhoto = await blobToBase64(book.byBookCover);
-          } 
-          return bookData
-        })),
+        books: await Promise.all(
+          data.books.map(async (book) => {
+            const bookData: any = {
+              title: book.bookTitle,
+              author: book.authorName,
+            };
+            if (book.byBookCover instanceof File) {
+              bookData.coverPhoto = await blobToBase64(book.byBookCover);
+            }
+            return bookData;
+          })
+        ),
       };
-      // data.books.forEach((book) => {
-      //   const bookData: any = {
-      //     title: book.bookTitle,
-      //     author: book.authorName,
-      //   };
-      //   if (book.byBookCover instanceof File) {
-      //     bookData.coverPhoto = book.byBookCover;
-      //   }
-      //   exchangeCondition.books.push(bookData);
-      // });
-
       formData.append("exchangeCondition", JSON.stringify(exchangeCondition));
     } else if (data.conditionType === "openToOffer") {
       formData.append(
@@ -219,12 +251,21 @@ export default function AddUpdateBook() {
     }
 
     try {
-      await addBook(formData).then((res) => {
-        if(res?.data){
-          reset()
-          navigate(`/profile/user-profile`)
-        }
-      });
+      if (!bookData?.id) {
+        await addBook(formData).then((res) => {
+          if (res?.data) {
+            reset();
+            navigate(`/profile/user-profile`);
+          }
+        });
+      } else {
+        await updateBook({ data: formData, id: bookData?.id }).then((res) => {
+          if (res?.data) {
+            reset();
+            navigate(`/profile/user-profile`);
+          }
+        });
+      }
     } catch (error) {
       console.log(error);
     }

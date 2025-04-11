@@ -55,7 +55,6 @@ export default function Login() {
                     if (!value) {
                         stateObj[name] = "Please enter email.";
                     } else if (!emailRegex.test(value)) {
-                        console.log(name)
                         stateObj[name] = "Please Enter your valid email";
                     }
                     break;
@@ -63,7 +62,6 @@ export default function Login() {
                     if (!value) {
                         stateObj[name] = "Please enter Password.";
                     } else if (value < 0) {
-                        console.log(value)
                         errors.password = "Password must be at least 6 characters long";
                     }
                     break;

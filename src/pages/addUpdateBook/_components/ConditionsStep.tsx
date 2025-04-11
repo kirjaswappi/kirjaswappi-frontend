@@ -35,7 +35,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
         <Controller
           name="conditionType"
           control={control}
-          defaultValue="byBook"
+          defaultValue={conditionType}
           render={({ field }) => {
             return (
               <div className="flex flex-col gap-4 mt-2">
