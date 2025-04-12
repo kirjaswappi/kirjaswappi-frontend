@@ -15,24 +15,6 @@ export const blobToBase64 = (blob: any) => {
   });
 };
 
-export const urlToFile = async (
-  url: string,
-  filename: string,
-  mimeType: string
-) => {
-  try {
-    const res = await fetch(url);
-    const blob = await res.blob();
-
-    if (!SUPPORTED_FORMATS.includes(blob.type)) {
-      throw new Error("Unsupported image format");
-    }
-
-    return new File([blob], filename, { type: mimeType });
-  } catch (err) {
-    return null;
-  }
-};
 
 export const convertedURLToFile = async (url: string): Promise<File | undefined> => {
   if (!url) return;
@@ -54,6 +36,20 @@ export const convertedURLToFile = async (url: string): Promise<File | undefined>
     return file;
   } catch (error) {
     console.error("Error converting URL to file:", error);
+    return undefined;
+  }
+};
+
+
+export const convertedURLToBinary = async (url: string): Promise<ArrayBuffer | undefined> => {
+  if (!url) return;
+
+  try {
+    const response = await fetch(url);
+    const buffer = await response.arrayBuffer();
+    return buffer; // This is raw binary data
+  } catch (error) {
+    console.error("Error converting URL to binary:", error);
     return undefined;
   }
 };

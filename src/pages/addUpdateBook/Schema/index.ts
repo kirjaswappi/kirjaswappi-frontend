@@ -38,7 +38,7 @@ const otherDetails = yup.object().shape({
 const conditionDetails = yup.object().shape({
   conditionType: yup.string().required("Condition type is required"),
   books: yup.array().when("conditionType", {
-    is: "byBook",
+    is: "ByBooks",
     then: (schema) =>
       schema
         .of(

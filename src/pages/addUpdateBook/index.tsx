@@ -16,6 +16,7 @@ import BookDetailsStep from "./_components/BookDetailsStep";
 import OtherDetailsStep from "./_components/OtherDetailsStep";
 import {
   blobToBase64,
+  convertedURLToBinary,
   convertedURLToFile,
   isString,
   options,
@@ -65,14 +66,14 @@ export default function AddUpdateBook() {
   const [updateBook] = useUpdateBookMutation();
 
   const testConditionType = () => {
-    if(bookData?.exchangeCondition?.exchangeableBooks?.length > 0){
-      return "byBook"
-    }else if(bookData?.exchangeCondition?.exchangeableGenres?.length > 0){
-      return "byGenre"
-    }else {
-      return "openToOffer"
+    if (bookData?.exchangeCondition?.exchangeableBooks?.length > 0) {
+      return "ByBooks";
+    } else if (bookData?.exchangeCondition?.exchangeableGenres?.length > 0) {
+      return "ByBooks";
+    } else {
+      return "openToOffer";
     }
-  }
+  };
 
   const defaultValues = {
     books:
@@ -90,10 +91,15 @@ export default function AddUpdateBook() {
           )
         : [{ bookTitle: "", authorName: "", byBookCover: null }],
     favGenres: bookData?.genres || [],
-    conditionType: testConditionType() || "byBook",
+    conditionType: testConditionType() || "ByBooks",
     language: bookData?.language || "",
     title: bookData?.title || "",
-    genres: bookData?.exchangeCondition?.exchangeableGenres?.length > 0 ? bookData?.exchangeCondition?.exchangeableGenres?.map((genre: { name: string; }) => genre?.name) : [],
+    genres:
+      bookData?.exchangeCondition?.exchangeableGenres?.length > 0
+        ? bookData?.exchangeCondition?.exchangeableGenres?.map(
+            (genre: { name: string }) => genre?.name
+          )
+        : [],
     condition: bookData?.condition || "",
     description: bookData?.description || "",
     author: bookData?.author || "",
@@ -116,7 +122,7 @@ export default function AddUpdateBook() {
   } = methods;
   const languages = options(languageDataOptions);
   const conditions = options(conditionDataOptions);
-  
+
   useEffect(() => {
     if (bookData) {
       reset({
@@ -135,10 +141,15 @@ export default function AddUpdateBook() {
               )
             : [{ bookTitle: "", authorName: "", byBookCover: null }],
         favGenres: bookData?.genres || [],
-        conditionType: testConditionType() || "byBook",
+        conditionType: testConditionType() || "ByBooks",
         language: bookData?.language || "",
         title: bookData?.title || "",
-        genres: bookData?.exchangeCondition?.exchangeableGenres?.length > 0 ? bookData?.exchangeCondition?.exchangeableGenres?.map((genre: { name: string; }) => genre?.name) : [],
+        genres:
+          bookData?.exchangeCondition?.exchangeableGenres?.length > 0
+            ? bookData?.exchangeCondition?.exchangeableGenres?.map(
+                (genre: { name: string }) => genre?.name
+              )
+            : [],
         condition: bookData?.condition || "",
         description: bookData?.description || "",
         author: bookData?.author || "",
@@ -146,6 +157,7 @@ export default function AddUpdateBook() {
       });
     }
   }, [bookData, reset]);
+
   const [steps, setSteps] = useState([
     {
       label: "Book Details",
@@ -204,10 +216,12 @@ export default function AddUpdateBook() {
       }
     }
 
-    if (data.conditionType === "byBook") {
+    if (data.conditionType === "ByBooks") {
       const exchangeCondition: {
         openForOffers: boolean;
         genres: null;
+        conditionType: string;
+        giveAway: boolean;
         books: {
           title: string;
           author: string;
@@ -215,6 +229,8 @@ export default function AddUpdateBook() {
         }[];
       } = {
         openForOffers: false,
+        conditionType: data.conditionType,
+        giveAway: false,
         genres: null,
         books: await Promise.all(
           data.books.map(async (book) => {
@@ -224,26 +240,35 @@ export default function AddUpdateBook() {
             };
             if (book.byBookCover instanceof File) {
               bookData.coverPhoto = await blobToBase64(book.byBookCover);
+            } else {
+              bookData.coverPhoto = await convertedURLToBinary(
+                book.byBookCover
+              );
             }
             return bookData;
           })
         ),
       };
-      formData.append("exchangeCondition", JSON.stringify(exchangeCondition));
+      console.log(exchangeCondition);
+      formData.append("swapCondition", JSON.stringify(exchangeCondition));
     } else if (data.conditionType === "openToOffer") {
       formData.append(
-        "exchangeCondition",
+        "swapCondition",
         JSON.stringify({
           openForOffers: true,
           genres: null,
           books: null,
+          conditionType: 'OpenForOffers',
+          giveAway: false,
         })
       );
-    } else if (data.conditionType === "byGenre") {
+    } else if (data.conditionType === "ByGenres") {
       formData.append(
-        "exchangeCondition",
+        "swapCondition",
         JSON.stringify({
           openForOffers: false,
+          conditionType: data.conditionType,
+          giveAway: false,
           genres: data.genres.join(","),
           books: null,
         })

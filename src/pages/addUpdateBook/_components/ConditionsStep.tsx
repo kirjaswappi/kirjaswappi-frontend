@@ -55,8 +55,8 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                   <label className="flex items-center gap-2 w-full cursor-pointer">
                     <input
                       type="radio"
-                      value="byBook"
-                      checked={field.value === "byBook"}
+                      value="ByBooks"
+                      checked={field.value === "ByBooks"}
                       onChange={field.onChange}
                       className="w-4 h-4"
                     />
@@ -67,8 +67,8 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                   <label className="flex items-center gap-2 w-full cursor-pointer">
                     <input
                       type="radio"
-                      value="byGenre"
-                      checked={field.value === "byGenre"}
+                      value="ByGenres"
+                      checked={field.value === "ByGenres"}
                       onChange={field.onChange}
                       className="w-4 h-4"
                     />
@@ -80,7 +80,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
           }}
         />
       </div>
-      {conditionType === "byBook" && (
+      {conditionType === "ByBooks" && (
         <div>
           {fields.map((book, index) => (
             <div key={book.id}>
@@ -129,7 +129,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
           </div>
         </div>
       )}
-      {conditionType === "byGenre" && (
+      {conditionType === "ByGenres" && (
         <div>
           <div className="flex items-center justify-between py-4">
             <InputLabel label="Genre" required />

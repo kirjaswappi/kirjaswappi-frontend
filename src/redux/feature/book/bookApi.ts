@@ -77,6 +77,7 @@ export const bookApi = api.injectEndpoints({
           method: "GET",
         };
       },
+      providesTags: ["AddBook", "UpdateBook"],
     }),
   }),
 });
