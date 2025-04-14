@@ -7,7 +7,6 @@ import closeIcon from "../../../assets/close.svg";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { setOpen } from "../../../redux/feature/open/openSlice";
 import ImageFileInput from "./ImageControllerField";
-import BookIcon from "../../../assets/bookIcon.svg";
 import plusIcon from "../../../assets/plus.png";
 import { useEffect } from "react";
 import { FaDeleteLeft } from "react-icons/fa6";
