@@ -40,14 +40,14 @@ export const convertedURLToFile = async (url: string): Promise<File | undefined>
   }
 };
 
-
 export async function urlToDataUrl(url: string): Promise<string> {
   const resp = await fetch(url);
   if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
   const blob = await resp.blob();
-
-  return (await blobToBase64(blob)) as string;
+  const base64 = await blobToBase64(blob);
+  return base64 as string;
 }
+
 export const options = (options: string[]) => {
   if (options && options?.length > 0) {
     const option = options?.map((item: string) => {
