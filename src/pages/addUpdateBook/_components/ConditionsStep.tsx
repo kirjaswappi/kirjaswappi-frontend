@@ -43,8 +43,8 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                   <label className="flex items-center gap-2 w-full cursor-pointer">
                     <input
                       type="radio"
-                      value="openToOffer"
-                      checked={field.value === "openToOffer"}
+                      value="OpenForOffers"
+                      checked={field.value === "OpenForOffers"}
                       onChange={field.onChange}
                       className="w-4 h-4"
                     />
@@ -163,7 +163,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
           )}
         </div>
       )}
-      {conditionType === "openToOffer" && (
+      {conditionType === "OpenForOffers" && (
         <div className="h-[200px] border-t border-[#E4E4E4] mt-4 flex flex-col items-center justify-center gap-2">
           <Image src={BookIcon} alt="book icon" />
           <p className="text-center font-poppins font-normal text-sm">

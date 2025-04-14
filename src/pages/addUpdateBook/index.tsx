@@ -69,9 +69,9 @@ export default function AddUpdateBook() {
     if (bookData?.exchangeCondition?.exchangeableBooks?.length > 0) {
       return "ByBooks";
     } else if (bookData?.exchangeCondition?.exchangeableGenres?.length > 0) {
-      return "ByBooks";
+      return "ByGenres";
     } else {
-      return "openToOffer";
+      return "OpenForOffers";
     }
   };
 
@@ -251,14 +251,14 @@ export default function AddUpdateBook() {
       };
       console.log(exchangeCondition);
       formData.append("swapCondition", JSON.stringify(exchangeCondition));
-    } else if (data.conditionType === "openToOffer") {
+    } else if (data.conditionType === "OpenForOffers") {
       formData.append(
         "swapCondition",
         JSON.stringify({
           openForOffers: true,
           genres: null,
           books: null,
-          conditionType: 'OpenForOffers',
+          conditionType: data.conditionType,
           giveAway: false,
         })
       );
