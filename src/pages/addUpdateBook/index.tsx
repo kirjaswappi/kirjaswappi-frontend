@@ -176,6 +176,15 @@ export default function AddUpdateBook() {
     },
   ]);
 
+
+  async function urlToDataUrl(url: string): Promise<string> {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const blob = await resp.blob();
+    return await blobToBase64(blob);
+  }
+  
+
   const handleNext = async () => {
     const valid = await trigger();
     if (valid) {
@@ -241,7 +250,7 @@ export default function AddUpdateBook() {
             if (book.byBookCover instanceof File) {
               bookData.coverPhoto = await blobToBase64(book.byBookCover);
             } else {
-              bookData.coverPhoto = await convertedURLToBinary(
+              bookData.coverPhoto = await urlToDataUrl(
                 book.byBookCover
               );
             }
