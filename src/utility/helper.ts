@@ -41,19 +41,13 @@ export const convertedURLToFile = async (url: string): Promise<File | undefined>
 };
 
 
-export const convertedURLToBinary = async (url: string): Promise<ArrayBuffer | undefined> => {
-  if (!url) return;
+export async function urlToDataUrl(url: string): Promise<string> {
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+  const blob = await resp.blob();
 
-  try {
-    const response = await fetch(url);
-    const buffer = await response.arrayBuffer();
-    return buffer; // This is raw binary data
-  } catch (error) {
-    console.error("Error converting URL to binary:", error);
-    return undefined;
-  }
-};
-
+  return (await blobToBase64(blob)) as string;
+}
 export const options = (options: string[]) => {
   if (options && options?.length > 0) {
     const option = options?.map((item: string) => {

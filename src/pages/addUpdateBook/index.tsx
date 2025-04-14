@@ -16,10 +16,10 @@ import BookDetailsStep from "./_components/BookDetailsStep";
 import OtherDetailsStep from "./_components/OtherDetailsStep";
 import {
   blobToBase64,
-  convertedURLToBinary,
   convertedURLToFile,
   isString,
   options,
+  urlToDataUrl,
 } from "../../utility/helper";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -177,12 +177,8 @@ export default function AddUpdateBook() {
   ]);
 
 
-  async function urlToDataUrl(url: string): Promise<string> {
-    const resp = await fetch(url);
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const blob = await resp.blob();
-    return await blobToBase64(blob);
-  }
+  
+  
   
 
   const handleNext = async () => {
