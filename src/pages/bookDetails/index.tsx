@@ -232,7 +232,7 @@ export default function BookDetails() {
         <div>
           <p className="text-[8px] font-poppins ">Offered by</p>
           <h3 className="text-sm font-poppins font-normal">
-            {bookData.owner.name}
+            {bookData?.owner?.name}
           </h3>
         </div>
         <div>

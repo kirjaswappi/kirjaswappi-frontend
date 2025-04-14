@@ -9,8 +9,6 @@ export default function Books() {
     const {filter} = useAppSelector(state => state.filter)
     const { data, isError, isLoading } = useGetAllBooksQuery(filter);
     goToTop();
-    
-    // console.log(filter)
     if(isError) return <p>Something went wrong</p>
     return (
         <section>
