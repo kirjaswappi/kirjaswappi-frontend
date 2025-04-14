@@ -91,7 +91,7 @@ const conditionDetails = yup.object().shape({
     .array()
     .of(yup.string())
     .when("conditionType", {
-      is: "byGenre",
+      is: "ByGenres",
       then: () => yup.array().min(1, "Please select at least one genre."),
     }),
 });

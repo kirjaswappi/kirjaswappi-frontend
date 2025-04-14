@@ -11,13 +11,20 @@ import BookIcon from "../../../assets/bookIcon.svg";
 import plusIcon from "../../../assets/plus.png";
 import { useEffect } from "react";
 import { FaDeleteLeft } from "react-icons/fa6";
+import ConditionMessageBox from "./ConditionMessageBox";
+import {
+  BYBOOKS,
+  BYGENRES,
+  GIVEAWAY,
+  OPENTOOFFERS,
+} from "../../../constant/ADDBOOKCONDITIONTYPE";
 
 export default function ConditionsStep({ errors }: { errors: any }) {
   const dispatch = useAppDispatch();
   const { open } = useAppSelector((state) => state.open);
-  const { control, getValues, watch } = useFormContext();
+  const { control, getValues, watch, setValue } = useFormContext();
   const conditionType = watch("conditionType");
-  const favGenres = getValues("genres");
+  const genres = getValues("genres");
   const { fields, append, remove } = useFieldArray({ control, name: "books" });
 
   useEffect(() => {
@@ -25,6 +32,14 @@ export default function ConditionsStep({ errors }: { errors: any }) {
       append({ bookTitle: "", authorName: "", byBookCover: null });
     }
   }, [fields, append]);
+
+  const handleRemoveGenre = (genreValue: string) => {
+    if (!genreValue) return;
+    setValue(
+      "genres",
+      genres?.filter((favGen: string) => favGen !== genreValue)
+    );
+  };
 
   return (
     <div>
@@ -43,8 +58,8 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                   <label className="flex items-center gap-2 w-full cursor-pointer">
                     <input
                       type="radio"
-                      value="OpenForOffers"
-                      checked={field.value === "OpenForOffers"}
+                      value={OPENTOOFFERS}
+                      checked={field.value === OPENTOOFFERS}
                       onChange={field.onChange}
                       className="w-4 h-4"
                     />
@@ -55,8 +70,8 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                   <label className="flex items-center gap-2 w-full cursor-pointer">
                     <input
                       type="radio"
-                      value="ByBooks"
-                      checked={field.value === "ByBooks"}
+                      value={BYBOOKS}
+                      checked={field.value === BYBOOKS}
                       onChange={field.onChange}
                       className="w-4 h-4"
                     />
@@ -67,12 +82,24 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                   <label className="flex items-center gap-2 w-full cursor-pointer">
                     <input
                       type="radio"
-                      value="ByGenres"
-                      checked={field.value === "ByGenres"}
+                      value={BYGENRES}
+                      checked={field.value === BYGENRES}
                       onChange={field.onChange}
                       className="w-4 h-4"
                     />
                     By Genre
+                  </label>
+                </div>
+                <div className="px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg">
+                  <label className="flex items-center gap-2 w-full cursor-pointer">
+                    <input
+                      type="radio"
+                      value={GIVEAWAY}
+                      checked={field.value === GIVEAWAY}
+                      onChange={field.onChange}
+                      className="w-4 h-4"
+                    />
+                    Giveaway
                   </label>
                 </div>
               </div>
@@ -80,20 +107,23 @@ export default function ConditionsStep({ errors }: { errors: any }) {
           }}
         />
       </div>
-      {conditionType === "ByBooks" && (
+      <span className="w-full h-[1px] bg-platinumDark block my-4"></span>
+      {conditionType === BYBOOKS && (
         <div>
           {fields.map((book, index) => (
             <div key={book.id}>
               <div className="pt-4">
                 <div className="flex items-center justify-between">
                   <InputLabel label="Book Cover" required />
-                  {index > 0 && <Button
-                    type="button"
-                    onClick={() => remove(index)}
-                    className="text-red-500 bg-rose-100 w-7 h-7 flex items-center justify-center rounded-sm"
-                  >
-                    <FaDeleteLeft />
-                  </Button>}
+                  {index > 0 && (
+                    <Button
+                      type="button"
+                      onClick={() => remove(index)}
+                      className="text-red-500 bg-rose-100 w-7 h-7 flex items-center justify-center rounded-sm"
+                    >
+                      <FaDeleteLeft />
+                    </Button>
+                  )}
                 </div>
                 <ImageFileInput name={`books.${index}.byBookCover`} />
               </div>
@@ -129,7 +159,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
           </div>
         </div>
       )}
-      {conditionType === "ByGenres" && (
+      {conditionType === BYGENRES && (
         <div>
           <div className="flex items-center justify-between py-4">
             <InputLabel label="Genre" required />
@@ -141,20 +171,25 @@ export default function ConditionsStep({ errors }: { errors: any }) {
               Add
             </Button>
           </div>
-          {favGenres && favGenres.length > 0 && (
+          {genres && genres.length > 0 ? (
             <div className="flex flex-col gap-2 pb-4">
-              {favGenres.map((favItem: string, index: number) => (
+              {genres.map((favItem: string, index: number) => (
                 <div
                   key={index}
                   className="flex items-center justify-between px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg"
                 >
                   <h3 className="font-poppins text-sm font-light">{favItem}</h3>
-                  <Button>
+                  <Button
+                    type="button"
+                    onClick={() => handleRemoveGenre(favItem)}
+                  >
                     <Image src={closeIcon} alt="close" className="h-2" />
                   </Button>
                 </div>
               ))}
             </div>
+          ) : (
+            <ConditionMessageBox conditionType={conditionType} />
           )}
           {errors && errors["genres"] && (
             <div className="text-rose-500 text-xs mt-1 pl-2">
@@ -163,14 +198,11 @@ export default function ConditionsStep({ errors }: { errors: any }) {
           )}
         </div>
       )}
-      {conditionType === "OpenForOffers" && (
-        <div className="h-[200px] border-t border-[#E4E4E4] mt-4 flex flex-col items-center justify-center gap-2">
-          <Image src={BookIcon} alt="book icon" />
-          <p className="text-center font-poppins font-normal text-sm">
-            You will receive offers
-            <br /> of all sorts of books
-          </p>
-        </div>
+      {conditionType === OPENTOOFFERS && (
+        <ConditionMessageBox conditionType={conditionType} />
+      )}
+      {conditionType === GIVEAWAY && (
+        <ConditionMessageBox conditionType={conditionType} />
       )}
     </div>
   );

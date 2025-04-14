@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import leftArrowIcon from "../../assets/leftArrow.png";
+import NextArrowIcon from "../../assets/arrow1.png";
+import PrevArrowIcon from "../../assets/arrow2.png";
 import Image from "../../components/shared/Image";
 import Loader from "../../components/shared/Loader";
 import {
@@ -29,6 +31,7 @@ import AddGenre from "../../components/shared/AddGenre";
 import Button from "../../components/shared/Button";
 import ConditionsStep from "./_components/ConditionsStep";
 import { useAppSelector } from "../../redux/hooks";
+import { BYBOOKS, BYGENRES, GIVEAWAY, OPENTOOFFERS } from "../../constant/ADDBOOKCONDITIONTYPE";
 
 interface IBook {
   bookTitle: string;
@@ -65,20 +68,10 @@ export default function AddUpdateBook() {
   const [addBook, { isLoading }] = useAddBookMutation();
   const [updateBook] = useUpdateBookMutation();
 
-  const testConditionType = () => {
-    if (bookData?.exchangeCondition?.exchangeableBooks?.length > 0) {
-      return "ByBooks";
-    } else if (bookData?.exchangeCondition?.exchangeableGenres?.length > 0) {
-      return "ByGenres";
-    } else {
-      return "OpenForOffers";
-    }
-  };
-
   const defaultValues = {
     books:
-      bookData?.exchangeCondition?.exchangeableBooks?.length > 0
-        ? bookData.exchangeCondition.exchangeableBooks.map(
+      bookData?.swapCondition?.swappableBooks?.length > 0
+        ? bookData.swapCondition.swappableBooks.map(
             (book: {
               title: string;
               author: string;
@@ -91,7 +84,7 @@ export default function AddUpdateBook() {
           )
         : [{ bookTitle: "", authorName: "", byBookCover: null }],
     favGenres: bookData?.genres || [],
-    conditionType: testConditionType() || "ByBooks",
+    conditionType: bookData?.swapCondition?.conditionType || BYBOOKS,
     language: bookData?.language || "",
     title: bookData?.title || "",
     genres:
@@ -111,7 +104,7 @@ export default function AddUpdateBook() {
     mode: "onChange",
     defaultValues: defaultValues,
   });
-
+  console.log({ defaultValues });
   const {
     handleSubmit,
     trigger,
@@ -127,8 +120,8 @@ export default function AddUpdateBook() {
     if (bookData) {
       reset({
         books:
-          bookData?.exchangeCondition?.exchangeableBooks?.length > 0
-            ? bookData.exchangeCondition.exchangeableBooks.map(
+          bookData?.swapCondition?.swappableBooks?.length > 0
+            ? bookData.swapCondition.swappableBooks.map(
                 (book: {
                   title: string;
                   author: string;
@@ -141,12 +134,12 @@ export default function AddUpdateBook() {
               )
             : [{ bookTitle: "", authorName: "", byBookCover: null }],
         favGenres: bookData?.genres || [],
-        conditionType: testConditionType() || "ByBooks",
+        conditionType: bookData?.swapCondition?.conditionType || BYBOOKS,
         language: bookData?.language || "",
         title: bookData?.title || "",
         genres:
-          bookData?.exchangeCondition?.exchangeableGenres?.length > 0
-            ? bookData?.exchangeCondition?.exchangeableGenres?.map(
+          bookData?.swapCondition?.swappableGenres?.length > 0
+            ? bookData?.swapCondition?.swappableGenres?.map(
                 (genre: { name: string }) => genre?.name
               )
             : [],
@@ -176,11 +169,6 @@ export default function AddUpdateBook() {
     },
   ]);
 
-
-  
-  
-  
-
   const handleNext = async () => {
     const valid = await trigger();
     if (valid) {
@@ -197,7 +185,19 @@ export default function AddUpdateBook() {
       setActive((prev) => prev + 1);
     }
   };
-
+  const handlePrev = async () => {
+    setSteps((prevStep) =>
+      prevStep.map((step, index) => {
+        if (index === active) return step;
+        if (index === active - 1) {
+          return { ...step, isActive: false };
+        }
+        return step;
+      })
+    );
+    if (active === 0) return;
+    setActive((prev) => prev - 1);
+  };
   const handleAddUpdateBookFn = async <T extends IAddUpdateBookData>(
     data: T
   ) => {
@@ -221,7 +221,7 @@ export default function AddUpdateBook() {
       }
     }
 
-    if (data.conditionType === "ByBooks") {
+    if (data.conditionType === BYBOOKS) {
       const exchangeCondition: {
         openForOffers: boolean;
         genres: null;
@@ -246,17 +246,14 @@ export default function AddUpdateBook() {
             if (book.byBookCover instanceof File) {
               bookData.coverPhoto = await blobToBase64(book.byBookCover);
             } else {
-              bookData.coverPhoto = await urlToDataUrl(
-                book.byBookCover
-              );
+              bookData.coverPhoto = await urlToDataUrl(book.byBookCover);
             }
             return bookData;
           })
         ),
       };
-      console.log(exchangeCondition);
       formData.append("swapCondition", JSON.stringify(exchangeCondition));
-    } else if (data.conditionType === "OpenForOffers") {
+    } else if (data.conditionType === OPENTOOFFERS) {
       formData.append(
         "swapCondition",
         JSON.stringify({
@@ -267,7 +264,7 @@ export default function AddUpdateBook() {
           giveAway: false,
         })
       );
-    } else if (data.conditionType === "ByGenres") {
+    } else if (data.conditionType === BYGENRES) {
       formData.append(
         "swapCondition",
         JSON.stringify({
@@ -276,6 +273,17 @@ export default function AddUpdateBook() {
           giveAway: false,
           genres: data.genres.join(","),
           books: null,
+        })
+      );
+    } else if (data.conditionType === GIVEAWAY) {
+      formData.append(
+        "swapCondition",
+        JSON.stringify({
+          openForOffers: false,
+          genres: null,
+          books: null,
+          conditionType: data.conditionType,
+          giveAway: true,
         })
       );
     }
@@ -306,6 +314,7 @@ export default function AddUpdateBook() {
     if (bookLoading) return true;
     else return false;
   };
+
   if (loading()) return <Loader />;
   return (
     <div className="min-h-screen">
@@ -343,14 +352,24 @@ export default function AddUpdateBook() {
             )}
             {active === 1 && <OtherDetailsStep errors={errors} />}
             {active === 2 && <ConditionsStep errors={errors} />}
-            <div className="mt-4 flex justify-between pb-4">
+
+            <div className="mt-4 flex justify-between gap-3 pb-4">
+              {active > 0 && (
+                <Button
+                  onClick={handlePrev}
+                  type="button"
+                  className="bg-primary-light text-primary w-full py-4 rounded-lg border border-primary flex items-center justify-center font-poppins text-base font-medium"
+                >
+                  <Image src={PrevArrowIcon} alt="Next" className="w-4" /> Back
+                </Button>
+              )}
               {active <= 1 && (
                 <Button
                   onClick={handleNext}
                   type="button"
-                  className="bg-primary text-white w-full py-4 rounded-lg"
+                  className="bg-primary text-white w-full py-4 rounded-lg flex items-center justify-center  font-poppins text-base font-medium"
                 >
-                  Next
+                  Next <Image src={NextArrowIcon} alt="Next" className="w-4" />
                 </Button>
               )}
               {active === 2 && (
