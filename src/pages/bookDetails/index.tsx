@@ -15,11 +15,11 @@ import Image from "../../components/shared/Image";
 import { goToTop } from "../../utility/helper";
 import { useGetBookByIdQuery } from "../../redux/feature/book/bookApi";
 import Loader from "../../components/shared/Loader";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Exchanges from "./components/Exchanges";
 import { useGetUserProfileImageQuery } from "../../redux/feature/auth/authApi";
 import SwapModal from "../../components/shared/SwapModal";
-import { useAppDispatch } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setSwapModal } from "../../redux/feature/open/openSlice";
 import { FormProvider, useForm } from "react-hook-form";
 export default function BookDetails() {
@@ -27,9 +27,10 @@ export default function BookDetails() {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const [isProfile, setProfile] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const isProfile = location.pathname.startsWith("/profile");
+  const dispatch = useAppDispatch();
+  const { userInformation } = useAppSelector((state) => state.auth);
   const { data: bookData, isLoading: bookLoading } = useGetBookByIdQuery(
     { id: id },
     { skip: !id }
@@ -41,11 +42,18 @@ export default function BookDetails() {
     }
   );
   const methods = useForm({
-      mode: "onChange",
-      defaultValues: { radio: "swap" },
-    });
+    mode: "onChange",
+    defaultValues: { radio: "swap" },
+  });
   const { handleSubmit } = methods;
-  const handleEditOrSave = () => {
+
+  useEffect(() => {
+    if (userInformation.id === bookData?.owner?.id) {
+      setProfile(true);
+    }
+  }, [bookData?.owner?.id]);
+
+  const navigateToEditBook = () => {
     if (isProfile) {
       navigate(`/profile/update-book/${id}`);
     }
@@ -55,17 +63,16 @@ export default function BookDetails() {
     setIsExpanded(!isExpanded);
   };
 
-  
   if (bookLoading) return <Loader />;
   goToTop();
   return (
     <div>
       <FormProvider {...methods}>
-      <form onSubmit={handleSubmit((data) => console.log({ data }))}>
+        <form onSubmit={handleSubmit((data) => console.log({ data }))}>
           <SwapModal />
         </form>
       </FormProvider>
-        
+
       <div className="absolute left-0 top-0 w-full flex justify-between px-4 bg-white h-14">
         <div className="flex items-center gap-4">
           <Image
@@ -83,14 +90,14 @@ export default function BookDetails() {
           <Image
             src={isProfile ? editIcon : BookMarkIcon}
             alt="icon"
-            onClick={handleEditOrSave}
+            onClick={navigateToEditBook}
           />
         </div>
       </div>
       <div className="w-full h-[172px] mt-14">
         <Image src={bookDetailsBg} className="w-full h-full" />
       </div>
-      <div className="mx-auto w-[160px] h-[190px] -mt-36">
+      <div className="mx-auto w-[160px] h-[190px] -mt-32">
         <Image
           src={bookData?.coverPhotoUrl}
           className="w-full h-full rounded-lg"
