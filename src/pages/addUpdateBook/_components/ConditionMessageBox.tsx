@@ -9,7 +9,7 @@ import {
   BYGENRES,
   GIVEAWAY,
   OPENTOOFFERS,
-} from "../../../constant/ADDBOOKCONDITIONTYPE";
+} from "../../../utility/ADDBOOKCONDITIONTYPE";
 
 export default function ConditionMessageBox({
   conditionType,

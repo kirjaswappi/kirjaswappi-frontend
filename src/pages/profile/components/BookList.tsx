@@ -19,7 +19,7 @@ export default function BookList() {
                   ))
                 : books &&
                   books?.map((book: IBook, index: number) => (
-                      <BookCard key={index} book={book} isProfile={true} />
+                      <BookCard key={index} book={book} />
                   ))}
         </div>
     );
