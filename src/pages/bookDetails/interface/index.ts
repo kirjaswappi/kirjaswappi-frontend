@@ -14,3 +14,8 @@ export interface ISwapCondition<T = IBook> {
   }[];
   swappableBooks: T[];
 }
+export interface IExchange {
+  type: string;
+  title: string;
+  author: string;
+}

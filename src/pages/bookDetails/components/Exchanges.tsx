@@ -4,7 +4,7 @@ import {
   CarouselItem,
 } from "../../../components/shared/Carousel";
 import Image from "../../../components/shared/Image";
-import { ISwapCondition } from "../interface";
+import { IExchange, ISwapCondition } from "../interface";
 import BookIconBlue from "../../../assets/bookIconBlue.png";
 import BookIcon from "../../../assets/bookIcon.svg";
 import {
@@ -14,15 +14,16 @@ import {
   OPENTOOFFERS,
 } from "../../../utility/ADDBOOKCONDITIONTYPE";
 
-
 export default function Exchanges({
   swapCondition,
 }: {
   swapCondition: ISwapCondition;
 }) {
-  if (!swapCondition) return;
+  if (!swapCondition) return null;
 
-  const conditionExchangeFn = (swapValues: ISwapCondition) => {
+  const conditionExchangeFn = (
+    swapValues: ISwapCondition
+  ): Array<IExchange> => {
     switch (swapValues.conditionType) {
       case BYBOOKS:
         return swapValues.swappableBooks.map((swapBook) => ({
@@ -71,12 +72,20 @@ export default function Exchanges({
       className="relative"
     >
       <CarouselContent>
-        {condition.map((item, index) => {
-          console.log(item)
+        {condition.map((item) => {
+          console.log(item);
           return (
-            <CarouselItem key={index} className={` ${condition.length <= 1 ? "pr-4 basis-full" :"basis-[70%]"}`}>
+            <CarouselItem
+              key={`${item.type}-${item.title}`}
+              className={` ${
+                condition.length <= 1 ? "pr-4 basis-full" : "basis-[70%]"
+              }`}
+            >
               <div className="relative w-full overflow-hidden h-[110px] rounded-lg bg-[#DEE7F5] flex items-center gap-3 px-[18px]">
-                <Image src={item.type === BYBOOKS ? BookIconBlue : BookIcon} className="w-5" />
+                <Image
+                  src={item.type === BYBOOKS ? BookIconBlue : BookIcon}
+                  className="w-5"
+                />
                 <div className="w-[120px] text-left">
                   <h3 className="text-sm font-poppins leading-[18px] font-normal text-smokyBlack capitalize">
                     {item?.title}
