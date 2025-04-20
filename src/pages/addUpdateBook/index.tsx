@@ -31,7 +31,7 @@ import AddGenre from "../../components/shared/AddGenre";
 import Button from "../../components/shared/Button";
 import ConditionsStep from "./_components/ConditionsStep";
 import { useAppSelector } from "../../redux/hooks";
-import { BYBOOKS, BYGENRES, GIVEAWAY, OPENTOOFFERS } from "../../constant/ADDBOOKCONDITIONTYPE";
+import { BYBOOKS, BYGENRES, GIVEAWAY, OPENTOOFFERS } from "../../utility/ADDBOOKCONDITIONTYPE";
 
 interface IBook {
   bookTitle: string;

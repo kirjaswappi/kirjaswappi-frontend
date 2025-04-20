@@ -16,7 +16,7 @@ import {
   BYGENRES,
   GIVEAWAY,
   OPENTOOFFERS,
-} from "../../../constant/ADDBOOKCONDITIONTYPE";
+} from "../../../utility/ADDBOOKCONDITIONTYPE";
 
 export default function ConditionsStep({ errors }: { errors: any }) {
   const dispatch = useAppDispatch();

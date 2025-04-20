@@ -1,4 +1,4 @@
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import bookIcon2 from "../../assets/bookIcon2.png";
 import lng from "../../assets/EN.png";
 import bookDetailsBg from "../../assets/bookdetailsbg.jpg";
@@ -22,10 +22,11 @@ import SwapModal from "../../components/shared/SwapModal";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setSwapModal } from "../../redux/feature/open/openSlice";
 import { FormProvider, useForm } from "react-hook-form";
+import BookSkeleton from "../../components/shared/skeleton/BookSkeleton";
+
 export default function BookDetails() {
   const MAX_LENGTH = 95;
   const { id } = useParams();
-  const location = useLocation();
   const navigate = useNavigate();
   const [isProfile, setProfile] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -48,7 +49,7 @@ export default function BookDetails() {
   const { handleSubmit } = methods;
 
   useEffect(() => {
-    if (userInformation.id === bookData?.owner?.id) {
+    if (userInformation?.id === bookData?.owner?.id) {
       setProfile(true);
     }
   }, [bookData?.owner?.id]);
@@ -132,9 +133,11 @@ export default function BookDetails() {
             <p className="text-[10px] text-[#404040]">Either one of these</p>
           </div>
         </div>
+        {/* ================== START Exchanges Condition ==================  */}
         <div className="pl-4">
-          <Exchanges />
+          <Exchanges swapCondition={bookData.swapCondition}/>
         </div>
+        {/* ================== END Exchanges Condition ==================  */}
         <div className="container text-left mb-5">
           <h3 className="text-sm font-normal font-poppins text-smokyBlack mt-5 mb-2 ">
             Book Description
@@ -226,11 +229,11 @@ export default function BookDetails() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
-          {/* {Array.from({ length: 4 }, (_, index) => <BookCard key={index} />)} */}
+        <div className="container grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
+          {Array.from({ length: 4 }, (_, index) => <BookSkeleton key={index} />)}
         </div>
       </div>
-      <div
+      {!isProfile && <div
         className="h-16 flex items-center gap-1 justify-between text-xs font-normal px-6 fixed bottom-0  bg-white w-full"
         style={{
           boxShadow: "0px 0px 1px 0px #33333345",
@@ -250,7 +253,7 @@ export default function BookDetails() {
             Request Swap
           </Button>
         </div>
-      </div>
+      </div>}
     </div>
   );
 }
