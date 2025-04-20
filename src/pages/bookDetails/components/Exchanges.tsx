@@ -73,7 +73,6 @@ export default function Exchanges({
     >
       <CarouselContent>
         {condition.map((item) => {
-          console.log(item);
           return (
             <CarouselItem
               key={`${item.type}-${item.title}`}
