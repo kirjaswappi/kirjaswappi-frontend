@@ -6,6 +6,8 @@ export interface IFilterInitialState {
     language: string[];
     condition: string[];
     search: string;
+    pageNumber: number;
+    hasMore: boolean;
   };
 }
 
@@ -15,6 +17,8 @@ const initialState: IFilterInitialState = {
     language: [],
     condition: [],
     search: "",
+    pageNumber: 0,
+    hasMore: false,
   },
 };
 const filterSlice = createSlice({
@@ -33,6 +37,12 @@ const filterSlice = createSlice({
     setConditionFilter: (state, action: PayloadAction<string[]>) => {
       state.filter.condition = [...action.payload];
     },
+    setHasMore: (state, action: PayloadAction<boolean>) => {
+      state.filter.hasMore = action.payload;
+    },
+    setPageNumber: (state, action: PayloadAction<number>) => {
+      state.filter.pageNumber = action.payload;
+    },
   },
 });
 
@@ -41,5 +51,7 @@ export const {
   setLanguageFilter,
   setConditionFilter,
   setSearch,
+  setHasMore,
+  setPageNumber,
 } = filterSlice.actions;
 export default filterSlice.reducer;

@@ -8,7 +8,7 @@ export default function BookCard({ book }: { book: IBook }) {
 
   const { title, author, coverPhotoUrl, id } = book;
   return (
-    <div className="max-w-[168px] max-h-[264px] flex flex-col">
+    <div className="sm:max-w-[168px] max-h-[264px] flex flex-col">
       <div
         onClick={() =>
           navigate(`/book-details/${id}`, {

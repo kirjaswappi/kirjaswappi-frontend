@@ -3,4 +3,5 @@ export interface IFilterData {
   condition: string[];
   language: string[];
   search?: string;
+  pageNumber?: number
 }
