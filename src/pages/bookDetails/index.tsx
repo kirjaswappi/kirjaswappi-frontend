@@ -18,7 +18,7 @@ import Loader from "../../components/shared/Loader";
 import { useEffect, useState } from "react";
 import Exchanges from "./components/Exchanges";
 import { useGetUserProfileImageQuery } from "../../redux/feature/auth/authApi";
-import SwapModal from "../../components/shared/SwapModal";
+import SwapModal from "./components/SwapModal";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setSwapModal } from "../../redux/feature/open/openSlice";
 import { FormProvider, useForm } from "react-hook-form";
@@ -28,9 +28,9 @@ export default function BookDetails() {
   const MAX_LENGTH = 95;
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [isProfile, setProfile] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const dispatch = useAppDispatch();
   const { userInformation } = useAppSelector((state) => state.auth);
   const { data: bookData, isLoading: bookLoading } = useGetBookByIdQuery(
     { id: id },
@@ -63,6 +63,17 @@ export default function BookDetails() {
   const toggleReadMore = () => {
     setIsExpanded(!isExpanded);
   };
+  // console.log()
+  const loginModalOrSwapRequest = (): void => {
+    // =========== If user has in state show the swap request modal ===========
+    if (!!userInformation.email) {
+      dispatch(setSwapModal(true));
+    }
+    else {
+      // =========== If user state is empty show the login modal for login user ======================
+      console.log("ok");
+    }
+  };
 
   if (bookLoading) return <Loader />;
   goToTop();
@@ -70,7 +81,7 @@ export default function BookDetails() {
     <div>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit((data) => console.log({ data }))}>
-          <SwapModal />
+          <SwapModal bookData={bookData} />
         </form>
       </FormProvider>
 
@@ -135,7 +146,7 @@ export default function BookDetails() {
         </div>
         {/* ================== START Exchanges Condition ==================  */}
         <div className="pl-4">
-          <Exchanges swapCondition={bookData.swapCondition}/>
+          <Exchanges swapCondition={bookData.swapCondition} />
         </div>
         {/* ================== END Exchanges Condition ==================  */}
         <div className="container text-left mb-5">
@@ -230,30 +241,34 @@ export default function BookDetails() {
         </div>
 
         <div className="container grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
-          {Array.from({ length: 4 }, (_, index) => <BookSkeleton key={index} />)}
+          {Array.from({ length: 4 }, (_, index) => (
+            <BookSkeleton key={index} />
+          ))}
         </div>
       </div>
-      {!isProfile && <div
-        className="h-16 flex items-center gap-1 justify-between text-xs font-normal px-6 fixed bottom-0  bg-white w-full"
-        style={{
-          boxShadow: "0px 0px 1px 0px #33333345",
-        }}
-      >
-        <div>
-          <p className="text-[8px] font-poppins ">Offered by</p>
-          <h3 className="text-sm font-poppins font-normal">
-            {bookData?.owner?.name}
-          </h3>
+      {!isProfile && (
+        <div
+          className="h-16 flex items-center gap-1 justify-between text-xs font-normal px-6 fixed bottom-0  bg-white w-full"
+          style={{
+            boxShadow: "0px 0px 1px 0px #33333345",
+          }}
+        >
+          <div>
+            <p className="text-[8px] font-poppins ">Offered by</p>
+            <h3 className="text-sm font-poppins font-normal">
+              {bookData?.owner?.name}
+            </h3>
+          </div>
+          <div>
+            <Button
+              onClick={loginModalOrSwapRequest}
+              className="bg-primary text-white w-[130px] sm:w-[150px] py-2 text-sm font-poppins font-normal rounded-md"
+            >
+              Request Swap
+            </Button>
+          </div>
         </div>
-        <div>
-          <Button
-            onClick={() => dispatch(setSwapModal(true))}
-            className="bg-primary text-white w-[130px] sm:w-[150px] py-2 text-sm font-poppins font-normal rounded-md"
-          >
-            Request Swap
-          </Button>
-        </div>
-      </div>}
+      )}
     </div>
   );
 }

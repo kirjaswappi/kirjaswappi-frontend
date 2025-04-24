@@ -4,7 +4,7 @@ import {
   CarouselItem,
 } from "../../../components/shared/Carousel";
 import Image from "../../../components/shared/Image";
-import { IExchange, ISwapCondition } from "../interface";
+import { IExchange, ISwapConditionExchange } from "../interface";
 import BookIconBlue from "../../../assets/bookIconBlue.png";
 import BookIcon from "../../../assets/bookIcon.svg";
 import {
@@ -17,12 +17,12 @@ import {
 export default function Exchanges({
   swapCondition,
 }: {
-  swapCondition: ISwapCondition;
+  swapCondition: ISwapConditionExchange;
 }) {
   if (!swapCondition) return null;
 
   const conditionExchangeFn = (
-    swapValues: ISwapCondition
+    swapValues: ISwapConditionExchange
   ): Array<IExchange> => {
     switch (swapValues.conditionType) {
       case BYBOOKS:

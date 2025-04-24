@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import SwapModal from "../components/shared/SwapModal";
+import SwapModal from "../pages/bookDetails/components/SwapModal";
 
 export default function Layout() {
     return (
