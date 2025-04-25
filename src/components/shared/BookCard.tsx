@@ -3,7 +3,7 @@ import { IBook } from "../../pages/books/interface";
 import Image from "./Image";
 
 export default function BookCard({ book }: { book: IBook }) {
-  if (!book) return;
+  if (!book) return null;
   const navigate = useNavigate();
 
   const { title, author, coverPhotoUrl, id } = book;
@@ -25,7 +25,7 @@ export default function BookCard({ book }: { book: IBook }) {
           />
         </div>
         <div>
-          <h1 className="font-medium text-black text-xs leading-none mb-1 font-poppins">
+          <h1 className="font-medium text-black text-xs leading-none mb-1 font-poppins truncate">
             {title && title}
           </h1>
           {author && (

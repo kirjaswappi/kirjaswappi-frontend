@@ -37,9 +37,7 @@ export default function ConditionMessageBox({
     },
   };
 
-
   const condition = conditionList[conditionType];
-
 
   return (
     <div className="border border-yellow bg-yellow-light flex flex-col items-center justify-center p-5 gap-2 rounded-lg ">
