@@ -53,7 +53,7 @@ export default function Header() {
       <div
         className={`${
           isHeaderShow ? "block bg-light" : "hidden"
-        } fixed w-full px-5 py-2 flex flex-col gap-[12px]`}
+        } fixed w-full px-5 py-2 flex flex-col gap-[12px] z-30`}
       >
         <TopBar />
         <div className="flex items-center gap-1">
