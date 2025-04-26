@@ -1,5 +1,4 @@
 import book3 from "../../../assets/book3.png";
-import bookIcon from "../../../assets/bookIcon.png";
 import close from "../../../assets/close.svg";
 import giveWayIcon from "../../../assets/givewayIcon.png";
 import library from "../../../assets/library.png";
@@ -134,23 +133,25 @@ export default function SwapModal({ bookData }: { bookData: IBook }) {
             <h3>{conditionItem.label}</h3>
           </div>
           <div>
-            <label className="flex items-center justify-between h-20 bg-[#E5E5E5] border border-[#E5E5E5] px-4 py-3 rounded-lg">
-              <div className="flex items-center gap-4">
-                <div className="w-[40px] h-[40px] rounded-[50%] bg-primary flex items-center justify-center ">
-                  <Image src={library} alt="library" className="w-[18px]" />
+            {conditionType !== BYBOOKS && (
+              <label className="flex items-center justify-between h-20 bg-[#E5E5E5] border border-[#E5E5E5] px-4 py-3 rounded-lg">
+                <div className="flex items-center gap-4">
+                  <div className="w-[40px] h-[40px] rounded-[50%] bg-primary flex items-center justify-center ">
+                    <Image src={library} alt="library" className="w-[18px]" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-poppins text-[#0D0D0D]">
+                      Select from your library
+                    </h4>
+                    <p className="text-[#8C8C8C] text-[10px] mt-1">
+                      You can offer from your library or, ask for giveaway
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="text-sm font-poppins text-[#0D0D0D]">
-                    Select from your library
-                  </h4>
-                  <p className="text-[#8C8C8C] text-[10px] mt-1">
-                    You can offer from your library or, ask for giveaway
-                  </p>
-                </div>
-              </div>
-              <input type="radio" value="swap" {...register("radio")} />
-            </label>
-            {watch("radio") === "swap" && (
+                <input type="radio" value="swap" {...register("radio")} />
+              </label>
+            )}
+            <div>
               <div className={`grid grid-cols-2 mt-3`}>
                 <div className="max-w-[120px] rounded-[8px] p-2 border">
                   <div className=" object-cover bg-cover">
@@ -170,7 +171,7 @@ export default function SwapModal({ bookData }: { bookData: IBook }) {
                   </div>
                 </div>
               </div>
-            )}
+            </div>
             <label className="flex items-center justify-between h-20 bg-[#E5E5E5] border border-[#E5E5E5] px-4 py-3 rounded-lg mt-2">
               <div className="flex items-center gap-4">
                 <div className="w-[40px] h-[40px] rounded-[50%] bg-yellow flex items-center justify-center ">
