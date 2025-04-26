@@ -1,10 +1,13 @@
-export interface I {
+import { JSX } from "react/jsx-runtime";
+
+export interface IB {
+  map(arg0: (item: any) => JSX.Element): import("react").ReactNode;
   title: string;
   author: string;
   coverPhotoUrl: string;
 }
 
-export interface ISwapConditionExchange<T = I> {
+export interface ISwapConditionExchange<T = IB> {
   title: string;
   author: string;
   coverPhotoUrl: string;

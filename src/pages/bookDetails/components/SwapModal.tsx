@@ -20,6 +20,8 @@ import {
   GIVEAWAY,
   OPENTOOFFERS,
 } from "../../../utility/ADDBOOKCONDITIONTYPE";
+import SwapBookInformation from "./SwapBookInformation";
+import SwapBookCarousels from "./SwapBookCarousels";
 
 export default function SwapModal({ bookData }: { bookData: IBook }) {
   const context = useFormContext();
@@ -85,45 +87,13 @@ export default function SwapModal({ bookData }: { bookData: IBook }) {
           </Button>
         </div>
         <div className="px-[14px] pb-2 mt-4">
-          <div className="flex gap-4">
-            <div className="max-w-[108px] max-h-[142px] flex items-center justify-center bg-cover object-cover ">
-              <Image
-                src={coverPhotoUrl}
-                alt={title}
-                className="max-w-[108px] max-h-[142px] object-cover rounded-lg"
-              />
-            </div>
-            <div>
-              <h1 className="font-medium text-smokyBlack text-sm leading-none mb-1 font-poppins">
-                {title}
-              </h1>
-              <p className="text-smokyBlack font-normal text-xs font-poppins">
-                by {author}
-              </p>
-              <div className="flex items-center flex-wrap mt-4">
-                {genres?.map((genre, index: number) => (
-                  <div key={index} className="flex items-center">
-                    <p className="text-black font-light text-xs font-poppins">
-                      {genre}
-                    </p>
-                    <span
-                      className={`${
-                        genres.length - 1 === index ? "hidden" : "block"
-                      } inline-block mx-2 font-poppins font-light text-sm`}
-                    >
-                      |
-                    </span>
-                  </div>
-                ))}
-              </div>
-              <p className="text-smokyBlack font-normal text-xs font-poppins mt-4">
-                <span className="font-light">Book Condition:</span>{" "}
-                <span className="text-[#3FBA49] bg-[#3FBA4914] py-[2px] px-[6px] rounded-lg">
-                  {condition}
-                </span>
-              </p>
-            </div>
-          </div>
+          <SwapBookInformation
+            title={title}
+            author={author}
+            coverPhotoUrl={coverPhotoUrl}
+            genres={genres}
+            condition={condition}
+          />
           <div className="flex items-center gap-2 my-5">
             <Image
               src={conditionItem.image}
@@ -152,7 +122,8 @@ export default function SwapModal({ bookData }: { bookData: IBook }) {
               </label>
             )}
             <div>
-              <div className={`grid grid-cols-2 mt-3`}>
+              <SwapBookCarousels swapBook={swappableBooks} />
+              {/* <div className={`grid grid-cols-2 mt-3`}>
                 <div className="max-w-[120px] rounded-[8px] p-2 border">
                   <div className=" object-cover bg-cover">
                     <Image
@@ -170,7 +141,7 @@ export default function SwapModal({ bookData }: { bookData: IBook }) {
                     </p>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
             <label className="flex items-center justify-between h-20 bg-[#E5E5E5] border border-[#E5E5E5] px-4 py-3 rounded-lg mt-2">
               <div className="flex items-center gap-4">

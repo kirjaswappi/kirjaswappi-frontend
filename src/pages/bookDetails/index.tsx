@@ -70,7 +70,7 @@ export default function BookDetails() {
       dispatch(setSwapModal(true));
     }
     else {
-      // =========== If user state is empty show the login modal for login user ======================
+      // =========== If user state is empty show the login modal for login user ===========
       console.log("ok");
     }
   };
