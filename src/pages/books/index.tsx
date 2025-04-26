@@ -8,7 +8,7 @@ import { IBook } from "./interface";
 import { setPageNumber } from "../../redux/feature/filter/filterSlice";
 export default function Books() {
   const observer = useRef<IntersectionObserver>();
-  const [books, setBooks] = useState([]);
+  const [books, setBooks] = useState<IBook[]>([]);
   const { filter } = useAppSelector((state) => state.filter);
   const dispatch = useAppDispatch();
   const { data, isError, isLoading, isFetching } = useGetAllBooksQuery(filter, {
@@ -18,11 +18,17 @@ export default function Books() {
   // <=======Fetch data store in state=======>
   useEffect(() => {
     if (data?._embedded?.books) {
-      setBooks((prevBooks) =>
-        filter.pageNumber === 0
-          ? data?._embedded?.books
-          : [...prevBooks, ...data?._embedded?.books]
-      );
+      setBooks((prevBooks) => {
+        const newBooks = data._embedded.books;
+        const allBooks =
+          filter.pageNumber === 0 ? newBooks : [...prevBooks, ...newBooks];
+        const uniqueBooks = Array.from(
+          new Map<string, IBook>(
+            allBooks.map((book: IBook) => [book.id, book])
+          ).values()
+        );
+        return uniqueBooks;
+      });
     }
   }, [data?._embedded?.books, filter.pageNumber]);
 
@@ -30,7 +36,6 @@ export default function Books() {
   useEffect(() => {
     goToTop();
     dispatch(setPageNumber(0));
-    setBooks([]);
   }, [
     filter.search,
     filter.genre.join(","),
@@ -62,7 +67,7 @@ export default function Books() {
   if (isError) return <p>Something went wrong</p>;
   return (
     <section>
-      <div className="container min-h-[80vh]">
+      <div className="container min-h-[80vh] pb-28">
         <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-6 gap-2">
           {books.map((book: IBook, idx: number) => {
             if (idx === books.length - 1) {
@@ -75,7 +80,7 @@ export default function Books() {
             return <BookCard book={book} key={idx} />;
           })}
           {isInitialLoading &&
-            Array.from({ length: 12 }, (_, index) => (
+            Array.from({ length: 6 }, (_, index) => (
               <BookSkeleton key={index} />
             ))}
         </div>
