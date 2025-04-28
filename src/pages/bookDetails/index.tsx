@@ -23,6 +23,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setSwapModal } from "../../redux/feature/open/openSlice";
 import { FormProvider, useForm } from "react-hook-form";
 import BookSkeleton from "../../components/shared/skeleton/BookSkeleton";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 export default function BookDetails() {
   const MAX_LENGTH = 95;
@@ -43,10 +44,15 @@ export default function BookDetails() {
     }
   );
   const methods = useForm({
+    // resolver: yupResolver(),
     mode: "onChange",
-    defaultValues: { radio: "swap" },
+    defaultValues: {
+      radio: "swap",
+      shortNote: "",
+      ByBooks: ""
+    },
   });
-  const { handleSubmit } = methods;
+  const { handleSubmit, getValues } = methods;
 
   useEffect(() => {
     if (userInformation?.id === bookData?.owner?.id) {
@@ -63,13 +69,12 @@ export default function BookDetails() {
   const toggleReadMore = () => {
     setIsExpanded(!isExpanded);
   };
-  // console.log()
+  console.log(getValues());
   const loginModalOrSwapRequest = (): void => {
     // =========== If user has in state show the swap request modal ===========
     if (!!userInformation.email) {
       dispatch(setSwapModal(true));
-    }
-    else {
+    } else {
       // =========== If user state is empty show the login modal for login user ===========
       console.log("ok");
     }

@@ -31,6 +31,7 @@ export default function SwapModal({ bookData }: { bookData: IBook }) {
   const dispatch = useAppDispatch();
   const { watch, register } = context;
   const { swapModal } = useAppSelector((state) => state.open);
+  const { userInformation } = useAppSelector((state) => state.auth);
 
   const {
     title,
@@ -65,9 +66,10 @@ export default function SwapModal({ bookData }: { bookData: IBook }) {
       label: "Giveaway",
     },
   };
-
   const conditionItem = conditionList[conditionType];
-
+  const handleSelectBookForSwapRequest = (item) => {
+    console.log("item", item)
+  };
   return (
     <div
       className={`${
@@ -121,28 +123,38 @@ export default function SwapModal({ bookData }: { bookData: IBook }) {
                 <input type="radio" value="swap" {...register("radio")} />
               </label>
             )}
-            <div>
-              <SwapBookCarousels swapBook={swappableBooks} />
-              {/* <div className={`grid grid-cols-2 mt-3`}>
-                <div className="max-w-[120px] rounded-[8px] p-2 border">
-                  <div className=" object-cover bg-cover">
-                    <Image
-                      className="mx-auto w-[104px] h-[120px] object-cover rounded-lg"
-                      src={book3}
-                      alt={`'Your favorite book'`}
-                    />
-                  </div>
-                  <div>
-                    <h1 className="font-medium text-black text-sm leading-none mb-1 font-poppins truncate ">
-                      {"Man’s Search for Meaning Man’s Search for Meaning"}
-                    </h1>
-                    <p className="text-black font-light text-xs font-poppins">
-                      by {"Viktor Frankl's"}
-                    </p>
-                  </div>
-                </div>
-              </div> */}
-            </div>
+            {conditionType === BYBOOKS && (
+              <label>
+                <SwapBookCarousels
+                  swapBook={swappableBooks}
+                  handleSelectBookForSwapRequest={
+                    handleSelectBookForSwapRequest
+                  }
+                />
+                <input
+                  hidden
+                  type="radio"
+                  value={"ByBooks"}
+                  {...register("radio")}
+                />
+              </label>
+            )}
+            {conditionType === OPENTOOFFERS && (
+              <label>
+                <SwapBookCarousels
+                  swapBook={userInformation.books}
+                  handleSelectBookForSwapRequest={
+                    handleSelectBookForSwapRequest
+                  }
+                />
+                <input
+                  hidden
+                  type="radio"
+                  value={"OpenForOffers"}
+                  {...register("radio")}
+                />
+              </label>
+            )}
             <label className="flex items-center justify-between h-20 bg-[#E5E5E5] border border-[#E5E5E5] px-4 py-3 rounded-lg mt-2">
               <div className="flex items-center gap-4">
                 <div className="w-[40px] h-[40px] rounded-[50%] bg-yellow flex items-center justify-center ">

@@ -12,7 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.3.0",
+    "@hookform/resolvers": "^3.10.0",
     "@reduxjs/toolkit": "^2.2.7",
     "@types/yup": "^0.29.14",
     "clsx": "^2.1.1",
