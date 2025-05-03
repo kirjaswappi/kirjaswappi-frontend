@@ -2,6 +2,7 @@ import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import Input from "./Input";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { cn } from "../../utility/cn";
 
 interface ControlledPasswordFieldProps {
   name: string;
@@ -32,7 +33,7 @@ const ControlledPasswordField: React.FC<ControlledPasswordFieldProps> = ({
             type={showPassword ? "text" : "password"}
             placeholder={placeholder}
             error={error?.message}
-            className={className}
+            className={cn(className)}
             showErrorMessage={showErrorMessage}
           />
           {showPasswordToggle && (
