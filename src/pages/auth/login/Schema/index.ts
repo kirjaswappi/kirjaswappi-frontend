@@ -1,8 +1,14 @@
-import * as Yup from 'yup';
 
-export const loginSchema = Yup.object().shape({
-  email: Yup.string().email('Please enter a valid email').required('Please enter email.'),
-  password: Yup.string()
-    .min(6, 'Password must be at least 6 characters long')
-    .required('Please enter password.'),
+import * as yup from 'yup';
+import { MIN_PASSWORD } from '../../../../utility/constant';
+
+export const loginSchema = yup.object({
+  email: yup
+    .string()
+    .required('Please enter email.')
+    .email('Please Enter your valid email'),
+  password: yup
+    .string()
+    .required('Please enter Password.')
+    .min(MIN_PASSWORD, `Password must be at least ${MIN_PASSWORD} characters long`),
 });

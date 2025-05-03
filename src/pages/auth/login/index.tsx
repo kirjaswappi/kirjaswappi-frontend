@@ -7,9 +7,7 @@ import Image from "../../../components/shared/Image";
 import MessageToastify from "../../../components/shared/MessageToastify";
 import { useLoginMutation } from "../../../redux/feature/auth/authApi";
 import { setAuthMessage, setAuthSuccess, setError } from "../../../redux/feature/auth/authSlice";
-import {
-    setMessages
-} from "../../../redux/feature/notification/notificationSlice";
+import { setMessages } from "../../../redux/feature/notification/notificationSlice";
 import { useAppSelector } from "../../../redux/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, useForm } from "react-hook-form";
@@ -17,17 +15,21 @@ import { loginSchema } from "./Schema";
 import ControlledInputField from "../../../components/shared/ControllerField";
 import ControlledPasswordField from "../../../components/shared/ControllerFieldPassword";
 import { ILoginForm } from "./interface";
+
 export default function Login() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [login, { isLoading }] = useLoginMutation();
     const { error, message } = useAppSelector((state) => state.auth);
-    const { isShow, message: msg, messageType } = useAppSelector(
-        (state) => state.notification
-    );
+
     
     const methods = useForm<ILoginForm>({
         resolver: yupResolver(loginSchema),
+        mode: "onBlur",
+        defaultValues: {
+          email: "",
+          password: "",
+        },
     });
 
     const onSubmit = async (data: ILoginForm) => {
@@ -52,6 +54,12 @@ export default function Login() {
         dispatch(setError(''));
     }, [navigate, dispatch]);
 
+    // Get the first error message if any exists
+    const errorMessage = 
+        methods.formState.errors.email?.message || 
+        methods.formState.errors.password?.message || 
+        error;
+
     return (
         <div className="relative">
             <div className="absolute top-[18%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] rounded-full bg-white flex items-center justify-center">
@@ -73,6 +81,7 @@ export default function Login() {
                                         name="email"
                                         placeholder="E-mail"
                                         className="rounded-t-lg"
+                                        
                                     />
                                 </div>
                                 <div>
@@ -80,19 +89,33 @@ export default function Login() {
                                         name="password"
                                         placeholder="Password"
                                         className="rounded-b-lg border-t-0"
+                                        showErrorMessage={false}
                                     />
                                 </div>
                             </div>
-
-                            {isShow && (
+                            
+                            {/* Show error message only if there's an error and not showing success message */}
+                            {errorMessage && !message && (
                                 <div className="mt-2">
                                     <MessageToastify
-                                        isShow={isShow}
-                                        type={messageType}
-                                        value={msg}
+                                        isShow={true}
+                                        type="ERROR"
+                                        value={errorMessage}
                                     />
                                 </div>
                             )}
+
+                            {/* Show success message if exists */}
+                            {message && (
+                                <div className="mt-2">
+                                    <MessageToastify
+                                        isShow={true}
+                                        type="SUCCESS"
+                                        value={message}
+                                    />
+                                </div>
+                            )}
+                            
                             <div className="flex items-center justify-between my-4">
                                 <div className="flex items-center gap-2 text-grayDark">
                                     <input

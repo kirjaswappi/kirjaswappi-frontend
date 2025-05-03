@@ -8,6 +8,7 @@ interface ControlledPasswordFieldProps {
   placeholder?: string;
   className?: string;
   showPasswordToggle?: boolean;
+  showErrorMessage?: boolean;
 }
 
 const ControlledPasswordField: React.FC<ControlledPasswordFieldProps> = ({
@@ -15,6 +16,7 @@ const ControlledPasswordField: React.FC<ControlledPasswordFieldProps> = ({
   placeholder,
   className,
   showPasswordToggle = true,
+  showErrorMessage = false,
 }) => {
   const { control } = useFormContext();
   const [showPassword, setShowPassword] = React.useState(false);
@@ -31,7 +33,7 @@ const ControlledPasswordField: React.FC<ControlledPasswordFieldProps> = ({
             placeholder={placeholder}
             error={error?.message}
             className={className}
-            showErrorMessage={!!error}
+            showErrorMessage={showErrorMessage}
           />
           {showPasswordToggle && (
             <button

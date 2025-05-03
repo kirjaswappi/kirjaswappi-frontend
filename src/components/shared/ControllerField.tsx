@@ -14,6 +14,7 @@ interface ControlledInputFieldProps {
     value: string;
   }[];
   radioOptions?: any;
+  showErrorMessage?: boolean;
 }
 
 const ControlledInputField: React.FC<ControlledInputFieldProps> = ({
@@ -21,7 +22,8 @@ const ControlledInputField: React.FC<ControlledInputFieldProps> = ({
   type = "input",
   placeholder,
   className,
-  options
+  options,
+  showErrorMessage = false
 }) => {
   const { control } = useFormContext();
 
@@ -36,7 +38,7 @@ const ControlledInputField: React.FC<ControlledInputFieldProps> = ({
               placeholder={placeholder}
               error={error?.message}
               className={className}
-              showErrorMessage={!!error}
+              showErrorMessage={showErrorMessage}
             />
           ) : type === "select" ? (
             <Select
@@ -45,7 +47,7 @@ const ControlledInputField: React.FC<ControlledInputFieldProps> = ({
               options={options || []}
               error={error?.message}
               className={className}
-              showErrorMessage={!!error}
+              showErrorMessage={showErrorMessage}
             />
           ) :  (
             <TextArea
@@ -53,7 +55,7 @@ const ControlledInputField: React.FC<ControlledInputFieldProps> = ({
               placeholder={placeholder}
               error={error?.message}
               className={className}
-              showErrorMessage={!!error}
+              showErrorMessage={showErrorMessage}
             />
           );
         }}
