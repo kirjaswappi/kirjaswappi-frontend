@@ -33,6 +33,7 @@ export default function Login() {
       email: "",
       password: "",
     },
+    reValidateMode: "onBlur",
   });
 
   const onSubmit = async (data: ILoginForm) => {
@@ -59,8 +60,10 @@ export default function Login() {
 
   // Get the first error message if any exists
   const errorMessage =
-    methods.formState.errors.email?.message ||
-    methods.formState.errors.password?.message ||
+    (methods.formState.touchedFields.email &&
+      methods.formState.errors.email?.message) ||
+    (methods.formState.touchedFields.password &&
+      methods.formState.errors.password?.message) ||
     error;
 
   return (
