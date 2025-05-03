@@ -8,12 +8,14 @@ interface ControlledPasswordFieldProps {
   name: string;
   placeholder?: string;
   className?: string;
+  showErrorMessage?: boolean;
 }
 
 const ControlledPasswordField: React.FC<ControlledPasswordFieldProps> = ({
   name,
   placeholder,
   className,
+  showErrorMessage = false,
 }) => {
   const { control } = useFormContext();
   const [showPassword, setShowPassword] = React.useState(false);
@@ -29,6 +31,8 @@ const ControlledPasswordField: React.FC<ControlledPasswordFieldProps> = ({
             type={showPassword ? "text" : "password"}
             placeholder={placeholder}
             className={cn(className, error && "border-red-500")}
+            error={error?.message}
+            showErrorMessage={showErrorMessage}
           />
 
           <button
@@ -42,9 +46,6 @@ const ControlledPasswordField: React.FC<ControlledPasswordFieldProps> = ({
               <AiOutlineEye className="text-gray-500" />
             )}
           </button>
-          {error && (
-            <p className="mt-1 text-sm text-red-500">{error.message}</p>
-          )}
         </div>
       )}
     />
