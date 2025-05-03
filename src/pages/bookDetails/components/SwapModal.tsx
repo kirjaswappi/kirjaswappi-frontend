@@ -1,4 +1,3 @@
-import book3 from "../../../assets/book3.png";
 import close from "../../../assets/close.svg";
 import giveWayIcon from "../../../assets/givewayIcon.png";
 import library from "../../../assets/library.png";
@@ -20,8 +19,8 @@ import {
   GIVEAWAY,
   OPENTOOFFERS,
 } from "../../../utility/ADDBOOKCONDITIONTYPE";
-import SwapBookInformation from "./SwapBookInformation";
 import SwapBookCarousels from "./SwapBookCarousels";
+import SwapBookInformation from "./SwapBookInformation";
 
 export default function SwapModal({ bookData }: { bookData: IBook }) {
   const context = useFormContext();
@@ -29,7 +28,7 @@ export default function SwapModal({ bookData }: { bookData: IBook }) {
     return null;
   }
   const dispatch = useAppDispatch();
-  const { watch, register } = context;
+  const { register } = context;
   const { swapModal } = useAppSelector((state) => state.open);
   const { userInformation } = useAppSelector((state) => state.auth);
 
@@ -67,7 +66,7 @@ export default function SwapModal({ bookData }: { bookData: IBook }) {
     },
   };
   const conditionItem = conditionList[conditionType];
-  const handleSelectBookForSwapRequest = (item) => {
+  const handleSelectBookForSwapRequest = (item: any) => {
     console.log("item", item)
   };
   return (
@@ -105,6 +104,7 @@ export default function SwapModal({ bookData }: { bookData: IBook }) {
             <h3>{conditionItem.label}</h3>
           </div>
           <div>
+            {/* ========= If not by books then show the library from user books ========= */}
             {conditionType !== BYBOOKS && (
               <label className="flex items-center justify-between h-20 bg-[#E5E5E5] border border-[#E5E5E5] px-4 py-3 rounded-lg">
                 <div className="flex items-center gap-4">
@@ -123,6 +123,7 @@ export default function SwapModal({ bookData }: { bookData: IBook }) {
                 <input type="radio" value="swap" {...register("radio")} />
               </label>
             )}
+            {/* ========= If by books exist then show the books ========= */}
             {conditionType === BYBOOKS && (
               <label>
                 <SwapBookCarousels

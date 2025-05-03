@@ -32,10 +32,10 @@ export default function SwapBookCarousels({
               }`}
               onClick={() => handleSelectBookForSwapRequest(item)}
             >
-              <div className="max-w-[120px] rounded-[8px] p-2">
-                <div className=" object-cover bg-cover">
+              <div className="max-w-[120px] w-[120px] rounded-[8px] p-2 border border-primary">
+                <div className="w-[104px] h-[120px] object-cover bg-center bg-cover border">
                   <Image
-                    className="mx-auto w-[104px] h-[120px] object-cover rounded-lg"
+                    className="mx-auto w-full h-full object-contain  rounded-lg"
                     src={item.coverPhotoUrl}
                     alt={`${item.title}`}
                   />

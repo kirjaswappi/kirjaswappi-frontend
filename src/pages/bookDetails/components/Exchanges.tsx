@@ -98,20 +98,6 @@ export default function Exchanges({
           );
         })}
       </CarouselContent>
-
-      {/* left arrow */}
-      {/* <div className="absolute left-16 top-1/2 -translate-y-1/2 hidden lg:block">
-        <CarouselPrevious className="h-[20px] w-[20px] rounded-full bg-gray-light hover:bg-gray-light">
-          <ChevronLeft />
-        </CarouselPrevious>
-      </div> */}
-
-      {/* right arrow */}
-      {/* <div className="absolute right-16 top-1/2 -translate-y-1/2 hidden lg:block">
-        <CarouselNext className="h-[20px] w-[20px] rounded-full bg-gray-light hover:bg-gray-light">
-          <ChevronsRight />
-        </CarouselNext>
-      </div> */}
     </Carousel>
   );
 }

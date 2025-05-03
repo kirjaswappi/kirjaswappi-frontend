@@ -52,7 +52,7 @@ export default function BookDetails() {
       ByBooks: ""
     },
   });
-  const { handleSubmit, getValues } = methods;
+  const { handleSubmit } = methods;
 
   useEffect(() => {
     if (userInformation?.id === bookData?.owner?.id) {
@@ -69,7 +69,7 @@ export default function BookDetails() {
   const toggleReadMore = () => {
     setIsExpanded(!isExpanded);
   };
-  console.log(getValues());
+
   const loginModalOrSwapRequest = (): void => {
     // =========== If user has in state show the swap request modal ===========
     if (!!userInformation.email) {
