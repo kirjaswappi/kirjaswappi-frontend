@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../../components/shared/Button";
-import Input from "../../../../components/shared/Input";
 import MessageToastify from "../../../../components/shared/MessageToastify";
-import { ERROR, SUCCESS } from "../../../../constant/MESSAGETYPE";
 import { useRegisterMutation } from "../../../../redux/feature/auth/authApi";
 import {
   setAuthMessage,
