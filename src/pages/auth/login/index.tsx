@@ -67,7 +67,7 @@ export default function Login() {
     error;
 
   return (
-    <div className="relative">
+    <div className="relative font-poppins">
       <div className="absolute top-[18%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] rounded-full bg-white flex items-center justify-center">
         <Image src={profileIcon || "/placeholder.svg"} className=" " />
       </div>

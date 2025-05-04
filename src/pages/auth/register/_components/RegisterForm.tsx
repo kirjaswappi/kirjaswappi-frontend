@@ -4,290 +4,193 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../../../components/shared/Button";
 import Input from "../../../../components/shared/Input";
 import MessageToastify from "../../../../components/shared/MessageToastify";
-import PasswordInput from "../../../../components/shared/PasswordInput";
 import { ERROR, SUCCESS } from "../../../../constant/MESSAGETYPE";
 import { useRegisterMutation } from "../../../../redux/feature/auth/authApi";
-import { setAuthMessage, setError, setOtp, setUserEmail } from "../../../../redux/feature/auth/authSlice";
+import {
+  setAuthMessage,
+  setError,
+  setOtp,
+  setUserEmail,
+} from "../../../../redux/feature/auth/authSlice";
 import { setMessages } from "../../../../redux/feature/notification/notificationSlice";
 import { setStep } from "../../../../redux/feature/step/stepSlice";
 import { useAppSelector } from "../../../../redux/hooks";
+import ControlledPasswordField from "../../../../components/shared/ControllerFieldPassword";
+import ControlledInputField from "../../../../components/shared/ControllerField";
+import { FormProvider, useForm, useWatch } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { registerSchema } from "../Schema";
+import { IRegisterForm } from "../interface";
 
-interface IRegisterForm {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-}
 export default function RegisterForm() {
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const [register] = useRegisterMutation();
-    const { loading, error, message } = useAppSelector((state) => state.auth);
-    const { step } = useAppSelector((state) => state.step);
-    const {
-        isShow,
-        messageType,
-        message: msg,
-    } = useAppSelector((state) => state.notification);
-    const [errors, setErrors] = useState<{
-        [key: string]: string | null | undefined;
-    }>({});
-    const [userInfo, setUserInfo] = useState<IRegisterForm>({
-        firstName: "",
-        lastName: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-    });
-    // Filtered Error
-    const fieldError = Object.keys(errors).map((key) => errors[key]);
-    const filteredError = fieldError.filter((msg) => msg);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [register, { isLoading }] = useRegisterMutation();
+  const { error, message } = useAppSelector((state) => state.auth);
+  const { step } = useAppSelector((state) => state.step);
 
-    // handle Change function to take sign-up information
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setUserInfo({ ...userInfo, [name]: value });
-        setErrors({ ...errors, [name]: "" });
-        dispatch(setError(''))
-    };
+  const methods = useForm<IRegisterForm>({
+    resolver: yupResolver(registerSchema),
+    mode: "onBlur",
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+    reValidateMode: "onBlur",
+  });
+  const [password, confirmPassword] = useWatch({
+    control: methods.control,
+    name: ["password", "confirmPassword"],
+  });
 
-    // Handle Input validation (onBlur)
-    const validateInput = (e: any) => {
-        const { name, value } = e.target;
+  useEffect(() => {
+    if (password && confirmPassword && password === confirmPassword) {
+      methods.clearErrors("confirmPassword");
+    }
+  }, [password, confirmPassword, methods]);
 
-        setErrors((prev: any) => {
-            const stateObj = { ...prev, [name]: "" };
-
-            if (name === "firstName") {
-                if (!value) {
-                    stateObj[name] = "Please enter first name.";
-                }
-            } else if (name === "lastName") {
-                if (!value) {
-                    stateObj[name] = "Please enter last name.";
-                }
-            } else if (name === "email") {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!value) {
-                    stateObj[name] = "Please enter email.";
-                } else if (!emailRegex.test(value)) {
-                    stateObj[name] = "Please enter a valid email.";
-                }
-            } else if (name === "password") {
-                if (!value) {
-                    stateObj[name] = "Please enter Password.";
-                } else if (userInfo.confirmPassword && value !== userInfo.confirmPassword) {
-                    stateObj["confirmPassword"] = "Password and Confirm Password do not match.";
-                } else {
-                    stateObj["confirmPassword"] = userInfo.confirmPassword ? "" : errors.confirmPassword;
-                }
-            } else if (name === "confirmPassword") {
-                if (!value) {
-                    stateObj[name] = "Please enter Confirm Password.";
-                } else if (userInfo.password && value !== userInfo.password) {
-                    stateObj[name] = "Password and Confirm Password do not match.";
-                }
-            }
-
-            return stateObj;
-        });
-    };
-
-
-    // Handle submit
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        let allValid = true;
-        Object.keys(userInfo).forEach((key: any) => {
-            const typedKey = key as keyof IRegisterForm;
-
-            const event = {
-                target: {
-                    name: key,
-                    value: userInfo[typedKey],
-                },
-            };
-            validateInput(event);
-
-            if (!userInfo[typedKey]) {
-                allValid = false;
-            }
-            if (userInfo.password !== userInfo.confirmPassword) {
-                allValid = false
-            }
-        });
-        if (allValid) {
-            try {
-                await register(userInfo)
-                    .then(async (res) => {
-                        if (res?.data) {
-                            const timer = setTimeout(() => {
-                                dispatch(
-                                    setMessages({
-                                        type: "",
-                                        isShow: false,
-                                        message: "",
-                                    })
-                                );
-                                dispatch(setAuthMessage(''))
-                                dispatch(setUserEmail(userInfo.email))
-                                dispatch(setOtp(Array(6).fill("")));
-                                dispatch(setStep(step + 1));
-
-                            }, 2000);
-                            return () => clearTimeout(timer);
-                        }
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            } catch (error) {
-                console.log("login error", error);
-            }
+  const onSubmit = async (data: IRegisterForm) => {
+    try {
+      await register(data).then(async (res) => {
+        if ("data" in res) {
+          const timer = setTimeout(() => {
+            dispatch(
+              setMessages({
+                type: "",
+                isShow: false,
+                message: "",
+              })
+            );
+            dispatch(setAuthMessage(""));
+            dispatch(setUserEmail(data.email));
+            dispatch(setOtp(Array(6).fill("")));
+            dispatch(setStep(step + 1));
+          }, 2000);
+          return () => clearTimeout(timer);
         }
-    };
+      });
+    } catch (error) {
+      console.log("register error", error);
+    }
+  };
 
-    // !Important message
-    // Check it out. Is it a field error or an API error?  [type_off_error: ['SUCCESS', 'ERROR]]    
-    const checkingFieldErrorOrApiError = () => {
-        if (message && message !== null) {
-            return {
-                msg: message,
-                type: SUCCESS,
-                isShow: true,
-            };
-        } if (error && error !== null || filteredError.length > 0) {
-            return {
-                msg: error || filteredError[0],
-                type: ERROR,
-                isShow: true,
-            };
-        }
-        return {
-            isShow: false,
-            msg: "",
-            type: "",
-        };
-    };
+  useEffect(() => {
+    dispatch(setMessages({ type: "", isShow: false, message: "" }));
+    dispatch(setError(""));
+  }, [navigate, dispatch]);
 
-    useEffect(() => {
-        const { isShow, msg, type } = checkingFieldErrorOrApiError();
-        if (isShow && msg) {
-            dispatch(setMessages({ type, isShow, message: msg }));
-        } else {
-            dispatch(setMessages({ type: "", isShow: false, message: "" }));
-        }
-    }, [filteredError, error, message]);
-    return (
-        <form onSubmit={handleSubmit} className="flex flex-col">
+  // Get the first error message if any exists
+  const errorMessage =
+    (methods.formState.touchedFields.firstName &&
+      methods.formState.errors.firstName?.message) ||
+    (methods.formState.touchedFields.lastName &&
+      methods.formState.errors.lastName?.message) ||
+    (methods.formState.touchedFields.email &&
+      methods.formState.errors.email?.message) ||
+    (methods.formState.touchedFields.password &&
+      methods.formState.errors.password?.message) ||
+    (methods.formState.touchedFields.confirmPassword &&
+      methods.formState.errors.confirmPassword?.message) ||
+    error;
+
+  return (
+    <div className="flex flex-col">
+      <h2 className="text-black text-base font-poppins font-normal text-center mb-4">
+        Sign Up
+      </h2>
+      <FormProvider {...methods}>
+        <form
+          onSubmit={methods.handleSubmit(onSubmit)}
+          className="flex flex-col"
+        >
+          <div className="font-poppins">
             <div>
-                <div>
-                    <Input
-                        type="text"
-                        id="firstName"
-                        name="firstName"
-                        onChange={handleChange}
-                        placeholder="First Name"
-                        error={errors.firstName}
-                        className="rounded-t-lg"
-                        onBlur={validateInput}
-                    />
-                </div>
-                <div>
-                    <Input
-                        type="text"
-                        id="lastName"
-                        // value={userInfo.email}
-                        name="lastName"
-                        onChange={handleChange}
-                        placeholder="Last Name"
-                        error={errors.lastName}
-                        className="border-t-0 focus:border-t"
-                        onBlur={validateInput}
-                    />
-                </div>
-                <div>
-                    <Input
-                        type="email"
-                        id="email"
-                        // value={userInfo.email}
-                        name="email"
-                        onChange={handleChange}
-                        placeholder="E-mail"
-                        error={errors.email}
-                        className="border-t-0 focus:border-t"
-                        onBlur={validateInput}
-                    />
-                </div>
-                <div>
-                    <PasswordInput
-                        id="password"
-                        name="password"
-                        value={userInfo.password}
-                        onChange={handleChange}
-                        placeholder="Password"
-                        error={errors.password}
-                        className="border-t-0 focus:border-t"
-                        onBlur={validateInput}
-                    />
-                </div>
-                <div>
-                    <PasswordInput
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        value={userInfo.confirmPassword}
-                        onChange={handleChange}
-                        placeholder="Confirm Password"
-                        error={errors.confirmPassword}
-                        className="rounded-b-lg border-t-0 focus:border-t"
-                        onBlur={validateInput}
-                    />
-                </div>
+              <ControlledInputField
+                name="firstName"
+                placeholder="First Name"
+                className="rounded-t-lg"
+              />
             </div>
-            {isShow && (
-                <div className="mt-2">
-                    <MessageToastify
-                        isShow={isShow}
-                        type={messageType}
-                        value={msg}
-                    />
-                </div>
-            )}
-            <div className="flex items-center gap-2 text-grayDark my-4">
-                <input
-                    type="checkbox"
-                    name=""
-                    id="remember"
-                    className="cursor-pointer"
-                />
-                <label
-                    htmlFor="remember"
-                    className="cursor-pointer text-sm font-light font-poppins text-grayDark"
-                >
-                    Remember me
-                </label>
+            <div>
+              <ControlledInputField
+                name="lastName"
+                placeholder="Last Name"
+                className="border-t-0 focus:border-t"
+              />
             </div>
-            <Button
-                type="submit"
-                className="w-full h-[48px] px-4 font-normal text-white bg-primary rounded-2xl text-sm"
+            <div>
+              <ControlledInputField
+                name="email"
+                placeholder="E-mail"
+                className="border-t-0 focus:border-t"
+              />
+            </div>
+            <div>
+              <ControlledPasswordField
+                name="password"
+                placeholder="Password"
+                className="border-t-0 focus:border-t"
+              />
+            </div>
+            <div>
+              <ControlledPasswordField
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                className="rounded-b-lg border-t-0 focus:border-t"
+              />
+            </div>
+          </div>
+
+          {(errorMessage || message) && (
+            <div className="mt-2">
+              <MessageToastify
+                isShow={true}
+                type={errorMessage ? "ERROR" : "SUCCESS"}
+                value={errorMessage || message}
+              />
+            </div>
+          )}
+
+          <div className="flex items-center gap-2 text-grayDark my-4">
+            <input
+              type="checkbox"
+              name="remember"
+              id="remember"
+              className="cursor-pointer"
+            />
+            <label
+              htmlFor="remember"
+              className="cursor-pointer text-sm font-light font-poppins text-grayDark"
             >
-                {loading ? "Loading..." : "Continue"}
-            </Button>
-            <div className=" flex items-center justify-center gap-1 mt-4">
-                <p className="text-black text-sm font-light font-poppins">
-                    Already have an account?
-                </p>
-                <button
-                    className="text-black text-sm font-light font-poppins underline"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        navigate("/auth/login");
-                    }}
-                >
-                    log In
-                </button>
-            </div>
+              Remember me
+            </label>
+          </div>
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="w-full h-[48px] px-4 font-normal text-white bg-primary rounded-2xl text-sm"
+          >
+            {isLoading ? "Loading..." : "Continue"}
+          </Button>
+          <div className="flex items-center justify-center gap-1 mt-4">
+            <p className="text-black text-sm font-light font-poppins">
+              Already have an account?
+            </p>
+            <button
+              className="text-black text-sm font-light font-poppins underline"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/auth/login");
+              }}
+            >
+              Log In
+            </button>
+          </div>
         </form>
-    );
+      </FormProvider>
+    </div>
+  );
 }
