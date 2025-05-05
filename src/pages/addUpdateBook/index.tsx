@@ -104,7 +104,6 @@ export default function AddUpdateBook() {
     mode: "onChange",
     defaultValues: defaultValues,
   });
-  console.log({ defaultValues });
   const {
     handleSubmit,
     trigger,
@@ -314,7 +313,7 @@ export default function AddUpdateBook() {
     if (bookLoading) return true;
     else return false;
   };
-
+  console.log({errors})
   if (loading()) return <Loader />;
   return (
     <div className="min-h-screen">

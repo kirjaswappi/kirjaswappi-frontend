@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import closeIcon from "../../../assets/close.png";
 import Image from "../../../components/shared/Image";
-const ImageFileInput = ({ name }: { name: string }) => {
+interface IImageFileInputProps {
+  name: string;
+  multiple?: boolean;
+}
+const ImageFileInput = ({ name, multiple }: IImageFileInputProps) => {
   const { control, getValues, setValue } = useFormContext();
   const initialValue = getValues(name);
   const [preview, setPreview] = useState<string | null>(

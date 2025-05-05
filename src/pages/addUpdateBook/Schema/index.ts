@@ -18,22 +18,41 @@ const otherDetails = yup.object().shape({
     .of(yup.string())
     .min(1, "Please select at least one genre.")
     .required("Genres are required."),
-  bookCover: yup
-    .mixed<File | string>()
-    .required("Please upload a book cover.")
-    .test("fileOrUrl", "Book cover is required", (value) => {
-      return value !== null && !!value;
-    })
-    .test("fileValidation", "Invalid file format or size", (value) => {
-      if (!value || typeof value === "string") return true; // Allow any URL
+  // bookCovers: yup
+  //   .mixed<File | string>()
+  //   .required("Please upload a book cover.")
+  //   .test("fileOrUrl", "Book cover is required", (value) => {
+  //     return value !== null && !!value;
+  //   })
+  //   .test("fileValidation", "Invalid file format or size", (value) => {
+  //     if (!value || typeof value === "string") return true; // Allow any URL
 
-      // If it's a file, check size and format
-      return (
-        value instanceof File &&
-        value.size <= FILE_SIZE &&
-        SUPPORTED_FORMATS.includes(value.type)
-      );
-    }),
+  //     // If it's a file, check size and format
+  //     return (
+  //       value instanceof File &&
+  //       value.size <= FILE_SIZE &&
+  //       SUPPORTED_FORMATS.includes(value.type)
+  //     );
+  //   }),
+  bookCovers: yup
+    .array()
+    .of(
+      yup
+        .mixed<File | string>()
+        .test("fileOrUrl", "Image is required", (value) => {
+          return value !== null && !!value;
+        })
+        .test("fileValidation", "Invalid file format or size", (value) => {
+          if (!value || typeof value === "string") return true;
+          return (
+            value instanceof File &&
+            value.size <= FILE_SIZE &&
+            SUPPORTED_FORMATS.includes(value.type)
+          );
+        })
+    )
+    .min(1, "Please upload at least one book cover.")
+    .required("Book covers are required."),
 });
 const conditionDetails = yup.object().shape({
   conditionType: yup.string().required("Condition type is required"),
