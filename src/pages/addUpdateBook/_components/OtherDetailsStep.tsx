@@ -26,7 +26,7 @@ export default function OtherDetailsStep({ errors }: { errors: any }) {
       <div>
         <div className="py-4 border-b border-platinumDark">
           <InputLabel label="Book Cover" required />
-          <ImageFileInput name="bookCover" />
+          <ImageFileInput name="bookCovers" />
         </div>
         <div className="flex items-center justify-between py-4 border-b border-platinumDark">
           <InputLabel label="Genre" required />

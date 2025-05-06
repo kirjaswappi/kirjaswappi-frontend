@@ -150,7 +150,7 @@ export default function AddUpdateBook() {
       });
     }
   }, [bookData, reset]);
-console.log(getValues())
+// console.log(getValues())
   const [steps, setSteps] = useState([
     {
       label: "Book Details",
@@ -210,7 +210,7 @@ console.log(getValues())
     formData.append("genres", data.favGenres.join(","));
     formData.append("language", data.language);
     formData.append("condition", data.condition);
-console.log({data})
+// console.log({data})
     // <========== If book cover type is URL we need to convert URL to File ==========>
     if (!isString(data.bookCover)) {
       // formData.append("coverPhoto", data.bookCover);
@@ -314,7 +314,7 @@ console.log({data})
     if (bookLoading) return true;
     else return false;
   };
-  console.log({errors})
+  // console.log({errors})
   if (loading()) return <Loader />;
   return (
     <div className="min-h-screen">

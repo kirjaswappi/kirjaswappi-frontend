@@ -3,7 +3,6 @@ import { SUPPORTED_FORMATS } from "../../../utility/constant";
 
 const FILE_SIZE = 1 * 1024 * 1024; // 10MB
 
-
 const bookDetails = yup.object().shape({
   title: yup.string().required("Book title is required"),
   author: yup.string().required("Author name is required"),
@@ -39,20 +38,40 @@ const otherDetails = yup.object().shape({
     .of(
       yup
         .mixed<File | string>()
-        .test("fileOrUrl", "Image is required", (value) => {
-          return value !== null && !!value;
+        .required("Book cover is required")
+        .test(
+          "fileType",
+          "Unsupported file format. Only JPG, PNG allowed.",
+          (value) => {
+            if (typeof value === "string") return true; // skip if URL
+            if (value instanceof File) {
+              return SUPPORTED_FORMATS.includes(value.type);
+            }
+            return false;
+          }
+        )
+        // File size validation
+        .test("fileSize", "File size must be less than 10MB.", (value) => {
+          if (typeof value === "string") return true; // skip if URL
+          if (value instanceof File) {
+            return value.size <= FILE_SIZE;
+          }
+          return false;
         })
-        .test("fileValidation", "Invalid file format or size", (value) => {
-          if (!value || typeof value === "string") return true;
-          return (
-            value instanceof File &&
-            value.size <= FILE_SIZE &&
-            SUPPORTED_FORMATS.includes(value.type)
-          );
-        })
+        // URL validation
+        .test(
+          "validUrlOrFile",
+          "Must provide a valid image file or a non-empty image URL.",
+          (value) => {
+            if (typeof value === "string") {
+              return value.trim() !== "";
+            }
+            return value instanceof File;
+          }
+        )
     )
     .min(1, "Please upload at least one book cover.")
-    .required("Book covers are required."),
+    .max(5, "You can upload up to 5 book covers."),
 });
 const conditionDetails = yup.object().shape({
   conditionType: yup.string().required("Condition type is required"),
