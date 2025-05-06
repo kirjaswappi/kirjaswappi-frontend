@@ -81,9 +81,9 @@ const ImageFileInput = ({ name }: IImageFileInputProps) => {
                 >
                   <div
                     onClick={() => handleDelete(index, field)}
-                    className="absolute w-6 h-6 flex items-center justify-center bg-black text-white rounded-full -right-2 -top-2 cursor-pointer z-10"
+                    className="absolute w-5 h-5 flex items-center justify-center bg-smokyBlack text-white rounded-full -right-2 -top-2 cursor-pointer z-10"
                   >
-                    <Image src={closeIcon} alt="Remove" className="w-3 h-3" />
+                    <Image src={closeIcon} alt="Remove" className="w-[7px] h-[7px]" />
                   </div>
                   <img
                     src={src}
