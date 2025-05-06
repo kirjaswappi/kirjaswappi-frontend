@@ -17,61 +17,46 @@ import { OTPSchemaType } from "../interface";
 export default function ConfirmOTP() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [verifyEmail, { isLoading }] = useVerifyEmailMutation();
+  const [verifyEmail] = useVerifyEmailMutation();
   const { userEmail, otp } = useAppSelector((state) => state.auth);
 
   const {
     handleSubmit,
     setValue,
     setError,
-    trigger,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<OTPSchemaType>({
     resolver: yupResolver(otpSchema),
-    defaultValues: {
-      otp: otp.join(""),
-    },
-    mode: "onChange", // Validate on change
+    defaultValues: { otp: otp.join("") },
   });
 
-  // Sync form value with Redux otp state and trigger validation
   useEffect(() => {
-    const otpString = otp.join("");
-    setValue("otp", otpString);
-
-    // Trigger validation when component mounts and when OTP changes
-    if (otpString === "" || otpString.length === 6) {
-      trigger("otp");
-    }
-  }, [otp, setValue, trigger]);
+    setValue("otp", otp.join(""));
+  }, [otp, setValue]);
 
   const onSubmit = async (data: OTPSchemaType) => {
     try {
-      const res = await verifyEmail({ email: userEmail, otp: data.otp });
+      const result = await verifyEmail({ email: userEmail, otp: data.otp });
 
-      if ("error" in res) {
-        setError("otp", {
-          type: "manual",
-          message: "The OTP you entered is incorrect",
-        });
-      } else {
-        dispatch(
-          setMessages({
-            type: SUCCESS,
-            isShow: true,
-            message: "Email verified successfully!",
-          })
-        );
-
-        setTimeout(() => {
-          dispatch(setMessages({ type: "", isShow: false, message: "" }));
-          dispatch(setOtp(Array(6).fill("")));
-          navigate("/auth/login");
-          dispatch(setStep(0));
-        }, 3000);
+      if ("error" in result) {
+        setError("otp", { message: "The OTP you entered is incorrect" });
+        return;
       }
+
+      dispatch(
+        setMessages({
+          type: SUCCESS,
+          isShow: true,
+          message: "Email verified successfully!",
+        })
+      );
+
+      setTimeout(() => {
+        dispatch(setOtp(Array(6).fill("")));
+        navigate("/auth/login");
+        dispatch(setStep(0));
+      }, 3000);
     } catch (err) {
-      console.error("Verification error:", err);
       dispatch(
         setMessages({
           type: ERROR,
@@ -97,10 +82,10 @@ export default function ConfirmOTP() {
 
           <Button
             type="submit"
-            disabled={isLoading}
+            disabled={isSubmitting}
             className="text-white font-medium text-sm w-full bg-primary py-2 mt-3 rounded-2xl"
           >
-            {isLoading ? "Loading..." : "OTP Verify"}
+            {isSubmitting ? "Loading..." : "OTP Verify"}
           </Button>
         </form>
 
