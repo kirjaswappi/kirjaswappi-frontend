@@ -37,7 +37,7 @@ export default function RegisterForm() {
       password: "",
       confirmPassword: "",
     },
-    reValidateMode: "onBlur",
+    reValidateMode: "onChange",
   });
   const [password, confirmPassword] = useWatch({
     control: methods.control,
@@ -49,8 +49,14 @@ export default function RegisterForm() {
       methods.clearErrors("confirmPassword");
     }
   }, [password, confirmPassword, methods]);
-
+  const formErrors = methods.formState.errors;
+  const firstFieldError = Object.values(formErrors)[0]?.message;
+  const displayMessage = firstFieldError || error || message;
+  const messageType = firstFieldError || error ? "ERROR" : "SUCCESS";
   const onSubmit = async (data: IRegisterForm) => {
+    const isValid = await methods.trigger();
+    if (!isValid) return;
+
     try {
       await register(data).then(async (res) => {
         if ("data" in res) {
@@ -74,31 +80,13 @@ export default function RegisterForm() {
       console.log("register error", error);
     }
   };
-
   useEffect(() => {
     dispatch(setMessages({ type: "", isShow: false, message: "" }));
     dispatch(setError(""));
   }, [navigate, dispatch]);
 
-  // Get the first error message if any exists
-  const errorMessage =
-    (methods.formState.touchedFields.firstName &&
-      methods.formState.errors.firstName?.message) ||
-    (methods.formState.touchedFields.lastName &&
-      methods.formState.errors.lastName?.message) ||
-    (methods.formState.touchedFields.email &&
-      methods.formState.errors.email?.message) ||
-    (methods.formState.touchedFields.password &&
-      methods.formState.errors.password?.message) ||
-    (methods.formState.touchedFields.confirmPassword &&
-      methods.formState.errors.confirmPassword?.message) ||
-    error;
-
   return (
     <div className="flex flex-col">
-      <h2 className="text-black text-base font-poppins font-normal text-center mb-4">
-        Sign Up
-      </h2>
       <FormProvider {...methods}>
         <form
           onSubmit={methods.handleSubmit(onSubmit)}
@@ -142,12 +130,12 @@ export default function RegisterForm() {
             </div>
           </div>
 
-          {(errorMessage || message) && (
+          {displayMessage && (
             <div className="mt-2">
               <MessageToastify
                 isShow={true}
-                type={errorMessage ? "ERROR" : "SUCCESS"}
-                value={errorMessage || message}
+                type={messageType}
+                value={displayMessage}
               />
             </div>
           )}
