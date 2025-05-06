@@ -9,81 +9,106 @@ import { setOtp } from "../../../../redux/feature/auth/authSlice";
 import { setMessages } from "../../../../redux/feature/notification/notificationSlice";
 import { setStep } from "../../../../redux/feature/step/stepSlice";
 import { useAppSelector } from "../../../../redux/hooks";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { otpSchema } from "../Schema";
+import { OTPSchemaType } from "../interface";
 
 export default function ConfirmOTP() {
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const [verifyEmail] = useVerifyEmailMutation();
-    const { userEmail, loading, otp, success, error, message } = useAppSelector((state) => state.auth);
-    const handleOTPVerify = async (email: string, otp: string) => {
-        if (email !== "" && otp !== "" && otp.length >= 6) {
-            try {
-                await verifyEmail({ email: email, otp: otp }).then((res) => {
-                    if (!res.error) {
-                        const timer = setTimeout(() => {
-                            dispatch(
-                                setMessages({
-                                    type: "",
-                                    isShow: false,
-                                    message: "",
-                                })
-                            );
-                            dispatch(setOtp(Array(6).fill("")));
-                            navigate("/auth/login");
-                            dispatch(setStep(0))
-                        }, 3000);
-                        return () => clearTimeout(timer);
-                    }
-                });
-            } catch (error) {
-                console.log("error", error);
-            }
-        } else {
-            dispatch(
-                setMessages({
-                    type: ERROR,
-                    isShow: true,
-                    message:
-                        "OTP is required! insert your otp code in this field.",
-                })
-            );
-        }
-    };
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [verifyEmail, { isLoading }] = useVerifyEmailMutation();
+  const { userEmail, otp } = useAppSelector((state) => state.auth);
 
-    useEffect(() => {
-        if (!!message || error) {
-            dispatch(setMessages({
-                type: success ? SUCCESS : ERROR,
-                isShow: true,
-                message: success ? message : error
-            }))
-        }
-    }, [error, message]);
-    return (
-        <div
-            className={`bg-white absolute bottom-0 left-0 w-full  rounded-t-3xl transition-all duration-500 ease-in-out transform translate-y-0 h-[80vh]`}
-        >
-            <div className="text-center py-6 border-b border-[#E6E6E6]">
-                <h1>Confirm you Email</h1>
-            </div>
-            <div className="px-6">
-                <p className="text-sm font-light font-poppins text-center pt-8 pb-10">
-                    Enter the code we’ve sent to your Email
-                </p>
-                <OTP />
+  const {
+    handleSubmit,
+    setValue,
+    setError,
+    trigger,
+    formState: { errors },
+  } = useForm<OTPSchemaType>({
+    resolver: yupResolver(otpSchema),
+    defaultValues: {
+      otp: otp.join(""),
+    },
+    mode: "onChange", // Validate on change
+  });
 
-                <Button
-                    type="button"
-                    onClick={() => handleOTPVerify(userEmail, otp.join(""))}
-                    className="text-white font-medium text-sm w-full bg-primary py-2 mt-3 rounded-2xl"
-                >
-                    {loading ? "Loading..." : "OTP Verify"}
-                </Button>
-                <div className="flex items-center justify-center mt-10 gap-2 text-grayDark text-sm font-poppins">
-                    <p>Haven’t received a code? </p>{" "}
-                    <Button className="underline text-sm">Sent again</Button>
-                </div>
-            </div>
+  // Sync form value with Redux otp state and trigger validation
+  useEffect(() => {
+    const otpString = otp.join("");
+    setValue("otp", otpString);
+
+    // Trigger validation when component mounts and when OTP changes
+    if (otpString === "" || otpString.length === 6) {
+      trigger("otp");
+    }
+  }, [otp, setValue, trigger]);
+
+  const onSubmit = async (data: OTPSchemaType) => {
+    try {
+      const res = await verifyEmail({ email: userEmail, otp: data.otp });
+
+      if ("error" in res) {
+        setError("otp", {
+          type: "manual",
+          message: "The OTP you entered is incorrect",
+        });
+      } else {
+        dispatch(
+          setMessages({
+            type: SUCCESS,
+            isShow: true,
+            message: "Email verified successfully!",
+          })
+        );
+
+        setTimeout(() => {
+          dispatch(setMessages({ type: "", isShow: false, message: "" }));
+          dispatch(setOtp(Array(6).fill("")));
+          navigate("/auth/login");
+          dispatch(setStep(0));
+        }, 3000);
+      }
+    } catch (err) {
+      console.error("Verification error:", err);
+      dispatch(
+        setMessages({
+          type: ERROR,
+          isShow: true,
+          message: "An error occurred during verification",
+        })
+      );
+    }
+  };
+
+  return (
+    <div className="bg-white absolute bottom-0 left-0 w-full rounded-t-3xl transition-all duration-500 ease-in-out transform translate-y-0 h-[80vh]">
+      <div className="text-center py-6 border-b border-[#E6E6E6]">
+        <h1>Confirm your Email</h1>
+      </div>
+      <div className="px-6">
+        <p className="text-sm font-light font-poppins text-center pt-8 pb-10">
+          Enter the code we've sent to your Email
+        </p>
+
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <OTP otpMessageShow={true} error={errors.otp?.message} />
+
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="text-white font-medium text-sm w-full bg-primary py-2 mt-3 rounded-2xl"
+          >
+            {isLoading ? "Loading..." : "OTP Verify"}
+          </Button>
+        </form>
+
+        <div className="flex items-center justify-center mt-10 gap-2 text-grayDark text-sm font-poppins">
+          <p>Haven't received a code?</p>
+          <Button className="underline text-sm">Send again</Button>
         </div>
-    );
+      </div>
+    </div>
+  );
 }

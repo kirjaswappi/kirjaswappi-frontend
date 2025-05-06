@@ -1,89 +1,79 @@
 import React, { useRef } from "react";
 import { useDispatch } from "react-redux";
 import { setOtp } from "../../redux/feature/auth/authSlice";
-import { setMessages } from "../../redux/feature/notification/notificationSlice";
 import { useAppSelector } from "../../redux/hooks";
 import MessageToastify from "./MessageToastify";
-import { ERROR } from "../../constant/MESSAGETYPE";
 
-export default function OTP({ otpMessageShow = true }: { otpMessageShow?: boolean }) {
-    const dispatch = useDispatch()
-    const { otp } = useAppSelector(state => state.auth)
-    const { messageType, message, isShow } = useAppSelector(state => state.notification)
-    const inputs = useRef<(HTMLInputElement | null)[]>([]);
+export default function OTP({
+  otpMessageShow = true,
+  error,
+}: {
+  otpMessageShow?: boolean;
+  error?: string;
+}) {
+  const dispatch = useDispatch();
+  const { otp } = useAppSelector((state) => state.auth);
+  const inputs = useRef<(HTMLInputElement | null)[]>([]);
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement>,
-        index: number
-    ) => {
-        const { value } = e.target;
-        const newOtp = [...otp];
-        if (value.match(/^\d$/)) {
-            newOtp[index] = value;
-            dispatch(setOtp(newOtp))
-            dispatch(setMessages({ type: "", isShow: false, message: "" }))
-            if (index < otp.length - 1) {
-                inputs.current[index + 1]?.focus();
-            }
-        } else if (value === "") {
-            newOtp[index] = "";
-            dispatch(setOtp(newOtp))
-            if (index > 0) {
-                inputs.current[index - 1]?.focus();
-            }
-        }
-    };
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const { value } = e.target;
+    const newOtp = [...otp];
+    if (value.match(/^\d$/)) {
+      newOtp[index] = value;
+      dispatch(setOtp(newOtp));
+      if (index < 5) inputs.current[index + 1]?.focus();
+    } else if (value === "") {
+      newOtp[index] = "";
+      dispatch(setOtp(newOtp));
+      if (index > 0) inputs.current[index - 1]?.focus();
+    }
+  };
 
-    const handleKeyDown = (
-        e: React.KeyboardEvent<HTMLInputElement>,
-        index: number
-    ) => {
-        if (e.key === "Backspace" && otp[index] === "") {
-            if (index > 0) inputs.current[index - 1]?.focus();
-            dispatch(
-                setMessages({
-                    type: 'ERROR',
-                    isShow: true,
-                    message:
-                        "OTP is required! insert your otp code in this field.",
-                })
-            );
-        }
-    };
-    const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
-        const pasteData = e.clipboardData.getData('text').trim();
-        if (pasteData.length === otp.length && /^\d+$/.test(pasteData)) {
-            const newOtp = pasteData.split('');
-            dispatch(setOtp(newOtp));
-            inputs.current[otp.length - 1]?.focus();
-            dispatch(setMessages({ type: "", isShow: false, message: "" }))
-        } else {
-            console.log('not work')
-            dispatch(setMessages({ type: "", isShow: false, message: "" }))
-        }
-    };
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      inputs.current[index - 1]?.focus();
+    }
+  };
 
-    return (
-        <div>
-            <div className="flex gap-2 justify-between">
-                {Array.from({ length: 6 }, (_, index) => (
-                    <input
-                        key={index}
-                        type="text"
-                        maxLength={1}
-                        value={otp[index]}
-                        onChange={(e) => handleChange(e, index)}
-                        onKeyDown={(e) => handleKeyDown(e, index)}
-                        onPaste={handlePaste}
-                        ref={(el) => (inputs.current[index] = el)}
-                        className={`max-w-10 h-10  bg-[#E7E7E7] ${messageType === ERROR ? "border border-rose-500" : ""
-                            } rounded-md text-center text-base`}
-                        placeholder="-"
-                    />
-                ))}
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const pasteData = e.clipboardData.getData("text").trim();
+    if (pasteData.length === 6 && /^\d+$/.test(pasteData)) {
+      dispatch(setOtp(pasteData.split("")));
+      inputs.current[5]?.focus();
+    }
+  };
 
-            </div>
-            {otpMessageShow && isShow && <div className="mt-2"><MessageToastify isShow={isShow} type={messageType} value={message} /></div>}
-        </div>
-    );
+  return (
+    <div>
+      <div className="flex gap-2 justify-between">
+        {Array(6)
+          .fill(0)
+          .map((_, i) => (
+            <input
+              key={i}
+              type="text"
+              maxLength={1}
+              value={otp[i]}
+              onChange={(e) => handleChange(e, i)}
+              onKeyDown={(e) => handleKeyDown(e, i)}
+              onPaste={handlePaste}
+              ref={(el) => (inputs.current[i] = el)}
+              className={`max-w-10 h-10 mb-5 bg-[#E7E7E7] ${
+                error ? "border border-rose-500 " : ""
+              } rounded-md text-center text-base`}
+              placeholder="-"
+            />
+          ))}
+      </div>
+      {otpMessageShow && error && (
+        <MessageToastify isShow type="ERROR" value={error} />
+      )}
+    </div>
+  );
 }
