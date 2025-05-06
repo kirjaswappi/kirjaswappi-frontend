@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../../components/shared/Button";
@@ -19,6 +19,7 @@ export default function ConfirmOTP() {
   const dispatch = useDispatch();
   const [verifyEmail] = useVerifyEmailMutation();
   const { userEmail, otp } = useAppSelector((state) => state.auth);
+  const [hadFullOtp, setHadFullOtp] = useState(false);
 
   const {
     handleSubmit,
@@ -31,40 +32,30 @@ export default function ConfirmOTP() {
   });
 
   useEffect(() => {
-    setValue("otp", otp.join(""));
-  }, [otp, setValue]);
+    const otpString = otp.join("");
+    setValue("otp", otpString);
+    if (otpString.length === 6) setHadFullOtp(true);
+    if (hadFullOtp && !otpString)
+      setError("otp", { message: "OTP is required" });
+  }, [otp, setValue, setError, hadFullOtp]);
 
   const onSubmit = async (data: OTPSchemaType) => {
-    try {
-      const result = await verifyEmail({ email: userEmail, otp: data.otp });
+    const result = await verifyEmail({ email: userEmail, otp: data.otp });
+    if ("error" in result)
+      return setError("otp", { message: "The OTP you entered is incorrect" });
 
-      if ("error" in result) {
-        setError("otp", { message: "The OTP you entered is incorrect" });
-        return;
-      }
-
-      dispatch(
-        setMessages({
-          type: SUCCESS,
-          isShow: true,
-          message: "Email verified successfully!",
-        })
-      );
-
-      setTimeout(() => {
-        dispatch(setOtp(Array(6).fill("")));
-        navigate("/auth/login");
-        dispatch(setStep(0));
-      }, 3000);
-    } catch (err) {
-      dispatch(
-        setMessages({
-          type: ERROR,
-          isShow: true,
-          message: "An error occurred during verification",
-        })
-      );
-    }
+    dispatch(
+      setMessages({
+        type: SUCCESS,
+        isShow: true,
+        message: "Email verified successfully!",
+      })
+    );
+    setTimeout(() => {
+      dispatch(setOtp(Array(6).fill("")));
+      navigate("/auth/login");
+      dispatch(setStep(0));
+    }, 3000);
   };
 
   return (
@@ -79,7 +70,6 @@ export default function ConfirmOTP() {
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <OTP otpMessageShow={true} error={errors.otp?.message} />
-
           <Button
             type="submit"
             disabled={isSubmitting}
