@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../../components/shared/Button";
 import OTP from "../../../../components/shared/OTP";
-import { ERROR, SUCCESS } from "../../../../constant/MESSAGETYPE";
+import { SUCCESS } from "../../../../constant/MESSAGETYPE";
 import { useVerifyEmailMutation } from "../../../../redux/feature/auth/authApi";
 import { setOtp } from "../../../../redux/feature/auth/authSlice";
 import { setMessages } from "../../../../redux/feature/notification/notificationSlice";
