@@ -1,7 +1,7 @@
 import * as yup from "yup";
 import { SUPPORTED_FORMATS } from "../../../utility/constant";
 
-const FILE_SIZE = 1 * 1024 * 1024; // 10MB
+const FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 const bookDetails = yup.object().shape({
   title: yup.string().required("Book title is required"),
@@ -11,67 +11,38 @@ const bookDetails = yup.object().shape({
   condition: yup.string().required("Condition is required"),
 });
 
+const imageSchema = yup
+  .mixed<File | string>()
+  .required("Image is required")
+  .test("fileType", "Only JPG or PNG files are allowed", (value) => {
+    if (typeof value === "string") return true;
+    return value instanceof File && SUPPORTED_FORMATS.includes(value.type);
+  })
+  .test("fileSize", "File size must be less than 10MB", (value) => {
+    if (typeof value === "string") return true;
+    return value instanceof File && value.size <= FILE_SIZE;
+  })
+  .test(
+    "validUrlOrFile",
+    "Must provide a valid image file or a non-empty image URL",
+    (value) => {
+      if (typeof value === "string") {
+        return value.trim() !== "";
+      }
+      return value instanceof File;
+    }
+  );
 const otherDetails = yup.object().shape({
   favGenres: yup
     .array()
     .of(yup.string())
     .min(1, "Please select at least one genre.")
     .required("Genres are required."),
-  // bookCovers: yup
-  //   .mixed<File | string>()
-  //   .required("Please upload a book cover.")
-  //   .test("fileOrUrl", "Book cover is required", (value) => {
-  //     return value !== null && !!value;
-  //   })
-  //   .test("fileValidation", "Invalid file format or size", (value) => {
-  //     if (!value || typeof value === "string") return true; // Allow any URL
-
-  //     // If it's a file, check size and format
-  //     return (
-  //       value instanceof File &&
-  //       value.size <= FILE_SIZE &&
-  //       SUPPORTED_FORMATS.includes(value.type)
-  //     );
-  //   }),
   bookCovers: yup
-    .array()
-    .of(
-      yup
-        .mixed<File | string>()
-        .required("Book cover is required")
-        .test(
-          "fileType",
-          "Unsupported file format. Only JPG, PNG allowed.",
-          (value) => {
-            if (typeof value === "string") return true; // skip if URL
-            if (value instanceof File) {
-              return SUPPORTED_FORMATS.includes(value.type);
-            }
-            return false;
-          }
-        )
-        // File size validation
-        .test("fileSize", "File size must be less than 10MB.", (value) => {
-          if (typeof value === "string") return true; // skip if URL
-          if (value instanceof File) {
-            return value.size <= FILE_SIZE;
-          }
-          return false;
-        })
-        // URL validation
-        .test(
-          "validUrlOrFile",
-          "Must provide a valid image file or a non-empty image URL.",
-          (value) => {
-            if (typeof value === "string") {
-              return value.trim() !== "";
-            }
-            return value instanceof File;
-          }
-        )
-    )
-    .min(1, "Please upload at least one book cover.")
-    .max(5, "You can upload up to 5 book covers."),
+  .array()
+  .of(imageSchema)
+  .min(1, "At least one image is required")
+
 });
 const conditionDetails = yup.object().shape({
   conditionType: yup.string().required("Condition type is required"),

@@ -111,7 +111,7 @@ export default function AddUpdateBook() {
     setValue,
     formState: { errors },
     reset,
-    getValues
+    getValues,
   } = methods;
   const languages = options(languageDataOptions);
   const conditions = options(conditionDataOptions);
@@ -168,7 +168,7 @@ export default function AddUpdateBook() {
       isActive: false,
     },
   ]);
-
+console.log(errors)
   const handleNext = async () => {
     const valid = await trigger();
     if (valid) {

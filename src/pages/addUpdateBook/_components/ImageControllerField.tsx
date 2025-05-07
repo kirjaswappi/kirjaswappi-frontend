@@ -50,7 +50,7 @@ const ImageFileInput = ({ name }: IImageFileInputProps) => {
       control={control}
       defaultValue={[]}
       render={({ field, fieldState }) => {
-        console.log(fieldState.error)
+        console.log(fieldState)
         return (
           <div>
             <div className="w-[126px] h-[150px] border-[1px] border-dashed border-grayDark rounded-lg cursor-pointer block mx-auto ">
