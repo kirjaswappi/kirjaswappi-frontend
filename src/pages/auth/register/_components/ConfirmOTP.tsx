@@ -34,28 +34,40 @@ export default function ConfirmOTP() {
   useEffect(() => {
     const otpString = otp.join("");
     setValue("otp", otpString);
-    if (otpString.length === 6) setHadFullOtp(true);
-    if (hadFullOtp && !otpString)
+    
+    if (otpString.length === 6) {
+      setHadFullOtp(true);
+      handleSubmit(onSubmit)();
+    } else if (hadFullOtp && otpString.length < 6) {
       setError("otp", { message: "OTP is required" });
+    }
   }, [otp, setValue, setError, hadFullOtp]);
 
   const onSubmit = async (data: OTPSchemaType) => {
+    if (!data.otp) {
+      setError("otp", { message: "OTP is required" });
+      return;
+    }
+
     const result = await verifyEmail({ email: userEmail, otp: data.otp });
-    if ("error" in result)
-      return setError("otp", { message: "The OTP you entered is incorrect" });
+    if ("error" in result) {
+      setError("otp", { message: "OTP does not match" });
+      return;
+    }
 
     dispatch(
       setMessages({
         type: SUCCESS,
         isShow: true,
-        message: "Email verified successfully!",
+        message: "OTP verified successfully",
       })
     );
+    
     setTimeout(() => {
       dispatch(setOtp(Array(6).fill("")));
       navigate("/auth/login");
       dispatch(setStep(0));
-    }, 3000);
+    }, 1000);
   };
 
   return (
