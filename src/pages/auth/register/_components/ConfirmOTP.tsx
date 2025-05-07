@@ -20,11 +20,13 @@ export default function ConfirmOTP() {
   const [verifyEmail] = useVerifyEmailMutation();
   const { userEmail, otp } = useAppSelector((state) => state.auth);
   const [hadFullOtp, setHadFullOtp] = useState(false);
+  const [isAutoSubmitting, setIsAutoSubmitting] = useState(false);
 
   const {
     handleSubmit,
     setValue,
     setError,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<OTPSchemaType>({
     resolver: yupResolver(otpSchema),
@@ -35,39 +37,45 @@ export default function ConfirmOTP() {
     const otpString = otp.join("");
     setValue("otp", otpString);
     
+    // Handle OTP completion and validation
     if (otpString.length === 6) {
-      setHadFullOtp(true);
+      if (!hadFullOtp) {
+        setHadFullOtp(true);
+      }
+      setIsAutoSubmitting(true);
       handleSubmit(onSubmit)();
-    } else if (hadFullOtp && otpString.length < 6) {
+    } else if (hadFullOtp && !otpString) {
       setError("otp", { message: "OTP is required" });
+    } else if (hadFullOtp && otpString.length > 0) {
+      clearErrors("otp");
     }
-  }, [otp, setValue, setError, hadFullOtp]);
+  }, [otp, setValue, setError, clearErrors, hadFullOtp, handleSubmit]);
 
   const onSubmit = async (data: OTPSchemaType) => {
-    if (!data.otp) {
-      setError("otp", { message: "OTP is required" });
-      return;
-    }
+    try {
+      const result = await verifyEmail({ email: userEmail, otp: data.otp });
+      
+      if ("error" in result) {
+        setError("otp", { message: "The OTP you entered is incorrect" });
+        return;
+      }
 
-    const result = await verifyEmail({ email: userEmail, otp: data.otp });
-    if ("error" in result) {
-      setError("otp", { message: "OTP does not match" });
-      return;
+      dispatch(
+        setMessages({
+          type: SUCCESS,
+          isShow: true,
+          message: "Email verified successfully!",
+        })
+      );
+      
+      setTimeout(() => {
+        dispatch(setOtp(Array(6).fill("")));
+        navigate("/auth/login");
+        dispatch(setStep(0));
+      }, 3000);
+    } finally {
+      setIsAutoSubmitting(false);
     }
-
-    dispatch(
-      setMessages({
-        type: SUCCESS,
-        isShow: true,
-        message: "OTP verified successfully",
-      })
-    );
-    
-    setTimeout(() => {
-      dispatch(setOtp(Array(6).fill("")));
-      navigate("/auth/login");
-      dispatch(setStep(0));
-    }, 1000);
   };
 
   return (
@@ -84,10 +92,10 @@ export default function ConfirmOTP() {
           <OTP otpMessageShow={true} error={errors.otp?.message} />
           <Button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isAutoSubmitting}
             className="text-white font-medium text-sm w-full bg-primary py-2 mt-3 rounded-2xl"
           >
-            {isSubmitting ? "Loading..." : "OTP Verify"}
+            {isSubmitting || isAutoSubmitting ? "Verifying..." : "Verify OTP"}
           </Button>
         </form>
 

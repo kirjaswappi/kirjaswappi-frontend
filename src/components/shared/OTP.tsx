@@ -7,9 +7,11 @@ import MessageToastify from "./MessageToastify";
 export default function OTP({
   otpMessageShow = true,
   error,
+  isSubmitting = false,
 }: {
   otpMessageShow?: boolean;
   error?: string;
+  isSubmitting?: boolean;
 }) {
   const dispatch = useDispatch();
   const { otp } = useAppSelector((state) => state.auth);
@@ -19,6 +21,8 @@ export default function OTP({
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
+    if (isSubmitting) return; // Prevent changes during submission
+    
     const { value } = e.target;
     const newOtp = [...otp];
     if (value.match(/^\d$/)) {
@@ -36,12 +40,16 @@ export default function OTP({
     e: React.KeyboardEvent<HTMLInputElement>,
     index: number
   ) => {
+    if (isSubmitting) return; // Prevent key events during submission
+    
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputs.current[index - 1]?.focus();
     }
   };
 
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    if (isSubmitting) return; // Prevent paste during submission
+    
     const pasteData = e.clipboardData.getData("text").trim();
     if (pasteData.length === 6 && /^\d+$/.test(pasteData)) {
       dispatch(setOtp(pasteData.split("")));
@@ -64,9 +72,12 @@ export default function OTP({
               onKeyDown={(e) => handleKeyDown(e, i)}
               onPaste={handlePaste}
               ref={(el) => (inputs.current[i] = el)}
+              disabled={isSubmitting}
               className={`max-w-10 h-10 mb-5 bg-[#E7E7E7] ${
                 error ? "border border-rose-500 " : ""
-              } rounded-md text-center text-base`}
+              } rounded-md text-center text-base ${
+                isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+              }`}
               placeholder="-"
             />
           ))}
