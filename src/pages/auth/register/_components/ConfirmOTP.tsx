@@ -26,7 +26,6 @@ export default function ConfirmOTP() {
     handleSubmit,
     setValue,
     setError,
-    trigger,
     clearErrors,
     formState: { errors },
   } = useForm<OTPSchemaType>({
