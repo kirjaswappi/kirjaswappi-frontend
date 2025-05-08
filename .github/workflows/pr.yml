@@ -25,7 +25,7 @@ jobs:
 
       - name: Run Tests and Generate Coverage Report
         run: |
-          # Run tests with coverage, but don't fail the pipeline if tests are missing
+          # Run tests with coverage, don't fail pipeline if no tests are found
           npx vitest run --coverage --passWithNoTests || true
 
           # Create a dummy coverage summary if not found
@@ -38,8 +38,8 @@ jobs:
           mkdir -p badges
 
           # Extract percentages and write a simplified summary JSON
-          TOTAL_LINES=$(jq -r '.total.lines.pct' coverage/coverage-summary.json)
-          TOTAL_BRANCHES=$(jq -r '.total.branches.pct' coverage/coverage-summary.json)
+          TOTAL_LINES=$(jq -r '.total.lines.pct // 0.0' coverage/coverage-summary.json)
+          TOTAL_BRANCHES=$(jq -r '.total.branches.pct // 0.0' coverage/coverage-summary.json)
           jq -n --arg coverage "$TOTAL_LINES" --arg branches "$TOTAL_BRANCHES" \
             '{ coverage: ($coverage | tonumber), branches: ($branches | tonumber) }' \
             > badges/coverage-summary.json
