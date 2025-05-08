@@ -26,7 +26,7 @@ jobs:
       - name: Run Tests and Generate Coverage Report
         run: |
           # Run tests with coverage, but don't fail the pipeline if tests are missing
-          npx vitest run --coverage || true
+          npx vitest run --coverage --passWithNoTests || true
 
           # Create a dummy coverage summary if not found
           if [ ! -f coverage/coverage-summary.json ]; then
