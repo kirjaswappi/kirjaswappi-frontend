@@ -60,7 +60,7 @@ jobs:
       - name: Mark Git directory as safe
         run: git config --global --add safe.directory /__w/kirjaswappi-frontend/kirjaswappi-frontend
     
-      - name: Comment on PR with Coverage (Improved)
+      - name: Comment on PR with Coverage
         if: ${{ github.event_name == 'pull_request' }}
         shell: bash
         run: |
