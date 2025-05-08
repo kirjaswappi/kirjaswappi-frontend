@@ -46,7 +46,10 @@ jobs:
 
       - name: Comment on PR with Coverage
         if: ${{ github.event_name == 'pull_request' }}
+        shell: bash
         run: |
+          gh --version
+      
           REPORT=$(<badges/coverage-summary.json)
           RAW_COVERAGE=$(jq -r '.coverage' <<< "$REPORT")
           RAW_BRANCHES=$(jq -r '.branches' <<< "$REPORT")
@@ -54,6 +57,8 @@ jobs:
           BRANCHES=$(printf "%.1f%%" "$RAW_BRANCHES")
           NEWLINE=$'\n'
           BODY="## 🧪 Test Coverage Summary${NEWLINE}* __Coverage:__ ${COVERAGE}${NEWLINE}* __Branches:__ ${BRANCHES}"
+      
+          echo "Posting comment: $BODY"
           gh pr comment ${{ github.event.pull_request.number }} --body "${BODY}" --edit-last --create-if-none
         continue-on-error: true
         env:
