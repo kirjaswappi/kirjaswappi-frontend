@@ -37,9 +37,6 @@ export default function ConfirmOTP() {
   };
 
   const onSubmit = async ({ otp: otpString }: OTPSchemaType) => {
-    if (!otpString) return setError("otp", { type: "manual", message: "OTP is required" });
-    if (otpString.length !== 6) return setError("otp", { type: "manual", message: "OTP must be exactly 6 digits" });
-
     setIsAutoSubmitting(true);
     try {
       const res = await verifyEmail({ email: userEmail, otp: otpString });
