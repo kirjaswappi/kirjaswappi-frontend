@@ -65,7 +65,7 @@ export default function ConfirmOTP() {
         <h1>Confirm your Email</h1>
       </div>
       <div className="px-6">
-        <p className="text-sm font-light font-poppins text-center pt-8 pb-10">
+        <p className="text-sm font-light text-grayDark font-poppins text-center pt-8 pb-10">
           Enter the code we've sent to your Email
         </p>
         <form onSubmit={handleSubmit(onSubmit)}>
