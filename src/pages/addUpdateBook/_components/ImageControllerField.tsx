@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import { Controller, useFormContext } from "react-hook-form";
+import { Controller, FieldError, useFormContext } from "react-hook-form";
 import closeIcon from "../../../assets/close.png";
 import Image from "../../../components/shared/Image";
+import { SUPPORTED_FORMATS } from "../../../utility/constant";
 interface IImageFileInputProps {
   name: string;
+  errors: Record<string, any>;
 }
-const ImageFileInput = ({ name }: IImageFileInputProps) => {
-  const { control, getValues, setValue } = useFormContext();
+const ImageFileInput = ({ name, errors }: IImageFileInputProps) => {
+  const { control, getValues, setValue, trigger } = useFormContext();
   const initialValue = getValues(name);
   const [previews, setPreviews] = useState<string[]>([]);
 
@@ -24,33 +26,55 @@ const ImageFileInput = ({ name }: IImageFileInputProps) => {
     field: any
   ) => {
     const files = Array.from(e.target.files || []);
-    const validImages = files.filter((file) => file.type.startsWith("image"));
+    const validImages = files.filter((file) =>
+      SUPPORTED_FORMATS.includes(file.type)
+    );
 
     const fileUrls = validImages.map((file) => URL.createObjectURL(file));
-    const updatedPreviews = [...(previews || []), ...fileUrls];
-
+    const updatedPreviews = [...previews, ...fileUrls];
     setPreviews(updatedPreviews);
-    const updatedFiles = [...(field.value || []), ...validImages];
+
+    const updatedFiles = [...field.value, ...validImages];
     field.onChange(updatedFiles);
   };
 
-  const handleDelete = (index: number, field: any) => {
+  const handleDelete = async (index: number, field: any) => {
     const updatedPreviews = previews.filter((_, i) => i !== index);
     const updatedFiles = (field.value || []).filter(
       (_: any, i: number) => i !== index
     );
-
     setPreviews(updatedPreviews);
-    setValue(name, updatedFiles);
+    setValue(name, updatedFiles, { shouldValidate: true });
+    await trigger(name);
   };
 
+  const findErrorPosition = (errorsObject: any): number[] => {
+    if (!errorsObject || typeof errorsObject !== "object") return [];
+    return Object.keys(errorsObject)
+      .map((key) => (errorsObject[key]?.message ? parseInt(key, 10) : null))
+      .filter((index): index is number => index !== null);
+  };
+
+  const getAllErrorMessages = (
+  errorObject: Record<number, FieldError> | undefined
+): string[] => {
+  if (!errorObject || typeof errorObject !== 'object') return [];
+
+  return Object.values(errorObject)
+    .map((error) => error?.message)
+    .filter((msg): msg is string => Boolean(msg));
+};
+  console.log(errors);
   return (
     <Controller
       name={name}
       control={control}
       defaultValue={[]}
       render={({ field, fieldState }) => {
-        console.log(fieldState)
+        const errorArray = errors && errors?.[name] || [];
+        const errorIndex = findErrorPosition(errors["bookCovers"]);
+        const errorMessages = getAllErrorMessages(errorArray);
+        console.log(errorMessages[0])
         return (
           <div>
             <div className="w-[126px] h-[150px] border-[1px] border-dashed border-grayDark rounded-lg cursor-pointer block mx-auto ">
@@ -69,38 +93,50 @@ const ImageFileInput = ({ name }: IImageFileInputProps) => {
                   id="file"
                   type="file"
                   multiple
+                  accept={SUPPORTED_FORMATS.join(",")}
                   className="hidden"
                   onChange={(e) => handleFileChange(e, field)}
                 />
               </label>
             </div>
             <div className="grid grid-cols-5 gap-1 mt-4">
-              {previews.map((src, index) => (
-                <div
-                  key={index}
-                  className="w-[56px] h-[56px] border border-[#B2B2B2] border-gray-400 rounded-lg relative group"
-                >
-                  <div
-                    onClick={() => handleDelete(index, field)}
-                    className="absolute w-5 h-5 flex items-center justify-center bg-smokyBlack text-white rounded-full -right-2 -top-2 cursor-pointer z-10"
-                  >
-                    <Image src={closeIcon} alt="Remove" className="w-[7px] h-[7px]" />
-                  </div>
-                  <img
-                    src={src}
-                    alt={`Preview ${index}`}
-                    className="w-full h-full object-cover rounded-lg"
-                  />
-                </div>
-              ))}
+              {previews &&
+                previews?.map((src, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className={`w-[56px] h-[56px] border ${
+                        errorIndex?.includes(index)
+                          ? "border-2 border-rose-600"
+                          : "border-[#B2B2B2]"
+                      } rounded-lg relative group`}
+                    >
+                      <div
+                        onClick={() => handleDelete(index, field)}
+                        className="absolute w-5 h-5 flex items-center justify-center bg-smokyBlack text-white rounded-full -right-2 -top-2 cursor-pointer z-10"
+                      >
+                        <Image
+                          src={closeIcon}
+                          alt="Remove"
+                          className="w-[7px] h-[7px]"
+                        />
+                      </div>
+                      <img
+                        src={src}
+                        alt={`Preview ${index}`}
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                    </div>
+                  );
+                })}
             </div>
 
             {/* Validation Error */}
-            {fieldState.error && (
-              <p className="text-rose-500 text-xs mt-1 pl-2">
-                {fieldState.error.message}
-              </p>
-            )}
+            {errorMessages.length > 0 || errors['bookCovers']  && (
+                <p className="text-rose-500 text-xs mt-1 pl-2">
+                  {errorMessages[0] || errors['bookCovers']?.message}
+                </p>
+              )}
           </div>
         );
       }}

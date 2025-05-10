@@ -49,7 +49,7 @@ interface IAddUpdateBookData {
   condition: string;
   description: string;
   author: string;
-  bookCover: [];
+  bookCovers: [];
 }
 
 export default function AddUpdateBook() {
@@ -96,7 +96,7 @@ export default function AddUpdateBook() {
     condition: bookData?.condition || "",
     description: bookData?.description || "",
     author: bookData?.author || "",
-    bookCover: [],
+    bookCovers: [],
   };
 
   const methods = useForm({
@@ -146,7 +146,7 @@ export default function AddUpdateBook() {
         condition: bookData?.condition || "",
         description: bookData?.description || "",
         author: bookData?.author || "",
-        bookCover: bookData?.coverPhotoUrl || "",
+        // bookCover: bookData?.coverPhotoUrl || "",
       });
     }
   }, [bookData, reset]);
@@ -168,7 +168,7 @@ export default function AddUpdateBook() {
       isActive: false,
     },
   ]);
-console.log(errors)
+// console.log(errors)
   const handleNext = async () => {
     const valid = await trigger();
     if (valid) {
@@ -201,6 +201,7 @@ console.log(errors)
   const handleAddUpdateBookFn = async <T extends IAddUpdateBookData>(
     data: T
   ) => {
+    console.log(data)
     const formData = new FormData();
     if (userInformation.id) formData.append("ownerId", userInformation.id);
     if (bookData?.id) formData.append("id", bookData?.id);
@@ -212,14 +213,14 @@ console.log(errors)
     formData.append("condition", data.condition);
 // console.log({data})
     // <========== If book cover type is URL we need to convert URL to File ==========>
-    if (!isString(data.bookCover)) {
-      // formData.append("coverPhoto", data.bookCover);
-    } else {
-      const file = await convertedURLToFile(bookData?.coverPhotoUrl);
-      if (file) {
-        formData.append("coverPhoto", file);
-      }
-    }
+    // if (!isString(data.bookCover)) {
+    //   // formData.append("coverPhoto", data.bookCover);
+    // } else {
+    //   const file = await convertedURLToFile(bookData?.coverPhotoUrl);
+    //   if (file) {
+    //     formData.append("coverPhoto", file);
+    //   }
+    // }
 
     if (data.conditionType === BYBOOKS) {
       const exchangeCondition: {
