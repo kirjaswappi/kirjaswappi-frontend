@@ -49,7 +49,7 @@ interface IAddUpdateBookData {
   condition: string;
   description: string;
   author: string;
-  bookCover: string | File;
+  bookCover: [];
 }
 
 export default function AddUpdateBook() {
@@ -96,7 +96,7 @@ export default function AddUpdateBook() {
     condition: bookData?.condition || "",
     description: bookData?.description || "",
     author: bookData?.author || "",
-    bookCover: bookData?.coverPhotoUrl || "",
+    bookCover: [],
   };
 
   const methods = useForm({
@@ -104,7 +104,6 @@ export default function AddUpdateBook() {
     mode: "onChange",
     defaultValues: defaultValues,
   });
-  console.log({ defaultValues });
   const {
     handleSubmit,
     trigger,
@@ -112,6 +111,7 @@ export default function AddUpdateBook() {
     setValue,
     formState: { errors },
     reset,
+    getValues,
   } = methods;
   const languages = options(languageDataOptions);
   const conditions = options(conditionDataOptions);
@@ -150,7 +150,7 @@ export default function AddUpdateBook() {
       });
     }
   }, [bookData, reset]);
-
+// console.log(getValues())
   const [steps, setSteps] = useState([
     {
       label: "Book Details",
@@ -168,7 +168,7 @@ export default function AddUpdateBook() {
       isActive: false,
     },
   ]);
-
+console.log(errors)
   const handleNext = async () => {
     const valid = await trigger();
     if (valid) {
@@ -210,10 +210,10 @@ export default function AddUpdateBook() {
     formData.append("genres", data.favGenres.join(","));
     formData.append("language", data.language);
     formData.append("condition", data.condition);
-
+// console.log({data})
     // <========== If book cover type is URL we need to convert URL to File ==========>
     if (!isString(data.bookCover)) {
-      formData.append("coverPhoto", data.bookCover);
+      // formData.append("coverPhoto", data.bookCover);
     } else {
       const file = await convertedURLToFile(bookData?.coverPhotoUrl);
       if (file) {
@@ -289,21 +289,21 @@ export default function AddUpdateBook() {
     }
 
     try {
-      if (!bookData?.id) {
-        await addBook(formData).then((res) => {
-          if (res?.data) {
-            reset();
-            navigate(`/profile/user-profile`);
-          }
-        });
-      } else {
-        await updateBook({ data: formData, id: bookData?.id }).then((res) => {
-          if (res?.data) {
-            reset();
-            navigate(`/profile/user-profile`);
-          }
-        });
-      }
+      // if (!bookData?.id) {
+      //   await addBook(formData).then((res) => {
+      //     if (res?.data) {
+      //       reset();
+      //       navigate(`/profile/user-profile`);
+      //     }
+      //   });
+      // } else {
+      //   await updateBook({ data: formData, id: bookData?.id }).then((res) => {
+      //     if (res?.data) {
+      //       reset();
+      //       navigate(`/profile/user-profile`);
+      //     }
+      //   });
+      // }
     } catch (error) {
       console.log(error);
     }
@@ -314,7 +314,7 @@ export default function AddUpdateBook() {
     if (bookLoading) return true;
     else return false;
   };
-
+  // console.log({errors})
   if (loading()) return <Loader />;
   return (
     <div className="min-h-screen">

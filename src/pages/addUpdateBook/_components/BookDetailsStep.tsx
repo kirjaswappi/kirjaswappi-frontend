@@ -20,6 +20,7 @@ export default function BookDetailsStep({languageOptions, conditionOptions}: IBo
           name="title"
           placeholder="Enter your title"
           className="rounded-md"
+          showErrorMessage
         />
       </div>
       <div className="mt-4 pb-4 border-b border-platinumDark">
@@ -28,6 +29,7 @@ export default function BookDetailsStep({languageOptions, conditionOptions}: IBo
           name="author"
           placeholder="Enter your author"
           className="rounded-md"
+          showErrorMessage
         />
       </div>
       <div className="mt-4 pb-4 border-b border-platinumDark">
@@ -37,6 +39,7 @@ export default function BookDetailsStep({languageOptions, conditionOptions}: IBo
           name="description"
           placeholder="Enter your description"
           className="rounded-md h-[83px]"
+          showErrorMessage
         />
       </div>
       <div className="mt-4 pb-4 border-b border-platinumDark">
@@ -46,6 +49,7 @@ export default function BookDetailsStep({languageOptions, conditionOptions}: IBo
           name="language"
           className="rounded-md bg-white"
           options={languageOptions}
+          showErrorMessage
         />
       </div>
       <div className="mt-4 pb-4 border-b border-platinumDark">
@@ -55,6 +59,7 @@ export default function BookDetailsStep({languageOptions, conditionOptions}: IBo
           name="condition"
           className="rounded-md bg-white"
           options={conditionOptions}
+          showErrorMessage
         />
       </div>
     </div>
