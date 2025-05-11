@@ -1,9 +1,22 @@
-export interface IAddBookInterface {
-  ownerId?: string;
-  title?: string | undefined | null;
-  author?: string | undefined | null;
-  description?: string | undefined | null;
-  language?: string | undefined | null;
-  favGenres: string[];
-  condition?: string;
+export interface IBook {
+  bookTitle: string;
+  authorName: string;
+  byBookCover: string | File;
 }
+export interface IAddUpdateBookData {
+  books: IBook[];
+  favGenres: string[];
+  conditionType: string;
+  language: string;
+  title: string;
+  genres: string[];
+  condition: string;
+  description: string;
+  author: string;
+  bookCovers: (File | string)[];
+}
+
+export type TOptions = {
+  label: string;
+  value: string;
+};

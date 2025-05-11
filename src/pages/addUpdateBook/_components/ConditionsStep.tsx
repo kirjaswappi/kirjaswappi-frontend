@@ -124,7 +124,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                     </Button>
                   )}
                 </div>
-                <ImageFileInput name={`books.${index}.byBookCover`} />
+                <ImageFileInput errors={errors} name={`books.${index}.byBookCover`}  />
               </div>
               <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
                 <InputLabel label="Book Title" required />

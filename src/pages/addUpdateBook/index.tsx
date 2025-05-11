@@ -19,7 +19,6 @@ import OtherDetailsStep from "./_components/OtherDetailsStep";
 import {
   blobToBase64,
   convertedURLToFile,
-  isString,
   options,
   urlToDataUrl,
 } from "../../utility/helper";
@@ -37,25 +36,7 @@ import {
   GIVEAWAY,
   OPENTOOFFERS,
 } from "../../utility/ADDBOOKCONDITIONTYPE";
-
-interface IBook {
-  bookTitle: string;
-  authorName: string;
-  byBookCover: string | File;
-}
-
-interface IAddUpdateBookData {
-  books: IBook[];
-  favGenres: string[];
-  conditionType: string;
-  language: string;
-  title: string;
-  genres: string[];
-  condition: string;
-  description: string;
-  author: string;
-  bookCovers: (File | string)[];
-}
+import { IAddUpdateBookData } from "./interface";
 
 export default function AddUpdateBook() {
   const navigate = useNavigate();
