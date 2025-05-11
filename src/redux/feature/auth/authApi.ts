@@ -64,10 +64,12 @@ export const authApi = api.injectEndpoints({
         resetPassword: builder.mutation({
             query: (data) => {
                 const { email } = data;
+                console.log(data)
                 const reset_password_data = {
                     newPassword: data?.newPassword,
                     confirmPassword: data?.confirmPassword,
                 };
+                
                 return {
                     url: `/users/reset-password/${email}`,
                     method: "POST",

@@ -1,32 +1,52 @@
-import PasswordInput from '../../../../components/shared/PasswordInput';
+import { useState, useEffect } from "react";
+import PasswordInput from "../../../../components/shared/PasswordInput";
+import { useDispatch } from "react-redux";
+import { setMessages } from "../../../../redux/feature/notification/notificationSlice";
+import type { INewPasswordProps } from "../interface";
 
-export default function NewPassword({ userPass, handleChange, errors, validateInput }:any) {
-    return (
-        <div>
-            <div>
-            <PasswordInput
-                id="password"
-                name="password"
-                value={userPass.password}
-                onChange={handleChange}
-                placeholder="Password"
-                error={errors.password}
-                className='rounded-t-lg'
-                onBlur={validateInput}
-            />
-            </div>
-            
-            <PasswordInput
-                id="confirmPassword"
-                name="confirmPassword"
-                value={userPass.confirmPassword}
-                onChange={handleChange}
-                placeholder="Confirm Password"
-                error={errors.confirmPassword}
-                className='rounded-b-lg'
-                onBlur={validateInput}
-                // className="border-none rounded-none mt-0 bg-white pl-6 shadow-none"
-            />
-        </div>
-    )
+export default function NewPassword({ register, errors, updateValues }: INewPasswordProps) {
+  const dispatch = useDispatch();
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  
+  // Notify parent component when values change
+  useEffect(() => {
+    if (updateValues) {
+      updateValues(password, confirmPassword);
+    }
+  }, [password, confirmPassword, updateValues]);
+  
+  return (
+    <div>
+      <div>
+        <PasswordInput
+          id="password"
+          {...register("password")}
+          placeholder="Password"
+          error={errors.password?.message}
+          className="rounded-t-lg"
+          value={password}
+          onChange={(e) => {
+            const newValue = e.target.value;
+            setPassword(newValue);
+            dispatch(setMessages({ type: "", isShow: false, message: "" }));
+          }}
+        />
+      </div>
+
+      <PasswordInput
+        id="confirmPassword"
+        {...register("confirmPassword")}
+        placeholder="Confirm Password"
+        error={errors.confirmPassword?.message}
+        className="rounded-b-lg"
+        value={confirmPassword}
+        onChange={(e) => {
+          const newValue = e.target.value;
+          setConfirmPassword(newValue);
+          dispatch(setMessages({ type: "", isShow: false, message: "" }));
+        }}
+      />
+    </div>
+  );
 }
