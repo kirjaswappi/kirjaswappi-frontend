@@ -100,7 +100,7 @@ export default function BookDetails() {
       </div>
       <div className="mx-auto w-[160px] h-[190px] -mt-32">
         <Image
-          src={bookData?.coverPhotoUrl}
+          src={bookData?.coverPhotoUrls[0]}
           className="w-full h-full rounded-lg"
         />
       </div>

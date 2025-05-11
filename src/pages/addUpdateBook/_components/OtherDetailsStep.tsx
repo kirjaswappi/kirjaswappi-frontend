@@ -12,7 +12,6 @@ export default function OtherDetailsStep({ errors }: { errors: any }) {
   const { getValues, setValue } = useFormContext();
   const favGenres = getValues("favGenres");
 
-  
   const handleRemoveGenre = (genreValue: string) => {
     if (!genreValue) return;
     const favGenres = getValues("favGenres");

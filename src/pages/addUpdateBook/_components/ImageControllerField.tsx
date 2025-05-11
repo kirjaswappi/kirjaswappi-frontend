@@ -56,25 +56,39 @@ const ImageFileInput = ({ name, errors }: IImageFileInputProps) => {
   };
 
   const getAllErrorMessages = (
-  errorObject: Record<number, FieldError> | undefined
-): string[] => {
-  if (!errorObject || typeof errorObject !== 'object') return [];
+    errorObject: Record<number, FieldError> | undefined
+  ): string[] => {
+    if (!errorObject || typeof errorObject !== "object") return [];
 
-  return Object.values(errorObject)
-    .map((error) => error?.message)
-    .filter((msg): msg is string => Boolean(msg));
+    return Object.values(errorObject)
+      .map((error) => error?.message)
+      .filter((msg): msg is string => Boolean(msg));
+  };
+
+   const parseFieldErrors = (fieldError: any): { messages: string[]; indexes: number[] } => {
+  if (!fieldError) return { messages: [], indexes: [] };
+
+  if (typeof fieldError === "object" && !("message" in fieldError)) {
+    return {
+      messages: getAllErrorMessages(fieldError),
+      indexes: findErrorPosition(fieldError),
+    };
+  }
+
+  return {
+    messages: fieldError?.message ? [fieldError.message] : [],
+    indexes: [],
+  };
 };
-  console.log(errors);
+  const fieldError = errors?.[name];
+  const { messages: errorMessages, indexes: errorIndex } =
+    parseFieldErrors(fieldError);
   return (
     <Controller
       name={name}
       control={control}
       defaultValue={[]}
-      render={({ field, fieldState }) => {
-        const errorArray = errors && errors?.[name] || [];
-        const errorIndex = findErrorPosition(errors["bookCovers"]);
-        const errorMessages = getAllErrorMessages(errorArray);
-        console.log(errorMessages[0])
+      render={({ field }) => {
         return (
           <div>
             <div className="w-[126px] h-[150px] border-[1px] border-dashed border-grayDark rounded-lg cursor-pointer block mx-auto ">
@@ -101,12 +115,12 @@ const ImageFileInput = ({ name, errors }: IImageFileInputProps) => {
             </div>
             <div className="grid grid-cols-5 gap-1 mt-4">
               {previews &&
-                previews?.map((src, index) => {
+                previews?.map((src, index:number) => {
                   return (
                     <div
                       key={index}
                       className={`w-[56px] h-[56px] border ${
-                        errorIndex?.includes(index)
+                        errorIndex.includes(index)
                           ? "border-2 border-rose-600"
                           : "border-[#B2B2B2]"
                       } rounded-lg relative group`}
@@ -132,11 +146,11 @@ const ImageFileInput = ({ name, errors }: IImageFileInputProps) => {
             </div>
 
             {/* Validation Error */}
-            {errorMessages.length > 0 || errors['bookCovers']  && (
-                <p className="text-rose-500 text-xs mt-1 pl-2">
-                  {errorMessages[0] || errors['bookCovers']?.message}
-                </p>
-              )}
+            {errorMessages.length > 0 && (
+            <p className="text-rose-500 text-xs mt-1 pl-2">
+              {errorMessages[0]}
+            </p>
+          )}
           </div>
         );
       }}
