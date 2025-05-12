@@ -25,9 +25,14 @@ import { useAppSelector } from "../../../redux/hooks";
 import GetOTPByEmail from "./_component/GetOTPByEmail";
 import NewPassword from "./_component/NewPassword";
 import type { INewPassForm, OTPSchemaType } from "./interface";
-import { emailSchema, otpSchema, passwordSchema } from "./Schema";
+import {
+  emailSchema,
+  otpSchema,
+  passwordSchema,
+  ResetPasswordValidation,
+} from "./Schema";
 import OTPInput from "react-otp-input";
-
+import * as yup from "yup";
 export default function ResetPassword() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -44,22 +49,30 @@ export default function ResetPassword() {
     (state) => state.auth
   );
   const { step } = useAppSelector((state) => state.step);
-
+  const [index, setIndex] = useState<number>(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [resetSuccess, setResetSuccess] = useState(false);
-  const [passwordFormValues, setPasswordFormValues] = useState({
-    password: "",
-    confirmPassword: ""
-  });
+  //   const [passwordFormValues, setPasswordFormValues] = useState({
+  //     password: "",
+  //     confirmPassword: ""
+  //   });
 
   // Form setup
+  const methods = useForm({
+    resolver: yupResolver(
+      ResetPasswordValidation[index] as yup.ObjectSchema<any>
+    ),
+    mode: "onChange",
+    // defaultValues: defaultValues,
+  });
+
   const emailMethods = useForm<Pick<INewPassForm, "email">>({
     resolver: yupResolver(emailSchema),
     mode: "all",
     criteriaMode: "all",
     reValidateMode: "onChange",
-    shouldFocusError: true
+    shouldFocusError: true,
   });
 
   const otpMethods = useForm<OTPSchemaType>({
@@ -68,12 +81,14 @@ export default function ResetPassword() {
     mode: "all",
   });
 
-  const passwordMethods = useForm<Pick<INewPassForm, "password" | "confirmPassword">>({
+  const passwordMethods = useForm<
+    Pick<INewPassForm, "password" | "confirmPassword">
+  >({
     resolver: yupResolver(passwordSchema),
     mode: "all",
     criteriaMode: "all",
     reValidateMode: "onChange",
-    shouldFocusError: true
+    shouldFocusError: true,
   });
 
   useEffect(() => {
@@ -84,7 +99,10 @@ export default function ResetPassword() {
   const handleOTPChange = (value: string) => {
     dispatch(setOtp(value.split("")));
     if (value.length === 0) {
-      otpMethods.setError("otp", { type: "manual", message: "OTP is required" });
+      otpMethods.setError("otp", {
+        type: "manual",
+        message: "OTP is required",
+      });
     } else if (otpMethods.formState.errors.otp) {
       otpMethods.clearErrors("otp");
     }
@@ -162,12 +180,13 @@ export default function ResetPassword() {
         setMessages({
           type: ERROR,
           isShow: true,
-          message: "Email is required for password reset. Please go back to step 1.",
+          message:
+            "Email is required for password reset. Please go back to step 1.",
         })
       );
       return;
     }
-    
+
     const resetData = {
       newPassword: data.password,
       confirmPassword: data.confirmPassword,
@@ -189,15 +208,19 @@ export default function ResetPassword() {
         );
       } else if (res?.error) {
         let errorMessage = "Failed to reset password. Please try again.";
-        
-        if ('data' in res.error && res.error.data) {
-          if (typeof res.error.data === 'object' && res.error.data !== null && 'message' in res.error.data) {
+
+        if ("data" in res.error && res.error.data) {
+          if (
+            typeof res.error.data === "object" &&
+            res.error.data !== null &&
+            "message" in res.error.data
+          ) {
             errorMessage = String(res.error.data.message);
-          } else if (typeof res.error.data === 'string') {
+          } else if (typeof res.error.data === "string") {
             errorMessage = res.error.data;
           }
         }
-        
+
         dispatch(
           setMessages({
             type: ERROR,
@@ -230,13 +253,13 @@ export default function ResetPassword() {
   // Form submission
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     const submissionHandlers = {
       0: () => emailMethods.handleSubmit(handleSendOTP)(),
       1: () => otpMethods.handleSubmit(handleVerifyOTP)(),
-      2: () => passwordMethods.handleSubmit(handleResetPassword)()
+      2: () => passwordMethods.handleSubmit(handleResetPassword)(),
     };
-    
+
     const handler = submissionHandlers[step as keyof typeof submissionHandlers];
     if (handler) handler();
   };
@@ -245,19 +268,20 @@ export default function ResetPassword() {
   const checkingFieldErrorOrApiError = () => {
     const errorCheckers = {
       0: () => {
-        const errorMessage = emailMethods.formState.errors.email?.message || error;
+        const errorMessage =
+          emailMethods.formState.errors.email?.message || error;
         return { isShow: !!errorMessage, msg: errorMessage || "", type: ERROR };
       },
       1: () => ({ isShow: false, msg: "", type: "" }),
       2: () => {
-        const errorMessage = 
-          passwordMethods.formState.errors.password?.message || 
-          passwordMethods.formState.errors.confirmPassword?.message || 
+        const errorMessage =
+          passwordMethods.formState.errors.password?.message ||
+          passwordMethods.formState.errors.confirmPassword?.message ||
           error;
         return { isShow: !!errorMessage, msg: errorMessage || "", type: ERROR };
-      }
+      },
     };
-    
+
     const checker = errorCheckers[step as keyof typeof errorCheckers];
     return checker ? checker() : { isShow: false, msg: "", type: "" };
   };
@@ -287,7 +311,14 @@ export default function ResetPassword() {
         dispatch(setMessages({ type: "", isShow: false, message: "" }));
       }
     }
-  }, [emailMethods.formState.errors, passwordMethods.formState.errors, error, message, step, dispatch]);
+  }, [
+    emailMethods.formState.errors,
+    passwordMethods.formState.errors,
+    error,
+    message,
+    step,
+    dispatch,
+  ]);
 
   useEffect(() => {
     dispatch(setError(""));
@@ -302,7 +333,7 @@ export default function ResetPassword() {
         dispatch(setOtp(Array(6).fill("")));
         dispatch(setMessages({ type: "", isShow: false, message: "" }));
       }, 1500);
-      
+
       return () => clearTimeout(timer);
     }
   }, [resetSuccess, navigate, dispatch]);
@@ -339,22 +370,20 @@ export default function ResetPassword() {
     if (step === 2) {
       const password = passwordMethods.watch("password");
       const confirmPassword = passwordMethods.watch("confirmPassword");
-      
+
       if (password || confirmPassword) {
         dispatch(setMessages({ type: "", isShow: false, message: "" }));
       }
     }
   }, [
-    passwordMethods.watch("password"), 
-    passwordMethods.watch("confirmPassword"), 
-    step, 
-    dispatch
+    passwordMethods.watch("password"),
+    passwordMethods.watch("confirmPassword"),
+    step,
+    dispatch,
   ]);
 
   // Render step components
-  const renderEmailStep = () => (
-    <GetOTPByEmail methods={emailMethods} />
-  );
+  const renderEmailStep = () => <GetOTPByEmail methods={emailMethods} />;
 
   const renderOtpStep = () => (
     <>
@@ -400,11 +429,7 @@ export default function ResetPassword() {
 
       {isShow && msg && (
         <div className="mb-2 mt-2">
-          <MessageToastify
-            isShow={isShow}
-            type={messageType}
-            value={msg}
-          />
+          <MessageToastify isShow={isShow} type={messageType} value={msg} />
         </div>
       )}
 
@@ -435,15 +460,18 @@ export default function ResetPassword() {
     if (step === 2) {
       try {
         const isValid = await passwordMethods.trigger();
-        
+
         if (isValid) {
           const formData = passwordMethods.getValues();
           handleResetPassword(formData);
         } else {
-          const passwordError = passwordMethods.formState.errors.password?.message;
-          const confirmError = passwordMethods.formState.errors.confirmPassword?.message;
-          
-          const errorMessage = confirmError || passwordError || "Please check password fields";
+          const passwordError =
+            passwordMethods.formState.errors.password?.message;
+          const confirmError =
+            passwordMethods.formState.errors.confirmPassword?.message;
+
+          const errorMessage =
+            confirmError || passwordError || "Please check password fields";
           dispatch(
             setMessages({
               type: ERROR,
@@ -469,7 +497,7 @@ export default function ResetPassword() {
   const stepComponents = {
     0: renderEmailStep,
     1: renderOtpStep,
-    2: renderPasswordStep
+    2: renderPasswordStep,
   };
 
   return (
@@ -486,7 +514,11 @@ export default function ResetPassword() {
 
         <form
           onSubmit={handleSubmit}
-          className={step === 1 ? "bg-white absolute bottom-0 left-0 w-full h-[80vh] rounded-t-3xl" : ""}
+          className={
+            step === 1
+              ? "bg-white absolute bottom-0 left-0 w-full h-[80vh] rounded-t-3xl"
+              : ""
+          }
         >
           {step === 1 && (
             <div className="text-center py-6 border-b border-[#E6E6E6]">
