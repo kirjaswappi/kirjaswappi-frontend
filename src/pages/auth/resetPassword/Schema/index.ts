@@ -25,4 +25,4 @@ export const passwordSchema = yup.object({
     .required("Please enter Confirm Password")
     .oneOf([yup.ref("password")], "Password and Confirm Password do not match")
 });
-export const ResetPasswordValidation=[passwordSchema,otpSchema,emailSchema]
+export const ResetPasswordValidation = [emailSchema, otpSchema, passwordSchema];
