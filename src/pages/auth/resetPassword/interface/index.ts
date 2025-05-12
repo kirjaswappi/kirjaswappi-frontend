@@ -5,13 +5,11 @@ export interface INewPassForm {
   }
   
   export interface IGetOTPByEmailProps {
-    register: any
-    errors: any
+    methods: any
   }
   
   export interface INewPasswordProps {
-    register: any
-    errors: any
+    methods: any
     updateValues?: (password: string, confirmPassword: string) => void
   }
   export interface OTPSchemaType {

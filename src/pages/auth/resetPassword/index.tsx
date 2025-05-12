@@ -48,55 +48,48 @@ export default function ResetPassword() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [resetSuccess, setResetSuccess] = useState(false);
-
-  // Email form setup
-  const {
-    register: registerEmail,
-    handleSubmit: handleSubmitEmail,
-    formState: { errors: emailErrors },
-  } = useForm<Pick<INewPassForm, "email">>({
-    resolver: yupResolver(emailSchema),
-    mode: "onChange",
+  const [passwordFormValues, setPasswordFormValues] = useState({
+    password: "",
+    confirmPassword: ""
   });
 
-  // OTP form setup
-  const {
-    handleSubmit: handleSubmitOtp,
-    setValue: setOtpValue,
-    setError: setOtpError,
-    clearErrors: clearOtpErrors,
-    formState: { errors: otpErrors },
-  } = useForm<OTPSchemaType>({
+  // Form setup
+  const emailMethods = useForm<Pick<INewPassForm, "email">>({
+    resolver: yupResolver(emailSchema),
+    mode: "all",
+    criteriaMode: "all",
+    reValidateMode: "onChange",
+    shouldFocusError: true
+  });
+
+  const otpMethods = useForm<OTPSchemaType>({
     resolver: yupResolver(otpSchema),
     defaultValues: { otp: otp.join("") },
-    mode: "onChange",
+    mode: "all",
   });
 
-  // Password form setup
-  const {
-    register: registerPassword,
-    handleSubmit: handleSubmitPassword,
-    formState: { errors: passwordErrors, isValid: passwordIsValid },
-  } = useForm<Pick<INewPassForm, "password" | "confirmPassword">>({
+  const passwordMethods = useForm<Pick<INewPassForm, "password" | "confirmPassword">>({
     resolver: yupResolver(passwordSchema),
-    mode: "onChange",
+    mode: "all",
+    criteriaMode: "all",
+    reValidateMode: "onChange",
+    shouldFocusError: true
   });
 
   useEffect(() => {
-    setOtpValue("otp", otp.join(""));
-  }, [otp, setOtpValue]);
+    otpMethods.setValue("otp", otp.join(""));
+  }, [otp, otpMethods]);
 
-  // Handle OTP input changes
+  // Handler functions
   const handleOTPChange = (value: string) => {
     dispatch(setOtp(value.split("")));
     if (value.length === 0) {
-      setOtpError("otp", { type: "manual", message: "OTP is required" });
-    } else if (otpErrors.otp) {
-      clearOtpErrors("otp");
+      otpMethods.setError("otp", { type: "manual", message: "OTP is required" });
+    } else if (otpMethods.formState.errors.otp) {
+      otpMethods.clearErrors("otp");
     }
   };
 
-  // Send OTP handler
   const handleSendOTP = async (data: Pick<INewPassForm, "email">) => {
     try {
       setIsProcessing(true);
@@ -126,13 +119,12 @@ export default function ResetPassword() {
     }
   };
 
-  // Verify OTP handler
   const handleVerifyOTP = async ({ otp: otpString }: OTPSchemaType) => {
     setIsProcessing(true);
     try {
       const res = await verifyOTP({ email: userEmail, otp: otpString });
       if ("error" in res) {
-        setOtpError("otp", {
+        otpMethods.setError("otp", {
           type: "manual",
           message: "The OTP you entered is incorrect",
         });
@@ -145,8 +137,7 @@ export default function ResetPassword() {
           })
         );
         setTimeout(() => {
-          // Clear any OTP errors before moving to the next step
-          clearOtpErrors("otp");
+          otpMethods.clearErrors("otp");
           dispatch(setMessages({ type: "", isShow: false, message: "" }));
           dispatch(setAuthMessage(""));
           dispatch(setStep(step + 1));
@@ -154,7 +145,7 @@ export default function ResetPassword() {
       }
     } catch (error) {
       console.error("Error verifying OTP:", error);
-      setOtpError("otp", {
+      otpMethods.setError("otp", {
         type: "manual",
         message: "An error occurred during verification",
       });
@@ -166,7 +157,6 @@ export default function ResetPassword() {
   const handleResetPassword = async (
     data: Pick<INewPassForm, "password" | "confirmPassword">
   ) => {
-    // Validate email is available
     if (!userEmail) {
       dispatch(
         setMessages({
@@ -198,11 +188,9 @@ export default function ResetPassword() {
           })
         );
       } else if (res?.error) {
-        // Extract and display the actual error message from the API response
         let errorMessage = "Failed to reset password. Please try again.";
         
         if ('data' in res.error && res.error.data) {
-          // Check if the error data has a message field
           if (typeof res.error.data === 'object' && res.error.data !== null && 'message' in res.error.data) {
             errorMessage = String(res.error.data.message);
           } else if (typeof res.error.data === 'string') {
@@ -218,7 +206,6 @@ export default function ResetPassword() {
           })
         );
       } else {
-        // No success response - show error
         dispatch(
           setMessages({
             type: ERROR,
@@ -228,7 +215,6 @@ export default function ResetPassword() {
         );
       }
     } catch (error) {
-      // Show error message to user
       dispatch(
         setMessages({
           type: ERROR,
@@ -241,93 +227,72 @@ export default function ResetPassword() {
     }
   };
 
-  // Form submission handler
+  // Form submission
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (step === 0) {
-      handleSubmitEmail(handleSendOTP)();
-    }
-    else if (step === 1) {
-      handleSubmitOtp(handleVerifyOTP)();
-    }
-    else if (step === 2) {
-      handleSubmitPassword(handleResetPassword)();
-    }
+    
+    const submissionHandlers = {
+      0: () => emailMethods.handleSubmit(handleSendOTP)(),
+      1: () => otpMethods.handleSubmit(handleVerifyOTP)(),
+      2: () => passwordMethods.handleSubmit(handleResetPassword)()
+    };
+    
+    const handler = submissionHandlers[step as keyof typeof submissionHandlers];
+    if (handler) handler();
   };
 
-  // Check for validation errors
+  // Form validation
   const checkingFieldErrorOrApiError = () => {
-    if (step === 0 && (error || Object.keys(emailErrors).length > 0)) {
-      const errorMessage = error || emailErrors.email?.message;
-      return { msg: errorMessage, type: ERROR, isShow: !!errorMessage };
-    }
-
-    if (step === 2 && (error || Object.keys(passwordErrors).length > 0)) {
-      const errorMessage =
-        error ||
-        passwordErrors.password?.message ||
-        passwordErrors.confirmPassword?.message;
-      return { msg: errorMessage, type: ERROR, isShow: !!errorMessage };
-    }
-
-    if (message && message !== null) {
-      return { msg: message, type: SUCCESS, isShow: true };
-    }
-
-    return { isShow: false, msg: "", type: "" };
+    const errorCheckers = {
+      0: () => {
+        const errorMessage = emailMethods.formState.errors.email?.message || error;
+        return { isShow: !!errorMessage, msg: errorMessage || "", type: ERROR };
+      },
+      1: () => ({ isShow: false, msg: "", type: "" }),
+      2: () => {
+        const errorMessage = 
+          passwordMethods.formState.errors.password?.message || 
+          passwordMethods.formState.errors.confirmPassword?.message || 
+          error;
+        return { isShow: !!errorMessage, msg: errorMessage || "", type: ERROR };
+      }
+    };
+    
+    const checker = errorCheckers[step as keyof typeof errorCheckers];
+    return checker ? checker() : { isShow: false, msg: "", type: "" };
   };
 
-  // Update error messages
+  // Navigation
+  const handleBack = () => {
+    if (step === 0) {
+      navigate(-1);
+    } else {
+      if (step === 1) otpMethods.clearErrors("otp");
+      dispatch(setStep(step - 1));
+    }
+  };
+
+  // Update password values from child component
+  const updatePasswordValues = (password: string, confirmPassword: string) => {
+    setPasswordFormValues({ password, confirmPassword });
+  };
+
+  // Effects
   useEffect(() => {
     if (step !== 1) {
       const { isShow, msg, type } = checkingFieldErrorOrApiError();
       if (isShow && msg) {
         dispatch(setMessages({ type, isShow, message: msg }));
-      } else if (!isShow && msg === "") {
+      } else if (!isShow) {
         dispatch(setMessages({ type: "", isShow: false, message: "" }));
       }
     }
-  }, [emailErrors, passwordErrors, error, message, step]);
+  }, [emailMethods.formState.errors, passwordMethods.formState.errors, error, message, step, dispatch]);
 
-  // Clear errors on route change
   useEffect(() => {
-    dispatch(setMessages({ type: "", isShow: false, message: "" }));
     dispatch(setError(""));
   }, [location.pathname, dispatch]);
 
-  // Handle back button or navigation
-  const handleBack = () => {
-    if (step === 0) {
-      navigate("/auth/login");
-    } else {
-      // Clear specific errors based on current step
-      if (step === 1) {
-        clearOtpErrors("otp");
-      }
-      dispatch(setStep(step - 1));
-      dispatch(setError(""));
-      dispatch(setMessages({ type: "", isShow: false, message: "" }));
-    }
-  };
-
-  // Add effect to monitor password validation state
-  useEffect(() => {
-    // Monitoring password validation state
-  }, [passwordErrors, passwordIsValid]);
-
-  // Clear errors when step changes
-  useEffect(() => {
-    // Clear any lingering errors when step changes
-    dispatch(setError(""));
-    dispatch(setMessages({ type: "", isShow: false, message: "" }));
-    
-    // Clear form-specific errors
-    if (step === 1) {
-      clearOtpErrors("otp");
-    }
-  }, [step, dispatch, clearOtpErrors]);
-
-  // Track successful reset and redirect to login
   useEffect(() => {
     if (resetSuccess) {
       const timer = setTimeout(() => {
@@ -342,15 +307,169 @@ export default function ResetPassword() {
     }
   }, [resetSuccess, navigate, dispatch]);
 
-  // State to store form values directly
-  const [passwordFormValues, setPasswordFormValues] = useState({
-    password: "",
-    confirmPassword: ""
-  });
+  useEffect(() => {
+    if (step === 0) {
+      otpMethods.clearErrors("otp");
+    }
+  }, [step, otpMethods]);
 
-  // Function to update password values from child component
-  const updatePasswordValues = (password: string, confirmPassword: string) => {
-    setPasswordFormValues({ password, confirmPassword });
+  useEffect(() => {
+    if (error || message) {
+      const errorMessage = error || message;
+      if (errorMessage) {
+        dispatch(
+          setMessages({
+            type: error ? ERROR : SUCCESS,
+            isShow: true,
+            message: errorMessage,
+          })
+        );
+      }
+    }
+  }, [error, message, dispatch]);
+
+  useEffect(() => {
+    const emailValue = emailMethods.watch("email");
+    if (emailValue && emailValue.length > 0) {
+      dispatch(setMessages({ type: "", isShow: false, message: "" }));
+    }
+  }, [emailMethods.watch("email"), dispatch]);
+
+  useEffect(() => {
+    if (step === 2) {
+      const password = passwordMethods.watch("password");
+      const confirmPassword = passwordMethods.watch("confirmPassword");
+      
+      if (password || confirmPassword) {
+        dispatch(setMessages({ type: "", isShow: false, message: "" }));
+      }
+    }
+  }, [
+    passwordMethods.watch("password"), 
+    passwordMethods.watch("confirmPassword"), 
+    step, 
+    dispatch
+  ]);
+
+  // Render step components
+  const renderEmailStep = () => (
+    <GetOTPByEmail methods={emailMethods} />
+  );
+
+  const renderOtpStep = () => (
+    <>
+      <p className="text-sm font-light font-poppins text-center pt-8 pb-10">
+        Enter the code we've sent to your Email
+      </p>
+      <div className="flex gap-2 justify-between mb-5">
+        <OTPInput
+          value={otp.join("")}
+          onChange={handleOTPChange}
+          numInputs={6}
+          shouldAutoFocus
+          inputType="text"
+          renderInput={(props) => (
+            <input
+              {...props}
+              maxLength={1}
+              inputMode="numeric"
+              placeholder="-"
+              className={`max-w-10 h-10 mb-5 bg-[#E7E7E7] ${
+                otpMethods.formState.errors.otp
+                  ? "border border-rose-500"
+                  : "border border-[#D9D9D9]"
+              } rounded-md text-center text-base font-normal focus:outline-none transition-all duration-150`}
+              style={{ backgroundColor: "#E7E7E7" }}
+            />
+          )}
+          containerStyle={{
+            display: "flex",
+            justifyContent: "space-between",
+            width: "100%",
+          }}
+        />
+      </div>
+
+      {otpMethods.formState.errors.otp && (
+        <MessageToastify
+          isShow={true}
+          type={ERROR}
+          value={otpMethods.formState.errors.otp.message}
+        />
+      )}
+
+      {isShow && msg && (
+        <div className="mb-2 mt-2">
+          <MessageToastify
+            isShow={isShow}
+            type={messageType}
+            value={msg}
+          />
+        </div>
+      )}
+
+      <div className="flex items-center justify-center mt-10 gap-2 text-grayDark text-sm font-poppins">
+        <p>Haven't received a code?</p>
+        <Button type="button" className="underline text-sm">
+          Send again
+        </Button>
+      </div>
+    </>
+  );
+
+  const renderPasswordStep = () => (
+    <NewPassword
+      methods={passwordMethods}
+      updateValues={updatePasswordValues}
+    />
+  );
+
+  // Button text based on step
+  const getButtonText = () => {
+    if (loading || isProcessing) return "Loading...";
+    return step === 1 ? "OTP Verify" : "Continue";
+  };
+
+  // Button click handler
+  const handleButtonClick = async () => {
+    if (step === 2) {
+      try {
+        const isValid = await passwordMethods.trigger();
+        
+        if (isValid) {
+          const formData = passwordMethods.getValues();
+          handleResetPassword(formData);
+        } else {
+          const passwordError = passwordMethods.formState.errors.password?.message;
+          const confirmError = passwordMethods.formState.errors.confirmPassword?.message;
+          
+          const errorMessage = confirmError || passwordError || "Please check password fields";
+          dispatch(
+            setMessages({
+              type: ERROR,
+              isShow: true,
+              message: errorMessage,
+            })
+          );
+        }
+      } catch (error) {
+        console.error("Error validating form:", error);
+        dispatch(
+          setMessages({
+            type: ERROR,
+            isShow: true,
+            message: "Error validating password fields",
+          })
+        );
+      }
+    }
+  };
+
+  // Steps configuration
+  const stepComponents = {
+    0: renderEmailStep,
+    1: renderOtpStep,
+    2: renderPasswordStep
   };
 
   return (
@@ -367,11 +486,7 @@ export default function ResetPassword() {
 
         <form
           onSubmit={handleSubmit}
-          className={`${
-            step === 1
-              ? "bg-white absolute bottom-0 left-0 w-full h-[80vh] rounded-t-3xl"
-              : ""
-          }`}
+          className={step === 1 ? "bg-white absolute bottom-0 left-0 w-full h-[80vh] rounded-t-3xl" : ""}
         >
           {step === 1 && (
             <div className="text-center py-6 border-b border-[#E6E6E6]">
@@ -379,82 +494,9 @@ export default function ResetPassword() {
             </div>
           )}
 
-          <div className={`${step === 1 && "px-6"}`}>
-            {step === 0 && (
-              <GetOTPByEmail register={registerEmail} errors={emailErrors} />
-            )}
-
-            {step === 1 && (
-              <>
-                <p className="text-sm font-light font-poppins text-center pt-8 pb-10">
-                  Enter the code we've sent to your Email
-                </p>
-                <div className="flex gap-2 justify-between mb-5">
-                  <OTPInput
-                    value={otp.join("")}
-                    onChange={handleOTPChange}
-                    numInputs={6}
-                    shouldAutoFocus
-                    inputType="text"
-                    renderInput={(props) => (
-                      <input
-                        {...props}
-                        maxLength={1}
-                        inputMode="numeric"
-                        placeholder="-"
-                        className={`max-w-10 h-10 mb-5 bg-[#E7E7E7] ${
-                          otpErrors.otp
-                            ? "border border-rose-500"
-                            : "border border-[#D9D9D9]"
-                        } rounded-md text-center text-base font-normal focus:outline-none transition-all duration-150`}
-                        style={{ backgroundColor: "#E7E7E7" }}
-                      />
-                    )}
-                    containerStyle={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      width: "100%",
-                    }}
-                  />
-                </div>
-
-                {otpErrors.otp && (
-                  <MessageToastify
-                    isShow={true}
-                    type={ERROR}
-                    value={otpErrors.otp.message}
-                  />
-                )}
-
-                {/* Success message for OTP */}
-                {isShow && msg && step === 1 && (
-                  <div className="mb-2 mt-2">
-                    <MessageToastify
-                      isShow={isShow}
-                      type={messageType}
-                      value={msg}
-                    />
-                  </div>
-                )}
-
-                <div className="flex items-center justify-center mt-10 gap-2 text-grayDark text-sm font-poppins">
-                  <p>Haven't received a code?</p>
-                  <Button type="button" className="underline text-sm">
-                    Send again
-                  </Button>
-                </div>
-              </>
-            )}
-
-            {step === 2 && (
-              <>
-                <NewPassword
-                  register={registerPassword}
-                  errors={passwordErrors}
-                  updateValues={updatePasswordValues}
-                />
-              </>
-            )}
+          <div className={step === 1 ? "px-6" : ""}>
+            {/* Render current step component */}
+            {stepComponents[step as keyof typeof stepComponents]?.()}
 
             {/* Display messages for steps 0 and 2 */}
             {isShow && msg && step !== 1 && (
@@ -471,52 +513,9 @@ export default function ResetPassword() {
               type={step === 2 ? "button" : "submit"}
               disabled={loading || isProcessing}
               className="w-full h-[48px] px-4 font-normal text-white bg-primary rounded-2xl text-sm mt-4"
-              onClick={() => {
-                // For step 2, properly trigger the password form validation
-                if (step === 2) {
-                  // Get current password values from state
-                  const { password, confirmPassword } = passwordFormValues;
-                  
-                  // Basic validation before submitting
-                  if (!password || !confirmPassword) {
-                    dispatch(
-                      setMessages({
-                        type: ERROR,
-                        isShow: true,
-                        message: "Please enter both password and confirmation",
-                      })
-                    );
-                    return;
-                  }
-                  
-                  if (password !== confirmPassword) {
-                    dispatch(
-                      setMessages({
-                        type: ERROR,
-                        isShow: true,
-                        message: "Passwords do not match",
-                      })
-                    );
-                    return;
-                  }
-                  
-                  // Clear any lingering errors
-                  dispatch(setError(""));
-                  dispatch(setMessages({ type: "", isShow: false, message: "" }));
-                  
-                  // Submit directly with current values
-                  handleResetPassword({
-                    password,
-                    confirmPassword
-                  });
-                }
-              }}
+              onClick={step === 2 ? handleButtonClick : undefined}
             >
-              {loading || isProcessing
-                ? "Loading..."
-                : step === 1
-                ? "OTP Verify"
-                : "Continue"}
+              {getButtonText()}
             </Button>
           </div>
         </form>
