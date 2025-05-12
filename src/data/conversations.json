@@ -1,0 +1,60 @@
+{
+  "conversations": [
+    {
+      "id": "1",
+      "name": "Rahat Miah",
+      "lastMessage": "Arif bhai kaj ta taratari koren...",
+      "unread": 2,
+      "time": "5 m",
+      "avatar": null
+    },
+    {
+      "id": "2",
+      "name": "Arif Bhai",
+      "lastMessage": "Ho tension nio na, ami achi to...",
+      "unread": 0,
+      "time": "1 d",
+      "avatar": null
+    },
+    {
+      "id": "3",
+      "name": "Mama",
+      "lastMessage": "Rahat ki obostha kajer? beshi...",
+      "unread": 9,
+      "time": "10 m",
+      "avatar": null
+    },
+    {
+      "id": "4",
+      "name": "Kamal Mama",
+      "lastMessage": "Api ta ki check korso?",
+      "unread": 1,
+      "time": "3 m",
+      "avatar": null
+    },
+    {
+      "id": "5",
+      "name": "Girlfriend",
+      "lastMessage": "R koto kaj korba? ami gelam...",
+      "unread": 0,
+      "time": "1 hour",
+      "avatar": null
+    },
+    {
+      "id": "6",
+      "name": "Office Boss",
+      "lastMessage": "Okay! thank you",
+      "unread": 0,
+      "time": "6 hour",
+      "avatar": null
+    },
+    {
+      "id": "7",
+      "name": "Girlfriend 2",
+      "lastMessage": "jaan movie dekhte jaba?",
+      "unread": 0,
+      "time": "Yesterday",
+      "avatar": null
+    }
+  ]
+} 

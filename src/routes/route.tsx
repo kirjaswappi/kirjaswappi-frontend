@@ -13,6 +13,9 @@ import UserProfile from "../pages/profile/components/UserProfile";
 import Authenticate from "./Authenticate";
 import PrivateRoute from "./PrivateRoute";
 import AddUpdateBook from "../pages/addUpdateBook";
+import Inbox from "../pages/user/inbox/Inbox";
+import InboxChat from "../pages/user/inbox/InboxWithUser";
+import { Navigate } from "react-router-dom";
 
 const routes = createBrowserRouter([
   {
@@ -32,22 +35,19 @@ const routes = createBrowserRouter([
       },
       {
         path: "/book-details/:id",
-        element: (
-          <BookDetails />
-        ),
+        element: <BookDetails />,
       },
-      
+
       {
         path: "/profile",
         element: (
-
           <PrivateRoute>
             <Profile />
           </PrivateRoute>
         ),
         children: [
           {
-            loader: ()=> <p>Loading...</p>,
+            loader: () => <p>Loading...</p>,
             index: true,
             path: "user-profile",
             element: <UserProfile />,
@@ -71,15 +71,46 @@ const routes = createBrowserRouter([
         ],
       },
       {
-        path: "/map",
+        path: "user",
         element: (
-          <Profile />
+          <PrivateRoute>
+            <Profile />
+          </PrivateRoute>
         ),
+        children: [
+          {
+            path: "inbox",
+            element: <Inbox />,
+          },
+        ],
+      },
+      // Inbox routes
+      {
+        path: "/inbox",
+        element: (
+          <PrivateRoute>
+            <Inbox />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/inbox/chat/:id",
+        element: (
+          <PrivateRoute>
+            <InboxChat />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/map",
+        element: <Profile />,
       },
       {
         path: "/message",
         element: (
-          <Profile />
+          <PrivateRoute>
+            <Navigate to="/inbox" replace />
+          </PrivateRoute>
         ),
       },
       {
@@ -87,7 +118,6 @@ const routes = createBrowserRouter([
         element: (
           <Authenticate>
             <Login />
-
           </Authenticate>
         ),
       },
@@ -123,7 +153,6 @@ const routes = createBrowserRouter([
 
       //   ],
       // },
-
     ],
   },
 
