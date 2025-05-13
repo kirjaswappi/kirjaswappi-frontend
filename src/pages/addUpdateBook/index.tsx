@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import leftArrowIcon from "../../assets/leftArrow.png";
 import NextArrowIcon from "../../assets/arrow1.png";
 import PrevArrowIcon from "../../assets/arrow2.png";
 import Image from "../../components/shared/Image";
@@ -83,11 +82,9 @@ export default function AddUpdateBook() {
     [conditionDataOptions]
   );
 
-  // LOAD BOOK DATA AFTER RELOAD
+  // LOAD BOOK DATA AFTER RELOAD THE BROWSER
   useEffect(() => {
-    if (bookData) {
-      reset(getDefaultValues(bookData));
-    }
+    if (bookData) reset(getDefaultValues(bookData));
   }, [bookData, reset]);
 
   const [steps, setSteps] = useState([
