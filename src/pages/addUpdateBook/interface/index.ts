@@ -23,33 +23,57 @@ export type TOptions = {
 };
 
 
-export interface SwapBookType {
+// ===================
+interface Book {
   title: string;
   author: string;
   coverPhotoUrl: string;
 }
-
-interface IBookSwapCondition {
-  swappableBooks?: Array<{
-    title: string;
-    author: string;
-    coverPhotoUrl: string;
-  }>;
-  conditionType?: 'BY_BOOKS' | 'OPEN_TO_OFFERS' | 'BY_GENRES' | 'GIVE_AWAY';
-  exchangeableGenres?: Array<{ name: string }>;
+interface IGenre {
+  name: string;
 }
 
-export interface IBookDataType {
+interface ISwapCondition {
+  conditionType: "ByBooks" | "ByGenres" | "OpenForOffers" | "GiveAway";
+  giveAway: boolean;
+  openForOffers: boolean;
+  swappableBooks?: Book[];
+  swappableGenres?: IGenre[];
+  exchangeableGenres?: IGenre[];
+}
+
+interface IExchangeCondition {
+  exchangeableGenres?: IGenre[];
+}
+
+export interface IBookData {
   id?: string;
-  title?: string;
-  author?: string;
-  description?: string;
-  language?: string;
-  condition?: string;
-  genres?: string[];
-  coverPhotoUrls?: string[];
-  swapCondition?: IBookSwapCondition;
-  exchangeCondition?: {
-    exchangeableGenres?: Array<{ name: string }>;
-  };
+  title: string;
+  author: string;
+  description: string;
+  language: string;
+  condition: string;
+  genres: string[];
+  coverPhotoUrls: (string | File)[];
+  swapCondition?: ISwapCondition;
+  exchangeCondition?: IExchangeCondition;
+  ownerId?: string;
+}
+
+// Form data interface that extends BookData with form-specific fields
+export interface IAddUpdateBook {
+  books: {
+    bookTitle: string;
+    authorName: string;
+    byBookCover: File | string | null;
+  }[];
+  favGenres: string[];
+  conditionType: "ByBooks" | "ByGenres" | "OpenForOffers" | "GiveAway";
+  language: string;
+  title: string;
+  genres: string[];
+  condition: string;
+  description: string;
+  author: string;
+  bookCovers: (File | string)[];
 }

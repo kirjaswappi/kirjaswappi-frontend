@@ -37,6 +37,8 @@ import {
   OPENTOOFFERS,
 } from "../../utility/ADDBOOKCONDITIONTYPE";
 import { IAddUpdateBookData } from "./interface";
+import { getDefaultValues } from "./helper";
+import BookAddUpdateHeader from "./_components/BookAddUpdateHeader";
 
 export default function AddUpdateBook() {
   const navigate = useNavigate();
@@ -57,41 +59,10 @@ export default function AddUpdateBook() {
   const [addBook, { isLoading }] = useAddBookMutation();
   const [updateBook] = useUpdateBookMutation();
 
-  const defaultValues = {
-    books:
-      bookData?.swapCondition?.swappableBooks?.length > 0
-        ? bookData.swapCondition.swappableBooks.map(
-            (book: {
-              title: string;
-              author: string;
-              coverPhotoUrl: string;
-            }) => ({
-              bookTitle: book.title || "",
-              authorName: book.author || "",
-              byBookCover: book.coverPhotoUrl || null,
-            })
-          )
-        : [{ bookTitle: "", authorName: "", byBookCover: null }],
-    favGenres: bookData?.genres || [],
-    conditionType: bookData?.swapCondition?.conditionType || BYBOOKS,
-    language: bookData?.language || "",
-    title: bookData?.title || "",
-    genres:
-      bookData?.exchangeCondition?.exchangeableGenres?.length > 0
-        ? bookData?.exchangeCondition?.exchangeableGenres?.map(
-            (genre: { name: string }) => genre?.name
-          )
-        : [],
-    condition: bookData?.condition || "",
-    description: bookData?.description || "",
-    author: bookData?.author || "",
-    bookCovers: bookData?.coverPhotoUrls || [],
-  };
-
   const methods = useForm({
     resolver: yupResolver(validationSchemas[active] as yup.ObjectSchema<any>),
     mode: "onChange",
-    defaultValues: defaultValues,
+    defaultValues: getDefaultValues(bookData),
   });
   const {
     handleSubmit,
@@ -111,44 +82,14 @@ export default function AddUpdateBook() {
     () => options(conditionDataOptions),
     [conditionDataOptions]
   );
-  // const languages = options(languageDataOptions);
-  // const conditions = options(conditionDataOptions);
 
+  // LOAD BOOK DATA AFTER RELOAD
   useEffect(() => {
     if (bookData) {
-      reset({
-        books:
-          bookData?.swapCondition?.swappableBooks?.length > 0
-            ? bookData.swapCondition.swappableBooks.map(
-                (book: {
-                  title: string;
-                  author: string;
-                  coverPhotoUrl: string;
-                }) => ({
-                  bookTitle: book.title || "",
-                  authorName: book.author || "",
-                  byBookCover: book.coverPhotoUrl || null,
-                })
-              )
-            : [{ bookTitle: "", authorName: "", byBookCover: null }],
-        favGenres: bookData?.genres || [],
-        conditionType: bookData?.swapCondition?.conditionType || BYBOOKS,
-        language: bookData?.language || "",
-        title: bookData?.title || "",
-        genres:
-          bookData?.swapCondition?.swappableGenres?.length > 0
-            ? bookData?.swapCondition?.swappableGenres?.map(
-                (genre: { name: string }) => genre?.name
-              )
-            : [],
-        condition: bookData?.condition || "",
-        description: bookData?.description || "",
-        author: bookData?.author || "",
-        bookCovers: bookData?.coverPhotoUrls || [],
-      });
+      reset(getDefaultValues(bookData));
     }
   }, [bookData, reset]);
-  // console.log(getValues())
+
   const [steps, setSteps] = useState([
     {
       label: "Book Details",
@@ -331,19 +272,10 @@ export default function AddUpdateBook() {
   if (loading()) return <Loader />;
   return (
     <div className="min-h-screen">
-      <div className="fixed left-0 top-0 w-full h-[48px] flex items-center justify-between px-4 border-b border-[#E4E4E4] bg-white z-30 ">
-        <div className="flex items-center justify-center w-full relative">
-          <div
-            className="cursor-pointer w-5 absolute left-0 top-0"
-            onClick={() => navigate("/profile/user-profile")}
-          >
-            <Image src={leftArrowIcon} alt="left" />
-          </div>
-          <h3 className="font-poppins text-base font-normal text-center ">
-            {id ? "Update" : "Add"} Book
-          </h3>
-        </div>
-      </div>
+      <BookAddUpdateHeader
+        title={`${id ? "Update" : "Add"} Book`}
+        onBack={() => navigate("/profile/user-profile")}
+      />
       <div className="container">
         <div className="pt-16 border-b border-[#E4E4E4] pb-4">
           <Stepper steps={steps} />

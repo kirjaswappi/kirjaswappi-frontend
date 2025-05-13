@@ -135,7 +135,7 @@ export default function BookDetails() {
         </div>
         {/* ================== START Exchanges Condition ==================  */}
         <div className="pl-4">
-          <Exchanges swapCondition={bookData.swapCondition}/>
+          <Exchanges swapCondition={bookData?.swapCondition}/>
         </div>
         {/* ================== END Exchanges Condition ==================  */}
         <div className="container text-left mb-5">
