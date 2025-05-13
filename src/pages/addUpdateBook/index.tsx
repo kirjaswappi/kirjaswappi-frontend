@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import leftArrowIcon from "../../assets/leftArrow.png";
 import NextArrowIcon from "../../assets/arrow1.png";
@@ -43,6 +43,8 @@ export default function AddUpdateBook() {
   const { id } = useParams();
   const [active, setActive] = useState<number>(0);
   const { userInformation } = useAppSelector((state) => state.auth);
+
+  // LANGUAGE, CONDITION, & BOOK QUERY
   const { data: languageDataOptions, isLoading: languageLoading } =
     useGetSupportLanguageQuery(undefined);
   const { data: conditionDataOptions, isLoading: conditionLoading } =
@@ -51,9 +53,10 @@ export default function AddUpdateBook() {
     { id: id },
     { skip: !id }
   );
+  // ADD BOOK & UPDATE BOOK MUTATION
   const [addBook, { isLoading }] = useAddBookMutation();
   const [updateBook] = useUpdateBookMutation();
-console.log(bookData)
+
   const defaultValues = {
     books:
       bookData?.swapCondition?.swappableBooks?.length > 0
@@ -98,8 +101,18 @@ console.log(bookData)
     formState: { errors },
     reset,
   } = methods;
-  const languages = options(languageDataOptions);
-  const conditions = options(conditionDataOptions);
+
+  // MEMORIZED LANGUAGE & CONDITION DATA
+  const languages = useMemo(
+    () => options(languageDataOptions),
+    [languageDataOptions]
+  );
+  const conditions = useMemo(
+    () => options(conditionDataOptions),
+    [conditionDataOptions]
+  );
+  // const languages = options(languageDataOptions);
+  // const conditions = options(conditionDataOptions);
 
   useEffect(() => {
     if (bookData) {
@@ -211,7 +224,7 @@ console.log(bookData)
         data.bookCovers.map(async (cover) => {
           if (cover instanceof File) return cover;
           if (typeof cover === "string") {
-            const file = await convertedURLToFile(cover)
+            const file = await convertedURLToFile(cover);
             return file;
           }
         })
