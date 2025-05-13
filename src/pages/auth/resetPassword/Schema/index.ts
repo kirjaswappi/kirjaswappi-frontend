@@ -1,21 +1,21 @@
 import * as yup from "yup";
 import { MIN_PASSWORD, OTP_LENGTH } from "../../../../utility/constant";
 
-const emailStep = yup.object({
+export const emailSchema = yup.object({
   email: yup
     .string()
     .email("Please enter a valid email")
-    .required("Enter your email"),
+    .required("Enter your email")
 });
 
-const otpStep = yup.object({
+export const otpSchema = yup.object({
   otp: yup
     .string()
     .required("OTP is required")
-    .length(OTP_LENGTH, `OTP must be exactly ${OTP_LENGTH} digits`),
+    .length(OTP_LENGTH, `OTP must be exactly ${OTP_LENGTH} digits`)
 });
 
-const passwordStep = yup.object({
+export const passwordSchema = yup.object({
   password: yup
     .string()
     .required("Please enter Password")
@@ -23,7 +23,6 @@ const passwordStep = yup.object({
   confirmPassword: yup
     .string()
     .required("Please enter Confirm Password")
-    .oneOf([yup.ref("password")], "Password and Confirm Password do not match"),
+    .oneOf([yup.ref("password")], "Password and Confirm Password do not match")
 });
-
-export const validationSchemas = [emailStep, otpStep, passwordStep];
+export const ResetPasswordValidation = [emailSchema, otpSchema, passwordSchema];
