@@ -1,23 +1,22 @@
 import { useEffect, useState } from "react";
-import { Controller, FieldError, useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import closeIcon from "../../../assets/close.png";
 import Image from "../../../components/shared/Image";
-import { SUPPORTED_FORMATS } from "../../../utility/constant";
-interface IImageFileInputProps {
-  name: string;
-  errors: Record<string, any>;
-}
-const ImageFileInput = ({ name, errors }: IImageFileInputProps) => {
-  const { control, getValues, setValue, trigger } = useFormContext();
+const ImageFileInput = ({ name }: { name: string }) => {
+  const { control, getValues, setValue } = useFormContext();
   const initialValue = getValues(name);
-  const [previews, setPreviews] = useState<string[]>([]);
+  const [preview, setPreview] = useState<string | null>(
+    initialValue instanceof File
+      ? URL.createObjectURL(initialValue)
+      : initialValue || null
+  );
 
   useEffect(() => {
-    if (Array.isArray(initialValue)) {
-      const urls = initialValue.map((file) =>
-        file instanceof File ? URL.createObjectURL(file) : file
-      );
-      setPreviews(urls);
+    if (initialValue instanceof File) {
+      const fileUrl = URL.createObjectURL(initialValue);
+      setPreview(fileUrl);
+    } else if (typeof initialValue === "string") {
+      setPreview(initialValue);
     }
   }, [initialValue]);
 
@@ -25,132 +24,75 @@ const ImageFileInput = ({ name, errors }: IImageFileInputProps) => {
     e: React.ChangeEvent<HTMLInputElement>,
     field: any
   ) => {
-    const files = Array.from(e.target.files || []);
-    const validImages = files.filter((file) =>
-      SUPPORTED_FORMATS.includes(file.type)
-    );
-
-    const fileUrls = validImages.map((file) => URL.createObjectURL(file));
-    const updatedPreviews = [...previews, ...fileUrls];
-    setPreviews(updatedPreviews);
-
-    const updatedFiles = [...field.value, ...validImages];
-    field.onChange(updatedFiles);
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.type.startsWith("image")) {
+        const fileUrl = URL.createObjectURL(file);
+        setPreview(fileUrl);
+      }
+      field.onChange(file);
+    }
   };
 
-  const handleDelete = async (index: number, field: any) => {
-    const updatedPreviews = previews.filter((_, i) => i !== index);
-    const updatedFiles = (field.value || []).filter(
-      (_: any, i: number) => i !== index
-    );
-    setPreviews(updatedPreviews);
-    setValue(name, updatedFiles, { shouldValidate: true });
-    await trigger(name);
+  const handleDelete = (field: any) => {
+    setPreview("");
+    setValue(field.name, null);
   };
 
-  const findErrorPosition = (errorsObject: any): number[] => {
-    if (!errorsObject || typeof errorsObject !== "object") return [];
-    return Object.keys(errorsObject)
-      .map((key) => (errorsObject[key]?.message ? parseInt(key, 10) : null))
-      .filter((index): index is number => index !== null);
-  };
-
-  const getAllErrorMessages = (
-    errorObject: Record<number, FieldError> | undefined
-  ): string[] => {
-    if (!errorObject || typeof errorObject !== "object") return [];
-
-    return Object.values(errorObject)
-      .map((error) => error?.message)
-      .filter((msg): msg is string => Boolean(msg));
-  };
-
-   const parseFieldErrors = (fieldError: any): { messages: string[]; indexes: number[] } => {
-  if (!fieldError) return { messages: [], indexes: [] };
-
-  if (typeof fieldError === "object" && !("message" in fieldError)) {
-    return {
-      messages: getAllErrorMessages(fieldError),
-      indexes: findErrorPosition(fieldError),
-    };
-  }
-
-  return {
-    messages: fieldError?.message ? [fieldError.message] : [],
-    indexes: [],
-  };
-};
-  const fieldError = errors?.[name];
-  const { messages: errorMessages, indexes: errorIndex } =
-    parseFieldErrors(fieldError);
   return (
     <Controller
       name={name}
       control={control}
-      defaultValue={[]}
-      render={({ field }) => {
+      defaultValue={null}
+      render={({ field, fieldState }) => {
         return (
           <div>
             <div className="w-[126px] h-[150px] border-[1px] border-dashed border-grayDark rounded-lg cursor-pointer block mx-auto ">
-              <label
-                htmlFor="file"
-                className="flex flex-col items-center justify-center h-full"
-              >
-                <span className="text-grayDark text-3xl font-poppins font-extralight">
-                  +
-                </span>
-                <span className="text-grayDark text-xs font-poppins font-normal">
-                  Upload Picture
-                </span>
+              {preview ? (
+                <div className="w-full h-full relative group">
+                  <div
+                    onClick={() => handleDelete(field)}
+                    className="absolute  w-6 h-6 flex items-center justify-center bg-[#0D0D0D] rounded-full p-1 -right-2 -top-2 "
+                  >
+                    <Image
+                      src={closeIcon}
+                      alt="File Preview"
+                      className="w-4 h-4"
+                    />
+                  </div>
+                  <img
+                    src={preview}
+                    alt="File Preview"
+                    className="w-full h-full bg-contain object-cover rounded-lg"
+                  />
+                </div>
+              ) : (
+                <label
+                  htmlFor="file"
+                  className="flex flex-col items-center justify-center h-full"
+                >
+                  <span className="text-grayDark text-3xl font-poppins font-extralight">
+                    +
+                  </span>
+                  <span className="text-grayDark text-xs font-poppins font-normal">
+                    Upload Picture
+                  </span>
 
-                <input
-                  id="file"
-                  type="file"
-                  multiple
-                  accept={SUPPORTED_FORMATS.join(",")}
-                  className="hidden"
-                  onChange={(e) => handleFileChange(e, field)}
-                />
-              </label>
+                  <input
+                    id="file"
+                    type="file"
+                    className="hidden"
+                    onChange={(e) => handleFileChange(e, field)}
+                  />
+                </label>
+              )}
             </div>
-            <div className="grid grid-cols-5 gap-1 mt-4">
-              {previews &&
-                previews?.map((src, index:number) => {
-                  return (
-                    <div
-                      key={index}
-                      className={`w-[56px] h-[56px] border ${
-                        errorIndex.includes(index)
-                          ? "border-2 border-rose-600"
-                          : "border-[#B2B2B2]"
-                      } rounded-lg relative group`}
-                    >
-                      <div
-                        onClick={() => handleDelete(index, field)}
-                        className="absolute w-5 h-5 flex items-center justify-center bg-smokyBlack text-white rounded-full -right-2 -top-2 cursor-pointer z-10"
-                      >
-                        <Image
-                          src={closeIcon}
-                          alt="Remove"
-                          className="w-[7px] h-[7px]"
-                        />
-                      </div>
-                      <img
-                        src={src}
-                        alt={`Preview ${index}`}
-                        className="w-full h-full object-cover rounded-lg"
-                      />
-                    </div>
-                  );
-                })}
-            </div>
-
             {/* Validation Error */}
-            {errorMessages.length > 0 && (
-            <p className="text-rose-500 text-xs mt-1 pl-2">
-              {errorMessages[0]}
-            </p>
-          )}
+            {fieldState.error && (
+              <p className="text-rose-500 text-xs mt-1 pl-2">
+                {fieldState.error.message}
+              </p>
+            )}
           </div>
         );
       }}

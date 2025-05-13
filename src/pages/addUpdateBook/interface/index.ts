@@ -1,4 +1,4 @@
-import { BYBOOKS } from './../../../utility/ADDBOOKCONDITIONTYPE';
+// import { BYBOOKS } from './../../../utility/ADDBOOKCONDITIONTYPE';
 export interface IBook {
   bookTitle: string;
   authorName: string;

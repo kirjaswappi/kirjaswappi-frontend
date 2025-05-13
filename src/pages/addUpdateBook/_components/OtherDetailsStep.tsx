@@ -4,8 +4,8 @@ import { setOpen } from "../../../redux/feature/open/openSlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import closeIcon from "../../../assets/close.svg";
 import { useFormContext } from "react-hook-form";
-import ImageFileInput from "./ImageControllerField";
 import InputLabel from "../../../components/shared/InputLabel";
+import MultipleImageFileInput from "./MultipleImageControllerField";
 export default function OtherDetailsStep({ errors }: { errors: any }) {
   const { open } = useAppSelector((state) => state.open);
   const dispatch = useAppDispatch();
@@ -25,7 +25,7 @@ export default function OtherDetailsStep({ errors }: { errors: any }) {
       <div>
         <div className="py-4 border-b border-platinumDark">
           <InputLabel label="Book Cover" required />
-          <ImageFileInput errors={errors} name="bookCovers" />
+          <MultipleImageFileInput errors={errors} name="bookCovers" />
         </div>
         <div className="flex items-center justify-between py-4 border-b border-platinumDark">
           <InputLabel label="Genre" required />
