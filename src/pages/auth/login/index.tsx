@@ -24,7 +24,9 @@ export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [login, { isLoading }] = useLoginMutation();
-  const { error, message } = useAppSelector((state) => state.auth);
+  const { error: authError, message: authMessage } = useAppSelector(
+    (state) => state.auth
+  );
 
   const methods = useForm<ILoginForm>({
     resolver: yupResolver(loginSchema),
@@ -33,21 +35,21 @@ export default function Login() {
       email: "",
       password: "",
     },
-    reValidateMode: "onBlur",
+    reValidateMode: "onChange",
   });
 
   const onSubmit = async (data: ILoginForm) => {
+    const isValid = await methods.trigger();
+    if (!isValid) return;
+
     try {
-      await login(data).then(async (res) => {
-        if ("data" in res) {
-          const timer = setTimeout(() => {
-            dispatch(setMessages({ type: "", isShow: false, message: "" }));
-            dispatch(setAuthMessage(""));
-            dispatch(setAuthSuccess(false));
-          }, 2000);
-          return () => clearTimeout(timer);
-        }
-      });
+      await login(data).unwrap();
+      const timer = setTimeout(() => {
+        dispatch(setMessages({ type: "", isShow: false, message: "" }));
+        dispatch(setAuthMessage(""));
+        dispatch(setAuthSuccess(false));
+      }, 2000);
+      return () => clearTimeout(timer);
     } catch (error) {
       console.log("login error", error);
     }
@@ -58,18 +60,17 @@ export default function Login() {
     dispatch(setError(""));
   }, [navigate, dispatch]);
 
-  // Get the first error message if any exists
-  const errorMessage =
-    (methods.formState.touchedFields.email &&
-      methods.formState.errors.email?.message) ||
-    (methods.formState.touchedFields.password &&
-      methods.formState.errors.password?.message) ||
-    error;
+  const formErrors = methods.formState.errors;
+  const firstFieldError = Object.values(formErrors)[0]?.message;
+
+  // Use the first form error, or fall back to auth errors
+  const displayMessage = firstFieldError || authError || authMessage;
+  const messageType = firstFieldError || authError ? "ERROR" : "SUCCESS";
 
   return (
-    <div className="relative">
+    <div className="relative font-poppins">
       <div className="absolute top-[18%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] rounded-full bg-white flex items-center justify-center">
-        <Image src={profileIcon || "/placeholder.svg"} className=" " />
+        <Image src={profileIcon || "/placeholder.svg"} />
       </div>
       <div className="w-full h-[124px] z-0">
         <Image
@@ -79,7 +80,7 @@ export default function Login() {
       </div>
       <div className="container h-[calc(80vh-128px)]">
         <div>
-          <h2 className="text-black text-base font-poppins, font-normal text-center mt-24 mb-4">
+          <h2 className="text-black text-base font-normal text-center mt-24 mb-4">
             Sign In
           </h2>
           <FormProvider {...methods}>
@@ -87,29 +88,23 @@ export default function Login() {
               onSubmit={methods.handleSubmit(onSubmit)}
               className="flex flex-col"
             >
-              <div>
-                <div>
-                  <ControlledInputField
-                    name="email"
-                    placeholder="E-mail"
-                    className="rounded-t-lg"
-                  />
-                </div>
-                <div>
-                  <ControlledPasswordField
-                    name="password"
-                    placeholder="Password"
-                    className="rounded-b-lg border-t-0"
-                  />
-                </div>
-              </div>
+              <ControlledInputField
+                name="email"
+                placeholder="E-mail"
+                className="rounded-t-lg"
+              />
+              <ControlledPasswordField
+                name="password"
+                placeholder="Password"
+                className="rounded-b-lg border-t-0"
+              />
 
-              {(errorMessage || message) && (
+              {displayMessage && (
                 <div className="mt-2">
                   <MessageToastify
                     isShow={true}
-                    type={errorMessage ? "ERROR" : "SUCCESS"}
-                    value={errorMessage || message}
+                    type={messageType}
+                    value={displayMessage}
                   />
                 </div>
               )}
@@ -124,18 +119,19 @@ export default function Login() {
                   />
                   <label
                     htmlFor="remember"
-                    className="cursor-pointer text-sm font-light font-poppins text-grayDark"
+                    className="cursor-pointer text-sm font-light text-grayDark"
                   >
                     Remember me
                   </label>
                 </div>
                 <Link
                   to="/password/reset"
-                  className="text-black font-light text-sm underline font-poppins"
+                  className="text-black font-light text-sm underline"
                 >
-                  Forgot Password ?
+                  Forgot Password?
                 </Link>
               </div>
+
               <button
                 type="submit"
                 disabled={isLoading}
@@ -143,12 +139,13 @@ export default function Login() {
               >
                 {isLoading ? "Loading..." : "Continue"}
               </button>
+
               <div className="flex items-center justify-center gap-1 mt-4">
-                <p className="text-black text-sm font-light font-poppins">
+                <p className="text-black text-sm font-light">
                   Don't have an account?
                 </p>
                 <button
-                  className="text-black text-sm font-light font-poppins underline"
+                  className="text-black text-sm font-light underline"
                   onClick={(e) => {
                     e.preventDefault();
                     navigate("/auth/register");
