@@ -1,11 +1,9 @@
 import { useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
-import { Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import graySearchIcon from "../../../assets/GraysearchIcon.png";
 import conversationsData from "../../../data/conversations.json";
-import BottomNav from "../../../components/Footer/_components/BottomNav";
 
 const Inbox = () => {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -20,14 +18,15 @@ const Inbox = () => {
   return (
     <div className="flex flex-col h-screen bg-[#f2f4f8] font-poppins">
       <div className="bg-white w-full py-4 px-4">
-        <h1 className="text-center text-lg font-medium">Messages</h1>
+        <h2 className="text-center text-lg">Messages</h2>
       </div>
 
       <div className="px-4 py-2 bg-[#F5F6FA]">
         <div className="relative">
-          <Search
-            size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+          <img
+            src={graySearchIcon}
+            alt="Search"
+            className="absolute left-3 top-1/2 -translate-y-1/2 h-[18px] w-[18px] object-contain"
           />
           <input
             type="text"

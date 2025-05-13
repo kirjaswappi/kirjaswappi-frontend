@@ -1,22 +1,18 @@
 import { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Info, Camera } from "lucide-react";
-import messagesData from '../../../data/messages.json';
-import BottomNav from "../../../components/Footer/_components/BottomNav";
-
-const SendIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
+import messagesData from "../../../data/messages.json";
+import infoIcon from "../../../assets/infoIcon.png";
+import leftArrow from "../../../assets/leftArrow.png";
+import cameraIcon from "../../../assets/solar_camera-bold.png";
+import sendIcon from "../../../assets/sendIcon.png";
 
 const InboxChat = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState(messagesData.messages);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
+
   const user = id && messagesData.users[id as keyof typeof messagesData.users];
 
   useEffect(() => {
@@ -25,16 +21,19 @@ const InboxChat = () => {
 
   const handleSendMessage = () => {
     if (!message.trim()) return;
-    
+
     const newMessage = {
       id: String(Date.now()),
-      senderId: 'user',
+      senderId: "user",
       text: message,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     };
-    
+
     setChatMessages([...chatMessages, newMessage]);
-    setMessage('');
+    setMessage("");
   };
 
   if (!user) return null;
@@ -42,27 +41,35 @@ const InboxChat = () => {
   return (
     <div className="flex flex-col h-screen bg-[#f2f4f8] font-poppins">
       <div className="px-4 py-3 flex items-center bg-white">
-        <ArrowLeft className="h-6 w-6 mr-2" onClick={() => navigate('/inbox')} />
-        <h2 className="text-lg flex-1">{user.name}</h2>
-        <Info className="h-6 w-6" />
+        <img
+          src={leftArrow}
+          alt="Back"
+          className="w-[13px] h-[19px] mr-2 cursor-pointer"
+          onClick={() => navigate("/inbox")}
+        />
+        <h2 className="text-lg flex-1 text-center">{user.name}</h2>
+        <img src={infoIcon} alt="Info" className="w-[19.5px] h-[19.5px]" />
       </div>
-      
+
       <div className="flex-1 overflow-y-auto p-4">
         <div className="space-y-4">
           {chatMessages.map((msg) => (
-            <div key={msg.id} className={`flex flex-col ${msg.senderId === 'user' ? 'items-end' : 'items-start'}`}>
-              <div className={`max-w-[85%] px-4 py-2 ${
-                msg.senderId === 'user' 
-                  ? 'bg-blue-500 text-white rounded-[20px] rounded-br-md' 
-                  : 'bg-white text-gray-800 rounded-[20px] rounded-bl-md'
-              }`}>
+            <div
+              key={msg.id}
+              className={`flex flex-col ${
+                msg.senderId === "user" ? "items-end" : "items-start"
+              }`}
+            >
+              <div
+                className={`max-w-[85%] px-4 py-2 ${
+                  msg.senderId === "user"
+                    ? "bg-blue-500 text-white rounded-full"
+                    : "bg-white text-gray-800 rounded-full"
+                }`}
+              >
                 <p>{msg.text}</p>
               </div>
-              <span className={`text-xs mt-1 ${
-                msg.senderId === 'user' 
-                  ? 'text-gray-400 pr-1' 
-                  : 'text-gray-400 pl-1'
-              }`}>
+              <span className="text-xs mt-1" style={{ color: "#818D90" }}>
                 {msg.timestamp}
               </span>
             </div>
@@ -71,18 +78,24 @@ const InboxChat = () => {
         </div>
       </div>
 
-      <div className="flex items-center z-40 px-3 py-2 bg-white sticky bottom-0">
-        <Camera className="h-6 w-6 text-gray-400 mr-3" />
+      <div className="flex items-center z-40 px-2 py-1 bg-white  sticky bottom-0 rounded-full mx-2 mb-7 shadow-sm">
+        <div className="flex items-center justify-center h-9 w-9 bg-black rounded-full mr-2">
+          <img src={cameraIcon} alt="Camera" className="h-5 w-5 text-white" />
+        </div>
         <input
           type="text"
-          className="flex-1 outline-none"
-          placeholder="Okai"
+          className="flex-1 outline-none bg-transparent px-2 text-base"
+          placeholder=""
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+          onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+          style={{ lineHeight: "24px" }}
         />
-        <button onClick={handleSendMessage} className="ml-3">
-          <SendIcon />
+        <button
+          onClick={handleSendMessage}
+          className="ml-2 flex items-center justify-center h-9 w-9 rounded-full"
+        >
+          <img src={sendIcon} alt="Send" className="h-5 w-5 text-white" />
         </button>
       </div>
     </div>
