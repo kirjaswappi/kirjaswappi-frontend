@@ -11,10 +11,10 @@ export const emailSchema = yup.object({
 export const otpSchema = yup.object({
   otp: yup
     .string()
+    .trim()
     .required("OTP is required")
-    .length(OTP_LENGTH, `OTP must be exactly ${OTP_LENGTH} digits`)
+    .length(OTP_LENGTH, `OTP must be exactly ${OTP_LENGTH} digits`),
 });
-
 export const passwordSchema = yup.object({
   password: yup
     .string()

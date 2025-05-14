@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import OTPInput from "react-otp-input";
 import { cn } from "../../utility/cn";
@@ -22,7 +22,10 @@ const ControllerFieldOTP: React.FC<ControllerFieldOTPProps> = ({
   showErrorMessage = false,
   onOTPChange,
 }) => {
-  const { control } = useFormContext();
+  const { control, clearErrors, setError } = useFormContext();
+
+  // Track whether user has started typing
+  const [isTouched, setIsTouched] = useState(false);
 
   return (
     <Controller
@@ -33,8 +36,23 @@ const ControllerFieldOTP: React.FC<ControllerFieldOTPProps> = ({
           <OTPInput
             value={field.value || ""}
             onChange={(value) => {
-              field.onChange(value);
+              // Set touched when user starts typing
+              if (!isTouched) setIsTouched(true);
+
+              field.onBlur();
               if (onOTPChange) onOTPChange(value);
+
+              if (value.length === 6) {
+                clearErrors(name); // Clear error when OTP is complete
+              }
+
+              // Show error if OTP is cleared after being typed
+              if (isTouched && value.length === 0) {
+                setError(name, {
+                  type: "manual",
+                  message: "OTP is required", // Error message when cleared
+                });
+              }
             }}
             numInputs={numInputs}
             shouldAutoFocus
