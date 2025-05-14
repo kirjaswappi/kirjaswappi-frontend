@@ -48,7 +48,7 @@ export default function ResetPassword() {
   // SENT OTP & VERIFY PASSWORD QUERY
   const [sentOTP] = useLazySentOTPQuery();
   const [verifyOTP] = useLazyVerifyOTPQuery();
-  //RESET PASSWORD MUTATION
+  // RESET PASSWORD MUTATION
   const [resetPassword, { isLoading }] = useResetPasswordMutation();
 
   // Redux state
@@ -63,7 +63,6 @@ export default function ResetPassword() {
   const { step } = useAppSelector((state) => state.step);
 
   // Local state
-  const [isProcessing, setIsProcessing] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [resetSuccess, setResetSuccess] = useState(false);
 
@@ -72,7 +71,7 @@ export default function ResetPassword() {
     resolver: yupResolver(
       ResetPasswordValidation[step] as yup.ObjectSchema<any>
     ),
-    mode: "onSubmit",
+    mode: "onChange",
     defaultValues: {
       email: "",
       otp: otp.join(""),
@@ -81,9 +80,11 @@ export default function ResetPassword() {
     },
   });
 
+  const { trigger, setValue } = methods
+
   // Update OTP in form when it changes in Redux state
   useEffect(() => {
-    methods.setValue("otp", otp.join(""));
+    setValue("otp", otp.join(""));
   }, [otp, methods]);
 
   // Handle navigation back
@@ -98,16 +99,14 @@ export default function ResetPassword() {
 
   // Handle navigation to next step
   const handleNext = async () => {
-    const isValid = await methods.trigger();
-    if (isValid) {
-      dispatch(setStep(step + 1));
-    }
+    const isValid = await trigger();
+    if (isValid) dispatch(setStep(step + 1));
   };
 
   // OTP change handler
   const handleOTPChange = (value: string) => {
     dispatch(setOtp(value.split("")));
-    methods.setValue("otp", value);
+    setValue("otp", value);
     if (methods.formState.errors.otp) {
       methods.clearErrors("otp");
     }
@@ -115,7 +114,6 @@ export default function ResetPassword() {
 
   // Form submission handler
   const handleSubmit = async (data: IResetPasswordForm) => {
-    setIsProcessing(true);
     dispatch(setError(""));
     dispatch(setMessages({ message: "", type: "", isShow: false }));
 
@@ -219,8 +217,6 @@ export default function ResetPassword() {
           message: "An error occurred. Please try again.",
         })
       );
-    } finally {
-      setIsProcessing(false);
     }
   };
 
@@ -229,10 +225,10 @@ export default function ResetPassword() {
     if (resetSuccess) {
       const timer = setTimeout(() => {
         console.log("Redirecting to login after successful reset");
-        navigate("/auth/login");
         dispatch(setStep(0));
         dispatch(setOtp(Array(OTP_LENGTH).fill("")));
         dispatch(setMessages({ type: "", isShow: false, message: "" }));
+        navigate("/auth/login");
       }, 1500);
 
       return () => clearTimeout(timer);
@@ -319,10 +315,10 @@ export default function ResetPassword() {
 
               <Button
                 type="submit"
-                disabled={isProcessing || isLoading}
+                disabled={isLoading}
                 className="w-full h-[48px] px-4 font-normal text-white bg-primary rounded-2xl text-sm mt-4"
               >
-                {isProcessing || isLoading
+                {isLoading
                   ? "Loading..."
                   : step === 1
                   ? "OTP Verify"
