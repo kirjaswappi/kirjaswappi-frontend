@@ -1,9 +1,23 @@
-import OTPInput from "react-otp-input";
-import { useNavigate } from "react-router-dom";
+import { useFormContext } from "react-hook-form";
 import MessageToastify from "../../../../components/shared/MessageToastify";
 import Button from "../../../../components/shared/Button";
+import ControllerFieldOTP from "../../../../components/shared/ControllerFieldOTP";
+import { useEffect } from "react";
 
-export default function ConfirmOTP({otp, errors}) { 
+export default function ConfirmOTP() {
+  const {
+    formState: { errors },
+    clearErrors,
+    watch,
+  } = useFormContext();
+
+  const otpValue = watch("otp");
+
+  useEffect(() => {
+    if (otpValue && errors.otp) {
+      clearErrors("otp");
+    }
+  }, [otpValue, errors.otp, clearErrors]);
 
   return (
     <div className="bg-white absolute bottom-0 left-0 w-full rounded-t-3xl transition-all duration-500 ease-in-out transform translate-y-0 h-[80vh]">
@@ -15,38 +29,19 @@ export default function ConfirmOTP({otp, errors}) {
           Enter the code we've sent to your Email
         </p>
 
-          <div className="flex gap-2 justify-between mb-5">
-            <OTPInput
-              value={otp.join("")}
-              onChange={handleOTPChange}
-              numInputs={6}
-              shouldAutoFocus
-              inputType="text"
-              renderInput={(props) => (
-                <input
-                  {...props}
-                  maxLength={1}
-                  inputMode="numeric"
-                  placeholder="-"
-                  className={`max-w-10 h-10 mb-5 bg-[#E7E7E7] ${
-                    errors.otp ? "border border-rose-500" : "border border-[#D9D9D9]"
-                  } rounded-md text-center text-base font-normal focus:outline-none transition-all duration-150`}
-                  style={{
-                    backgroundColor: "#E7E7E7",
-                  }}
-                />
-              )}
-              containerStyle={{
-                display: "flex",
-                justifyContent: "space-between",
-                width: "100%",
-              }}
-            />
-          </div>
-          {errors.otp && (
-            <MessageToastify isShow type="ERROR" value={errors.otp.message} />
-          )}
-        
+        <ControllerFieldOTP
+          name="otp"
+          showErrorMessage={false} // We'll handle the error message separately
+        />
+
+        {errors.otp && (
+          <MessageToastify
+            isShow
+            type="ERROR"
+            value={typeof errors.otp.message === "string" ? errors.otp.message : undefined}
+          />
+        )}
+
         <div className="flex items-center justify-center mt-10 gap-2 text-grayDark text-sm font-poppins">
           <p>Haven't received a code?</p>
           <Button className="underline text-sm">Send again</Button>

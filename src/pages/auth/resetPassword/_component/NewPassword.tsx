@@ -1,53 +1,25 @@
-import { useEffect } from "react";
+// components/NewPassword/NewPassword.tsx
 import ControllerFieldPassword from "../../../../components/shared/ControllerFieldPassword";
-import { FormProvider } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { setMessages } from "../../../../redux/feature/notification/notificationSlice";
-import type { INewPasswordProps } from "../interface";
 
-export default function NewPassword({ methods, updateValues }: Omit<INewPasswordProps, "register" | "errors"> & { methods: any }) {
-  const dispatch = useDispatch();
-  
-  // Watch the password fields to notify parent component when values change
-  useEffect(() => {
-    if (updateValues) {
-      const password = methods.watch("password") || "";
-      const confirmPassword = methods.watch("confirmPassword") || "";
-      updateValues(password, confirmPassword);
-    }
-  }, [methods, updateValues]);
-  
-  // Add effect to clear error messages when password fields change
-  useEffect(() => {
-    const subscription = methods.watch((value: any, { name }: { name?: string }) => {
-      if (name === "password" || name === "confirmPassword" || !name) {
-        // Clear error messages when passwords change
-        dispatch(setMessages({ type: "", isShow: false, message: "" }));
-      }
-    });
-    
-    return () => subscription.unsubscribe();
-  }, [methods, dispatch]);
-  
+export const NewPassword = () => {
   return (
-    <FormProvider {...methods}>
-      <div>
-        <div>
-          <ControllerFieldPassword
-            name="password"
-            placeholder="Password"
-            className="rounded-t-lg"
-            showErrorMessage={false}
-          />
-        </div>
-
+    <>
+      <div className="mb-4">
+        <h4 className="font-medium text-sm mb-2">New Password</h4>
         <ControllerFieldPassword
-          name="confirmPassword"
-          placeholder="Confirm Password"
-          className="rounded-b-lg"
-          showErrorMessage={false}
+          name="password"
+          placeholder="Enter new password"
+          showErrorMessage={true}
         />
       </div>
-    </FormProvider>
+      <div className="mb-4">
+        <h4 className="font-medium text-sm mb-2">Confirm Password</h4>
+        <ControllerFieldPassword
+          name="confirmPassword"
+          placeholder="Confirm new password"
+          showErrorMessage={true}
+        />
+      </div>
+    </>
   );
-}
+};

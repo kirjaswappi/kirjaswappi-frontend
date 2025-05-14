@@ -11,6 +11,7 @@ interface ControllerFieldOTPProps {
   placeholder?: string;
   className?: string;
   showErrorMessage?: boolean;
+  onOTPChange?: (otp: string) => void;
 }
 
 const ControllerFieldOTP: React.FC<ControllerFieldOTPProps> = ({
@@ -19,6 +20,7 @@ const ControllerFieldOTP: React.FC<ControllerFieldOTPProps> = ({
   placeholder = "-",
   className,
   showErrorMessage = false,
+  onOTPChange,
 }) => {
   const { control } = useFormContext();
 
@@ -30,7 +32,10 @@ const ControllerFieldOTP: React.FC<ControllerFieldOTPProps> = ({
         <div>
           <OTPInput
             value={field.value || ""}
-            onChange={field.onChange}
+            onChange={(value) => {
+              field.onChange(value);
+              if (onOTPChange) onOTPChange(value);
+            }}
             numInputs={numInputs}
             shouldAutoFocus
             inputType="text"

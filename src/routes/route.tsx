@@ -4,7 +4,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import Login from "../pages/auth/login";
 import Register from "../pages/auth/register";
-// import ResetPassword from "../pages/auth/resetPassword";
+import ResetPassword from "../pages/auth/resetPassword";
 import BookDetails from "../pages/bookDetails";
 import Books from "../pages/books";
 import Profile from "../pages/profile";
@@ -95,7 +95,7 @@ const routes = createBrowserRouter([
         path: "/password/reset",
         element: (
           <Authenticate>
-            {/* <ResetPassword /> */}
+            <ResetPassword />
           </Authenticate>
         ),
       },
