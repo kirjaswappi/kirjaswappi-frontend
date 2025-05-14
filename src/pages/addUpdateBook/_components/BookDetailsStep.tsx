@@ -1,15 +1,6 @@
 import InputLabel from "../../../components/shared/InputLabel";
-
 import ControlledInputField from "../../../components/shared/ControllerField";
-
-type TOptions = {
-  label: string;
-  value: string;
-};
-interface IBookDetailsProps {
-  languageOptions: TOptions[] | undefined;
-  conditionOptions: TOptions[] | undefined;
-}
+import { IBookDetailsProps } from "../interface";
 
 export default function BookDetailsStep({languageOptions, conditionOptions}: IBookDetailsProps) {
   return (

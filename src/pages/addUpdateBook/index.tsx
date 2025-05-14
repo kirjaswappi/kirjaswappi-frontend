@@ -13,31 +13,18 @@ import {
 } from "../../redux/feature/book/bookApi";
 import yup from "yup";
 import Stepper from "./_components/Stepper";
-import BookDetailsStep from "./_components/BookDetailsStep";
-import OtherDetailsStep from "./_components/OtherDetailsStep";
-import {
-  blobToBase64,
-  convertedURLToFile,
-  options,
-  urlToDataUrl,
-} from "../../utility/helper";
+import { options } from "../../utility/helper";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { validationSchemas } from "./Schema";
 
 import AddGenre from "../../components/shared/AddGenre";
 import Button from "../../components/shared/Button";
-import ConditionsStep from "./_components/ConditionsStep";
 import { useAppSelector } from "../../redux/hooks";
-import {
-  BYBOOKS,
-  BYGENRES,
-  GIVEAWAY,
-  OPENTOOFFERS,
-} from "../../utility/ADDBOOKCONDITIONTYPE";
 import { IAddUpdateBookData } from "./interface";
-import { getDefaultValues } from "./helper";
+import { buildFormData, getDefaultValues } from "./helper";
 import BookAddUpdateHeader from "./_components/BookAddUpdateHeader";
+import BookFormStep from "./_components/BookFormStep";
 
 export default function AddUpdateBook() {
   const navigate = useNavigate();
@@ -104,7 +91,7 @@ export default function AddUpdateBook() {
       isActive: false,
     },
   ]);
-  // console.log(errors)
+
   const handleNext = async () => {
     const valid = await trigger();
     if (valid) {
@@ -137,126 +124,20 @@ export default function AddUpdateBook() {
   const handleAddUpdateBookFn = async <T extends IAddUpdateBookData>(
     data: T
   ) => {
-    console.log(data);
-    const formData = new FormData();
-    if (userInformation.id) formData.append("ownerId", userInformation.id);
-    if (bookData?.id) formData.append("id", bookData?.id);
-    formData.append("title", data.title);
-    formData.append("author", data.author);
-    formData.append("description", data.description);
-    formData.append("genres", data.favGenres.join(","));
-    formData.append("language", data.language);
-    formData.append("condition", data.condition);
-    // console.log({data})
-    // <========== If book cover type is URL we need to convert URL to File ==========>
-    // if (!isString(data.bookCover)) {
-    //   // formData.append("coverPhoto", data.bookCover);
-    // } else {
-    //   const file = await convertedURLToFile(bookData?.coverPhotoUrl);
-    //   if (file) {
-    //     formData.append("coverPhoto", file);
-    //   }
-    // }
-    if (Array.isArray(data.bookCovers)) {
-      const coverFiles = await Promise.all(
-        data.bookCovers.map(async (cover) => {
-          if (cover instanceof File) return cover;
-          if (typeof cover === "string") {
-            const file = await convertedURLToFile(cover);
-            return file;
-          }
-        })
-      );
-
-      coverFiles.forEach((file) => {
-        if (file) formData.append("coverPhotos", file);
-      });
-    }
-    if (data.conditionType === BYBOOKS) {
-      const exchangeCondition: {
-        openForOffers: boolean;
-        genres: null;
-        conditionType: string;
-        giveAway: boolean;
-        books: {
-          title: string;
-          author: string;
-          coverPhoto: File | string;
-        }[];
-      } = {
-        openForOffers: false,
-        conditionType: data.conditionType,
-        giveAway: false,
-        genres: null,
-        books: await Promise.all(
-          data.books.map(async (book) => {
-            const bookData: any = {
-              title: book.bookTitle,
-              author: book.authorName,
-            };
-            if (book.byBookCover instanceof File) {
-              bookData.coverPhoto = await blobToBase64(book.byBookCover);
-            } else {
-              bookData.coverPhoto = await urlToDataUrl(book.byBookCover);
-            }
-            return bookData;
-          })
-        ),
-      };
-      formData.append("swapCondition", JSON.stringify(exchangeCondition));
-    } else if (data.conditionType === OPENTOOFFERS) {
-      formData.append(
-        "swapCondition",
-        JSON.stringify({
-          openForOffers: true,
-          genres: null,
-          books: null,
-          conditionType: data.conditionType,
-          giveAway: false,
-        })
-      );
-    } else if (data.conditionType === BYGENRES) {
-      formData.append(
-        "swapCondition",
-        JSON.stringify({
-          openForOffers: false,
-          conditionType: data.conditionType,
-          giveAway: false,
-          genres: data.genres.join(","),
-          books: null,
-        })
-      );
-    } else if (data.conditionType === GIVEAWAY) {
-      formData.append(
-        "swapCondition",
-        JSON.stringify({
-          openForOffers: false,
-          genres: null,
-          books: null,
-          conditionType: data.conditionType,
-          giveAway: true,
-        })
-      );
-    }
-
+    const formData = await buildFormData(
+      data,
+      userInformation.id,
+      bookData?.id
+    );
     try {
-      if (!bookData?.id) {
-        await addBook(formData).then((res) => {
-          if (res?.data) {
-            reset();
-            navigate(`/profile/user-profile`);
-          }
-        });
-      } else {
-        await updateBook({ data: formData, id: bookData?.id }).then((res) => {
-          if (res?.data) {
-            reset();
-            navigate(`/profile/user-profile`);
-          }
-        });
-      }
+      const mutation = bookData?.id
+        ? updateBook({ data: formData, id: bookData.id })
+        : addBook(formData);
+
+      await mutation.unwrap();
+      navigate(`/profile/user-profile`);
     } catch (error) {
-      console.log(error);
+      console.error("Submission failed:", error);
     }
   };
   const loading = () => {
@@ -265,7 +146,7 @@ export default function AddUpdateBook() {
     if (bookLoading) return true;
     else return false;
   };
-  // console.log({errors})
+
   if (loading()) return <Loader />;
   return (
     <div className="min-h-screen">
@@ -286,15 +167,12 @@ export default function AddUpdateBook() {
             addGenreName={active === 1 ? "favGenres" : "genres"}
           />
           <form onSubmit={handleSubmit((data) => handleAddUpdateBookFn(data))}>
-            {active === 0 && (
-              <BookDetailsStep
-                languageOptions={languages}
-                conditionOptions={conditions}
-              />
-            )}
-            {active === 1 && <OtherDetailsStep errors={errors} />}
-            {active === 2 && <ConditionsStep errors={errors} />}
-
+            <BookFormStep
+              activeStep={active}
+              errors={errors}
+              languages={languages}
+              conditions={conditions}
+            />
             <div className="mt-4 flex justify-between gap-3 pb-4">
               {active > 0 && (
                 <Button

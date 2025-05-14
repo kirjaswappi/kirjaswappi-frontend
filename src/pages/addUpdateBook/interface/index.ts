@@ -1,4 +1,11 @@
-// import { BYBOOKS } from './../../../utility/ADDBOOKCONDITIONTYPE';
+export type TOptions = {
+  label: string;
+  value: string;
+};
+export interface IBookDetailsProps {
+  languageOptions: TOptions[] | undefined;
+  conditionOptions: TOptions[] | undefined;
+}
 export interface IBook {
   bookTitle: string;
   authorName: string;
@@ -17,10 +24,6 @@ export interface IAddUpdateBookData {
   bookCovers: (File | string)[];
 }
 
-export type TOptions = {
-  label: string;
-  value: string;
-};
 
 
 // ===================
@@ -68,7 +71,7 @@ export interface IAddUpdateBook {
     byBookCover: File | string | null;
   }[];
   favGenres: string[];
-  conditionType: "ByBooks" | "ByGenres" | "OpenForOffers" | "GiveAway";
+  conditionType: "ByBooks" | "ByGenres" | "OpenForOffers" | "GiveAway" | string;
   language: string;
   title: string;
   genres: string[];
