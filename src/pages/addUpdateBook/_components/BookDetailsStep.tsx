@@ -9,7 +9,7 @@ export default function BookDetailsStep({languageOptions, conditionOptions}: IBo
         <InputLabel label="Book Title" required />
         <ControlledInputField
           name="title"
-          placeholder="Enter your title"
+          placeholder="Enter book title"
           className="rounded-md"
           showErrorMessage
         />
