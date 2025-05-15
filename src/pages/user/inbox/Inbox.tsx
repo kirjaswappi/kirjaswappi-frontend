@@ -2,16 +2,19 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import graySearchIcon from "../../../assets/GraysearchIcon.png";
 import conversationsData from "../../../data/conversations.json";
-
+import Image from "../../../components/shared/Image";
+import Input from "../../../components/shared/Input";
 const Inbox = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredConversations = searchQuery
     ? conversationsData.conversations.filter(
-        (conv) =>
-          conv.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          conv.lastMessage.toLowerCase().includes(searchQuery.toLowerCase())
+        (conversation) =>
+          conversation.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          conversation.lastMessage
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())
       )
     : conversationsData.conversations;
 
@@ -23,12 +26,12 @@ const Inbox = () => {
 
       <div className="px-4 py-2 bg-[#F5F6FA]">
         <div className="relative">
-          <img
+          <Image
             src={graySearchIcon}
             alt="Search"
             className="absolute left-3 top-1/2 -translate-y-1/2 h-[18px] w-[18px] object-contain"
           />
-          <input
+          <Input
             type="text"
             className="w-full pl-10 pr-3 py-2 rounded-full border border-[#E4E6EC] bg-white text-sm focus:outline-none"
             placeholder="Search"
