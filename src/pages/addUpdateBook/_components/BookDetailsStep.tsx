@@ -28,7 +28,7 @@ export default function BookDetailsStep({languageOptions, conditionOptions}: IBo
         <ControlledInputField
         type="textarea"
           name="description"
-          placeholder="Enter your description"
+          placeholder="Enter a short description of the book"
           className="rounded-md h-[83px]"
           showErrorMessage
         />
