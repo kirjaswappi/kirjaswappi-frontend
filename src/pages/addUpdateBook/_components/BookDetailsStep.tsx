@@ -18,7 +18,7 @@ export default function BookDetailsStep({languageOptions, conditionOptions}: IBo
         <InputLabel label="Author Name" required />
         <ControlledInputField
           name="author"
-          placeholder="Enter your author"
+          placeholder="Enter book author"
           className="rounded-md"
           showErrorMessage
         />
