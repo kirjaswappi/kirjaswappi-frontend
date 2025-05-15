@@ -10,7 +10,7 @@ export default function BottomNav() {
     `/book-details/${location?.pathname?.split("/").reverse()[0]}`,
     `/profile/update-book/${location?.pathname?.split("/").reverse()[0]}`,
     `/book-details/${location?.pathname?.split("/").reverse()[0]}`,
-    `/inbox/chat/${location?.pathname?.split("/").reverse()[0]}`,
+    `/user/inbox/chat/${location?.pathname?.split("/").reverse()[0]}`,
   ];
   const isFooterBarShow = ignorePath.includes(location.pathname);
   console.log(location?.pathname?.split("/").reverse()[0]);

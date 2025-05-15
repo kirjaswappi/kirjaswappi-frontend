@@ -46,7 +46,7 @@ const Inbox = () => {
           <div
             key={conversation.id}
             className="flex items-center px-4 py-3 border-b border-[#F0F1F3] hover:bg-[#e5e9f2]"
-            onClick={() => navigate(`/inbox/chat/${conversation.id}`)}
+            onClick={() => navigate(`/user/inbox/chat/${conversation.id}`)}
           >
             <div className="h-11 w-11 rounded-full bg-[#D9D9D9] flex-shrink-0 flex items-center justify-center" />
             <div className="ml-3 flex-1 min-w-0">

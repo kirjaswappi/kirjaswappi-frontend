@@ -82,24 +82,11 @@ const routes = createBrowserRouter([
             path: "inbox",
             element: <Inbox />,
           },
+          {
+            path: "inbox/chat/:id",
+            element: <Inbox />,
+          },
         ],
-      },
-      // Inbox routes
-      {
-        path: "/inbox",
-        element: (
-          <PrivateRoute>
-            <Inbox />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "/inbox/chat/:id",
-        element: (
-          <PrivateRoute>
-            <InboxChat />
-          </PrivateRoute>
-        ),
       },
       {
         path: "/map",
