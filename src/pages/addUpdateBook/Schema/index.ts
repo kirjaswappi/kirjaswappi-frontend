@@ -14,7 +14,7 @@ const bookDetails = yup.object().shape({
 const imageSchema = yup
   .mixed<File | string>()
   .required("Image is required")
-  .test("fileType", "Only JPG or PNG files are allowed", (value) => {
+  .test("fileType", "Only JPG, JPEG or PNG file types are allowed", (value) => {
     if (typeof value === "string") return true;
     return value instanceof File && SUPPORTED_FORMATS.includes(value.type);
   })
