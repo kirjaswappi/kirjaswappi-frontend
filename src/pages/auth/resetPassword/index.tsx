@@ -56,14 +56,14 @@ export default function ResetPassword() {
   const [resetPassword, { isLoading }] = useResetPasswordMutation();
   // GET STATE FROM REDUX STORE
   const { step } = useAppSelector((state) => state.step);
-  const { otp } = useAppSelector((state) => state.auth);
+  const { otp, error } = useAppSelector((state) => state.auth);
   const {
     messageType,
     message: msg,
     isShow,
   } = useAppSelector((state) => state.notification);
   // LOCAL STATE FOR USER EMAIL AND RESET SUCCESS
-  const [userEmail, setUserEmail] = useState("");
+  // const [userEmail, setUserEmail] = useState("");
   const [resetSuccess, setResetSuccess] = useState(false);
 
   // INITIALIZE REACT HOOK FORM WITH VALIDATION
@@ -97,7 +97,6 @@ export default function ResetPassword() {
     setValue("otp", value);
     methods.formState.errors.otp && methods.clearErrors("otp");
   };
-
   // HANDLE FORM SUBMISSION
   const handleSubmit = async (data: IResetPasswordForm) => {
     // CLEAR PREVIOUS MESSAGES
@@ -106,7 +105,7 @@ export default function ResetPassword() {
     try {
       // STEP 0: SEND OTP TO EMAIL
       if (step === 0) {
-        setUserEmail(data.email);
+        // setUserEmail(data.email);
         const res = await sentOTP({ email: data.email });
         res.data
           ? showSuccess("OTP sent successfully!", handleNext)
@@ -119,18 +118,18 @@ export default function ResetPassword() {
             );
         // STEP 1: VERIFY OTP
       } else if (step === 1) {
-        const res = await verifyOTP({ email: userEmail, otp: data.otp });
+        const res = await verifyOTP({ email: data.email, otp: data.otp });
         res.error
           ? methods.setError("otp", {
               type: "manual",
-              message: "Incorrect OTP",
+              message: error || "",
             })
           : showSuccess("Email verified successfully!", handleNext);
         // STEP 2: RESET PASSWORD
       } else if (step === 2) {
         console.log("Submitting reset password with data:", data);
         const res = await resetPassword({
-          email: userEmail,
+          email: data.email,
           newPassword: data.password,
           confirmPassword: data.confirmPassword,
         });
