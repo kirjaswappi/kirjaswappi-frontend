@@ -61,15 +61,19 @@ const InboxChat = () => {
               }`}
             >
               <div
-                className={`max-w-[85%] px-4 py-2 ${
+                className={`max-w-[85%] pl-[20px] pr-4 py-2 ${
                   msg.senderId === "user"
-                    ? "bg-blue-500 text-white rounded-full"
-                    : "bg-white text-gray-800 rounded-full"
+                    ? "bg-blue-500 text-white rounded-xl"
+                    : "bg-white text-gray-800 rounded-xl"
                 }`}
               >
                 <p>{msg.text}</p>
               </div>
-              <span className="text-xs mt-1" style={{ color: "#818D90" }}>
+
+              <span
+                className="text-xs pr-4 pl-4 mt-1"
+                style={{ color: "#818D90" }}
+              >
                 {msg.timestamp}
               </span>
             </div>
@@ -78,25 +82,33 @@ const InboxChat = () => {
         </div>
       </div>
 
-      <div className="flex items-center z-40 px-2 py-1 bg-white  sticky bottom-0 rounded-full mx-2 mb-7 shadow-sm">
-        <div className="flex items-center justify-center h-9 w-9 bg-black rounded-full mr-2">
-          <img src={cameraIcon} alt="Camera" className="h-5 w-5 text-white" />
+      {/* Bottom Chat Input */}
+      <div className="sticky bottom-0 w-full px-4 py-3 z-40 lg:pr-5 lg:pl-5">
+        <div className="flex items-center gap-2 px-3 py-2 border border-[#E5E5E5] bg-[#FFFFFF] rounded-[29px] shadow-sm">
+          {/* Camera Icon */}
+          <button className="flex items-center justify-center min-w-[36px] min-h-[36px] bg-black rounded-full">
+            <img src={cameraIcon} alt="Camera" className="h-5 w-5" />
+          </button>
+
+          {/* Input */}
+          <input
+            type="text"
+            className="flex-1 outline-none bg-transparent text-base px-2"
+            placeholder="Type a message..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+            style={{ lineHeight: "24px" }}
+          />
+
+          {/* Send Button */}
+          <button
+            onClick={handleSendMessage}
+            className="flex items-center justify-center min-w-[36px] min-h-[36px] rounded-full"
+          >
+            <img src={sendIcon} alt="Send" className="h-5 w-5" />
+          </button>
         </div>
-        <input
-          type="text"
-          className="flex-1 outline-none bg-transparent px-2 text-base"
-          placeholder=""
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-          style={{ lineHeight: "24px" }}
-        />
-        <button
-          onClick={handleSendMessage}
-          className="ml-2 flex items-center justify-center h-9 w-9 rounded-full"
-        >
-          <img src={sendIcon} alt="Send" className="h-5 w-5 text-white" />
-        </button>
       </div>
     </div>
   );
