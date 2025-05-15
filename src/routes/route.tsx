@@ -14,8 +14,8 @@ import Authenticate from "./Authenticate";
 import PrivateRoute from "./PrivateRoute";
 import AddUpdateBook from "../pages/addUpdateBook";
 import Inbox from "../pages/user/inbox/Inbox";
-import InboxChat from "../pages/user/inbox/InboxWithUser";
 import { Navigate } from "react-router-dom";
+import InboxChat from "../pages/user/inboxChat";
 
 const routes = createBrowserRouter([
   {
@@ -84,7 +84,7 @@ const routes = createBrowserRouter([
           },
           {
             path: "inbox/chat/:id",
-            element: <Inbox />,
+            element: <InboxChat />,
           },
         ],
       },

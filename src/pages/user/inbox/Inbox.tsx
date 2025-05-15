@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import graySearchIcon from "../../../assets/GraysearchIcon.png";
 import conversationsData from "../../../data/conversations.json";
 import Image from "../../../components/shared/Image";
 import Input from "../../../components/shared/Input";
+import ChatUserCard from "./_components/ChatUserCard";
 const Inbox = () => {
-  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredConversations = searchQuery
@@ -43,31 +42,7 @@ const Inbox = () => {
 
       <div className="flex-1 overflow-y-auto">
         {filteredConversations.map((conversation) => (
-          <div
-            key={conversation.id}
-            className="flex items-center px-4 py-3 border-b border-[#F0F1F3] hover:bg-[#e5e9f2]"
-            onClick={() => navigate(`/user/inbox/chat/${conversation.id}`)}
-          >
-            <div className="h-11 w-11 rounded-full bg-[#D9D9D9] flex-shrink-0 flex items-center justify-center" />
-            <div className="ml-3 flex-1 min-w-0">
-              <div className="flex justify-between items-center">
-                <span className="font-semibold text-[15px] truncate">
-                  {conversation.name}
-                </span>
-                <span className="text-xs text-[#8B8B8B]">
-                  {conversation.time}
-                </span>
-              </div>
-              <p className="text-sm text-[#8B8B8B] truncate mt-0.5">
-                {conversation.lastMessage}
-              </p>
-            </div>
-            {conversation.unread > 0 && (
-              <div className="ml-2 bg-[#2563EB] text-white text-xs rounded-lg px-2 py-0.5 min-w-[22px] h-6 flex items-center justify-center">
-                {conversation.unread}
-              </div>
-            )}
-          </div>
+          <ChatUserCard key={conversation.id} {...conversation} />
         ))}
       </div>
     </div>
