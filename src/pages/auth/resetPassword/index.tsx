@@ -1,337 +1,244 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import leftArrowIcon from "../../../assets/leftArrow.png";
+import { useDispatch } from "react-redux";
+import { FormProvider, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { OTP_LENGTH } from "../../../utility/constant";
+import { ResetPasswordValidation } from "./Schema";
+import { ERROR, SUCCESS } from "../../../constant/MESSAGETYPE";
+import {
+  useLazySentOTPQuery,
+  useLazyVerifyOTPQuery,
+  useResetPasswordMutation,
+} from "../../../redux/feature/auth/authApi";
+import { setOtp } from "../../../redux/feature/auth/authSlice";
+import { setMessages } from "../../../redux/feature/notification/notificationSlice";
+import { setStep } from "../../../redux/feature/step/stepSlice";
+import { useAppSelector } from "../../../redux/hooks";
 import Button from "../../../components/shared/Button";
 import Image from "../../../components/shared/Image";
 import MessageToastify from "../../../components/shared/MessageToastify";
-import OTP from "../../../components/shared/OTP";
-import { ERROR, SUCCESS } from "../../../constant/MESSAGETYPE";
-import {
-    useLazySentOTPQuery,
-    useLazyVerifyOTPQuery,
-    useResetPasswordMutation,
-} from "../../../redux/feature/auth/authApi";
-import {
-    setAuthMessage,
-    setError,
-    setOtp
-} from "../../../redux/feature/auth/authSlice";
-import {
-    setMessages
-} from "../../../redux/feature/notification/notificationSlice";
-import { setStep } from "../../../redux/feature/step/stepSlice";
-import { useAppSelector } from "../../../redux/hooks";
 import GetOTPByEmail from "./_component/GetOTPByEmail";
-import NewPassword from "./_component/NewPassword";
+import ConfirmOTP from "./_component/ConfirmOTP";
+import { NewPassword } from "./_component/NewPassword";
+import leftArrowIcon from "../../../assets/leftArrow.png";
+import * as yup from "yup";
 
-interface INewPassForm {
-    email: string;
-    password: string;
-    confirmPassword: string;
+// INTERFACE FOR RESET PASSWORD FORM FIELDS
+interface IResetPasswordForm {
+  email: string;
+  otp: string;
+  password: string;
+  confirmPassword: string;
 }
 
+// FUNCTION TO GET ERROR MESSAGE FROM API RESPONSE
+const getErrorMessage = (error: any, email?: string) => {
+  const message =
+    error?.data?.error?.message ||
+    error?.data?.message ||
+    error?.data ||
+    error?.error ||
+    "An error occurred";
+  return message.includes("not exist")
+    ? `User ${email} does not exist.`
+    : message;
+};
+
+// MAIN COMPONENT FOR RESET PASSWORD PAGE
 export default function ResetPassword() {
-    const dispatch = useDispatch();
-    const [sentOTP] = useLazySentOTPQuery();
-    const [verifyOTP] = useLazyVerifyOTPQuery();
-    const [resetPassword] = useResetPasswordMutation();
-    const navigate = useNavigate();
+  // INITIALIZE DISPATCH AND NAVIGATE HOOKS
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  // INITIALIZE API HOOKS
+  const [sentOTP] = useLazySentOTPQuery();
+  const [verifyOTP] = useLazyVerifyOTPQuery();
+  const [resetPassword, { isLoading }] = useResetPasswordMutation();
+  // GET STATE FROM REDUX STORE
+  const { step } = useAppSelector((state) => state.step);
+  const { otp, error } = useAppSelector((state) => state.auth);
+  const {
+    messageType,
+    message: msg,
+    isShow,
+  } = useAppSelector((state) => state.notification);
+  // LOCAL STATE FOR USER EMAIL AND RESET SUCCESS
+  // const [userEmail, setUserEmail] = useState("");
+  const [resetSuccess, setResetSuccess] = useState(false);
 
-    const {
-        messageType,
-        message: msg,
-        isShow,
-    } = useAppSelector((state) => state.notification);
-    const { loading, error, message, otp } =
-        useAppSelector((state) => state.auth);
-    const { step } = useAppSelector((state) => state.step);
+  // INITIALIZE REACT HOOK FORM WITH VALIDATION
+  const methods = useForm<IResetPasswordForm>({
+    resolver: yupResolver(
+      ResetPasswordValidation[step] as yup.ObjectSchema<any>
+    ),
+    mode: "onTouched",
+    defaultValues: {
+      email: "",
+      otp: otp.join(""),
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
-    const [userPass, setUserPass] = useState<INewPassForm>({
-        email: "",
-        password: "",
-        confirmPassword: "",
-    });
-    const [errors, setErrors] = useState<{
-        [key: string]: string | null | undefined;
-    }>({});
+  const { trigger, setValue } = methods;
 
-    // Filtered Error
-    const fieldError = Object.keys(errors).map((key) => errors[key]);
-    const filteredError = fieldError.filter((msg) => msg);
+  // UPDATE OTP FIELD WHEN OTP STATE CHANGES
+  useEffect(() => setValue("otp", otp.join("")), [otp, setValue]);
 
-    // handle Change function to take sign-up information
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setUserPass({ ...userPass, [name]: value });
-        setErrors({ ...errors, [name]: "" });
-        // validateInput(e);
-        dispatch(setError(''))
-        dispatch(setMessages({ message: "", type: '', isShow: false }))
-    };
+  // HANDLE BACK BUTTON CLICK
+  const handleBack = () =>
+    step === 0 ? navigate(-1) : dispatch(setStep(step - 1));
+  // HANDLE NEXT STEP
+  const handleNext = async () =>
+    (await trigger()) && dispatch(setStep(step + 1));
+  // HANDLE OTP INPUT CHANGE
+  const handleOTPChange = (value: string) => {
+    dispatch(setOtp(value.split("")));
+    setValue("otp", value);
+    methods.formState.errors.otp && methods.clearErrors("otp");
+  };
+  // HANDLE FORM SUBMISSION
+  const handleSubmit = async (data: IResetPasswordForm) => {
+    // CLEAR PREVIOUS MESSAGES
+    dispatch(setMessages({ message: "", type: "", isShow: false }));
 
-    // Handle Input validation (onBlur)
-    const validateInput = (e: any) => {
-        const { name, value } = e.target;
-        setErrors((prev: any) => {
-            const stateObj = { ...prev, [name]: "" };
-            if (step === 0) {
-                if (name === "email") {
-                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (!value) {
-                        stateObj[name] = "Please enter email.";
-                    } else if (!emailRegex.test(value)) {
-                        stateObj[name] = "Please enter a valid email.";
-                    }
-                }
-            } else if (step === 2) {
-                if (name === "password") {
-                    if (!value) {
-                        stateObj[name] = "Please enter Password.";
-                    } else if (userPass.confirmPassword && value !== userPass.confirmPassword) {
-                        stateObj["confirmPassword"] = "Password and Confirm Password do not match.";
-                    } else {
-                        stateObj["confirmPassword"] = userPass.confirmPassword ? "" : errors.confirmPassword;
-                    }
-                } else if (name === "confirmPassword") {
-                    if (!value) {
-                        stateObj[name] = "Please enter Confirm Password.";
-                    } else if (userPass.password && value !== userPass.password) {
-                        stateObj[name] = "Password and Confirm Password do not match.";
-                    }
-                }
-            }
-            return stateObj;
-        });
-    };
-    const validateStep = () => {
-        let allValid = true;
-        Object.keys(userPass).forEach((key) => {
-            const typedKey = key as keyof INewPassForm;
-            const value = userPass[typedKey];
-
-            // Validate only the relevant fields for each step
-            if ((step === 0 && typedKey === "email") || (step === 2 && (typedKey === "password" || typedKey === "confirmPassword"))) {
-                const event = {
-                    target: {
-                        name: key,
-                        value,
-                    },
-                };
-                validateInput(event);
-                if (!value) allValid = false;
-            }
-        });
-        return allValid;
-    };
-
-    const handleSendOTP = async () => {
-        try {
-            const res = await sentOTP({ email: userPass.email });
-            if (res?.data) {
-
-                const timer = setTimeout(() => {
-                    dispatch(setMessages({ type: "", isShow: false, message: "" }));
-                    dispatch(setAuthMessage(''));
-                    dispatch(setStep(step + 1));
-                }, 2000);
-                return () => clearTimeout(timer);
-            }
-        } catch (error) {
-            console.error("Error sending OTP:", error);
-        }
-    };
-
-    const handleVerifyOTP = async () => {
-        if (userPass.email && otp.join('') && otp.join('').length >= 6) {
-            try {
-                const res = await verifyOTP({ email: userPass.email, otp: otp.join("") });
-                if (res?.data) {
-
-                    const timer = setTimeout(() => {
-                        dispatch(setMessages({ type: "", isShow: false, message: "" }));
-                        dispatch(setAuthMessage(''));
-                        dispatch(setStep(step + 1));
-                    }, 2000);
-                    return () => clearTimeout(timer);
-                }
-            } catch (error) {
-                console.error("Error verifying OTP:", error);
-            }
-        } else {
-            dispatch(setMessages({
+    try {
+      // STEP 0: SEND OTP TO EMAIL
+      if (step === 0) {
+        // setUserEmail(data.email);
+        const res = await sentOTP({ email: data.email });
+        res.data
+          ? showSuccess("OTP sent successfully!", handleNext)
+          : dispatch(
+              setMessages({
                 type: ERROR,
                 isShow: true,
-                message: "OTP is required! Insert your OTP code.",
-            }));
-        }
-    };
-
-    const handleResetPassword = async () => {
-        const resetObj = {
-            newPassword: userPass.password,
-            confirmPassword: userPass.confirmPassword,
-            email: userPass.email,
-        };
-        try {
-            const res = await resetPassword(resetObj);
-            if (res?.data) {
-
-                const timer = setTimeout(() => {
-                    dispatch(setMessages({ type: "", isShow: false, message: "" }));
-                    dispatch(setAuthMessage(''));
-                    navigate("/auth/login");
-                    dispatch(setStep(0));
-                    dispatch(setOtp(Array(6).fill("")));
-
-                }, 2000);
-                return () => clearTimeout(timer);
-            }
-        } catch (error) {
-            console.error("Error resetting password:", error);
-        }
-    };
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
-        if (!validateStep()) return;
-        if (step === 0) {
-            await handleSendOTP();
-        } else if (step === 1) {
-            await handleVerifyOTP();
-        } else if (step === 2) {
-            await handleResetPassword();
-        }
-    };
-
-
-    const renderStepContent = () => {
-        switch (step) {
-            case 0:
-                return (
-                    <GetOTPByEmail
-                        userInfo={userPass}
-                        error={errors.email}
-                        handleChange={handleChange}
-                        validateInput={validateInput}
-                    />
-                );
-            case 1:
-                return <OTP otpMessageShow={false} />;
-            case 2:
-                return (
-                    <NewPassword
-                        userPass={userPass}
-                        handleChange={handleChange}
-                        errors={errors}
-                        validateInput={validateInput}
-                    />
-                );
-            default:
-                return null;
-        }
-    };
-
-
-    const checkingFieldErrorOrApiError = () => {
-        if (message && message !== null) {
-            return {
-                msg: message,
-                type: SUCCESS,
-                isShow: true,
-            };
-        } if (error && error !== null || filteredError.length > 0 || msg !== '') {
-            return {
-                msg: error || filteredError[0] || msg,
-                type: ERROR,
-                isShow: true,
-            };
-        }
-        return {
-            isShow: false,
-            msg: "",
-            type: "",
-        };
-    };
-
-    useEffect(() => {
-        const { isShow, msg, type } = checkingFieldErrorOrApiError();
-        if (isShow && msg) {
-            dispatch(setMessages({ type, isShow, message: msg }));
+                message: getErrorMessage(res.error, data.email),
+              })
+            );
+        // STEP 1: VERIFY OTP
+      } else if (step === 1) {
+        const res = await verifyOTP({ email: data.email, otp: data.otp });
+        if (res.error) {
+          const errorMessage = getErrorMessage(res.error);
+          methods.setError("otp", {
+            type: "manual",
+            message: errorMessage,
+          });
+          methods.setFocus("otp");
         } else {
+          // Show success message and wait longer before advancing to next step
+          dispatch(setMessages({ type: SUCCESS, isShow: true, message: "Email verified successfully!" }));
+          setTimeout(() => {
+            // Clear the message before changing step
             dispatch(setMessages({ type: "", isShow: false, message: "" }));
+            dispatch(setStep(step + 1));
+          }, 1500);
         }
-    }, [filteredError, error, message, msg]);
+        // STEP 2: RESET PASSWORD
+      } else if (step === 2) {
+        console.log("Submitting reset password with data:", data);
+        const res = await resetPassword({
+          email: data.email,
+          newPassword: data.password,
+          confirmPassword: data.confirmPassword,
+        });
+        res.data
+          ? (setResetSuccess(true), showSuccess("Password reset successfully!"))
+          : dispatch(
+              setMessages({
+                type: ERROR,
+                isShow: true,
+                message: getErrorMessage(res.error),
+              })
+            );
+      }
+    } catch (error) {
+      dispatch(
+        setMessages({ type: ERROR, isShow: true, message: "An error occurred" })
+      );
+    }
+  };
 
-    // clean-up
-    useEffect(() => {
-        dispatch(setMessages({ type: '', isShow: false, message: '' }))
-        dispatch(setError(''))
-    }, [location.pathname, dispatch]);
+  // SHOW SUCCESS MESSAGE AND EXECUTE OPTIONAL CALLBACK
+  const showSuccess = (message: string, callback?: () => void) => {
+    dispatch(setMessages({ type: SUCCESS, isShow: true, message }));
+    setTimeout(() => {
+      dispatch(setMessages({ type: "", isShow: false, message: "" }));
+      callback?.();
+    }, 2000);
+  };
 
-    return (
-        <div>
-            <div className="container h-svh relative">
-                <div className="pt-4 pb-6 flex items-center gap-2">
-                    <div
-                        className="cursor-pointer w-5"
-                        onClick={() => {
-                            if (step === 0) {
-                                navigate("/auth/login")
-                            } else {
-                                dispatch(setStep(step - 1))
-                                dispatch(setError(''))
-                            }
-                        }}
+  // REDIRECT TO LOGIN PAGE AFTER SUCCESSFUL PASSWORD RESET
+  useEffect(() => {
+    resetSuccess &&
+      setTimeout(() => {
+        dispatch(setStep(0));
+        dispatch(setOtp(Array(OTP_LENGTH).fill("")));
+        navigate("/auth/login");
+      }, 1500);
+  }, [resetSuccess]);
 
-                    >
-                        <Image src={leftArrowIcon} alt="left" />
-                    </div>
-                    <h3 className="font-poppins text-base font-medium ">
-                        Forget Password
-                    </h3>
-                </div>
-                {
-                    <form
-                        onSubmit={(e) => handleSubmit(e)}
-                        className={`${step === 1
-                            ? "bg-white absolute bottom-0 left-0 w-full h-[80vh] rounded-t-3xl"
-                            : ""
-                            }`}
-                    >
-                        {step === 1 && (
-                            <div className="text-center py-6 border-b border-[#E6E6E6]">
-                                <h1>Confirm you Email</h1>
-                            </div>
-                        )}
-                        <div className={`${step === 1 && "px-6"}`}>
-                            {step === 1 && (
-                                <p className="text-sm font-light font-poppins text-center pt-8 pb-10">
-                                    Enter the code we’ve sent to your Email
-                                </p>
-                            )}
-                            {renderStepContent()}
+  // COMPONENTS FOR EACH STEP
+  const stepComponents = [
+    <GetOTPByEmail />,
+    <ConfirmOTP handleOTPChange={handleOTPChange} />,
+    <NewPassword />,
+  ];
 
-                            {isShow && (
-                                <div className="mb-2 mt-2">
-                                    <MessageToastify
-                                        isShow={isShow}
-                                        type={messageType}
-                                        value={msg}
-                                    />
-                                </div>
-                            )}
-                            <Button
-                                type="submit"
-                                className="w-full h-[48px] px-4 font-normal text-white bg-primary rounded-2xl text-sm mt-4"
-                            >
-                                {loading ? "Loading..." : "Continue"}
-                            </Button>
-                        </div>
-                    </form>
-                }
-            </div>
+  // RENDER RESET PASSWORD PAGE
+  return (
+    <div className="container h-svh relative">
+      {/* HEADER WITH BACK BUTTON AND TITLE */}
+      <div className="pt-4 pb-6 flex items-center gap-2">
+        <div className="cursor-pointer w-5" onClick={handleBack}>
+          <Image src={leftArrowIcon} alt="back" />
         </div>
-    );
+        <h3 className="font-poppins text-base font-medium">Forget Password</h3>
+      </div>
+
+      {/* FORM PROVIDER FOR REACT HOOK FORM */}
+      <FormProvider {...methods}>
+        <form
+          onSubmit={methods.handleSubmit(handleSubmit)}
+          className={
+            step === 1
+              ? "bg-white absolute bottom-0 left-0 w-full h-[80vh] rounded-t-3xl"
+              : ""
+          }
+        >
+          {/* STEP 1 HEADER */}
+          {step === 1 && (
+            <div className="text-center py-6 border-b border-[#E6E6E6]">
+              <h1>CONFIRM YOUR EMAIL</h1>
+            </div>
+          )}
+
+          <div className={step === 1 ? "px-6" : ""}>
+            {/* RENDER STEP COMPONENT */}
+            {stepComponents[step] || <div>INVALID STEP: {step}</div>}
+
+            {/* SHOW MESSAGE TOAST IF NEEDED - Only for non-OTP steps */}
+            {isShow && msg && step !== 1 && (
+              <div className="mb-2 mt-2 px-6">
+                <MessageToastify isShow={true} type={messageType} value={msg} />
+              </div>
+            )}
+
+            {/* SHOW SUBMIT BUTTON IF NOT ON OTP STEP */}
+            {step !== 1 && (
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full h-[48px] px-4 font-normal text-white bg-primary rounded-2xl text-sm mt-4"
+                style={{ fontFamily: "Poppins" }}
+              >
+                {isLoading ? "LOADING..." : step === 2 ? "Confirm" : "Continue"}
+              </Button>
+            )}
+          </div>
+        </form>
+      </FormProvider>
+    </div>
+  );
 }

@@ -1,32 +1,60 @@
-import PasswordInput from '../../../../components/shared/PasswordInput';
+import ControllerFieldPassword from "../../../../components/shared/ControllerFieldPassword";
+import { useFormContext, useWatch } from "react-hook-form";
+import { useEffect } from "react";
+import MessageToastify from "../../../../components/shared/MessageToastify";
+import { ERROR } from "../../../../constant/MESSAGETYPE";
 
-export default function NewPassword({ userPass, handleChange, errors, validateInput }:any) {
-    return (
-        <div>
-            <div>
-            <PasswordInput
-                id="password"
-                name="password"
-                value={userPass.password}
-                onChange={handleChange}
-                placeholder="Password"
-                error={errors.password}
-                className='rounded-t-lg'
-                onBlur={validateInput}
-            />
-            </div>
-            
-            <PasswordInput
-                id="confirmPassword"
-                name="confirmPassword"
-                value={userPass.confirmPassword}
-                onChange={handleChange}
-                placeholder="Confirm Password"
-                error={errors.confirmPassword}
-                className='rounded-b-lg'
-                onBlur={validateInput}
-                // className="border-none rounded-none mt-0 bg-white pl-6 shadow-none"
-            />
+export const NewPassword = () => {
+  const {
+    formState: { errors },
+    clearErrors,
+    control
+  } = useFormContext();
+
+  // Watch password and confirmPassword fields for live validation
+  const [password, confirmPassword] = useWatch({
+    control,
+    name: ["password", "confirmPassword"]
+  });
+
+  // Clear confirmPassword error if passwords match
+  useEffect(() => {
+    if (password && confirmPassword && password === confirmPassword) {
+      clearErrors("confirmPassword");
+    }
+  }, [password, confirmPassword, clearErrors]);
+
+  // Get the first error to display
+  const passwordError = errors.password?.message;
+  const confirmPasswordError = errors.confirmPassword?.message;
+  const firstFieldError = passwordError || confirmPasswordError;
+
+  return (
+    <>
+      <div className="mb-0">
+        <ControllerFieldPassword
+          name="password"
+          placeholder="Enter new password"
+          className="rounded-t-lg"
+        />
+      </div>
+      <div className="mb-4">
+        <ControllerFieldPassword
+          name="confirmPassword"
+          placeholder="Confirm new password"
+          className="rounded-b-lg border-t-0"
+        />
+      </div>
+
+      {firstFieldError && (
+        <div className="mb-2 mt-2">
+          <MessageToastify
+            isShow={true}
+            type={ERROR}
+            value={firstFieldError?.toString()}
+          />
         </div>
-    )
-}
+      )}
+    </>
+  );
+};
