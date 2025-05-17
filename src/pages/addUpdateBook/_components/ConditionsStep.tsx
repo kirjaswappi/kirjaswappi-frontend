@@ -6,7 +6,6 @@ import Image from "../../../components/shared/Image";
 import closeIcon from "../../../assets/close.svg";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { setOpen } from "../../../redux/feature/open/openSlice";
-import ImageFileInput from "./ImageControllerField";
 import plusIcon from "../../../assets/plus.png";
 import { useEffect } from "react";
 import { FaDeleteLeft } from "react-icons/fa6";
@@ -17,6 +16,7 @@ import {
   GIVEAWAY,
   OPENTOOFFERS,
 } from "../../../utility/ADDBOOKCONDITIONTYPE";
+import ImageFileInput from "./ImageControllerField";
 
 export default function ConditionsStep({ errors }: { errors: any }) {
   const dispatch = useAppDispatch();
