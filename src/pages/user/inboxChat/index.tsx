@@ -45,7 +45,7 @@ const InboxChat = () => {
           src={leftArrow}
           alt="Back"
           className="w-[13px] h-[19px] mr-2 cursor-pointer"
-          onClick={() => navigate("/inbox")}
+          onClick={() => navigate("/user/inbox")}
         />
         <h2 className="text-lg flex-1 text-center">{user.name}</h2>
         <img src={infoIcon} alt="Info" className="w-[19.5px] h-[19.5px]" />
