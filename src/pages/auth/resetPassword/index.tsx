@@ -71,7 +71,7 @@ export default function ResetPassword() {
     resolver: yupResolver(
       ResetPasswordValidation[step] as yup.ObjectSchema<any>
     ),
-    mode: "onSubmit",
+    mode: "onTouched",
     defaultValues: {
       email: "",
       otp: otp.join(""),
@@ -119,12 +119,22 @@ export default function ResetPassword() {
         // STEP 1: VERIFY OTP
       } else if (step === 1) {
         const res = await verifyOTP({ email: data.email, otp: data.otp });
-        res.error
-          ? methods.setError("otp", {
-              type: "manual",
-              message: error || "",
-            })
-          : showSuccess("Email verified successfully!", handleNext);
+        if (res.error) {
+          const errorMessage = getErrorMessage(res.error);
+          methods.setError("otp", {
+            type: "manual",
+            message: errorMessage,
+          });
+          methods.setFocus("otp");
+        } else {
+          // Show success message and wait longer before advancing to next step
+          dispatch(setMessages({ type: SUCCESS, isShow: true, message: "Email verified successfully!" }));
+          setTimeout(() => {
+            // Clear the message before changing step
+            dispatch(setMessages({ type: "", isShow: false, message: "" }));
+            dispatch(setStep(step + 1));
+          }, 1500);
+        }
         // STEP 2: RESET PASSWORD
       } else if (step === 2) {
         console.log("Submitting reset password with data:", data);
@@ -184,7 +194,7 @@ export default function ResetPassword() {
         <div className="cursor-pointer w-5" onClick={handleBack}>
           <Image src={leftArrowIcon} alt="back" />
         </div>
-        <h3 className="font-poppins text-base font-medium">FORGET PASSWORD</h3>
+        <h3 className="font-poppins text-base font-medium">Forget Password</h3>
       </div>
 
       {/* FORM PROVIDER FOR REACT HOOK FORM */}
@@ -208,8 +218,8 @@ export default function ResetPassword() {
             {/* RENDER STEP COMPONENT */}
             {stepComponents[step] || <div>INVALID STEP: {step}</div>}
 
-            {/* SHOW MESSAGE TOAST IF NEEDED */}
-            {isShow && msg && (
+            {/* SHOW MESSAGE TOAST IF NEEDED - Only for non-OTP steps */}
+            {isShow && msg && step !== 1 && (
               <div className="mb-2 mt-2 px-6">
                 <MessageToastify isShow={true} type={messageType} value={msg} />
               </div>
@@ -223,7 +233,7 @@ export default function ResetPassword() {
                 className="w-full h-[48px] px-4 font-normal text-white bg-primary rounded-2xl text-sm mt-4"
                 style={{ fontFamily: "Poppins" }}
               >
-                {isLoading ? "LOADING..." : step === 2 ? "CONFIRM" : "CONTINUE"}
+                {isLoading ? "LOADING..." : step === 2 ? "Confirm" : "Continue"}
               </Button>
             )}
           </div>

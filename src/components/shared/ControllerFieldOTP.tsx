@@ -42,15 +42,17 @@ const ControllerFieldOTP: React.FC<ControllerFieldOTPProps> = ({
               field.onBlur();
               if (onOTPChange) onOTPChange(value);
 
-              if (value.length === 6) {
+              if (value.length === numInputs) {
                 clearErrors(name); // Clear error when OTP is complete
               }
 
-              // Show error if OTP is cleared after being typed
-              if (isTouched && value.length === 0) {
+              // Only show error if user started typing and then cleared, but not on first interaction
+              if (isTouched && value.length > 0 && value.length < numInputs) {
+                // Don't set error while typing
+              } else if (isTouched && value.length === 0) {
                 setError(name, {
                   type: "manual",
-                  message: "OTP is required", // Error message when cleared
+                  message: "OTP is required",
                 });
               }
             }}

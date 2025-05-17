@@ -1,14 +1,33 @@
 import ControllerFieldPassword from "../../../../components/shared/ControllerFieldPassword";
-
+import { useFormContext, useWatch } from "react-hook-form";
+import { useEffect } from "react";
+import MessageToastify from "../../../../components/shared/MessageToastify";
+import { ERROR } from "../../../../constant/MESSAGETYPE";
 
 export const NewPassword = () => {
-  // const {
-  //   formState: { errors },
-  // } = useFormContext();
+  const {
+    formState: { errors },
+    clearErrors,
+    control
+  } = useFormContext();
 
-  // const passwordError = errors.password?.message;
-  // const confirmPasswordError = errors.confirmPassword?.message;
-  // const firstFieldError = passwordError || confirmPasswordError;
+  // Watch password and confirmPassword fields for live validation
+  const [password, confirmPassword] = useWatch({
+    control,
+    name: ["password", "confirmPassword"]
+  });
+
+  // Clear confirmPassword error if passwords match
+  useEffect(() => {
+    if (password && confirmPassword && password === confirmPassword) {
+      clearErrors("confirmPassword");
+    }
+  }, [password, confirmPassword, clearErrors]);
+
+  // Get the first error to display
+  const passwordError = errors.password?.message;
+  const confirmPasswordError = errors.confirmPassword?.message;
+  const firstFieldError = passwordError || confirmPasswordError;
 
   return (
     <>
@@ -27,13 +46,15 @@ export const NewPassword = () => {
         />
       </div>
 
-      {/* {firstFieldError && (
-        <MessageToastify
-          isShow={true}
-          type="ERROR"
-          value={firstFieldError?.toString()}
-        />
-      )} */}
+      {firstFieldError && (
+        <div className="mb-2 mt-2">
+          <MessageToastify
+            isShow={true}
+            type={ERROR}
+            value={firstFieldError?.toString()}
+          />
+        </div>
+      )}
     </>
   );
 };
