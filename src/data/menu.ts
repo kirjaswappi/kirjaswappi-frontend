@@ -25,7 +25,7 @@ export const menu = [
       icon: message,
     //   selected: category,
       value: "Message",
-      route: "/message",
+      route: "/user/inbox",
       isRoute: true,
     },
     {
