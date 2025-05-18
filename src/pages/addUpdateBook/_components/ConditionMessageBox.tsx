@@ -28,7 +28,7 @@ export default function ConditionMessageBox({
     },
     [SwapType.GIVEAWAY]: {
       image: Giveaway,
-      message: "You wish to give away this book.",
+      message: "Give away this book.",
     },
   };
 
