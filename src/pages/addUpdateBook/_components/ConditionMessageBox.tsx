@@ -20,7 +20,7 @@ export default function ConditionMessageBox({
     },
     [SwapType.BYBOOKS]: {
       image: book,
-      message: "You will to swap with specific book(s).",
+      message: "Swap with specific book(s).",
     },
     [SwapType.OPENTOOFFERS]: {
       image: Open,
