@@ -13,7 +13,6 @@ export default function BottomNav() {
     `/user/inbox/chat/${location?.pathname?.split('/').reverse()[0]}`,
   ];
   const isFooterBarShow = ignorePath.includes(location.pathname);
-  console.log(location?.pathname?.split('/').reverse()[0]);
   return (
     <div
       className={`${
