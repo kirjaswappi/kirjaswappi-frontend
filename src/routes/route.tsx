@@ -13,6 +13,9 @@ import UserProfile from "../pages/profile/components/UserProfile";
 import Authenticate from "./Authenticate";
 import PrivateRoute from "./PrivateRoute";
 import AddUpdateBook from "../pages/addUpdateBook";
+import Inbox from "../pages/user/inbox/Inbox";
+import { Navigate } from "react-router-dom";
+import { Index } from "../pages/user/inboxChat";
 
 const routes = createBrowserRouter([
   {
@@ -32,22 +35,19 @@ const routes = createBrowserRouter([
       },
       {
         path: "/book-details/:id",
-        element: (
-          <BookDetails />
-        ),
+        element: <BookDetails />,
       },
-      
+
       {
         path: "/profile",
         element: (
-
           <PrivateRoute>
             <Profile />
           </PrivateRoute>
         ),
         children: [
           {
-            loader: ()=> <p>Loading...</p>,
+            loader: () => <p>Loading...</p>,
             index: true,
             path: "user-profile",
             element: <UserProfile />,
@@ -71,15 +71,33 @@ const routes = createBrowserRouter([
         ],
       },
       {
-        path: "/map",
+        path: "user",
         element: (
-          <Profile />
+          <PrivateRoute>
+            <Profile />
+          </PrivateRoute>
         ),
+        children: [
+          {
+            path: "inbox",
+            element: <Inbox />,
+          },
+          {
+            path: "inbox/chat/:id",
+            element: <Index />,
+          },
+        ],
+      },
+      {
+        path: "/map",
+        element: <Profile />,
       },
       {
         path: "/message",
         element: (
-          <Profile />
+          <PrivateRoute>
+            <Navigate to="/inbox" replace />
+          </PrivateRoute>
         ),
       },
       {
@@ -87,7 +105,6 @@ const routes = createBrowserRouter([
         element: (
           <Authenticate>
             <Login />
-
           </Authenticate>
         ),
       },
@@ -123,7 +140,6 @@ const routes = createBrowserRouter([
 
       //   ],
       // },
-
     ],
   },
 
