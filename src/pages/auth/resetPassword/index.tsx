@@ -56,7 +56,7 @@ export default function ResetPassword() {
   const [resetPassword, { isLoading }] = useResetPasswordMutation();
   // GET STATE FROM REDUX STORE
   const { step } = useAppSelector((state) => state.step);
-  const { otp, error } = useAppSelector((state) => state.auth);
+  const { otp } = useAppSelector((state) => state.auth);
   const {
     messageType,
     message: msg,
