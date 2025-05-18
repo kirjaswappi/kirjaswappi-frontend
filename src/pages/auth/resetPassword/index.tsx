@@ -95,25 +95,49 @@ export default function ResetPassword() {
   };
   const validateStep = () => {
     let allValid = true;
+    const newErrors: { [key: string]: string | null | undefined } = { ...errors };
+
     Object.keys(userPass).forEach((key) => {
       const typedKey = key as keyof INewPassForm;
       const value = userPass[typedKey];
 
       // Validate only the relevant fields for each step
-      if (
-        (step === 0 && typedKey === 'email') ||
-        (step === 2 && (typedKey === 'password' || typedKey === 'confirmPassword'))
-      ) {
-        const event = {
-          target: {
-            name: key,
-            value,
-          },
-        };
-        validateInput(event);
-        if (!value) allValid = false;
+      if (step === 0 && typedKey === 'email') {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!value) {
+          newErrors[typedKey] = 'Please enter email.';
+          allValid = false;
+        } else if (!emailRegex.test(value)) {
+          newErrors[typedKey] = 'Please enter a valid email.';
+          allValid = false;
+        } else {
+          newErrors[typedKey] = '';
+        }
+      } else if (step === 2 && (typedKey === 'password' || typedKey === 'confirmPassword')) {
+        if (typedKey === 'password') {
+          if (!value) {
+            newErrors[typedKey] = 'Please enter Password.';
+            allValid = false;
+          } else if (userPass.confirmPassword && value !== userPass.confirmPassword) {
+            newErrors['confirmPassword'] = 'Password and Confirm Password do not match.';
+            allValid = false;
+          } else {
+            newErrors['confirmPassword'] = userPass.confirmPassword ? '' : errors.confirmPassword;
+          }
+        }
+        if (typedKey === 'confirmPassword') {
+          if (!value) {
+            newErrors[typedKey] = 'Please enter Confirm Password.';
+            allValid = false;
+          } else if (userPass.password && value !== userPass.password) {
+            newErrors[typedKey] = 'Password and Confirm Password do not match.';
+            allValid = false;
+          }
+        }
       }
     });
+
+    setErrors(newErrors);
     return allValid;
   };
 
@@ -201,7 +225,7 @@ export default function ResetPassword() {
         return (
           <GetOTPByEmail
             userInfo={userPass}
-            error={errors.email}
+            error={errors.email ?? undefined}
             handleChange={handleChange}
             validateInput={validateInput}
           />

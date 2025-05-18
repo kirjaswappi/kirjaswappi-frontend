@@ -3,10 +3,7 @@ import { api } from '../../api/apiSlice';
 
 export const bookApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    addBook: builder.mutation<
-      { success: boolean; message: string },
-      { title: string; author: string; genre: string }
-    >({
+    addBook: builder.mutation<{ success: boolean; message: string }, FormData>({
       query: (data) => {
         return {
           url: '/books',
@@ -16,9 +13,10 @@ export const bookApi = api.injectEndpoints({
       },
       invalidatesTags: ['AddBook'],
     }),
+
     updateBook: builder.mutation<
       { success: boolean; message: string },
-      { id: string; data: { title?: string; author?: string; genre?: string } }
+      { id: string; data: FormData }
     >({
       query: ({ data, id }) => {
         return {
@@ -29,6 +27,7 @@ export const bookApi = api.injectEndpoints({
       },
       invalidatesTags: ['UpdateBook'],
     }),
+
     getBookById: builder.query({
       query: ({ id }) => {
         return {
@@ -38,6 +37,7 @@ export const bookApi = api.injectEndpoints({
       },
       providesTags: ['AddBook', 'UpdateBook'],
     }),
+
     getSupportLanguage: builder.query({
       query: () => {
         return {
@@ -46,6 +46,7 @@ export const bookApi = api.injectEndpoints({
         };
       },
     }),
+
     getSupportCondition: builder.query({
       query: () => {
         return {
@@ -54,6 +55,7 @@ export const bookApi = api.injectEndpoints({
         };
       },
     }),
+
     getAllBooks: builder.query({
       query: (filter: IFilterData) => {
         const queryParameter: {
@@ -62,22 +64,18 @@ export const bookApi = api.injectEndpoints({
           languages?: string[];
           search?: string;
         } = {};
-        if (filter.search && filter.search.length > 0) {
-          queryParameter['search'] = filter.search;
-        }
-        if (filter.genre && filter.genre.length > 0) {
-          queryParameter['genres'] = filter.genre;
-        }
-        if (filter.condition && filter.condition.length > 0) {
-          queryParameter['conditions'] = filter.condition;
-        }
-        if (filter.language && filter.language.length > 0) {
-          queryParameter['languages'] = filter.language;
-        }
+
+        if ((filter.search ?? '').length > 0) queryParameter['search'] = filter.search;
+        if (filter.genre?.length > 0) queryParameter['genres'] = filter.genre;
+        if (filter.condition?.length > 0) queryParameter['conditions'] = filter.condition;
+        if (filter.language?.length > 0) queryParameter['languages'] = filter.language;
+
         const queryParams = new URLSearchParams(
           queryParameter as Record<string, string>,
         ).toString();
-        const url = `/books${queryParams && `?${queryParams}`}${!queryParams ? '?' : '&'}page=${filter.pageNumber}&size=6`;
+
+        const url = `/books${queryParams ? `?${queryParams}&` : '?'}page=${filter.pageNumber}&size=6`;
+
         return {
           url: url,
           method: 'GET',

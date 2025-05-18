@@ -40,7 +40,10 @@ export default function Header() {
     <header className={`${isHeaderShow ? 'pb-28' : 'pb-0'}`}>
       <FormProvider {...methods}>
         <SideLeftDrawer open={clicked}>
-          <form ref={reference} onSubmit={handleSubmit((data) => handleSubmitFn(data))}>
+          <form
+            ref={reference as React.RefObject<HTMLFormElement>}
+            onSubmit={handleSubmit((data) => handleSubmitFn(data))}
+          >
             <BookFilter />
           </form>
         </SideLeftDrawer>

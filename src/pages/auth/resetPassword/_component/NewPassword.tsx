@@ -21,18 +21,16 @@ export default function NewPassword({
 }: NewPasswordProps) {
   return (
     <div>
-      <div>
-        <PasswordInput
-          id="password"
-          name="password"
-          value={userPass.password}
-          onChange={handleChange}
-          placeholder="Password"
-          error={errors.password}
-          className="rounded-t-lg"
-          onBlur={validateInput}
-        />
-      </div>
+      <PasswordInput
+        id="password"
+        name="password"
+        value={userPass.password}
+        onChange={handleChange}
+        placeholder="Password"
+        error={errors.password}
+        className="rounded-t-lg"
+        onBlur={validateInput}
+      />
 
       <PasswordInput
         id="confirmPassword"

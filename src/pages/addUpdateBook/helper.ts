@@ -87,13 +87,8 @@ const appendBasicBookInformation = (formData: FormData, data: IAddUpdateBook) =>
 
 // BOOK SWAP CONDITION INFORMATION
 export const appendSwapConditionInformation = async (formData: FormData, data: IAddUpdateBook) => {
-  const swapCondition: {
-    swapType: SwapType;
-    giveAway: boolean;
-    openForOffers: boolean;
-    books?: { title: string; author: string; coverPhoto: string }[];
-    genres?: string;
-  } = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const swapCondition: Record<string, any> = {
     swapType: data.swapType,
     giveAway: false,
     openForOffers: false,

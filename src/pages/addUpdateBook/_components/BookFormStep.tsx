@@ -1,4 +1,4 @@
-import { TOptions, FormErrors } from '../types/interface';
+import { TOptions } from '../types/interface';
 import BookDetailsStep from './BookDetailsStep';
 import ConditionsStep from './ConditionsStep';
 import OtherDetailsStep from './OtherDetailsStep';
@@ -10,7 +10,8 @@ const BookFormStep = ({
   conditions,
 }: {
   activeStep: number;
-  errors: FormErrors;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  errors: any;
   languages: TOptions[] | undefined;
   conditions: TOptions[] | undefined;
 }) => {
@@ -25,4 +26,5 @@ const BookFormStep = ({
       return null;
   }
 };
+
 export default BookFormStep;

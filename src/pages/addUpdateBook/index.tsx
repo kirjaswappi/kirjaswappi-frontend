@@ -44,7 +44,8 @@ export default function AddUpdateBook() {
   const [updateBook] = useUpdateBookMutation();
 
   const methods = useForm({
-    resolver: yupResolver(validationSchemas[active] as yup.ObjectSchema<Record<string, unknown>>),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: yupResolver(validationSchemas[active] as yup.ObjectSchema<any>),
     mode: 'onChange',
     defaultValues: getDefaultValues(bookData),
   });

@@ -13,14 +13,8 @@ import { SwapType } from '../types/enum';
 import ConditionMessageBox from './ConditionMessageBox';
 import ImageFileInput from './ImageControllerField';
 
-interface FormErrors {
-  swappableGenres?: {
-    message: string;
-  };
-  [key: string]: undefined | { message: string };
-}
-
-export default function ConditionsStep({ errors }: { errors: FormErrors }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default function ConditionsStep({ errors }: { errors: any }) {
   const dispatch = useAppDispatch();
   const { open } = useAppSelector((state) => state.open);
   const { control, getValues, watch, setValue } = useFormContext();
