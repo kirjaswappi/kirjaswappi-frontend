@@ -9,13 +9,22 @@ permissions:
 jobs:
   build_test_comment:
     runs-on: ubuntu-latest
-    container: node:18
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+
+      - name: Configure GitHub Bot Identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Install Dependencies
         run: npm ci
@@ -24,43 +33,39 @@ jobs:
         run: npm run spotless
 
       - name: Install jq (for JSON processing)
-        run: apt-get update && apt-get install -y jq
+        run: sudo apt-get update && sudo apt-get install -y jq
 
       - name: Build Package
         run: npm run build
 
       - name: Run Tests and Generate Coverage Report
         run: |
-          # Run tests with coverage, don't fail pipeline if no tests are found
           npx vitest run --coverage --passWithNoTests || true
 
-          # Create a dummy coverage summary if not found
           if [ ! -f coverage/coverage-summary.json ]; then
             mkdir -p coverage
             echo '{ "coverage": 0.0, "branches": 0.0 }' > coverage/coverage-summary.json
           fi
 
-          # Ensure badges directory exists
           mkdir -p badges
-
-          # Extract percentages and write a simplified summary JSON
           TOTAL_LINES=$(jq -r '.total.lines.pct // 0.0' coverage/coverage-summary.json)
           TOTAL_BRANCHES=$(jq -r '.total.branches.pct // 0.0' coverage/coverage-summary.json)
+
           jq -n --arg coverage "$TOTAL_LINES" --arg branches "$TOTAL_BRANCHES" \
             '{ coverage: ($coverage | tonumber), branches: ($branches | tonumber) }' \
             > badges/coverage-summary.json
 
       - name: Install GitHub CLI
         run: |
-          apt-get update
-          apt-get install -y curl
+          sudo apt-get update
+          sudo apt-get install -y curl
           curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-          apt-get update
-          apt-get install -y gh
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          sudo apt-get update
+          sudo apt-get install -y gh
 
       - name: Mark Git directory as safe
-        run: git config --global --add safe.directory /__w/kirjaswappi-frontend/kirjaswappi-frontend
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
       - name: Comment on PR with Coverage
         if: ${{ github.event_name == 'pull_request' }}
@@ -70,11 +75,9 @@ jobs:
           RAW_COVERAGE=$(jq -r '.coverage' <<< "$REPORT")
           RAW_BRANCHES=$(jq -r '.branches' <<< "$REPORT")
 
-          # Round values
           COVERAGE=$(printf "%.0f" "$RAW_COVERAGE")
           BRANCHES=$(printf "%.0f" "$RAW_BRANCHES")
 
-          # Determine badge colors
           get_badge_color() {
             local percent=$1
             if (( percent >= 90 )); then echo "brightgreen"
