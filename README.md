@@ -31,6 +31,11 @@ my-react-app/
 └── ...
 ```
 
+To format the source code, you can run
+
+```console
+npm run spotless
+
 **Canary UI**: https://canary.kirjaswappi.fi
 
 **Backeknd API Url**: https://api.kirjaswappi.fi
