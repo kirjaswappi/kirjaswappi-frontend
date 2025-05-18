@@ -1,12 +1,12 @@
 import BookIcon from "../../../assets/bookIcon.svg";
 import BookIconBlue from "../../../assets/bookIconBlue.png";
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
+    Carousel,
+    CarouselContent,
+    CarouselItem,
 } from "../../../components/shared/Carousel";
 import Image from "../../../components/shared/Image";
-import { BookConditionEnum } from "../../addUpdateBook/types/enum";
+import { SwapType } from "../../addUpdateBook/types/enum";
 import { IExchange, ISwapCondition } from "../interface";
 
 export default function Exchanges({
@@ -20,34 +20,34 @@ export default function Exchanges({
     swapValues: ISwapCondition
   ): Array<IExchange> => {
     switch (swapValues.conditionType) {
-      case BookConditionEnum.BYBOOKS:
+      case SwapType.BYBOOKS:
         return swapValues.swappableBooks.map((swapBook) => ({
           type: swapValues.conditionType,
           title: swapBook.title,
           author: swapBook.author,
         }));
 
-      case BookConditionEnum.BYGENRES:
+      case SwapType.BYGENRES:
         return swapValues.swappableGenres.map((genre) => ({
           type: swapValues.conditionType,
           title: genre.name,
           author: "Any of this genre",
         }));
 
-      case BookConditionEnum.OPENTOOFFERS:
+      case SwapType.OPENTOOFFERS:
         return [
           {
             type: swapValues.conditionType,
-            title: BookConditionEnum.OPENTOOFFERS,
+            title: SwapType.OPENTOOFFERS,
             author: "Flexible exchange",
           },
         ];
 
-      case BookConditionEnum.GIVEAWAY:
+      case SwapType.GIVEAWAY:
         return [
           {
             type: swapValues.conditionType,
-            title: BookConditionEnum.GIVEAWAY,
+            title: SwapType.GIVEAWAY,
             author: "You will receive offers for giveaway",
           },
         ];
@@ -77,7 +77,7 @@ export default function Exchanges({
             >
               <div className="relative w-full overflow-hidden h-[110px] rounded-lg bg-[#DEE7F5] flex items-center gap-3 px-[18px]">
                 <Image
-                  src={item.type === BookConditionEnum.BYBOOKS ? BookIconBlue : BookIcon}
+                  src={item.type === SwapType.BYBOOKS ? BookIconBlue : BookIcon}
                   className="w-5"
                 />
                 <div className="w-[120px] text-left">
@@ -85,7 +85,7 @@ export default function Exchanges({
                     {item?.title}
                   </h3>
                   <p className="text-xs font-poppins font-light mt-1 text-smokyBlack">
-                    {item?.type === BookConditionEnum.BYBOOKS && "by"} {item?.author}
+                    {item?.type === SwapType.BYBOOKS && "by"} {item?.author}
                   </p>
                 </div>
               </div>

@@ -4,7 +4,7 @@ import Open from "../../../assets/3d-condition-icon-Open-to-Offer.png";
 import book from "../../../assets/3d-condition-icon-by-book.png";
 import Image from "../../../components/shared/Image";
 
-import { BookConditionEnum } from "../types/enum";
+import { SwapType } from "../types/enum";
 
 export default function ConditionMessageBox({
   conditionType,
@@ -14,19 +14,19 @@ export default function ConditionMessageBox({
   if (!conditionType) return null;
 
   const conditionList: Record<string, { image: string; message: string }> = {
-    [BookConditionEnum.BYGENRES]: {
+    [SwapType.BYGENRES]: {
       image: byGenres,
       message: "Click ‘Add’ to add your preferable genre",
     },
-    [BookConditionEnum.BYBOOKS]: {
+    [SwapType.BYBOOKS]: {
       image: book,
       message: "You will receive offers for specific books.",
     },
-    [BookConditionEnum.OPENTOOFFERS]: {
+    [SwapType.OPENTOOFFERS]: {
       image: Open,
       message: "You will receive offers of all sorts of books",
     },
-    [BookConditionEnum.GIVEAWAY]: {
+    [SwapType.GIVEAWAY]: {
       image: Giveaway,
       message: "You will receive offers for giveaway",
     },

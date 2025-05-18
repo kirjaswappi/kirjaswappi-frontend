@@ -9,7 +9,7 @@ import Image from "../../../components/shared/Image";
 import InputLabel from "../../../components/shared/InputLabel";
 import { setOpen } from "../../../redux/feature/open/openSlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { BookConditionEnum } from "../types/enum";
+import { SwapType } from "../types/enum";
 import ConditionMessageBox from "./ConditionMessageBox";
 import ImageFileInput from "./ImageControllerField";
 
@@ -52,8 +52,8 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                   <label className="flex items-center gap-2 w-full cursor-pointer">
                     <input
                       type="radio"
-                      value={BookConditionEnum.OPENTOOFFERS}
-                      checked={field.value === BookConditionEnum.OPENTOOFFERS}
+                      value={SwapType.OPENTOOFFERS}
+                      checked={field.value === SwapType.OPENTOOFFERS}
                       onChange={field.onChange}
                       className="w-4 h-4"
                     />
@@ -64,8 +64,8 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                   <label className="flex items-center gap-2 w-full cursor-pointer">
                     <input
                       type="radio"
-                      value={BookConditionEnum.BYBOOKS}
-                      checked={field.value === BookConditionEnum.BYBOOKS}
+                      value={SwapType.BYBOOKS}
+                      checked={field.value === SwapType.BYBOOKS}
                       onChange={field.onChange}
                       className="w-4 h-4"
                     />
@@ -76,8 +76,8 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                   <label className="flex items-center gap-2 w-full cursor-pointer">
                     <input
                       type="radio"
-                      value={BookConditionEnum.BYGENRES}
-                      checked={field.value === BookConditionEnum.BYGENRES}
+                      value={SwapType.BYGENRES}
+                      checked={field.value === SwapType.BYGENRES}
                       onChange={field.onChange}
                       className="w-4 h-4"
                     />
@@ -88,8 +88,8 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                   <label className="flex items-center gap-2 w-full cursor-pointer">
                     <input
                       type="radio"
-                      value={BookConditionEnum.GIVEAWAY}
-                      checked={field.value === BookConditionEnum.GIVEAWAY}
+                      value={SwapType.GIVEAWAY}
+                      checked={field.value === SwapType.GIVEAWAY}
                       onChange={field.onChange}
                       className="w-4 h-4"
                     />
@@ -102,7 +102,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
         />
       </div>
       <span className="w-full h-[1px] bg-platinumDark block my-4"></span>
-      {conditionType === BookConditionEnum.BYBOOKS && (
+      {conditionType === SwapType.BYBOOKS && (
         <div>
           {fields.map((book, index) => (
             <div key={book.id}>
@@ -155,7 +155,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
           </div>
         </div>
       )}
-      {conditionType === BookConditionEnum.BYGENRES && (
+      {conditionType === SwapType.BYGENRES && (
         <div>
           <div className="flex items-center justify-between py-4">
             <InputLabel label="Genre" required />
@@ -194,10 +194,10 @@ export default function ConditionsStep({ errors }: { errors: any }) {
           )}
         </div>
       )}
-      {conditionType === BookConditionEnum.OPENTOOFFERS && (
+      {conditionType === SwapType.OPENTOOFFERS && (
         <ConditionMessageBox conditionType={conditionType} />
       )}
-      {conditionType === BookConditionEnum.GIVEAWAY && (
+      {conditionType === SwapType.GIVEAWAY && (
         <ConditionMessageBox conditionType={conditionType} />
       )}
     </div>

@@ -16,7 +16,7 @@ export interface IBook {
 export interface IAddUpdateBookData {
   books: IBook[];
   favGenres: string[];
-  conditionType: BookConditionEnum;
+  conditionType: SwapType;
   language: string;
   title: string;
   genres: string[];
@@ -39,7 +39,7 @@ interface IGenre {
 }
 
 interface ISwapCondition {
-  conditionType: BookConditionEnum;
+  conditionType: SwapType;
   giveAway: boolean;
   openForOffers: boolean;
   swappableBooks?: Book[];
@@ -73,7 +73,7 @@ export interface IAddUpdateBook {
     byBookCover: File | string | null;
   }[];
   favGenres: string[];
-  conditionType: BookConditionEnum;
+  conditionType: SwapType;
   language: string;
   title: string;
   genres: string[];
