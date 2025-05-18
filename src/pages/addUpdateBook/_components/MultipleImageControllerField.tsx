@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Controller, FieldError, useFormContext, ControllerRenderProps } from 'react-hook-form';
+import { Controller, FieldError, useFormContext } from 'react-hook-form';
 import closeIcon from '../../../assets/close.png';
 import Image from '../../../components/shared/Image';
 import { SUPPORTED_FORMATS } from '../../../utility/constant';
 interface IImageFileInputProps {
   name: string;
-  errors: Record<string, FieldError | Record<number, FieldError>>;
+  errors: Record<string, FieldError>;
 }
 const MultipleImageFileInput = ({ name, errors }: IImageFileInputProps) => {
   const { control, getValues, setValue, trigger } = useFormContext();
@@ -23,7 +23,7 @@ const MultipleImageFileInput = ({ name, errors }: IImageFileInputProps) => {
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    field: ControllerRenderProps<{ [key: string]: (File | string)[] }, string>,
+    field: { value: File[]; onChange: (files: File[]) => void },
   ) => {
     const files = Array.from(e.target.files || []);
     const validImages = files.filter((file) => SUPPORTED_FORMATS.includes(file.type));
@@ -38,19 +38,19 @@ const MultipleImageFileInput = ({ name, errors }: IImageFileInputProps) => {
 
   const handleDelete = async (
     index: number,
-    field: ControllerRenderProps<{ [key: string]: (File | string)[] }, string>,
+    field: { value: File[]; onChange: (files: File[]) => void },
   ) => {
     const updatedPreviews = previews.filter((_, i) => i !== index);
-    const updatedFiles = (field.value || []).filter((_: File | string, i: number) => i !== index);
+    const updatedFiles = (field.value || []).filter((_: File, i: number) => i !== index);
     setPreviews(updatedPreviews);
     setValue(name, updatedFiles, { shouldValidate: true });
     await trigger(name);
   };
 
-  const findErrorPosition = (errorsObject: Record<number, FieldError> | undefined): number[] => {
+  const findErrorPosition = (errorsObject: Record<string, FieldError | undefined>): number[] => {
     if (!errorsObject || typeof errorsObject !== 'object') return [];
     return Object.keys(errorsObject)
-      .map((key: string) => (errorsObject[parseInt(key, 10)]?.message ? parseInt(key, 10) : null))
+      .map((key) => (errorsObject[key]?.message ? parseInt(key, 10) : null))
       .filter((index): index is number => index !== null);
   };
 
@@ -63,19 +63,22 @@ const MultipleImageFileInput = ({ name, errors }: IImageFileInputProps) => {
   };
 
   const parseFieldErrors = (
-    fieldError: FieldError | Record<number, FieldError> | undefined,
+    fieldError: Record<string, FieldError> | FieldError | undefined,
   ): { messages: string[]; indexes: number[] } => {
     if (!fieldError) return { messages: [], indexes: [] };
 
     if (typeof fieldError === 'object' && !('message' in fieldError)) {
       return {
         messages: getAllErrorMessages(fieldError),
-        indexes: findErrorPosition(fieldError),
+        indexes:
+          typeof fieldError === 'object' && !('message' in fieldError)
+            ? findErrorPosition(fieldError as Record<string, FieldError>)
+            : [],
       };
     }
 
     return {
-      messages: fieldError?.message ? [fieldError.message] : [],
+      messages: typeof fieldError?.message === 'string' ? [fieldError.message] : [],
       indexes: [],
     };
   };
@@ -118,14 +121,17 @@ const MultipleImageFileInput = ({ name, errors }: IImageFileInputProps) => {
                         errorIndex.includes(index) ? 'border-2 border-rose-600' : 'border-[#B2B2B2]'
                       } rounded-lg relative group`}
                     >
-                      <button
+                      <div
+                        role="button"
+                        tabIndex={0}
                         onClick={() => handleDelete(index, field)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleDelete(index, field)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') handleDelete(index, field);
+                        }}
                         className="absolute w-5 h-5 flex items-center justify-center bg-smokyBlack text-white rounded-full -right-2 -top-2 cursor-pointer z-10"
-                        aria-label="Remove image"
                       >
                         <Image src={closeIcon} alt="Remove" className="w-[7px] h-[7px]" />
-                      </button>
+                      </div>
                       <img
                         src={src}
                         alt={`Preview ${index}`}

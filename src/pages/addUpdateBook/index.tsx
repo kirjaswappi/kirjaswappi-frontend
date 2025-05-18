@@ -44,7 +44,7 @@ export default function AddUpdateBook() {
   const [updateBook] = useUpdateBookMutation();
 
   const methods = useForm({
-    resolver: yupResolver(validationSchemas[active] as yup.ObjectSchema<IAddUpdateBookData>),
+    resolver: yupResolver(validationSchemas[active] as yup.ObjectSchema<Record<string, unknown>>),
     mode: 'onChange',
     defaultValues: getDefaultValues(bookData),
   });

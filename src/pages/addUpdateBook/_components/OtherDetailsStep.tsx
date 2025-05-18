@@ -6,16 +6,9 @@ import closeIcon from '../../../assets/close.svg';
 import { useFormContext } from 'react-hook-form';
 import InputLabel from '../../../components/shared/InputLabel';
 import MultipleImageFileInput from './MultipleImageControllerField';
-interface FormErrors {
-  genres?: {
-    message: string;
-  };
-  coverPhotos?: {
-    message: string;
-  };
-}
+import { FieldErrors } from 'react-hook-form';
 
-export default function OtherDetailsStep({ errors }: { errors: FormErrors }) {
+export default function OtherDetailsStep({ errors }: { errors: FieldErrors }) {
   const { open } = useAppSelector((state) => state.open);
   const dispatch = useAppDispatch();
   const { getValues, setValue } = useFormContext();

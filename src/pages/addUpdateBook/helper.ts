@@ -86,16 +86,14 @@ const appendBasicBookInformation = (formData: FormData, data: IAddUpdateBook) =>
 };
 
 // BOOK SWAP CONDITION INFORMATION
-interface SwapConditionType {
-  swapType: SwapType;
-  giveAway: boolean;
-  openForOffers: boolean;
-  books?: Array<{ title: string; author: string; coverPhoto: string }>;
-  genres?: string;
-}
-
 export const appendSwapConditionInformation = async (formData: FormData, data: IAddUpdateBook) => {
-  const swapCondition: SwapConditionType = {
+  const swapCondition: {
+    swapType: SwapType;
+    giveAway: boolean;
+    openForOffers: boolean;
+    books?: { title: string; author: string; coverPhoto: string }[];
+    genres?: string;
+  } = {
     swapType: data.swapType,
     giveAway: false,
     openForOffers: false,

@@ -12,19 +12,19 @@ export default function ConditionMessageBox({ swapType }: { swapType: string }) 
   const swapConditionList: Record<string, { image: string; message: string }> = {
     [SwapType.BYGENRES]: {
       image: byGenres,
-      message: 'Click ‘Add’ to add your preferable genre to swap with.',
+      message: 'Add your preferred genre to swap with.',
     },
     [SwapType.BYBOOKS]: {
       image: book,
-      message: 'You will to swap with specific book(s).',
+      message: 'Swap with specific book(s).',
     },
     [SwapType.OPENTOOFFERS]: {
       image: Open,
-      message: 'You will receive swap offers of all sorts.',
+      message: 'Receive swap offers of all sorts.',
     },
     [SwapType.GIVEAWAY]: {
       image: Giveaway,
-      message: 'You wish to give away this book.',
+      message: 'Give away this book.',
     },
   };
 
