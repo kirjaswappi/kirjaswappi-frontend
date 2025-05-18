@@ -7,40 +7,38 @@ import Image from "../../../components/shared/Image";
 import { SwapType } from "../types/enum";
 
 export default function ConditionMessageBox({
-  conditionType,
+  swapType,
 }: {
-  conditionType: string;
+  swapType: string;
 }) {
-  if (!conditionType) return null;
+  if (!swapType) return null;
 
-  const conditionList: Record<string, { image: string; message: string }> = {
+  const swapConditionList: Record<string, { image: string; message: string }> = {
     [SwapType.BYGENRES]: {
       image: byGenres,
-      message: "Click ‘Add’ to add your preferable genre",
+      message: "Click ‘Add’ to add your preferable genre to swap with.",
     },
     [SwapType.BYBOOKS]: {
       image: book,
-      message: "You will receive offers for specific books.",
+      message: "You will to swap with specific book(s).",
     },
     [SwapType.OPENTOOFFERS]: {
       image: Open,
-      message: "You will receive offers of all sorts of books",
+      message: "You will receive swap offers of all sorts.",
     },
     [SwapType.GIVEAWAY]: {
       image: Giveaway,
-      message: "You will receive offers for giveaway",
+      message: "You wish to give away this book.",
     },
   };
 
-
-  const condition = conditionList[conditionType];
-
+  const swapCondition = swapConditionList[swapType];
 
   return (
     <div className="border border-yellow bg-yellow-light flex flex-col items-center justify-center p-5 gap-2 rounded-lg ">
-      <Image src={condition.image} alt={conditionType} className="h-[64px]" />
+      <Image src={swapCondition.image} alt={swapType} className="h-[64px]" />
       <p className="text-smokyBlack font-poppins text-sm font-normal text-center">
-        {condition.message}
+        {swapCondition.message}
       </p>
     </div>
   );

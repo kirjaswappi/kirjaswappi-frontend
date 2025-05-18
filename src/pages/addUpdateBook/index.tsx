@@ -41,6 +41,7 @@ export default function AddUpdateBook() {
     { id: id },
     { skip: !id }
   );
+  
   // ADD BOOK & UPDATE BOOK MUTATION
   const [addBook, { isLoading }] = useAddBookMutation();
   const [updateBook] = useUpdateBookMutation();
@@ -50,6 +51,7 @@ export default function AddUpdateBook() {
     mode: "onChange",
     defaultValues: getDefaultValues(bookData),
   });
+
   const {
     handleSubmit,
     trigger,
@@ -64,6 +66,7 @@ export default function AddUpdateBook() {
     () => options(languageDataOptions),
     [languageDataOptions]
   );
+
   const conditions = useMemo(
     () => options(conditionDataOptions),
     [conditionDataOptions]
@@ -86,7 +89,7 @@ export default function AddUpdateBook() {
       isActive: false,
     },
     {
-      label: "Ex. Conditions",
+      label: "Swap Condition",
       isCompleted: false,
       isActive: false,
     },
@@ -108,6 +111,7 @@ export default function AddUpdateBook() {
       setActive((prev) => prev + 1);
     }
   };
+
   const handlePrev = async () => {
     setSteps((prevStep) =>
       prevStep.map((step, index) => {
@@ -121,6 +125,7 @@ export default function AddUpdateBook() {
     if (active === 0) return;
     setActive((prev) => prev - 1);
   };
+  
   const handleAddUpdateBookFn = async <T extends IAddUpdateBookData>(
     data: T
   ) => {
@@ -140,6 +145,7 @@ export default function AddUpdateBook() {
       console.error("Submission failed:", error);
     }
   };
+  
   const loading = () => {
     if (languageLoading) return true;
     if (conditionLoading) return true;
@@ -148,6 +154,7 @@ export default function AddUpdateBook() {
   };
 
   if (loading()) return <Loader />;
+
   return (
     <div className="min-h-screen">
       <BookAddUpdateHeader
@@ -160,11 +167,11 @@ export default function AddUpdateBook() {
         </div>
         <FormProvider {...methods}>
           <AddGenre
-            genresValue={active === 1 ? watch("favGenres") : watch("genres")}
-            setEditValuesChanged={() => console.log("favGenres updated")}
+            genresValue={active === 1 ? watch("genres") : watch("swappableGenres")}
+            setEditValuesChanged={() => console.log("Genres updated")}
             setValue={setValue}
             trigger={trigger}
-            addGenreName={active === 1 ? "favGenres" : "genres"}
+            addGenreName={active === 1 ? "genres" : "swappableGenres"}
           />
           <form onSubmit={handleSubmit((data) => handleAddUpdateBookFn(data))}>
             <BookFormStep
@@ -199,7 +206,7 @@ export default function AddUpdateBook() {
                   className="bg-primary text-white w-full py-4 rounded-lg"
                 >
                   {" "}
-                  {isLoading ? "Loading..." : "Confirm"}
+                  {isLoading ? "Loading..." : "Save"}
                 </Button>
               )}
             </div>

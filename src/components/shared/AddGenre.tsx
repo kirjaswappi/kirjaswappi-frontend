@@ -13,7 +13,7 @@ export default function AddGenre({
     genresValue,
     setValue,
     trigger,
-    addGenreName = "favGenres"
+    addGenreName = "genres"
 }: {
     setEditValuesChanged: React.Dispatch<SetStateAction<boolean>>;
     genresValue: string[];

@@ -17,34 +17,34 @@ export default function ConditionsStep({ errors }: { errors: any }) {
   const dispatch = useAppDispatch();
   const { open } = useAppSelector((state) => state.open);
   const { control, getValues, watch, setValue } = useFormContext();
-  const conditionType = watch("conditionType");
-  const genres = getValues("genres");
-  const { fields, append, remove } = useFieldArray({ control, name: "books" });
+  const swapType = watch("swapType");
+  const swappableGenres = getValues("swappableGenres");
+  const { fields, append, remove } = useFieldArray({ control, name: "swappableBooks" });
 
   useEffect(() => {
     if (fields.length === 0) {
-      append({ bookTitle: "", authorName: "", byBookCover: null });
+      append({ title: "", author: "", coverPhoto: null });
     }
   }, [fields, append]);
 
   const handleRemoveGenre = (genreValue: string) => {
     if (!genreValue) return;
     setValue(
-      "genres",
-      genres?.filter((favGen: string) => favGen !== genreValue)
+      "swappableGenres",
+      swappableGenres?.filter((swappableGenre: string) => swappableGenre !== genreValue)
     );
   };
 
   return (
     <div>
       <div className="pt-4">
-        <InputLabel label="Condition Type" required />
+        <InputLabel label="Swap Type" required />
       </div>
       <div className="flex flex-col gap-2">
         <Controller
-          name="conditionType"
+          name="swapType"
           control={control}
-          defaultValue={conditionType}
+          defaultValue={swapType}
           render={({ field }) => {
             return (
               <div className="flex flex-col gap-4 mt-2">
@@ -57,7 +57,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                       onChange={field.onChange}
                       className="w-4 h-4"
                     />
-                    Open to Offer
+                    Open To Offers
                   </label>
                 </div>
                 <div className="px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg ">
@@ -69,7 +69,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                       onChange={field.onChange}
                       className="w-4 h-4"
                     />
-                    By Book
+                    By Books
                   </label>
                 </div>
                 <div className="px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg">
@@ -81,7 +81,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                       onChange={field.onChange}
                       className="w-4 h-4"
                     />
-                    By Genre
+                    By Genres
                   </label>
                 </div>
                 <div className="px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg">
@@ -93,7 +93,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                       onChange={field.onChange}
                       className="w-4 h-4"
                     />
-                    Giveaway
+                    Give Away
                   </label>
                 </div>
               </div>
@@ -102,29 +102,30 @@ export default function ConditionsStep({ errors }: { errors: any }) {
         />
       </div>
       <span className="w-full h-[1px] bg-platinumDark block my-4"></span>
-      {conditionType === SwapType.BYBOOKS && (
+      {swapType === SwapType.BYBOOKS && (
         <div>
-          {fields.map((book, index) => (
-            <div key={book.id}>
+          {fields.map((swappableBook, index) => (
+            console.log(swappableBook, index),
+            <div key={swappableBook.id}>
               <div className="pt-4">
                 <div className="flex items-center justify-between">
-                  <InputLabel label="Book Cover" required />
+                  <InputLabel label="Cover Photo" required />
                   {index > 0 && (
                     <Button
                       type="button"
                       onClick={() => remove(index)}
-                      className="text-red-500 bg-rose-100 w-7 h-7 flex items-center justify-center rounded-sm"
+                      className="text-red-500 w-7 h-7 flex items-center justify-center rounded-sm"
                     >
                       <FaDeleteLeft />
                     </Button>
                   )}
                 </div>
-                <ImageFileInput name={`books.${index}.byBookCover`} />
+                <ImageFileInput name={`swappableBooks.${index}.coverPhoto`} />
               </div>
               <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
                 <InputLabel label="Book Title" required />
                 <ControlledInputField
-                  name={`books.${index}.bookTitle`}
+                  name={`swappableBooks.${index}.title`}
                   placeholder="Enter book title"
                   className="rounded-md"
                   showErrorMessage
@@ -133,7 +134,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
               <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
                 <InputLabel label="Author Name" required />
                 <ControlledInputField
-                  name={`books.${index}.authorName`}
+                  name={`swappableBooks.${index}.author`}
                   placeholder="Enter author name"
                   className="rounded-md"
                   showErrorMessage
@@ -145,7 +146,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
             <Button
               type="button"
               onClick={() =>
-                append({ bookTitle: "", authorName: "", byBookCover: null })
+                append({ title: "", author: "", coverPhoto: null })
               }
               className="flex items-center justify-center gap-1 w-full border border-dashed border-grayDark py-3 text-sm font-poppins text-grayDark rounded-md"
             >
@@ -155,10 +156,10 @@ export default function ConditionsStep({ errors }: { errors: any }) {
           </div>
         </div>
       )}
-      {conditionType === SwapType.BYGENRES && (
+      {swapType === SwapType.BYGENRES && (
         <div>
           <div className="flex items-center justify-between py-4">
-            <InputLabel label="Genre" required />
+            <InputLabel label="Genre To Swap With" required />
             <Button
               type="button"
               onClick={() => dispatch(setOpen(!open))}
@@ -167,17 +168,17 @@ export default function ConditionsStep({ errors }: { errors: any }) {
               Add
             </Button>
           </div>
-          {genres && genres.length > 0 ? (
+          {swappableGenres && swappableGenres.length > 0 ? (
             <div className="flex flex-col gap-2 pb-4">
-              {genres.map((favItem: string, index: number) => (
+              {swappableGenres.map((item: string, index: number) => (
                 <div
                   key={index}
                   className="flex items-center justify-between px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg"
                 >
-                  <h3 className="font-poppins text-sm font-light">{favItem}</h3>
+                  <h3 className="font-poppins text-sm font-light">{item}</h3>
                   <Button
                     type="button"
-                    onClick={() => handleRemoveGenre(favItem)}
+                    onClick={() => handleRemoveGenre(item)}
                   >
                     <Image src={closeIcon} alt="close" className="h-2" />
                   </Button>
@@ -185,20 +186,20 @@ export default function ConditionsStep({ errors }: { errors: any }) {
               ))}
             </div>
           ) : (
-            <ConditionMessageBox conditionType={conditionType} />
+            <ConditionMessageBox swapType={swapType} />
           )}
-          {errors && errors["genres"] && (
+          {errors && errors["swappableGenres"] && (
             <div className="text-rose-500 text-xs mt-1 pl-2">
-              {errors["genres"]?.message}
+              {errors["swappableGenres"]?.message}
             </div>
           )}
         </div>
       )}
-      {conditionType === SwapType.OPENTOOFFERS && (
-        <ConditionMessageBox conditionType={conditionType} />
+      {swapType === SwapType.OPENTOOFFERS && (
+        <ConditionMessageBox swapType={swapType} />
       )}
-      {conditionType === SwapType.GIVEAWAY && (
-        <ConditionMessageBox conditionType={conditionType} />
+      {swapType === SwapType.GIVEAWAY && (
+        <ConditionMessageBox swapType={swapType} />
       )}
     </div>
   );

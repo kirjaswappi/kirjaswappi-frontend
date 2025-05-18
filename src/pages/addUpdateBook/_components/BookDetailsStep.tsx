@@ -27,7 +27,7 @@ export default function BookDetailsStep({
         />
       </div>
       <div className="mt-4 pb-4 border-b border-platinumDark">
-        <InputLabel label="Short Description" required />
+        <InputLabel label="Short Description"/>
         <ControlledInputField
           type="textarea"
           name="description"
@@ -47,7 +47,7 @@ export default function BookDetailsStep({
         />
       </div>
       <div className="mt-4 pb-4 border-b border-platinumDark">
-        <InputLabel label="Book Condition" />
+        <InputLabel label="Book Condition" required />
         <ControlledInputField
           type="select"
           name="condition"

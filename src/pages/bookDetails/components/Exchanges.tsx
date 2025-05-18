@@ -7,48 +7,48 @@ import {
 } from "../../../components/shared/Carousel";
 import Image from "../../../components/shared/Image";
 import { SwapType } from "../../addUpdateBook/types/enum";
-import { IExchange, ISwapCondition } from "../interface";
+import { IExchange, ISwapConditionData } from "../interface";
 
 export default function Exchanges({
   swapCondition,
 }: {
-  swapCondition: ISwapCondition;
+  swapCondition: ISwapConditionData;
 }) {
   if (!swapCondition) return null;
 
-  const conditionExchangeFn = (
-    swapValues: ISwapCondition
+  const swapConditionExchange = (
+    swapConditionData: ISwapConditionData
   ): Array<IExchange> => {
-    switch (swapValues.conditionType) {
+    switch (swapConditionData.swapType) {
       case SwapType.BYBOOKS:
-        return swapValues.swappableBooks.map((swapBook) => ({
-          type: swapValues.conditionType,
-          title: swapBook.title,
-          author: swapBook.author,
+        return swapConditionData.swappableBooks.map((swappableBook) => ({
+          swapType: swapConditionData.swapType,
+          title: swappableBook.title,
+          value: swappableBook.author,
         }));
 
       case SwapType.BYGENRES:
-        return swapValues.swappableGenres.map((genre) => ({
-          type: swapValues.conditionType,
-          title: genre.name,
-          author: "Any of this genre",
+        return swapConditionData.swappableGenres.map((swappableGenre) => ({
+          swapType: swapConditionData.swapType,
+          title: swappableGenre.name,
+          value: "Any of this genre",
         }));
 
       case SwapType.OPENTOOFFERS:
         return [
           {
-            type: swapValues.conditionType,
+            swapType: swapConditionData.swapType,
             title: SwapType.OPENTOOFFERS,
-            author: "Flexible exchange",
+            value: "Flexible exchange",
           },
         ];
 
       case SwapType.GIVEAWAY:
         return [
           {
-            type: swapValues.conditionType,
+            swapType: swapConditionData.swapType,
             title: SwapType.GIVEAWAY,
-            author: "You will receive offers for giveaway",
+            value: "You will receive offers for Give Away",
           },
         ];
 
@@ -57,7 +57,7 @@ export default function Exchanges({
     }
   };
 
-  const condition = conditionExchangeFn(swapCondition);
+  const condition = swapConditionExchange(swapCondition);
   return (
     <Carousel
       opts={{
@@ -70,14 +70,14 @@ export default function Exchanges({
         {condition.map((item) => {
           return (
             <CarouselItem
-              key={`${item.type}-${item.title}`}
+              key={`${item.swapType}-${item.title}`}
               className={` ${
                 condition.length <= 1 ? "pr-4 basis-full" : "basis-[70%]"
               }`}
             >
               <div className="relative w-full overflow-hidden h-[110px] rounded-lg bg-[#DEE7F5] flex items-center gap-3 px-[18px]">
                 <Image
-                  src={item.type === SwapType.BYBOOKS ? BookIconBlue : BookIcon}
+                  src={item.swapType === SwapType.BYBOOKS ? BookIconBlue : BookIcon}
                   className="w-5"
                 />
                 <div className="w-[120px] text-left">
@@ -85,7 +85,7 @@ export default function Exchanges({
                     {item?.title}
                   </h3>
                   <p className="text-xs font-poppins font-light mt-1 text-smokyBlack">
-                    {item?.type === SwapType.BYBOOKS && "by"} {item?.author}
+                    {item?.swapType === SwapType.BYBOOKS && "by"} {item?.value}
                   </p>
                 </div>
               </div>

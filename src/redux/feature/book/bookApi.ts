@@ -60,7 +60,6 @@ export const bookApi = api.injectEndpoints({
           queryParameter["search"] = filter.search;
         }
         if (filter.genre && filter.genre.length > 0) {
-
           queryParameter["genres"] = filter.genre;
         }
         if (filter.condition && filter.condition.length > 0) {
