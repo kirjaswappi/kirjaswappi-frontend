@@ -24,7 +24,7 @@ export default function ConditionMessageBox({
     },
     [SwapType.OPENTOOFFERS]: {
       image: Open,
-      message: "You will receive swap offers of all sorts.",
+      message: "Receive swap offers of all sorts.",
     },
     [SwapType.GIVEAWAY]: {
       image: Giveaway,
