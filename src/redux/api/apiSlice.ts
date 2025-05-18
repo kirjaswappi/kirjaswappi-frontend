@@ -6,8 +6,8 @@ let pendingAuthPromise: Promise<string> | null = null;
 
 const fetchToken = async () => {
   const data = JSON.stringify({
-    username: 'user',
-    password: 'mak12345',
+    username: '${import.meta.env.USERNAME}',
+    password: '${import.meta.env.PASSWORD}',
   });
   const response = await fetch(`${import.meta.env.VITE_REACT_MAIN_API}/authenticate`, {
     method: 'POST',
