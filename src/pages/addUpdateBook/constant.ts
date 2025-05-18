@@ -4,5 +4,3 @@ export const options = [
     { value: "good", label: "Used - Good" },
     { value: "acceptable", label: "Used - Acceptable" },
   ];
-
-  
