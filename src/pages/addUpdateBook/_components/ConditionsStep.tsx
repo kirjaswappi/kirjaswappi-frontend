@@ -1,21 +1,16 @@
-import { Controller, useFieldArray, useFormContext } from "react-hook-form";
-import InputLabel from "../../../components/shared/InputLabel";
-import ControlledInputField from "../../../components/shared/ControllerField";
-import Button from "../../../components/shared/Button";
-import Image from "../../../components/shared/Image";
-import closeIcon from "../../../assets/close.svg";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { setOpen } from "../../../redux/feature/open/openSlice";
-import plusIcon from "../../../assets/plus.png";
 import { useEffect } from "react";
+import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 import { FaDeleteLeft } from "react-icons/fa6";
+import closeIcon from "../../../assets/close.svg";
+import plusIcon from "../../../assets/plus.png";
+import Button from "../../../components/shared/Button";
+import ControlledInputField from "../../../components/shared/ControllerField";
+import Image from "../../../components/shared/Image";
+import InputLabel from "../../../components/shared/InputLabel";
+import { setOpen } from "../../../redux/feature/open/openSlice";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { BookConditionEnum } from "../types/enum";
 import ConditionMessageBox from "./ConditionMessageBox";
-import {
-  BYBOOKS,
-  BYGENRES,
-  GIVEAWAY,
-  OPENTOOFFERS,
-} from "../../../utility/ADDBOOKCONDITIONTYPE";
 import ImageFileInput from "./ImageControllerField";
 
 export default function ConditionsStep({ errors }: { errors: any }) {
@@ -57,8 +52,8 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                   <label className="flex items-center gap-2 w-full cursor-pointer">
                     <input
                       type="radio"
-                      value={OPENTOOFFERS}
-                      checked={field.value === OPENTOOFFERS}
+                      value={BookConditionEnum.OPENTOOFFERS}
+                      checked={field.value === BookConditionEnum.OPENTOOFFERS}
                       onChange={field.onChange}
                       className="w-4 h-4"
                     />
@@ -69,8 +64,8 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                   <label className="flex items-center gap-2 w-full cursor-pointer">
                     <input
                       type="radio"
-                      value={BYBOOKS}
-                      checked={field.value === BYBOOKS}
+                      value={BookConditionEnum.BYBOOKS}
+                      checked={field.value === BookConditionEnum.BYBOOKS}
                       onChange={field.onChange}
                       className="w-4 h-4"
                     />
@@ -81,8 +76,8 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                   <label className="flex items-center gap-2 w-full cursor-pointer">
                     <input
                       type="radio"
-                      value={BYGENRES}
-                      checked={field.value === BYGENRES}
+                      value={BookConditionEnum.BYGENRES}
+                      checked={field.value === BookConditionEnum.BYGENRES}
                       onChange={field.onChange}
                       className="w-4 h-4"
                     />
@@ -93,8 +88,8 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                   <label className="flex items-center gap-2 w-full cursor-pointer">
                     <input
                       type="radio"
-                      value={GIVEAWAY}
-                      checked={field.value === GIVEAWAY}
+                      value={BookConditionEnum.GIVEAWAY}
+                      checked={field.value === BookConditionEnum.GIVEAWAY}
                       onChange={field.onChange}
                       className="w-4 h-4"
                     />
@@ -107,7 +102,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
         />
       </div>
       <span className="w-full h-[1px] bg-platinumDark block my-4"></span>
-      {conditionType === BYBOOKS && (
+      {conditionType === BookConditionEnum.BYBOOKS && (
         <div>
           {fields.map((book, index) => (
             <div key={book.id}>
@@ -132,6 +127,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                   name={`books.${index}.bookTitle`}
                   placeholder="Enter book title"
                   className="rounded-md"
+                  showErrorMessage
                 />
               </div>
               <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
@@ -140,6 +136,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                   name={`books.${index}.authorName`}
                   placeholder="Enter author name"
                   className="rounded-md"
+                  showErrorMessage
                 />
               </div>
             </div>
@@ -158,7 +155,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
           </div>
         </div>
       )}
-      {conditionType === BYGENRES && (
+      {conditionType === BookConditionEnum.BYGENRES && (
         <div>
           <div className="flex items-center justify-between py-4">
             <InputLabel label="Genre" required />
@@ -197,10 +194,10 @@ export default function ConditionsStep({ errors }: { errors: any }) {
           )}
         </div>
       )}
-      {conditionType === OPENTOOFFERS && (
+      {conditionType === BookConditionEnum.OPENTOOFFERS && (
         <ConditionMessageBox conditionType={conditionType} />
       )}
-      {conditionType === GIVEAWAY && (
+      {conditionType === BookConditionEnum.GIVEAWAY && (
         <ConditionMessageBox conditionType={conditionType} />
       )}
     </div>

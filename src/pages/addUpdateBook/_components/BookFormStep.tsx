@@ -1,4 +1,4 @@
-import { TOptions } from "../interface";
+import { TOptions } from "../types/interface";
 import BookDetailsStep from "./BookDetailsStep";
 import ConditionsStep from "./ConditionsStep";
 import OtherDetailsStep from "./OtherDetailsStep";

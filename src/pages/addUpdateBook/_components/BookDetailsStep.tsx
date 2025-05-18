@@ -1,8 +1,11 @@
-import InputLabel from "../../../components/shared/InputLabel";
 import ControlledInputField from "../../../components/shared/ControllerField";
-import { IBookDetailsProps } from "../interface";
+import InputLabel from "../../../components/shared/InputLabel";
+import { IBookDetailsProps } from "../types/interface";
 
-export default function BookDetailsStep({languageOptions, conditionOptions}: IBookDetailsProps) {
+export default function BookDetailsStep({
+  languageOptions,
+  conditionOptions,
+}: IBookDetailsProps) {
   return (
     <div>
       <div className="mt-4 pb-4 border-b border-platinumDark">
@@ -26,7 +29,7 @@ export default function BookDetailsStep({languageOptions, conditionOptions}: IBo
       <div className="mt-4 pb-4 border-b border-platinumDark">
         <InputLabel label="Short Description" required />
         <ControlledInputField
-        type="textarea"
+          type="textarea"
           name="description"
           placeholder="Enter a short description of the book"
           className="rounded-md h-[83px]"

@@ -1,21 +1,16 @@
 import {
-  BYBOOKS,
-  BYGENRES,
-  GIVEAWAY,
-  OPENTOOFFERS,
-} from "../../utility/ADDBOOKCONDITIONTYPE";
-import {
   blobToBase64,
   convertedURLToFile,
   urlToDataUrl,
 } from "../../utility/helper";
-import { IAddUpdateBook, IBookData } from "./interface";
+import { BookConditionEnum } from "./types/enum";
+import { IAddUpdateBook, IBookData } from "./types/interface";
 
 // DEFAULT VALUES
 export const getDefaultValues = (bookData?: IBookData) => ({
   books: swappableBooks(bookData),
   favGenres: bookData?.genres || [],
-  conditionType: bookData?.swapCondition?.conditionType || BYBOOKS,
+  conditionType: bookData?.swapCondition?.conditionType || BookConditionEnum.BYBOOKS,
   language: bookData?.language || "",
   title: bookData?.title || "",
   genres: exchangeableGenres(bookData),
@@ -83,7 +78,7 @@ export const appendSwapConditionInformation = async (
   };
 
   switch (data.conditionType) {
-    case BYBOOKS:
+    case BookConditionEnum.BYBOOKS:
       swapCondition.books = await Promise.all(
         data.books.map(async (book) => ({
           title: book.bookTitle,
@@ -96,15 +91,15 @@ export const appendSwapConditionInformation = async (
       );
       break;
 
-    case OPENTOOFFERS:
+    case BookConditionEnum.OPENTOOFFERS:
       swapCondition.openForOffers = true;
       break;
 
-    case BYGENRES:
+    case BookConditionEnum.BYGENRES:
       swapCondition.genres = data.genres.join(",");
       break;
 
-    case GIVEAWAY:
+    case BookConditionEnum.GIVEAWAY:
       swapCondition.giveAway = true;
       break;
   }

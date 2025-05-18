@@ -1,8 +1,8 @@
 import { FieldErrors } from "react-hook-form";
-import { IAddUpdateBookData, TOptions } from "../interface";
+import { IAddUpdateBookData, TOptions } from "../types/interface";
 import BookDetailsStep from "./BookDetailsStep";
-import OtherDetailsStep from "./OtherDetailsStep";
 import ConditionsStep from "./ConditionsStep";
+import OtherDetailsStep from "./OtherDetailsStep";
 interface StepContentProps {
   activeStep: number;
   languages: TOptions[];

@@ -1,3 +1,5 @@
+import { BookConditionEnum } from "../../addUpdateBook/types/enum";
+
 export interface IBook {
   title: string;
   author: string;
@@ -5,7 +7,7 @@ export interface IBook {
 }
 
 export interface ISwapCondition<T = IBook> {
-  conditionType: "ByBooks" | "ByGenres" | "OpenForOffers" | "GiveAway";
+  conditionType: BookConditionEnum;
   giveAway: boolean;
   openForOffers: boolean;
   swappableGenres: {

@@ -1,3 +1,5 @@
+import { BookConditionEnum } from "./enum";
+
 export type TOptions = {
   label: string;
   value: string;
@@ -14,7 +16,7 @@ export interface IBook {
 export interface IAddUpdateBookData {
   books: IBook[];
   favGenres: string[];
-  conditionType: string;
+  conditionType: BookConditionEnum;
   language: string;
   title: string;
   genres: string[];
@@ -37,7 +39,7 @@ interface IGenre {
 }
 
 interface ISwapCondition {
-  conditionType: "ByBooks" | "ByGenres" | "OpenForOffers" | "GiveAway";
+  conditionType: BookConditionEnum;
   giveAway: boolean;
   openForOffers: boolean;
   swappableBooks?: Book[];
@@ -71,7 +73,7 @@ export interface IAddUpdateBook {
     byBookCover: File | string | null;
   }[];
   favGenres: string[];
-  conditionType: "ByBooks" | "ByGenres" | "OpenForOffers" | "GiveAway" | string;
+  conditionType: BookConditionEnum;
   language: string;
   title: string;
   genres: string[];

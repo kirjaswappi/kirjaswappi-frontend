@@ -1,15 +1,10 @@
-import Image from "../../../components/shared/Image";
 import byGenres from "../../../assets/3d-condition-icon-Genre.png";
 import Giveaway from "../../../assets/3d-condition-icon-Giveaway.png";
 import Open from "../../../assets/3d-condition-icon-Open-to-Offer.png";
 import book from "../../../assets/3d-condition-icon-by-book.png";
+import Image from "../../../components/shared/Image";
 
-import {
-  BYBOOKS,
-  BYGENRES,
-  GIVEAWAY,
-  OPENTOOFFERS,
-} from "../../../utility/ADDBOOKCONDITIONTYPE";
+import { BookConditionEnum } from "../types/enum";
 
 export default function ConditionMessageBox({
   conditionType,
@@ -19,19 +14,19 @@ export default function ConditionMessageBox({
   if (!conditionType) return null;
 
   const conditionList: Record<string, { image: string; message: string }> = {
-    [BYGENRES]: {
+    [BookConditionEnum.BYGENRES]: {
       image: byGenres,
       message: "Click ‘Add’ to add your preferable genre",
     },
-    [BYBOOKS]: {
+    [BookConditionEnum.BYBOOKS]: {
       image: book,
       message: "You will receive offers for specific books.",
     },
-    [OPENTOOFFERS]: {
+    [BookConditionEnum.OPENTOOFFERS]: {
       image: Open,
       message: "You will receive offers of all sorts of books",
     },
-    [GIVEAWAY]: {
+    [BookConditionEnum.GIVEAWAY]: {
       image: Giveaway,
       message: "You will receive offers for giveaway",
     },
