@@ -100,7 +100,7 @@ export default function BookDetails() {
       </div>
       <div className="mx-auto w-[160px] h-[190px] -mt-32">
         <Image
-          src={bookData?.coverPhotoUrl}
+          src={bookData?.coverPhotoUrls[0]}
           className="w-full h-full rounded-lg"
         />
       </div>
@@ -135,7 +135,7 @@ export default function BookDetails() {
         </div>
         {/* ================== START Exchanges Condition ==================  */}
         <div className="pl-4">
-          <Exchanges swapCondition={bookData.swapCondition}/>
+          <Exchanges swapCondition={bookData?.swapCondition}/>
         </div>
         {/* ================== END Exchanges Condition ==================  */}
         <div className="container text-left mb-5">
