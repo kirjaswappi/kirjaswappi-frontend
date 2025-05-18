@@ -1,25 +1,25 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable no-restricted-globals */
-import { createBrowserRouter } from "react-router-dom";
-import App from "../App";
-import Login from "../pages/auth/login";
-import Register from "../pages/auth/register";
-import ResetPassword from "../pages/auth/resetPassword";
-import BookDetails from "../pages/bookDetails";
-import Books from "../pages/books";
-import Profile from "../pages/profile";
-import EditProfile from "../pages/profile/components/EditProfile";
-import UserProfile from "../pages/profile/components/UserProfile";
-import Authenticate from "./Authenticate";
-import PrivateRoute from "./PrivateRoute";
-import AddUpdateBook from "../pages/addUpdateBook";
-import Inbox from "../pages/user/inbox/Inbox";
-import { Navigate } from "react-router-dom";
-import { Index } from "../pages/user/inboxChat";
+import { createBrowserRouter } from 'react-router-dom';
+import App from '../App';
+import Login from '../pages/auth/login';
+import Register from '../pages/auth/register';
+import ResetPassword from '../pages/auth/resetPassword';
+import BookDetails from '../pages/bookDetails';
+import Books from '../pages/books';
+import Profile from '../pages/profile';
+import EditProfile from '../pages/profile/components/EditProfile';
+import UserProfile from '../pages/profile/components/UserProfile';
+import Authenticate from './Authenticate';
+import PrivateRoute from './PrivateRoute';
+import AddUpdateBook from '../pages/addUpdateBook';
+import Inbox from '../pages/user/inbox/Inbox';
+import { Navigate } from 'react-router-dom';
+import { Index } from '../pages/user/inboxChat';
 
 const routes = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: (
       // <NoInternetConnection>
       // <ErrorBoundary FallbackComponent={ErrorReturn} onReset={() => (location.href = "/")}>
@@ -34,12 +34,12 @@ const routes = createBrowserRouter([
         element: <Books />,
       },
       {
-        path: "/book-details/:id",
+        path: '/book-details/:id',
         element: <BookDetails />,
       },
 
       {
-        path: "/profile",
+        path: '/profile',
         element: (
           <PrivateRoute>
             <Profile />
@@ -49,19 +49,19 @@ const routes = createBrowserRouter([
           {
             loader: () => <p>Loading...</p>,
             index: true,
-            path: "user-profile",
+            path: 'user-profile',
             element: <UserProfile />,
           },
           {
-            path: "edit-user",
+            path: 'edit-user',
             element: <EditProfile />,
           },
           {
-            path: "add-book",
+            path: 'add-book',
             element: <AddUpdateBook />,
           },
           {
-            path: "update-book/:id",
+            path: 'update-book/:id',
             element: <AddUpdateBook />,
           },
           // {
@@ -71,7 +71,7 @@ const routes = createBrowserRouter([
         ],
       },
       {
-        path: "user",
+        path: 'user',
         element: (
           <PrivateRoute>
             <Profile />
@@ -79,21 +79,21 @@ const routes = createBrowserRouter([
         ),
         children: [
           {
-            path: "inbox",
+            path: 'inbox',
             element: <Inbox />,
           },
           {
-            path: "inbox/chat/:id",
+            path: 'inbox/chat/:id',
             element: <Index />,
           },
         ],
       },
       {
-        path: "/map",
+        path: '/map',
         element: <Profile />,
       },
       {
-        path: "/message",
+        path: '/message',
         element: (
           <PrivateRoute>
             <Navigate to="/inbox" replace />
@@ -101,7 +101,7 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: "/auth/login",
+        path: '/auth/login',
         element: (
           <Authenticate>
             <Login />
@@ -109,7 +109,7 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: "/password/reset",
+        path: '/password/reset',
         element: (
           <Authenticate>
             <ResetPassword />
@@ -117,7 +117,7 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: "/auth/register",
+        path: '/auth/register',
         element: (
           <Authenticate>
             <Register />

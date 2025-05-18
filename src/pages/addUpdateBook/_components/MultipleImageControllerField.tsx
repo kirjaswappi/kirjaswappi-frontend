@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import { Controller, FieldError, useFormContext } from "react-hook-form";
-import closeIcon from "../../../assets/close.png";
-import Image from "../../../components/shared/Image";
-import { SUPPORTED_FORMATS } from "../../../utility/constant";
+import { useEffect, useState } from 'react';
+import { Controller, FieldError, useFormContext, ControllerRenderProps } from 'react-hook-form';
+import closeIcon from '../../../assets/close.png';
+import Image from '../../../components/shared/Image';
+import { SUPPORTED_FORMATS } from '../../../utility/constant';
 interface IImageFileInputProps {
   name: string;
-  errors: Record<string, any>;
+  errors: Record<string, FieldError | Record<number, FieldError>>;
 }
 const MultipleImageFileInput = ({ name, errors }: IImageFileInputProps) => {
   const { control, getValues, setValue, trigger } = useFormContext();
@@ -15,7 +15,7 @@ const MultipleImageFileInput = ({ name, errors }: IImageFileInputProps) => {
   useEffect(() => {
     if (Array.isArray(initialValue)) {
       const urls = initialValue.map((file) =>
-        file instanceof File ? URL.createObjectURL(file) : file
+        file instanceof File ? URL.createObjectURL(file) : file,
       );
       setPreviews(urls);
     }
@@ -23,12 +23,10 @@ const MultipleImageFileInput = ({ name, errors }: IImageFileInputProps) => {
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    field: any
+    field: ControllerRenderProps<{ [key: string]: (File | string)[] }, string>,
   ) => {
     const files = Array.from(e.target.files || []);
-    const validImages = files.filter((file) =>
-      SUPPORTED_FORMATS.includes(file.type)
-    );
+    const validImages = files.filter((file) => SUPPORTED_FORMATS.includes(file.type));
 
     const fileUrls = validImages.map((file) => URL.createObjectURL(file));
     const updatedPreviews = [...previews, ...fileUrls];
@@ -38,51 +36,51 @@ const MultipleImageFileInput = ({ name, errors }: IImageFileInputProps) => {
     field.onChange(updatedFiles);
   };
 
-  const handleDelete = async (index: number, field: any) => {
+  const handleDelete = async (
+    index: number,
+    field: ControllerRenderProps<{ [key: string]: (File | string)[] }, string>,
+  ) => {
     const updatedPreviews = previews.filter((_, i) => i !== index);
-    const updatedFiles = (field.value || []).filter(
-      (_: any, i: number) => i !== index
-    );
+    const updatedFiles = (field.value || []).filter((_: File | string, i: number) => i !== index);
     setPreviews(updatedPreviews);
     setValue(name, updatedFiles, { shouldValidate: true });
     await trigger(name);
   };
 
-  const findErrorPosition = (errorsObject: any): number[] => {
-    if (!errorsObject || typeof errorsObject !== "object") return [];
+  const findErrorPosition = (errorsObject: Record<number, FieldError> | undefined): number[] => {
+    if (!errorsObject || typeof errorsObject !== 'object') return [];
     return Object.keys(errorsObject)
-      .map((key) => (errorsObject[key]?.message ? parseInt(key, 10) : null))
+      .map((key: string) => (errorsObject[parseInt(key, 10)]?.message ? parseInt(key, 10) : null))
       .filter((index): index is number => index !== null);
   };
 
-  const getAllErrorMessages = (
-    errorObject: Record<number, FieldError> | undefined
-  ): string[] => {
-    if (!errorObject || typeof errorObject !== "object") return [];
+  const getAllErrorMessages = (errorObject: Record<number, FieldError> | undefined): string[] => {
+    if (!errorObject || typeof errorObject !== 'object') return [];
 
     return Object.values(errorObject)
       .map((error) => error?.message)
       .filter((msg): msg is string => Boolean(msg));
   };
 
-   const parseFieldErrors = (fieldError: any): { messages: string[]; indexes: number[] } => {
-  if (!fieldError) return { messages: [], indexes: [] };
+  const parseFieldErrors = (
+    fieldError: FieldError | Record<number, FieldError> | undefined,
+  ): { messages: string[]; indexes: number[] } => {
+    if (!fieldError) return { messages: [], indexes: [] };
 
-  if (typeof fieldError === "object" && !("message" in fieldError)) {
+    if (typeof fieldError === 'object' && !('message' in fieldError)) {
+      return {
+        messages: getAllErrorMessages(fieldError),
+        indexes: findErrorPosition(fieldError),
+      };
+    }
+
     return {
-      messages: getAllErrorMessages(fieldError),
-      indexes: findErrorPosition(fieldError),
+      messages: fieldError?.message ? [fieldError.message] : [],
+      indexes: [],
     };
-  }
-
-  return {
-    messages: fieldError?.message ? [fieldError.message] : [],
-    indexes: [],
   };
-};
   const fieldError = errors?.[name];
-  const { messages: errorMessages, indexes: errorIndex } =
-    parseFieldErrors(fieldError);
+  const { messages: errorMessages, indexes: errorIndex } = parseFieldErrors(fieldError);
   return (
     <Controller
       name={name}
@@ -91,50 +89,43 @@ const MultipleImageFileInput = ({ name, errors }: IImageFileInputProps) => {
       render={({ field }) => {
         return (
           <div>
-            {previews.length < 5 && <div className="w-[126px] h-[150px] border-[1px] border-dashed border-grayDark rounded-lg cursor-pointer block mx-auto ">
-              <label
-                htmlFor="file"
-                className="flex flex-col items-center justify-center h-full"
-              >
-                <span className="text-grayDark text-3xl font-poppins font-extralight">
-                  +
-                </span>
-                <span className="text-grayDark text-xs font-poppins font-normal">
-                  Upload Picture
-                </span>
+            {previews.length < 5 && (
+              <div className="w-[126px] h-[150px] border-[1px] border-dashed border-grayDark rounded-lg cursor-pointer block mx-auto ">
+                <label htmlFor="file" className="flex flex-col items-center justify-center h-full">
+                  <span className="text-grayDark text-3xl font-poppins font-extralight">+</span>
+                  <span className="text-grayDark text-xs font-poppins font-normal">
+                    Upload Picture
+                  </span>
 
-                <input
-                  id="file"
-                  type="file"
-                  multiple
-                  accept={SUPPORTED_FORMATS.join(",")}
-                  className="hidden"
-                  onChange={(e) => handleFileChange(e, field)}
-                />
-              </label>
-            </div>}
+                  <input
+                    id="file"
+                    type="file"
+                    multiple
+                    accept={SUPPORTED_FORMATS.join(',')}
+                    className="hidden"
+                    onChange={(e) => handleFileChange(e, field)}
+                  />
+                </label>
+              </div>
+            )}
             <div className="grid grid-cols-5 gap-1 mt-4">
               {previews &&
-                previews?.map((src, index:number) => {
+                previews?.map((src, index: number) => {
                   return (
                     <div
                       key={index}
                       className={`w-[56px] h-[56px] border ${
-                        errorIndex.includes(index)
-                          ? "border-2 border-rose-600"
-                          : "border-[#B2B2B2]"
+                        errorIndex.includes(index) ? 'border-2 border-rose-600' : 'border-[#B2B2B2]'
                       } rounded-lg relative group`}
                     >
-                      <div
+                      <button
                         onClick={() => handleDelete(index, field)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleDelete(index, field)}
                         className="absolute w-5 h-5 flex items-center justify-center bg-smokyBlack text-white rounded-full -right-2 -top-2 cursor-pointer z-10"
+                        aria-label="Remove image"
                       >
-                        <Image
-                          src={closeIcon}
-                          alt="Remove"
-                          className="w-[7px] h-[7px]"
-                        />
-                      </div>
+                        <Image src={closeIcon} alt="Remove" className="w-[7px] h-[7px]" />
+                      </button>
                       <img
                         src={src}
                         alt={`Preview ${index}`}
@@ -147,10 +138,8 @@ const MultipleImageFileInput = ({ name, errors }: IImageFileInputProps) => {
 
             {/* Validation Error */}
             {errorMessages.length > 0 && (
-            <p className="text-rose-500 text-xs mt-1 pl-2">
-              {errorMessages[0]}
-            </p>
-          )}
+              <p className="text-rose-500 text-xs mt-1 pl-2">{errorMessages[0]}</p>
+            )}
           </div>
         );
       }}

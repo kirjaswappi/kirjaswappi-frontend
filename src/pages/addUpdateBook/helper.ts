@@ -1,18 +1,14 @@
-import {
-    blobToBase64,
-    convertedURLToFile,
-    urlToDataUrl,
-} from "../../utility/helper";
-import { SwapType } from "./types/enum";
-import { IAddUpdateBook, IBookData } from "./types/interface";
+import { blobToBase64, convertedURLToFile, urlToDataUrl } from '../../utility/helper';
+import { SwapType } from './types/enum';
+import { IAddUpdateBook, IBookData } from './types/interface';
 
 // DEFAULT VALUES
 export const getDefaultValues = (bookData?: IBookData) => ({
-  title: bookData?.title || "",
-  author: bookData?.author || "",
-  description: bookData?.description || "",
-  language: bookData?.language || "",
-  condition: bookData?.condition || "",
+  title: bookData?.title || '',
+  author: bookData?.author || '',
+  description: bookData?.description || '',
+  language: bookData?.language || '',
+  condition: bookData?.condition || '',
   genres: bookData?.genres || [],
   coverPhotos: bookData?.coverPhotoUrls || [],
   swapType: parseSwapType(bookData?.swapCondition?.swapType),
@@ -30,14 +26,12 @@ function parseSwapType(value: string | undefined): SwapType {
 
 // SET DEFAULT SWAPPABLE BOOKS
 const getDefaultSwappableBooks = (bookData?: IBookData) =>
-  bookData?.swapCondition?.swappableBooks?.map(
-    ({ id, title, author, coverPhotoUrl }) => ({
-      id: id || "",
-      title: title || "",
-      author: author || "",
-      coverPhoto: coverPhotoUrl || null,
-    })
-  ) || [{ id: "", title: "", author: "", coverPhoto: null }];
+  bookData?.swapCondition?.swappableBooks?.map(({ id, title, author, coverPhotoUrl }) => ({
+    id: id || '',
+    title: title || '',
+    author: author || '',
+    coverPhoto: coverPhotoUrl || null,
+  })) || [{ id: '', title: '', author: '', coverPhoto: null }];
 
 // SET DEFAULT SWAPPABLE GENRES
 const getDefaultSwappableGenres = (bookData?: IBookData) =>
@@ -47,61 +41,61 @@ const getDefaultSwappableGenres = (bookData?: IBookData) =>
 export const buildFormData = async (
   data: IAddUpdateBook,
   ownerId?: string,
-  bookId?: string
+  bookId?: string,
 ): Promise<FormData> => {
   const formData = new FormData();
 
   // SET USER ID & BOOK ID
-  if (ownerId) formData.append("ownerId", ownerId);
-  if (bookId) formData.append("id", bookId);
+  if (ownerId) formData.append('ownerId', ownerId);
+  if (bookId) formData.append('id', bookId);
 
   // SET BASIC INFORMATION
-  appendBasicBookInformation(formData, data)
+  appendBasicBookInformation(formData, data);
 
   // SET BOOK COVER IMAGES
-  await processBookCoversForBasicInformation(formData, data.coverPhotos)
-  
+  await processBookCoversForBasicInformation(formData, data.coverPhotos);
+
   // SET SWAP CONDITION INFORMATION
-  await appendSwapConditionInformation(formData, data)
-  
-  return formData
+  await appendSwapConditionInformation(formData, data);
+
+  return formData;
 };
 
 //  PROCESS BOOK COVERS FOR BASIC INFORMATION
 const processBookCoversForBasicInformation = async (
   formData: FormData,
-  covers: (File | string)[]
+  covers: (File | string)[],
 ) => {
   const processCover = async (cover: File | string) => {
     if (cover instanceof File) return cover;
-    if (typeof cover === "string") return convertedURLToFile(cover);
+    if (typeof cover === 'string') return convertedURLToFile(cover);
     return null;
   };
   const processedCovers = await Promise.all(covers.map(processCover));
-  processedCovers.forEach(
-    (cover) => cover && formData.append("coverPhotos", cover)
-  );
+  processedCovers.forEach((cover) => cover && formData.append('coverPhotos', cover));
 };
 
 // BASIC BOOK INFORMATION
-const appendBasicBookInformation = (
-  formData: FormData,
-  data: IAddUpdateBook
-) => {
-  formData.append("title", data.title);
-  formData.append("author", data.author);
-  formData.append("description", data.description);
-  formData.append("genres", data.genres.join(","));
-  formData.append("language", data.language);
-  formData.append("condition", data.condition);
+const appendBasicBookInformation = (formData: FormData, data: IAddUpdateBook) => {
+  formData.append('title', data.title);
+  formData.append('author', data.author);
+  formData.append('description', data.description);
+  formData.append('genres', data.genres.join(','));
+  formData.append('language', data.language);
+  formData.append('condition', data.condition);
 };
 
 // BOOK SWAP CONDITION INFORMATION
-export const appendSwapConditionInformation = async (
-  formData: FormData,
-  data: IAddUpdateBook
-) => {
-  const swapCondition: Record<string, any> = {
+interface SwapConditionType {
+  swapType: SwapType;
+  giveAway: boolean;
+  openForOffers: boolean;
+  books?: Array<{ title: string; author: string; coverPhoto: string }>;
+  genres?: string;
+}
+
+export const appendSwapConditionInformation = async (formData: FormData, data: IAddUpdateBook) => {
+  const swapCondition: SwapConditionType = {
     swapType: data.swapType,
     giveAway: false,
     openForOffers: false,
@@ -113,10 +107,11 @@ export const appendSwapConditionInformation = async (
         data.swappableBooks.map(async (swappableBook) => ({
           title: swappableBook.title,
           author: swappableBook.author,
-          coverPhoto: swappableBook.coverPhoto instanceof File
+          coverPhoto:
+            swappableBook.coverPhoto instanceof File
               ? await blobToBase64(swappableBook.coverPhoto)
-              : await urlToDataUrl(swappableBook.coverPhoto || ""),
-        }))
+              : await urlToDataUrl(swappableBook.coverPhoto || ''),
+        })),
       );
       break;
 
@@ -125,7 +120,7 @@ export const appendSwapConditionInformation = async (
       break;
 
     case SwapType.BYGENRES:
-      swapCondition.genres = data.swappableGenres.join(",");
+      swapCondition.genres = data.swappableGenres.join(',');
       break;
 
     case SwapType.GIVEAWAY:
@@ -133,6 +128,5 @@ export const appendSwapConditionInformation = async (
       break;
   }
 
-  formData.append("swapCondition", JSON.stringify(swapCondition));
+  formData.append('swapCondition', JSON.stringify(swapCondition));
 };
-

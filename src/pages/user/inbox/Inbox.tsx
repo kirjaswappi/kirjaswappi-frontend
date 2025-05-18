@@ -1,19 +1,17 @@
-import { useState } from "react";
-import graySearchIcon from "../../../assets/GraysearchIcon.png";
-import conversationsData from "../../../data/conversations.json";
-import Image from "../../../components/shared/Image";
-import Input from "../../../components/shared/Input";
-import ChatUserCard from "./_components/ChatUserCard";
+import { useState } from 'react';
+import graySearchIcon from '../../../assets/GraysearchIcon.png';
+import conversationsData from '../../../data/conversations.json';
+import Image from '../../../components/shared/Image';
+import Input from '../../../components/shared/Input';
+import ChatUserCard from './_components/ChatUserCard';
 const Inbox = () => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
 
   const filteredConversations = searchQuery
     ? conversationsData.conversations.filter(
         (conversation) =>
           conversation.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          conversation.lastMessage
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase())
+          conversation.lastMessage.toLowerCase().includes(searchQuery.toLowerCase()),
       )
     : conversationsData.conversations;
 

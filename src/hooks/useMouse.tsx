@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
 export function useMouseClick() {
-  const reference = useRef<any>(null);
+  const reference = useRef<HTMLElement>(null);
   const [clicked, setClicked] = useState<boolean>(false);
   const handleClickOutSide = (event: MouseEvent) => {
     if (
@@ -13,9 +13,9 @@ export function useMouseClick() {
     }
   };
   useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutSide);
+    document.addEventListener('mousedown', handleClickOutSide);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutSide);
+      document.removeEventListener('mousedown', handleClickOutSide);
     };
   }, [reference]);
   return { clicked, setClicked, reference };

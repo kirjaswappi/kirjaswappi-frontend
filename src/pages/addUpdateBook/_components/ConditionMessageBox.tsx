@@ -1,34 +1,30 @@
-import byGenres from "../../../assets/3d-condition-icon-Genre.png";
-import Giveaway from "../../../assets/3d-condition-icon-Giveaway.png";
-import Open from "../../../assets/3d-condition-icon-Open-to-Offer.png";
-import book from "../../../assets/3d-condition-icon-by-book.png";
-import Image from "../../../components/shared/Image";
+import byGenres from '../../../assets/3d-condition-icon-Genre.png';
+import Giveaway from '../../../assets/3d-condition-icon-Giveaway.png';
+import Open from '../../../assets/3d-condition-icon-Open-to-Offer.png';
+import book from '../../../assets/3d-condition-icon-by-book.png';
+import Image from '../../../components/shared/Image';
 
-import { SwapType } from "../types/enum";
+import { SwapType } from '../types/enum';
 
-export default function ConditionMessageBox({
-  swapType,
-}: {
-  swapType: string;
-}) {
+export default function ConditionMessageBox({ swapType }: { swapType: string }) {
   if (!swapType) return null;
 
   const swapConditionList: Record<string, { image: string; message: string }> = {
     [SwapType.BYGENRES]: {
       image: byGenres,
-      message: "Click ‘Add’ to add your preferable genre to swap with.",
+      message: 'Click ‘Add’ to add your preferable genre to swap with.',
     },
     [SwapType.BYBOOKS]: {
       image: book,
-      message: "You will to swap with specific book(s).",
+      message: 'You will to swap with specific book(s).',
     },
     [SwapType.OPENTOOFFERS]: {
       image: Open,
-      message: "You will receive swap offers of all sorts.",
+      message: 'You will receive swap offers of all sorts.',
     },
     [SwapType.GIVEAWAY]: {
       image: Giveaway,
-      message: "You wish to give away this book.",
+      message: 'You wish to give away this book.',
     },
   };
 

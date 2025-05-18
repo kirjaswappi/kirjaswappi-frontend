@@ -1,23 +1,32 @@
-import Button from "../../../components/shared/Button";
-import Image from "../../../components/shared/Image";
-import { setOpen } from "../../../redux/feature/open/openSlice";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import closeIcon from "../../../assets/close.svg";
-import { useFormContext } from "react-hook-form";
-import InputLabel from "../../../components/shared/InputLabel";
-import MultipleImageFileInput from "./MultipleImageControllerField";
-export default function OtherDetailsStep({ errors }: { errors: any }) {
+import Button from '../../../components/shared/Button';
+import Image from '../../../components/shared/Image';
+import { setOpen } from '../../../redux/feature/open/openSlice';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import closeIcon from '../../../assets/close.svg';
+import { useFormContext } from 'react-hook-form';
+import InputLabel from '../../../components/shared/InputLabel';
+import MultipleImageFileInput from './MultipleImageControllerField';
+interface FormErrors {
+  genres?: {
+    message: string;
+  };
+  coverPhotos?: {
+    message: string;
+  };
+}
+
+export default function OtherDetailsStep({ errors }: { errors: FormErrors }) {
   const { open } = useAppSelector((state) => state.open);
   const dispatch = useAppDispatch();
   const { getValues, setValue } = useFormContext();
-  const genres = getValues("genres");
+  const genres = getValues('genres');
 
   const handleRemoveGenre = (genreValue: string) => {
     if (!genreValue) return;
-    const genres = getValues("genres");
+    const genres = getValues('genres');
     setValue(
-      "genres",
-      genres?.filter((genre: string) => genre !== genreValue)
+      'genres',
+      genres?.filter((genre: string) => genre !== genreValue),
     );
   };
 
@@ -58,10 +67,8 @@ export default function OtherDetailsStep({ errors }: { errors: any }) {
               <p className="text-xs text-grayDark">No Genre Added.</p>
             </div>
           )}
-          {errors && errors["genres"] && (
-            <div className="text-rose-500 text-xs mt-1 pl-2">
-              {errors["genres"]?.message} 
-            </div>
+          {errors && errors['genres'] && (
+            <div className="text-rose-500 text-xs mt-1 pl-2">{errors['genres']?.message}</div>
           )}
         </div>
       </div>

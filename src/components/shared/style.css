@@ -1,68 +1,71 @@
 .message-enter {
-    opacity: 0;
-    transform: translateY(-10px);
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.message-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 300ms,
+    transform 300ms;
+}
+
+.message-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.message-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition:
+    opacity 300ms,
+    transform 300ms;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0.7;
   }
-  
-  .message-enter-active {
+  50% {
     opacity: 1;
-    transform: translateY(0);
-    transition: opacity 300ms, transform 300ms;
   }
-  
-  .message-exit {
-    opacity: 1;
-    transform: translateY(0);
+  100% {
+    opacity: 0.7;
   }
-  
-  .message-exit-active {
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: opacity 300ms, transform 300ms;
-  }
+}
 
-
-  @keyframes fadeInOut {
-    0% {
-      opacity: 0.7;
-    }
-    50% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0.7;
-    }
+.loader {
+  border-radius: 50%;
+  color: #157892;
+}
+.loader:before {
+  content: '';
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 50px;
+  height: 50px;
+  border: 4px solid transparent;
+  border-top: 4px solid #ea244e;
+  border-right: 4px solid #ffffff;
+  border-radius: 50%;
+  animation: animateC 1s linear infinite;
+}
+@keyframes animateC {
+  0% {
+    transform: rotate(0deg);
   }
-
-  .loader {
-    border-radius: 50%;
-    color: #157892;
+  100% {
+    transform: rotate(360deg);
   }
-  .loader:before {
-    content: "";
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 50px;
-    height: 50px;
-    border: 4px solid transparent;
-    border-top: 4px solid #EA244E;
-    border-right: 4px solid #ffffff;
-    border-radius: 50%;
-    animation: animateC 1s linear infinite;
+}
+@keyframes animate {
+  0% {
+    transform: rotate(45deg);
   }
-  @keyframes animateC {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
+  100% {
+    transform: rotate(405deg);
   }
-  @keyframes animate {
-    0% {
-      transform: rotate(45deg);
-    }
-    100% {
-      transform: rotate(405deg);
-    }
-  }
+}

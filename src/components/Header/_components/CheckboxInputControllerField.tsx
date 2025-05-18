@@ -1,12 +1,6 @@
-import { Controller, useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from 'react-hook-form';
 
-export default function CheckboxControllerField({
-  name,
-  value,
-}: {
-  name: string;
-  value: string;
-}) {
+export default function CheckboxControllerField({ name, value }: { name: string; value: string }) {
   const { control } = useFormContext();
   return (
     <Controller
@@ -22,7 +16,7 @@ export default function CheckboxControllerField({
               checked={field?.value?.includes(value)}
               onChange={(e) => {
                 const newValue = e.target.checked
-                  ? [...field?.value, value]
+                  ? [...(field?.value || []), value]
                   : field?.value?.filter((g: string) => g !== value);
                 field?.onChange(newValue);
               }}

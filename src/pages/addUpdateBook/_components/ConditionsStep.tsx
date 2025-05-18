@@ -1,37 +1,44 @@
-import { useEffect } from "react";
-import { Controller, useFieldArray, useFormContext } from "react-hook-form";
-import { FaDeleteLeft } from "react-icons/fa6";
-import closeIcon from "../../../assets/close.svg";
-import plusIcon from "../../../assets/plus.png";
-import Button from "../../../components/shared/Button";
-import ControlledInputField from "../../../components/shared/ControllerField";
-import Image from "../../../components/shared/Image";
-import InputLabel from "../../../components/shared/InputLabel";
-import { setOpen } from "../../../redux/feature/open/openSlice";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { SwapType } from "../types/enum";
-import ConditionMessageBox from "./ConditionMessageBox";
-import ImageFileInput from "./ImageControllerField";
+import { useEffect } from 'react';
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
+import { FaDeleteLeft } from 'react-icons/fa6';
+import closeIcon from '../../../assets/close.svg';
+import plusIcon from '../../../assets/plus.png';
+import Button from '../../../components/shared/Button';
+import ControlledInputField from '../../../components/shared/ControllerField';
+import Image from '../../../components/shared/Image';
+import InputLabel from '../../../components/shared/InputLabel';
+import { setOpen } from '../../../redux/feature/open/openSlice';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { SwapType } from '../types/enum';
+import ConditionMessageBox from './ConditionMessageBox';
+import ImageFileInput from './ImageControllerField';
 
-export default function ConditionsStep({ errors }: { errors: any }) {
+interface FormErrors {
+  swappableGenres?: {
+    message: string;
+  };
+  [key: string]: undefined | { message: string };
+}
+
+export default function ConditionsStep({ errors }: { errors: FormErrors }) {
   const dispatch = useAppDispatch();
   const { open } = useAppSelector((state) => state.open);
   const { control, getValues, watch, setValue } = useFormContext();
-  const swapType = watch("swapType");
-  const swappableGenres = getValues("swappableGenres");
-  const { fields, append, remove } = useFieldArray({ control, name: "swappableBooks" });
+  const swapType = watch('swapType');
+  const swappableGenres = getValues('swappableGenres');
+  const { fields, append, remove } = useFieldArray({ control, name: 'swappableBooks' });
 
   useEffect(() => {
     if (fields.length === 0) {
-      append({ title: "", author: "", coverPhoto: null });
+      append({ title: '', author: '', coverPhoto: null });
     }
   }, [fields, append]);
 
   const handleRemoveGenre = (genreValue: string) => {
     if (!genreValue) return;
     setValue(
-      "swappableGenres",
-      swappableGenres?.filter((swappableGenre: string) => swappableGenre !== genreValue)
+      'swappableGenres',
+      swappableGenres?.filter((swappableGenre: string) => swappableGenre !== genreValue),
     );
   };
 
@@ -104,50 +111,52 @@ export default function ConditionsStep({ errors }: { errors: any }) {
       <span className="w-full h-[1px] bg-platinumDark block my-4"></span>
       {swapType === SwapType.BYBOOKS && (
         <div>
-          {fields.map((swappableBook, index) => (
-            console.log(swappableBook, index),
-            <div key={swappableBook.id}>
-              <div className="pt-4">
-                <div className="flex items-center justify-between">
-                  <InputLabel label="Cover Photo" required />
-                  {index > 0 && (
-                    <Button
-                      type="button"
-                      onClick={() => remove(index)}
-                      className="text-red-500 w-7 h-7 flex items-center justify-center rounded-sm"
-                    >
-                      <FaDeleteLeft />
-                    </Button>
-                  )}
+          {fields.map(
+            (swappableBook, index) => (
+              console.log(swappableBook, index),
+              (
+                <div key={swappableBook.id}>
+                  <div className="pt-4">
+                    <div className="flex items-center justify-between">
+                      <InputLabel label="Cover Photo" required />
+                      {index > 0 && (
+                        <Button
+                          type="button"
+                          onClick={() => remove(index)}
+                          className="text-red-500 w-7 h-7 flex items-center justify-center rounded-sm"
+                        >
+                          <FaDeleteLeft />
+                        </Button>
+                      )}
+                    </div>
+                    <ImageFileInput name={`swappableBooks.${index}.coverPhoto`} />
+                  </div>
+                  <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
+                    <InputLabel label="Book Title" required />
+                    <ControlledInputField
+                      name={`swappableBooks.${index}.title`}
+                      placeholder="Enter book title"
+                      className="rounded-md"
+                      showErrorMessage
+                    />
+                  </div>
+                  <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
+                    <InputLabel label="Author Name" required />
+                    <ControlledInputField
+                      name={`swappableBooks.${index}.author`}
+                      placeholder="Enter author name"
+                      className="rounded-md"
+                      showErrorMessage
+                    />
+                  </div>
                 </div>
-                <ImageFileInput name={`swappableBooks.${index}.coverPhoto`} />
-              </div>
-              <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
-                <InputLabel label="Book Title" required />
-                <ControlledInputField
-                  name={`swappableBooks.${index}.title`}
-                  placeholder="Enter book title"
-                  className="rounded-md"
-                  showErrorMessage
-                />
-              </div>
-              <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
-                <InputLabel label="Author Name" required />
-                <ControlledInputField
-                  name={`swappableBooks.${index}.author`}
-                  placeholder="Enter author name"
-                  className="rounded-md"
-                  showErrorMessage
-                />
-              </div>
-            </div>
-          ))}
+              )
+            ),
+          )}
           <div className="mt-4 pb-4 border-t border-[#E4E4E4]">
             <Button
               type="button"
-              onClick={() =>
-                append({ title: "", author: "", coverPhoto: null })
-              }
+              onClick={() => append({ title: '', author: '', coverPhoto: null })}
               className="flex items-center justify-center gap-1 w-full border border-dashed border-grayDark py-3 text-sm font-poppins text-grayDark rounded-md"
             >
               <Image src={plusIcon} alt="Add Another Book" />
@@ -176,10 +185,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                   className="flex items-center justify-between px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg"
                 >
                   <h3 className="font-poppins text-sm font-light">{item}</h3>
-                  <Button
-                    type="button"
-                    onClick={() => handleRemoveGenre(item)}
-                  >
+                  <Button type="button" onClick={() => handleRemoveGenre(item)}>
                     <Image src={closeIcon} alt="close" className="h-2" />
                   </Button>
                 </div>
@@ -188,19 +194,15 @@ export default function ConditionsStep({ errors }: { errors: any }) {
           ) : (
             <ConditionMessageBox swapType={swapType} />
           )}
-          {errors && errors["swappableGenres"] && (
+          {errors && errors['swappableGenres'] && (
             <div className="text-rose-500 text-xs mt-1 pl-2">
-              {errors["swappableGenres"]?.message}
+              {errors['swappableGenres']?.message}
             </div>
           )}
         </div>
       )}
-      {swapType === SwapType.OPENTOOFFERS && (
-        <ConditionMessageBox swapType={swapType} />
-      )}
-      {swapType === SwapType.GIVEAWAY && (
-        <ConditionMessageBox swapType={swapType} />
-      )}
+      {swapType === SwapType.OPENTOOFFERS && <ConditionMessageBox swapType={swapType} />}
+      {swapType === SwapType.GIVEAWAY && <ConditionMessageBox swapType={swapType} />}
     </div>
   );
 }
