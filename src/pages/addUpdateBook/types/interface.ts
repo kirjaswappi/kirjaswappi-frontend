@@ -1,4 +1,4 @@
-import { SwapType } from "./enum";
+import { SwapType } from './enum';
 
 export type TOptions = {
   label: string;
@@ -14,7 +14,7 @@ export interface ISwappableBook {
   title: string;
   author: string;
   coverPhoto: string | File;
-  flag?: boolean
+  flag?: boolean;
 }
 
 export interface IAddUpdateBookData {

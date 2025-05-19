@@ -1,24 +1,24 @@
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import Button from "../../../../components/shared/Button";
-import MessageToastify from "../../../../components/shared/MessageToastify";
-import { useRegisterMutation } from "../../../../redux/feature/auth/authApi";
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import Button from '../../../../components/shared/Button';
+import MessageToastify from '../../../../components/shared/MessageToastify';
+import { useRegisterMutation } from '../../../../redux/feature/auth/authApi';
 import {
   setAuthMessage,
   setError,
   setOtp,
   setUserEmail,
-} from "../../../../redux/feature/auth/authSlice";
-import { setMessages } from "../../../../redux/feature/notification/notificationSlice";
-import { setStep } from "../../../../redux/feature/step/stepSlice";
-import { useAppSelector } from "../../../../redux/hooks";
-import ControlledPasswordField from "../../../../components/shared/ControllerFieldPassword";
-import ControlledInputField from "../../../../components/shared/ControllerField";
-import { FormProvider, useForm, useWatch } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { registerSchema } from "../Schema";
-import { IRegisterForm } from "../interface";
+} from '../../../../redux/feature/auth/authSlice';
+import { setMessages } from '../../../../redux/feature/notification/notificationSlice';
+import { setStep } from '../../../../redux/feature/step/stepSlice';
+import { useAppSelector } from '../../../../redux/hooks';
+import ControlledPasswordField from '../../../../components/shared/ControllerFieldPassword';
+import ControlledInputField from '../../../../components/shared/ControllerField';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { registerSchema } from '../Schema';
+import { IRegisterForm } from '../interface';
 
 export default function RegisterForm() {
   const navigate = useNavigate();
@@ -29,69 +29,66 @@ export default function RegisterForm() {
 
   const methods = useForm<IRegisterForm>({
     resolver: yupResolver(registerSchema),
-    mode: "onBlur",
+    mode: 'onBlur',
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
     },
-    reValidateMode: "onChange",
+    reValidateMode: 'onChange',
   });
   const [password, confirmPassword] = useWatch({
     control: methods.control,
-    name: ["password", "confirmPassword"],
+    name: ['password', 'confirmPassword'],
   });
 
   useEffect(() => {
     if (password && confirmPassword && password === confirmPassword) {
-      methods.clearErrors("confirmPassword");
+      methods.clearErrors('confirmPassword');
     }
   }, [password, confirmPassword, methods]);
   const formErrors = methods.formState.errors;
   const firstFieldError = Object.values(formErrors)[0]?.message;
   const displayMessage = firstFieldError || error || message;
-  const messageType = firstFieldError || error ? "ERROR" : "SUCCESS";
+  const messageType = firstFieldError || error ? 'ERROR' : 'SUCCESS';
   const onSubmit = async (data: IRegisterForm) => {
     const isValid = await methods.trigger();
     if (!isValid) return;
 
     try {
       await register(data).then(async (res) => {
-        if ("data" in res) {
+        if ('data' in res) {
           const timer = setTimeout(() => {
             dispatch(
               setMessages({
-                type: "",
+                type: '',
                 isShow: false,
-                message: "",
-              })
+                message: '',
+              }),
             );
-            dispatch(setAuthMessage(""));
+            dispatch(setAuthMessage(''));
             dispatch(setUserEmail(data.email));
-            dispatch(setOtp(Array(6).fill("")));
+            dispatch(setOtp(Array(6).fill('')));
             dispatch(setStep(step + 1));
           }, 2000);
           return () => clearTimeout(timer);
         }
       });
     } catch (error) {
-      console.log("register error", error);
+      console.log('register error', error);
     }
   };
   useEffect(() => {
-    dispatch(setMessages({ type: "", isShow: false, message: "" }));
-    dispatch(setError(""));
+    dispatch(setMessages({ type: '', isShow: false, message: '' }));
+    dispatch(setError(''));
   }, [navigate, dispatch]);
 
   return (
     <div className="flex flex-col">
       <FormProvider {...methods}>
-        <form
-          onSubmit={methods.handleSubmit(onSubmit)}
-          className="flex flex-col"
-        >
+        <form onSubmit={methods.handleSubmit(onSubmit)} className="flex flex-col">
           <div className="font-poppins">
             <div>
               <ControlledInputField
@@ -132,21 +129,12 @@ export default function RegisterForm() {
 
           {displayMessage && (
             <div className="mt-2">
-              <MessageToastify
-                isShow={true}
-                type={messageType}
-                value={displayMessage}
-              />
+              <MessageToastify isShow={true} type={messageType} value={displayMessage} />
             </div>
           )}
 
           <div className="flex items-center gap-2 text-grayDark my-4">
-            <input
-              type="checkbox"
-              name="remember"
-              id="remember"
-              className="cursor-pointer"
-            />
+            <input type="checkbox" name="remember" id="remember" className="cursor-pointer" />
             <label
               htmlFor="remember"
               className="cursor-pointer text-sm font-light font-poppins text-grayDark"
@@ -159,17 +147,15 @@ export default function RegisterForm() {
             disabled={isLoading}
             className="w-full h-[48px] px-4 font-normal text-white bg-primary rounded-2xl text-sm"
           >
-            {isLoading ? "Loading..." : "Continue"}
+            {isLoading ? 'Loading...' : 'Continue'}
           </Button>
           <div className="flex items-center justify-center gap-1 mt-4">
-            <p className="text-black text-sm font-light font-poppins">
-              Already have an account?
-            </p>
+            <p className="text-black text-sm font-light font-poppins">Already have an account?</p>
             <button
               className="text-black text-sm font-light font-poppins underline"
               onClick={(e) => {
                 e.preventDefault();
-                navigate("/auth/login");
+                navigate('/auth/login');
               }}
             >
               Log In

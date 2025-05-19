@@ -1,15 +1,15 @@
-import book2 from "../../assets/book2.png";
-import book3 from "../../assets/book3.png";
-import bookIcon from "../../assets/bookIcon.png";
-import close from "../../assets/close.svg";
-import giveWayIcon from "../../assets/givewayIcon.png";
-import sendMessageIcon from "../../assets/sendMessageIcon.png";
-import { setSwapModal } from "../../redux/feature/open/openSlice";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import Button from "./Button";
-import Image from "./Image";
-import TextArea from "./TextArea";
-import { useFormContext } from "react-hook-form";
+import book2 from '../../assets/book2.png';
+import book3 from '../../assets/book3.png';
+import bookIcon from '../../assets/bookIcon.png';
+import close from '../../assets/close.svg';
+import giveWayIcon from '../../assets/givewayIcon.png';
+import sendMessageIcon from '../../assets/sendMessageIcon.png';
+import { setSwapModal } from '../../redux/feature/open/openSlice';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import Button from './Button';
+import Image from './Image';
+import TextArea from './TextArea';
+import { useFormContext } from 'react-hook-form';
 export default function SwapModal() {
   const dispatch = useAppDispatch();
   const context = useFormContext();
@@ -17,12 +17,12 @@ export default function SwapModal() {
   if (!context) {
     return null;
   }
-  const { watch, register } = context
+  const { watch, register } = context;
 
   return (
     <div
       className={`${
-        swapModal ? "block" : "hidden"
+        swapModal ? 'block' : 'hidden'
       } bg-black bg-opacity-50 inset-0 w-full h-screen fixed top-0 left-0 z-50 flex items-center justify-center`}
     >
       <div className="w-11/12 bg-white rounded-md ">
@@ -44,17 +44,16 @@ export default function SwapModal() {
             </div>
             <div>
               <h1 className="font-medium text-smokyBlack text-sm leading-none mb-1 font-poppins">
-                Man’s Search for Meaning'
+                Man’s Search for Meaning&apos;
               </h1>
               <p className="text-smokyBlack font-normal text-xs font-poppins">
-                by Viktor Frankl's
+                by Viktor Frankl&apos;s
               </p>
               <p className="text-smokyBlack font-light text-xs font-poppins mt-1">
                 Biography | Autobiography | Personal narrative
               </p>
               <p className="text-smokyBlack font-normal text-xs font-poppins mt-1">
-                <span className="font-light">Book Conditions:</span> Used Like
-                New
+                <span className="font-light">Book Conditions:</span> Used Like New
               </p>
             </div>
           </div>
@@ -62,67 +61,51 @@ export default function SwapModal() {
             <label className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <Image src={bookIcon} alt="Book" />
-                <h4 className="text-sm font-poppins text-[#1A1A1A]">
-                  Swap with
-                </h4>
+                <h4 className="text-sm font-poppins text-[#1A1A1A]">Swap with</h4>
               </div>
-              <input type="radio" value="swap" {...register("radio")} />
+              <input type="radio" value="swap" {...register('radio')} />
             </label>
-            {watch('radio') === 'swap' && <div className={`grid grid-cols-2 mt-3`}>
-              <div className="max-w-[100px] max-h-[160px] rounded-[8px] mb-2">
-                <div className="mb-2">
-                  <Image
-                    className="mx-auto"
-                    src={book3}
-                    alt={`'Your favorite book'`}
-                  />
+            {watch('radio') === 'swap' && (
+              <div className={`grid grid-cols-2 mt-3`}>
+                <div className="max-w-[100px] max-h-[160px] rounded-[8px] mb-2">
+                  <div className="mb-2">
+                    <Image className="mx-auto" src={book3} alt={`'Your favorite book'`} />
+                  </div>
+                  <div>
+                    <h1 className="font-medium text-black text-sm leading-none mb-1 font-poppins">
+                      {'Man’s Search for Meaning'}
+                    </h1>
+                    <p className="text-black font-light text-xs font-poppins">
+                      by {"Viktor Frankl's"}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h1 className="font-medium text-black text-sm leading-none mb-1 font-poppins">
-                    {"Man’s Search for Meaning"}
-                  </h1>
-                  <p className="text-black font-light text-xs font-poppins">
-                    by {"Viktor Frankl's"}
-                  </p>
-                </div>
-              </div>
-              <div className="max-w-[100px] max-h-[160px] rounded-[8px] mb-2">
-                <div className="mb-2">
-                  <Image
-                    className="mx-auto"
-                    src={book3}
-                    alt={`'Your favorite book'`}
-                  />
-                </div>
-                <div>
-                  <h1 className="font-medium text-black text-sm leading-none mb-1 font-poppins">
-                    {"Man’s Search for Meaning"}
-                  </h1>
-                  <p className="text-black font-light text-xs font-poppins">
-                    by {"Viktor Frankl's"}
-                  </p>
+                <div className="max-w-[100px] max-h-[160px] rounded-[8px] mb-2">
+                  <div className="mb-2">
+                    <Image className="mx-auto" src={book3} alt={`'Your favorite book'`} />
+                  </div>
+                  <div>
+                    <h1 className="font-medium text-black text-sm leading-none mb-1 font-poppins">
+                      {'Man’s Search for Meaning'}
+                    </h1>
+                    <p className="text-black font-light text-xs font-poppins">
+                      by {"Viktor Frankl's"}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>}
+            )}
             <label className="flex items-center justify-between mt-5">
               <div className="flex items-center gap-4">
                 <Image src={giveWayIcon} alt="Book" />
-                <h4 className="text-sm font-poppins text-[#1A1A1A]">
-                  Ask to giveaway for free
-                </h4>
+                <h4 className="text-sm font-poppins text-[#1A1A1A]">Ask to giveaway for free</h4>
               </div>
-              <input
-                type="radio"
-                value="giveaway"
-                {...register("radio")}
-              />
+              <input type="radio" value="giveaway" {...register('radio')} />
             </label>
           </div>
 
           <div>
-            <h1 className="text-center font-poppins text-sm font-medium mb-2 mt-3">
-              Note
-            </h1>
+            <h1 className="text-center font-poppins text-sm font-medium mb-2 mt-3">Note</h1>
             <TextArea
               onChange={(e) => console.log(e.target.value)}
               placeholder="Write a short note"

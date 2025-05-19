@@ -1,4 +1,4 @@
-import { cn } from "../../utility/cn";
+import { cn } from '../../utility/cn';
 
 export default function InputLabel({
   label,
@@ -12,12 +12,7 @@ export default function InputLabel({
   return (
     <div>
       {label && (
-        <p
-          className={cn(
-            `text-arsenic text-sm mb-1 font-normal font-poppins`,
-            className
-          )}
-        >
+        <p className={cn(`text-arsenic text-sm mb-1 font-normal font-poppins`, className)}>
           {label}
           {required && <span className="text-red-600">*</span>}
         </p>

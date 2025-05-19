@@ -1,7 +1,7 @@
-import { TOptions } from "../types/interface";
-import BookDetailsStep from "./BookDetailsStep";
-import ConditionsStep from "./ConditionsStep";
-import OtherDetailsStep from "./OtherDetailsStep";
+import { TOptions } from '../types/interface';
+import BookDetailsStep from './BookDetailsStep';
+import ConditionsStep from './ConditionsStep';
+import OtherDetailsStep from './OtherDetailsStep';
 
 const BookFormStep = ({
   activeStep,
@@ -10,18 +10,14 @@ const BookFormStep = ({
   conditions,
 }: {
   activeStep: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   errors: any;
-  languages: TOptions[]  | undefined;
+  languages: TOptions[] | undefined;
   conditions: TOptions[] | undefined;
 }) => {
   switch (activeStep) {
     case 0:
-      return (
-        <BookDetailsStep
-          languageOptions={languages}
-          conditionOptions={conditions}
-        />
-      );
+      return <BookDetailsStep languageOptions={languages} conditionOptions={conditions} />;
     case 1:
       return <OtherDetailsStep errors={errors} />;
     case 2:
@@ -30,4 +26,5 @@ const BookFormStep = ({
       return null;
   }
 };
+
 export default BookFormStep;

@@ -1,49 +1,48 @@
-import { useEffect } from "react";
-import { Controller, useFieldArray, useFormContext } from "react-hook-form";
-import { FaDeleteLeft } from "react-icons/fa6";
-import closeIcon from "../../../assets/close.svg";
-import plusIcon from "../../../assets/plus.png";
-import Button from "../../../components/shared/Button";
-import ControlledInputField from "../../../components/shared/ControllerField";
-import Image from "../../../components/shared/Image";
-import InputLabel from "../../../components/shared/InputLabel";
-import { setOpen } from "../../../redux/feature/open/openSlice";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { SwapType } from "../types/enum";
-import { ISwappableBook } from "../types/interface";
-import ConditionMessageBox from "./ConditionMessageBox";
-import ImageFileInput from "./ImageControllerField";
+import { useEffect } from 'react';
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
+import { FaDeleteLeft } from 'react-icons/fa6';
+import closeIcon from '../../../assets/close.svg';
+import plusIcon from '../../../assets/plus.png';
+import Button from '../../../components/shared/Button';
+import ControlledInputField from '../../../components/shared/ControllerField';
+import Image from '../../../components/shared/Image';
+import InputLabel from '../../../components/shared/InputLabel';
+import { setOpen } from '../../../redux/feature/open/openSlice';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { SwapType } from '../types/enum';
+import { ISwappableBook } from '../types/interface';
+import ConditionMessageBox from './ConditionMessageBox';
+import ImageFileInput from './ImageControllerField';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function ConditionsStep({ errors }: { errors: any }) {
   const dispatch = useAppDispatch();
   const { open } = useAppSelector((state) => state.open);
   const { control, getValues, watch, setValue, trigger } = useFormContext();
-  const swapType = watch("swapType");
-  const swappableGenres = getValues("swappableGenres");
+  const swapType = watch('swapType');
+  const swappableGenres = getValues('swappableGenres');
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "swappableBooks",
+    name: 'swappableBooks',
   });
 
   useEffect(() => {
     if (fields.length === 0) {
-      append({ title: "", author: "", coverPhoto: null, flag: false });
+      append({ title: '', author: '', coverPhoto: null, flag: false });
     }
   }, [fields, append]);
 
   const handleRemoveGenre = (genreValue: string) => {
     if (!genreValue) return;
     setValue(
-      "swappableGenres",
-      swappableGenres?.filter(
-        (swappableGenre: string) => swappableGenre !== genreValue
-      )
+      'swappableGenres',
+      swappableGenres?.filter((swappableGenre: string) => swappableGenre !== genreValue),
     );
   };
 
   const addAnotherBook = async () => {
     const valid = await trigger();
-    const values = getValues("swappableBooks");
+    const values = getValues('swappableBooks');
 
     // Update the flags based on field validation
     values.forEach((_book: ISwappableBook, idx: number) => {
@@ -52,14 +51,12 @@ export default function ConditionsStep({ errors }: { errors: any }) {
       const swappableBookCoverPhoto = watch(`swappableBooks.${idx}.coverPhoto`);
 
       const isValidBook =
-        !!swappableBookTitle &&
-        !!swappableBookAuthor &&
-        !!swappableBookCoverPhoto;
+        !!swappableBookTitle && !!swappableBookAuthor && !!swappableBookCoverPhoto;
       setValue(`swappableBooks.${idx}.flag`, isValidBook);
     });
 
     if (valid) {
-      append({ title: "", author: "", coverPhoto: null, flag: false });
+      append({ title: '', author: '', coverPhoto: null, flag: false });
     }
   };
 
@@ -135,21 +132,30 @@ export default function ConditionsStep({ errors }: { errors: any }) {
           {fields.map((swappableBook, index) => {
             const flag = watch(`swappableBooks.${index}.flag`);
             return flag ? (
-              <div key={swappableBook.id} className="bg-white p-4 rounded-xl flex gap-4 mt-3 shadow-sm">
+              <div
+                key={swappableBook.id}
+                className="bg-white p-4 rounded-xl flex gap-4 mt-3 shadow-sm"
+              >
                 <div className="w-3/12 h-20 max-h-20">
                   {
-                  <Image
-                    src={watch(`swappableBooks.${index}.coverPhoto`) instanceof File ? URL.createObjectURL(
-                      watch(`swappableBooks.${index}.coverPhoto`)
-                    ): watch(`swappableBooks.${index}.coverPhoto`)}
-                    alt="Cover"
-                    className="w-20 h-20 object-cover rounded-md"
-                  />
-                }
+                    <Image
+                      src={
+                        watch(`swappableBooks.${index}.coverPhoto`) instanceof File
+                          ? URL.createObjectURL(watch(`swappableBooks.${index}.coverPhoto`))
+                          : watch(`swappableBooks.${index}.coverPhoto`)
+                      }
+                      alt="Cover"
+                      className="w-20 h-20 object-cover rounded-md"
+                    />
+                  }
                 </div>
                 <div className="w-3/4 pr-7">
-                  <h3 className="text-sm font-poppins font-medium line-clamp-2">{watch(`swappableBooks.${index}.title`)}</h3>
-                  <h3 className="text-xs font-poppins font-light mt-2">by {watch(`swappableBooks.${index}.author`)}</h3>
+                  <h3 className="text-sm font-poppins font-medium line-clamp-2">
+                    {watch(`swappableBooks.${index}.title`)}
+                  </h3>
+                  <h3 className="text-xs font-poppins font-light mt-2">
+                    by {watch(`swappableBooks.${index}.author`)}
+                  </h3>
                 </div>
               </div>
             ) : (
@@ -231,19 +237,15 @@ export default function ConditionsStep({ errors }: { errors: any }) {
           ) : (
             <ConditionMessageBox swapType={swapType} />
           )}
-          {errors && errors["swappableGenres"] && (
+          {errors && errors['swappableGenres'] && (
             <div className="text-rose-500 text-xs mt-1 pl-2">
-              {errors["swappableGenres"]?.message}
+              {errors['swappableGenres']?.message}
             </div>
           )}
         </div>
       )}
-      {swapType === SwapType.OPENTOOFFERS && (
-        <ConditionMessageBox swapType={swapType} />
-      )}
-      {swapType === SwapType.GIVEAWAY && (
-        <ConditionMessageBox swapType={swapType} />
-      )}
+      {swapType === SwapType.OPENTOOFFERS && <ConditionMessageBox swapType={swapType} />}
+      {swapType === SwapType.GIVEAWAY && <ConditionMessageBox swapType={swapType} />}
     </div>
   );
 }

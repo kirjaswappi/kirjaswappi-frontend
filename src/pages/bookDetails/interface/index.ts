@@ -1,4 +1,4 @@
-import { SwapType } from "../../addUpdateBook/types/enum";
+import { SwapType } from '../../addUpdateBook/types/enum';
 
 export interface ISwappableBookData {
   id: string;
@@ -7,7 +7,7 @@ export interface ISwappableBookData {
   coverPhotoUrl: string;
 }
 
-export interface ISwapConditionData <T = ISwappableBookData> {
+export interface ISwapConditionData<T = ISwappableBookData> {
   swapType: SwapType;
   giveAway: boolean;
   openForOffers: boolean;

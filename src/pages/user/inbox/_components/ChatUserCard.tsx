@@ -1,19 +1,14 @@
-import { useNavigate } from "react-router-dom";
-import { IChatUser } from "../interface";
+import { useNavigate } from 'react-router-dom';
+import { IChatUser } from '../interface';
 
-export default function ChatUserCard({
-  id,
-  name,
-  time,
-  lastMessage,
-  unread,
-}: IChatUser) {
+export default function ChatUserCard({ id, name, time, lastMessage, unread }: IChatUser) {
   const navigate = useNavigate();
   return (
-    <div
+    <button
       key={id}
-      className="flex items-center px-4 py-3 border-b border-[#F0F1F3] hover:bg-[#e5e9f2]"
+      className="flex items-center px-4 py-3 border-b border-[#F0F1F3] hover:bg-[#e5e9f2] focus:outline-none"
       onClick={() => navigate(`/user/inbox/chat/${id}`)}
+      type="button"
     >
       <div className="h-11 w-11 rounded-full bg-[#D9D9D9] flex-shrink-0 flex items-center justify-center" />
       <div className="ml-3 flex-1 min-w-0">
@@ -28,6 +23,6 @@ export default function ChatUserCard({
           {unread}
         </div>
       )}
-    </div>
+    </button>
   );
 }
