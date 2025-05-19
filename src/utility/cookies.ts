@@ -4,7 +4,7 @@ import { jwtDecode, JwtPayload } from 'jwt-decode';
 export const setCookie = (name: string, value: unknown, time: number) => {
   const encryptedValue = CryptoJS.AES.encrypt(
     JSON.stringify(value),
-    import.meta.env.SECRET_KEY,
+    import.meta.env.VITE_SECRET_KEY,
   ).toString();
 
   const date = new Date();
@@ -23,7 +23,7 @@ export const getCookie = (name: string) => {
       const encryptedValue = cookie.substring(nameEQ.length, cookie.length);
       const decryptedValue = CryptoJS.AES.decrypt(
         encryptedValue,
-        import.meta.env.SECRET_KEY,
+        import.meta.env.VITE_SECRET_KEY,
       ).toString(CryptoJS.enc.Utf8);
       return JSON.parse(decryptedValue);
     }

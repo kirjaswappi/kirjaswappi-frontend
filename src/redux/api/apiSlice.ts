@@ -6,10 +6,10 @@ let pendingAuthPromise: Promise<string> | null = null;
 
 const fetchToken = async () => {
   const data = JSON.stringify({
-    username: '${import.meta.env.USERNAME}',
-    password: '${import.meta.env.PASSWORD}',
+    username: `${import.meta.env.VITE_USERNAME}`,
+    password: `${import.meta.env.VITE_PASSWORD}`,
   });
-  const response = await fetch(`${import.meta.env.API_URL}/authenticate`, {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/authenticate`, {
     method: 'POST',
     body: data,
     headers: { 'Content-Type': 'application/json' },
@@ -26,7 +26,7 @@ const refreshAuthToken = async () => {
     return fetchToken();
   }
 
-  const response = await fetch(`${import.meta.env.API_URL}/authenticate/refresh`, {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/authenticate/refresh`, {
     method: 'POST',
     body: JSON.stringify({ refreshToken }),
     headers: { 'Content-Type': 'application/json' },
@@ -62,7 +62,7 @@ const getToken = async () => {
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.API_URL,
+    baseUrl: import.meta.env.VITE_API_URL,
     prepareHeaders: async (headers, { endpoint }) => {
       if (endpoint === 'authenticate') return headers;
 
