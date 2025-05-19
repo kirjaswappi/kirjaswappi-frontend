@@ -14,7 +14,7 @@ export interface ISwappableBook {
   title: string;
   author: string;
   coverPhoto: string | File;
-  flag?: boolean
+  flag?: boolean;
 }
 
 export interface IAddUpdateBookData {
