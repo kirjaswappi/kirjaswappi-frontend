@@ -1,16 +1,16 @@
-import { useState } from "react";
-import cameraIcon from "../../../../assets/solar_camera-bold.png";
-import sendIcon from "../../../../assets/sendIcon.png";
-import { ChatInputProps } from "../interface";
+import { useState } from 'react';
+import cameraIcon from '../../../../assets/solar_camera-bold.png';
+import sendIcon from '../../../../assets/sendIcon.png';
+import { ChatInputProps } from '../interface';
 
 const ChatInput = ({ onSendMessage }: ChatInputProps) => {
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
 
   const handleSendMessage = () => {
     if (!message.trim()) return;
 
     onSendMessage(message);
-    setMessage("");
+    setMessage('');
   };
 
   return (
@@ -28,8 +28,8 @@ const ChatInput = ({ onSendMessage }: ChatInputProps) => {
           placeholder="Type a message..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-          style={{ lineHeight: "24px" }}
+          onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+          style={{ lineHeight: '24px' }}
         />
 
         {/* Send Button */}

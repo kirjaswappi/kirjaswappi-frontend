@@ -1,12 +1,8 @@
-
 import * as yup from 'yup';
 import { MIN_PASSWORD } from '../../../../utility/constant';
 
 export const loginSchema = yup.object({
-  email: yup
-    .string()
-    .required('Please enter email.')
-    .email('Please Enter your valid email'),
+  email: yup.string().required('Please enter email.').email('Please Enter your valid email'),
   password: yup
     .string()
     .required('Please enter Password.')

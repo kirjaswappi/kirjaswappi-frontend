@@ -1,9 +1,9 @@
-import { useAppSelector } from "../../../../redux/hooks";
-import MessageToastify from "../../../../components/shared/MessageToastify";
-import Button from "../../../../components/shared/Button";
-import ControllerFieldOTP from "../../../../components/shared/ControllerFieldOTP";
-import { useFormContext } from "react-hook-form";
-import { SUCCESS } from "../../../../constant/MESSAGETYPE";
+import { useAppSelector } from '../../../../redux/hooks';
+import MessageToastify from '../../../../components/shared/MessageToastify';
+import Button from '../../../../components/shared/Button';
+import ControllerFieldOTP from '../../../../components/shared/ControllerFieldOTP';
+import { useFormContext } from 'react-hook-form';
+import { SUCCESS } from '../../../../constant/MESSAGETYPE';
 
 export default function ConfirmOTP({
   handleOTPChange,
@@ -15,9 +15,7 @@ export default function ConfirmOTP({
   } = useFormContext();
 
   // Get notification state
-  const { messageType, message, isShow } = useAppSelector(
-    (state) => state.notification
-  );
+  const { messageType, message, isShow } = useAppSelector((state) => state.notification);
 
   // Immediately show errors when field has errors or form is submitted
   const showError = isSubmitted || !!errors.otp?.message;
@@ -30,7 +28,7 @@ export default function ConfirmOTP({
 
       <div className="px-6">
         <p className="text-sm font-light text-grayDark font-poppins text-center pt-8 pb-10">
-          Enter the code we've sent to your Email
+          Enter the code we&apos;ve sent to your Email
         </p>
 
         <ControllerFieldOTP
@@ -47,7 +45,7 @@ export default function ConfirmOTP({
         )}
 
         <div className="flex items-center justify-center mt-10 gap-2 text-grayDark text-sm font-poppins">
-          <p>Haven't received a code?</p>
+          <p>Haven&apos;t received a code?</p>
           <Button type="button" className="underline text-sm">
             Send again
           </Button>

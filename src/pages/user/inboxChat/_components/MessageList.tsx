@@ -1,13 +1,13 @@
 // _components/MessagesList.tsx
-import { useRef, useEffect } from "react";
-import MessageBubble from "./MessageBubble";
-import { MessagesListProps } from "../interface";
+import { useRef, useEffect } from 'react';
+import MessageBubble from './MessageBubble';
+import { MessagesListProps } from '../interface';
 
 const MessagesList = ({ messages }: MessagesListProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   return (

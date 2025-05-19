@@ -1,26 +1,26 @@
-import ControllerFieldPassword from "../../../../components/shared/ControllerFieldPassword";
-import { useFormContext, useWatch } from "react-hook-form";
-import { useEffect } from "react";
-import MessageToastify from "../../../../components/shared/MessageToastify";
-import { ERROR } from "../../../../constant/MESSAGETYPE";
+import ControllerFieldPassword from '../../../../components/shared/ControllerFieldPassword';
+import { useFormContext, useWatch } from 'react-hook-form';
+import { useEffect } from 'react';
+import MessageToastify from '../../../../components/shared/MessageToastify';
+import { ERROR } from '../../../../constant/MESSAGETYPE';
 
 export const NewPassword = () => {
   const {
     formState: { errors },
     clearErrors,
-    control
+    control,
   } = useFormContext();
 
   // Watch password and confirmPassword fields for live validation
   const [password, confirmPassword] = useWatch({
     control,
-    name: ["password", "confirmPassword"]
+    name: ['password', 'confirmPassword'],
   });
 
   // Clear confirmPassword error if passwords match
   useEffect(() => {
     if (password && confirmPassword && password === confirmPassword) {
-      clearErrors("confirmPassword");
+      clearErrors('confirmPassword');
     }
   }, [password, confirmPassword, clearErrors]);
 
@@ -48,11 +48,7 @@ export const NewPassword = () => {
 
       {firstFieldError && (
         <div className="mb-2 mt-2">
-          <MessageToastify
-            isShow={true}
-            type={ERROR}
-            value={firstFieldError?.toString()}
-          />
+          <MessageToastify isShow={true} type={ERROR} value={firstFieldError?.toString()} />
         </div>
       )}
     </>

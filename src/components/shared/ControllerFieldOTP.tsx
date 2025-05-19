@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { Controller, useFormContext } from "react-hook-form";
-import OTPInput from "react-otp-input";
-import { cn } from "../../utility/cn";
-import MessageToastify from "./MessageToastify";
-import { OTP_LENGTH } from "../../utility/constant";
+import React, { useState } from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
+import OTPInput from 'react-otp-input';
+import { cn } from '../../utility/cn';
+import MessageToastify from './MessageToastify';
+import { OTP_LENGTH } from '../../utility/constant';
 
 interface ControllerFieldOTPProps {
   name: string;
@@ -17,7 +17,7 @@ interface ControllerFieldOTPProps {
 const ControllerFieldOTP: React.FC<ControllerFieldOTPProps> = ({
   name,
   numInputs = OTP_LENGTH,
-  placeholder = "-",
+  placeholder = '-',
   className,
   showErrorMessage = false,
   onOTPChange,
@@ -34,7 +34,7 @@ const ControllerFieldOTP: React.FC<ControllerFieldOTPProps> = ({
       render={({ field, fieldState: { error } }) => (
         <div>
           <OTPInput
-            value={field.value || ""}
+            value={field.value || ''}
             onChange={(value) => {
               // Set touched when user starts typing
               if (!isTouched) setIsTouched(true);
@@ -51,8 +51,8 @@ const ControllerFieldOTP: React.FC<ControllerFieldOTPProps> = ({
                 // Don't set error while typing
               } else if (isTouched && value.length === 0) {
                 setError(name, {
-                  type: "manual",
-                  message: "OTP is required",
+                  type: 'manual',
+                  message: 'OTP is required',
                 });
               }
             }}
@@ -66,18 +66,18 @@ const ControllerFieldOTP: React.FC<ControllerFieldOTPProps> = ({
                 inputMode="numeric"
                 placeholder={placeholder}
                 className={cn(
-                  "max-w-10 h-10 mb-5 bg-[#E7E7E7] rounded-md text-center text-base font-normal focus:outline-none transition-all duration-150",
-                  error && "border border-rose-500",
-                  !error && "border border-[#D9D9D9]",
-                  className
+                  'max-w-10 h-10 mb-5 bg-[#E7E7E7] rounded-md text-center text-base font-normal focus:outline-none transition-all duration-150',
+                  error && 'border border-rose-500',
+                  !error && 'border border-[#D9D9D9]',
+                  className,
                 )}
-                style={{ backgroundColor: "#E7E7E7" }}
+                style={{ backgroundColor: '#E7E7E7' }}
               />
             )}
             containerStyle={{
-              display: "flex",
-              justifyContent: "space-between",
-              width: "100%",
+              display: 'flex',
+              justifyContent: 'space-between',
+              width: '100%',
             }}
           />
           {showErrorMessage && error?.message && (
