@@ -31,7 +31,8 @@ const getDefaultSwappableBooks = (bookData?: IBookData) =>
     title: title || '',
     author: author || '',
     coverPhoto: coverPhotoUrl || null,
-  })) || [{ id: '', title: '', author: '', coverPhoto: null }];
+    flag: true,
+  })) || [{ id: '', title: '', author: '', coverPhoto: null, flag: false }];
 
 // SET DEFAULT SWAPPABLE GENRES
 const getDefaultSwappableGenres = (bookData?: IBookData) =>
