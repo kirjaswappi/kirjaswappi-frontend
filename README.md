@@ -16,7 +16,7 @@ To format the source code, you can run:
 npm run spotless
 ```
 
-## Project Sturcture:
+## Project Structure:
 
 ```
 my-react-app/
