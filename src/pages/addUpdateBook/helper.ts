@@ -1,7 +1,7 @@
 import {
-    blobToBase64,
-    convertedURLToFile,
-    urlToDataUrl,
+  blobToBase64,
+  convertedURLToFile,
+  urlToDataUrl,
 } from "../../utility/helper";
 import { SwapType } from "./types/enum";
 import { IAddUpdateBook, IBookData } from "./types/interface";
@@ -36,8 +36,9 @@ const getDefaultSwappableBooks = (bookData?: IBookData) =>
       title: title || "",
       author: author || "",
       coverPhoto: coverPhotoUrl || null,
+      flag: true
     })
-  ) || [{ id: "", title: "", author: "", coverPhoto: null }];
+  ) || [{ id: "", title: "", author: "", coverPhoto: null, flag: false }];
 
 // SET DEFAULT SWAPPABLE GENRES
 const getDefaultSwappableGenres = (bookData?: IBookData) =>
