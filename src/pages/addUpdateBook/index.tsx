@@ -29,7 +29,7 @@ import { IAddUpdateBookData } from './types/interface';
 export default function AddUpdateBook() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [active, setActive] = useState<number>(0);
+  const [active, setActive] = useState<number>(2);
   const { userInformation } = useAppSelector((state) => state.auth);
 
   // LANGUAGE, CONDITION, & BOOK QUERY

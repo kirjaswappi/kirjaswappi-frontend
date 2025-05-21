@@ -1,12 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { FaDeleteLeft } from 'react-icons/fa6';
+import { PiDotsThreeBold } from 'react-icons/pi';
 import closeIcon from '../../../assets/close.svg';
 import plusIcon from '../../../assets/plus.png';
 import Button from '../../../components/shared/Button';
 import ControlledInputField from '../../../components/shared/ControllerField';
 import Image from '../../../components/shared/Image';
 import InputLabel from '../../../components/shared/InputLabel';
+import { useMouseClick } from '../../../hooks/useMouse';
 import { setOpen } from '../../../redux/feature/open/openSlice';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { SwapType } from '../types/enum';
@@ -17,8 +19,10 @@ import ImageFileInput from './ImageControllerField';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function ConditionsStep({ errors }: { errors: any }) {
   const dispatch = useAppDispatch();
+  const [swappableBookIndex, setSwappableBookIndex] = useState<number | null>(null);
   const { open } = useAppSelector((state) => state.open);
   const { control, getValues, watch, setValue, trigger } = useFormContext();
+  const { reference } = useMouseClick();
   const swapType = watch('swapType');
   const swappableGenres = getValues('swappableGenres');
   const { fields, append, remove } = useFieldArray({
@@ -60,8 +64,10 @@ export default function ConditionsStep({ errors }: { errors: any }) {
     }
   };
 
+  // EDIT SWAPPABLE BOOK
+  console.log({ swappableBookIndex });
   return (
-    <div>
+    <div ref={reference as React.RefObject<HTMLDivElement>}>
       <div className="pt-4">
         <InputLabel label="Swap Type" required />
       </div>
@@ -131,6 +137,9 @@ export default function ConditionsStep({ errors }: { errors: any }) {
         <div>
           {fields.map((swappableBook, index) => {
             const flag = watch(`swappableBooks.${index}.flag`);
+            const coverPhoto = watch(`swappableBooks.${index}.coverPhoto`);
+            const title = watch(`swappableBooks.${index}.title`);
+            const author = watch(`swappableBooks.${index}.author`);
             return flag ? (
               <div
                 key={swappableBook.id}
@@ -140,22 +149,22 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                   {
                     <Image
                       src={
-                        watch(`swappableBooks.${index}.coverPhoto`) instanceof File
-                          ? URL.createObjectURL(watch(`swappableBooks.${index}.coverPhoto`))
-                          : watch(`swappableBooks.${index}.coverPhoto`)
+                        coverPhoto instanceof File ? URL.createObjectURL(coverPhoto) : coverPhoto
                       }
                       alt="Cover"
                       className="w-20 h-20 object-cover rounded-md"
                     />
                   }
                 </div>
-                <div className="w-3/4 pr-7">
-                  <h3 className="text-sm font-poppins font-medium line-clamp-2">
-                    {watch(`swappableBooks.${index}.title`)}
-                  </h3>
-                  <h3 className="text-xs font-poppins font-light mt-2">
-                    by {watch(`swappableBooks.${index}.author`)}
-                  </h3>
+                <div className="w-3/4 pr-7 relative">
+                  <h3 className="text-sm font-poppins font-medium line-clamp-2">{title}</h3>
+                  <h3 className="text-xs font-poppins font-light mt-2">by {author}</h3>
+                  <PiDotsThreeBold
+                    size={24}
+                    className="absolute right-0 top-0"
+                    onClick={() => setSwappableBookIndex(index)}
+                  />
+                  {swappableBookIndex === index && <div className="absolute right-0 top-0">ok</div>}
                 </div>
               </div>
             ) : (
