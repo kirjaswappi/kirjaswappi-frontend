@@ -1,19 +1,18 @@
-import { Link, useLocation } from "react-router-dom";
-import { menu } from "../../../data/menu";
-import Image from "../../shared/Image";
+import { Link, useLocation } from 'react-router-dom';
+import { menu } from '../../../data/menu';
+import Image from '../../shared/Image';
 
 export default function BottomNav() {
   const location = useLocation();
   const ignorePath = [
-    "/profile/edit-user",
-    "/profile/add-book",
-    `/book-details/${location?.pathname?.split("/").reverse()[0]}`,
-    `/profile/update-book/${location?.pathname?.split("/").reverse()[0]}`,
-    `/book-details/${location?.pathname?.split("/").reverse()[0]}`,
-    `/user/inbox/chat/${location?.pathname?.split("/").reverse()[0]}`,
+    '/profile/edit-user',
+    '/profile/add-book',
+    `/book-details/${location?.pathname?.split('/').reverse()[0]}`,
+    `/profile/update-book/${location?.pathname?.split('/').reverse()[0]}`,
+    `/book-details/${location?.pathname?.split('/').reverse()[0]}`,
+    `/user/inbox/chat/${location?.pathname?.split('/').reverse()[0]}`,
   ];
   const isFooterBarShow = ignorePath.includes(location.pathname);
-  console.log(location?.pathname?.split("/").reverse()[0]);
   return (
     <div
       className={`${
@@ -24,13 +23,13 @@ export default function BottomNav() {
         const isActive = location.pathname === menuItem?.route;
         return (
           <Link
-            to={menuItem?.route || "#"}
+            to={menuItem?.route || '#'}
             key={menuItem?.id}
             className={`flex flex-col items-center gap-1 w-14 min-w-14 h-14 min-h-14 p-2 ${
-              isActive ? "bg-[#EDEDED] rounded-md text-primary" : ""
+              isActive ? 'bg-[#EDEDED] rounded-md text-primary' : ''
             }`}
             style={{
-              transition: "background-color 0.2s ease-in-out",
+              transition: 'background-color 0.2s ease-in-out',
             }}
           >
             <div className="h-7 flex items-center justify-center">
@@ -39,15 +38,13 @@ export default function BottomNav() {
                 alt="icon"
                 style={{
                   filter: isActive
-                    ? "brightness(0) saturate(100%) invert(43%) sepia(98%) saturate(2375%) hue-rotate(185deg) brightness(93%) contrast(98%)"
-                    : "none",
-                  transition: "filter 0.2s ease-in-out",
+                    ? 'brightness(0) saturate(100%) invert(43%) sepia(98%) saturate(2375%) hue-rotate(185deg) brightness(93%) contrast(98%)'
+                    : 'none',
+                  transition: 'filter 0.2s ease-in-out',
                 }}
               />
             </div>
-            <p className="leading-none text-xs font-normal font-poppins">
-              {menuItem?.value}
-            </p>
+            <p className="leading-none text-xs font-normal font-poppins">{menuItem?.value}</p>
           </Link>
         );
       })}

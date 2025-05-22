@@ -1,42 +1,36 @@
-import InputLabel from "../../../components/shared/InputLabel";
+import ControlledInputField from '../../../components/shared/ControllerField';
+import InputLabel from '../../../components/shared/InputLabel';
+import { IBookDetailsProps } from '../types/interface';
 
-import ControlledInputField from "../../../components/shared/ControllerField";
-
-type TOptions = {
-  label: string;
-  value: string;
-};
-interface IBookDetailsProps {
-  languageOptions: TOptions[] | undefined;
-  conditionOptions: TOptions[] | undefined;
-}
-
-export default function BookDetailsStep({languageOptions, conditionOptions}: IBookDetailsProps) {
+export default function BookDetailsStep({ languageOptions, conditionOptions }: IBookDetailsProps) {
   return (
     <div>
       <div className="mt-4 pb-4 border-b border-platinumDark">
         <InputLabel label="Book Title" required />
         <ControlledInputField
           name="title"
-          placeholder="Enter your title"
+          placeholder="Enter book title"
           className="rounded-md"
+          showErrorMessage
         />
       </div>
       <div className="mt-4 pb-4 border-b border-platinumDark">
         <InputLabel label="Author Name" required />
         <ControlledInputField
           name="author"
-          placeholder="Enter your author"
+          placeholder="Enter book author"
           className="rounded-md"
+          showErrorMessage
         />
       </div>
       <div className="mt-4 pb-4 border-b border-platinumDark">
-        <InputLabel label="Short Description" required />
+        <InputLabel label="Short Description" />
         <ControlledInputField
-        type="textarea"
+          type="textarea"
           name="description"
-          placeholder="Enter your description"
+          placeholder="Enter a short description of the book"
           className="rounded-md h-[83px]"
+          showErrorMessage
         />
       </div>
       <div className="mt-4 pb-4 border-b border-platinumDark">
@@ -46,15 +40,17 @@ export default function BookDetailsStep({languageOptions, conditionOptions}: IBo
           name="language"
           className="rounded-md bg-white"
           options={languageOptions}
+          showErrorMessage
         />
       </div>
       <div className="mt-4 pb-4 border-b border-platinumDark">
-        <InputLabel label="Book Condition" />
+        <InputLabel label="Book Condition" required />
         <ControlledInputField
           type="select"
           name="condition"
           className="rounded-md bg-white"
           options={conditionOptions}
+          showErrorMessage
         />
       </div>
     </div>

@@ -1,32 +1,37 @@
-import Button from "../../../components/shared/Button";
-import Image from "../../../components/shared/Image";
-import { setOpen } from "../../../redux/feature/open/openSlice";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import closeIcon from "../../../assets/close.svg";
-import { useFormContext } from "react-hook-form";
-import ImageFileInput from "./ImageControllerField";
-import InputLabel from "../../../components/shared/InputLabel";
-export default function OtherDetailsStep({ errors }: { errors: any }) {
+import Button from '../../../components/shared/Button';
+import Image from '../../../components/shared/Image';
+import { setOpen } from '../../../redux/feature/open/openSlice';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import closeIcon from '../../../assets/close.svg';
+import { useFormContext } from 'react-hook-form';
+import InputLabel from '../../../components/shared/InputLabel';
+import MultipleImageFileInput from './MultipleImageControllerField';
+import { FieldErrors, FieldError } from 'react-hook-form';
+
+export default function OtherDetailsStep({ errors }: { errors: FieldErrors }) {
   const { open } = useAppSelector((state) => state.open);
   const dispatch = useAppDispatch();
   const { getValues, setValue } = useFormContext();
-  const favGenres = getValues("favGenres");
+  const genres = getValues('genres');
 
-  
   const handleRemoveGenre = (genreValue: string) => {
     if (!genreValue) return;
-    const favGenres = getValues("favGenres");
+    const genres = getValues('genres');
     setValue(
-      "favGenres",
-      favGenres?.filter((favGen: string) => favGen !== genreValue)
+      'genres',
+      genres?.filter((genre: string) => genre !== genreValue),
     );
   };
+
   return (
     <div>
       <div>
         <div className="py-4 border-b border-platinumDark">
-          <InputLabel label="Book Cover" required />
-          <ImageFileInput name="bookCover" />
+          <InputLabel label="Cover Photo" required />
+          <MultipleImageFileInput
+            errors={errors as Record<string, FieldError>}
+            name="coverPhotos"
+          />
         </div>
         <div className="flex items-center justify-between py-4 border-b border-platinumDark">
           <InputLabel label="Genre" required />
@@ -39,15 +44,15 @@ export default function OtherDetailsStep({ errors }: { errors: any }) {
           </button>
         </div>
         <div>
-          {favGenres && favGenres.length > 0 ? (
+          {genres && genres.length > 0 ? (
             <div className="flex flex-col gap-2 pt-4">
-              {favGenres.map((favItem: string, index: number) => (
+              {genres.map((item: string, index: number) => (
                 <div
                   key={index}
                   className="flex items-center justify-between px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg"
                 >
-                  <h3 className="font-poppins text-sm font-light">{favItem}</h3>
-                  <Button onClick={() => handleRemoveGenre(favItem)}>
+                  <h3 className="font-poppins text-sm font-light">{item}</h3>
+                  <Button onClick={() => handleRemoveGenre(item)}>
                     <Image src={closeIcon} alt="close" className="h-2" />
                   </Button>
                 </div>
@@ -55,12 +60,12 @@ export default function OtherDetailsStep({ errors }: { errors: any }) {
             </div>
           ) : (
             <div className="h-[50px] bg-white  mt-3 flex items-center justify-center rounded-md">
-              <p className="text-xs text-grayDark">Not Found Genre</p>
+              <p className="text-xs text-grayDark">No Genre Added.</p>
             </div>
           )}
-          {errors && errors["favGenres"] && (
+          {errors && errors['genres'] && (
             <div className="text-rose-500 text-xs mt-1 pl-2">
-              {errors["favGenres"]?.message} 
+              {(errors['genres'] as FieldError)?.message}
             </div>
           )}
         </div>

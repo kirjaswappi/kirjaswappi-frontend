@@ -1,9 +1,9 @@
-import BookCard from "../../../components/shared/BookCard";
-import BookSkeleton from "../../../components/shared/skeleton/BookSkeleton";
-import { useSkeleton } from "../../../hooks/useSkeleton";
-import { useAppSelector } from "../../../redux/hooks";
-import { IBook } from "../../books/interface";
-import AddBookComponent from "./AddBookComponent";
+import BookCard from '../../../components/shared/BookCard';
+import BookSkeleton from '../../../components/shared/skeleton/BookSkeleton';
+import { useSkeleton } from '../../../hooks/useSkeleton';
+import { useAppSelector } from '../../../redux/hooks';
+import { IBook } from '../../books/interface';
+import AddBookComponent from './AddBookComponent';
 
 export default function MyLibrary() {
   const { showSkeleton } = useSkeleton();
@@ -17,10 +17,7 @@ export default function MyLibrary() {
       <AddBookComponent />
       {loading || showSkeleton
         ? Array.from({ length: 10 }, (_, index) => <BookSkeleton key={index} />)
-        : books &&
-          books?.map((book: IBook, index: number) => (
-            <BookCard key={index} book={book} />
-          ))}
+        : books && books?.map((book: IBook, index: number) => <BookCard key={index} book={book} />)}
     </div>
   );
 }

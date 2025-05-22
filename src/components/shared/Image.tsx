@@ -1,5 +1,5 @@
-import React, { CSSProperties, RefObject } from "react";
-import NotFoundImg from "../../assets/notFoundIcon.png";
+import React, { CSSProperties, RefObject } from 'react';
+import NotFoundImg from '../../assets/notFoundIcon.png';
 
 interface IImageProps {
   src: string | undefined;
@@ -9,7 +9,7 @@ interface IImageProps {
   onMouseOver?: () => void;
   onClick?: () => void;
   onKeyDown?: () => void;
-  style?: CSSProperties
+  style?: CSSProperties;
 }
 
 const Image: React.FC<IImageProps> = (props) => {
@@ -27,7 +27,7 @@ const Image: React.FC<IImageProps> = (props) => {
         onError={handleImageError}
         loading="lazy"
         decoding="async"
-        alt={props?.alt ? props?.alt : "kirja"}
+        alt={props?.alt ? props?.alt : 'kirja'}
         style={style}
       />
     </picture>
