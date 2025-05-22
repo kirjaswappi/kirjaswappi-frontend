@@ -11,7 +11,9 @@ export const otpSchema = yup.object({
     .trim()
     .required('OTP is required')
     .length(OTP_LENGTH, `OTP must be exactly ${OTP_LENGTH} digits`),
+  email: yup.string().email('Please enter a valid email').required('Enter your email'),
 });
+
 export const passwordSchema = yup.object({
   password: yup
     .string()
@@ -21,5 +23,7 @@ export const passwordSchema = yup.object({
     .string()
     .required('Please enter Confirm Password')
     .oneOf([yup.ref('password')], 'Password and Confirm Password do not match'),
+  email: yup.string().email('Please enter a valid email').required('Enter your email'),
 });
+
 export const ResetPasswordValidation = [emailSchema, otpSchema, passwordSchema];
