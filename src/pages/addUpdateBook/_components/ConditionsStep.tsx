@@ -3,9 +3,12 @@ import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { FaDeleteLeft } from 'react-icons/fa6';
 import { PiDotsThreeBold } from 'react-icons/pi';
 import closeIcon from '../../../assets/close.svg';
+import deleteIcon from '../../../assets/deleteIconRed.png';
+import editIcon from '../../../assets/editBlack.png';
 import plusIcon from '../../../assets/plus.png';
 import Button from '../../../components/shared/Button';
 import ControlledInputField from '../../../components/shared/ControllerField';
+import DeleteBookModal from '../../../components/shared/DeleteBookModal';
 import Image from '../../../components/shared/Image';
 import InputLabel from '../../../components/shared/InputLabel';
 import { useMouseClick } from '../../../hooks/useMouse';
@@ -22,7 +25,8 @@ export default function ConditionsStep({ errors }: { errors: any }) {
   const [swappableBookIndex, setSwappableBookIndex] = useState<number | null>(null);
   const { open } = useAppSelector((state) => state.open);
   const { control, getValues, watch, setValue, trigger } = useFormContext();
-  const { reference } = useMouseClick();
+  const { reference, setClicked, clicked } = useMouseClick();
+  const { clicked: popup, setClicked: setPopup } = useMouseClick();
   const swapType = watch('swapType');
   const swappableGenres = getValues('swappableGenres');
   const { fields, append, remove } = useFieldArray({
@@ -65,9 +69,24 @@ export default function ConditionsStep({ errors }: { errors: any }) {
   };
 
   // EDIT SWAPPABLE BOOK
-  console.log({ swappableBookIndex });
+  const editAnotherBook = (index: number) => {
+    setValue(`swappableBooks.${index}.flag`, false);
+  };
+
+  // OPEN POPUP WHEN CLICK ON THE DELETE BUTTON
+  const anotherBookPopupDeleteModal = () => {
+    // DELETE BOOK POPUP
+    setPopup(true);
+  };
+  // DELETE SWAPPABLE BOOK
+  const deleteSwappableBookByIndex = (index: number) => {
+    const values = getValues('swappableBooks');
+    const filteredSwapBooks = values.filter((_book: ISwappableBook, idx: number) => index !== idx);
+    setValue('swappableBooks', filteredSwapBooks);
+  };
+
   return (
-    <div ref={reference as React.RefObject<HTMLDivElement>}>
+    <div>
       <div className="pt-4">
         <InputLabel label="Swap Type" required />
       </div>
@@ -133,6 +152,14 @@ export default function ConditionsStep({ errors }: { errors: any }) {
         />
       </div>
       <span className="w-full h-[1px] bg-platinumDark block my-4"></span>
+      {popup && (
+        <DeleteBookModal
+          header="Delete Book"
+          description="Are you sure you want to delete this book? This action cannot be undone."
+          onCancel={() => setPopup(false)}
+          onConfirm={anotherBookPopupDeleteModal}
+        />
+      )}
       {swapType === SwapType.BYBOOKS && (
         <div>
           {fields.map((swappableBook, index) => {
@@ -159,12 +186,43 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                 <div className="w-3/4 pr-7 relative">
                   <h3 className="text-sm font-poppins font-medium line-clamp-2">{title}</h3>
                   <h3 className="text-xs font-poppins font-light mt-2">by {author}</h3>
-                  <PiDotsThreeBold
-                    size={24}
-                    className="absolute right-0 top-0"
-                    onClick={() => setSwappableBookIndex(index)}
-                  />
-                  {swappableBookIndex === index && <div className="absolute right-0 top-0">ok</div>}
+                  <div ref={reference as React.RefObject<HTMLDivElement>}>
+                    <PiDotsThreeBold
+                      size={24}
+                      className="absolute right-0 top-0 cursor-pointer"
+                      onClick={() => {
+                        setSwappableBookIndex(index);
+                        setClicked((prev) => !prev);
+                      }}
+                    />
+                  </div>
+                  {swappableBookIndex === index && clicked && (
+                    <div
+                      className="absolute right-0 top-6 w-[138px] bg-white shadow-lg rounded-md z-10
+                    "
+                    >
+                      <Button
+                        onClick={() => editAnotherBook(index)}
+                        onKeyDown={(e) => e.key === 'Enter' && editAnotherBook(index)}
+                        className="flex items-center gap-2 p-2 border-b border-[#D3D3D3] w-full cursor-pointer"
+                        type="button"
+                      >
+                        <Image src={editIcon} alt="editIcon" className="h-[18px]" />
+                        <p className="font-poppins font-normal text-sm">Edit</p>
+                      </Button>
+                      <Button
+                        onClick={() => deleteSwappableBookByIndex(index)}
+                        className="flex items-center gap-2 p-2  w-full"
+                        onKeyDown={(e) => e.key === 'Enter' && editAnotherBook(index)}
+                        type="button"
+                      >
+                        <Image src={deleteIcon} alt="editIcon" className="h-[18px]" />
+                        <p className="font-poppins font-normal text-sm text-[#EA244E] cursor-pointer">
+                          Delete
+                        </p>
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (
