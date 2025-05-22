@@ -68,6 +68,7 @@ export const authApi = api.injectEndpoints({
           newPassword: data?.newPassword,
           confirmPassword: data?.confirmPassword,
         };
+
         return {
           url: `/users/reset-password/${email}`,
           method: 'POST',

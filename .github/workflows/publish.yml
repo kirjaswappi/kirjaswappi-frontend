@@ -32,7 +32,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Install Dependencies
-        run: npm ci
+        run: yarn install
 
       - name: Extract Release Version
         run: echo "RELEASE_VERSION=$(echo $GITHUB_REF | sed -e 's/refs\/tags\/v//')" >> $GITHUB_ENV
