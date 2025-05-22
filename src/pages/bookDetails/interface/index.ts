@@ -1,11 +1,14 @@
-export interface IBook {
+import { SwapType } from '../../addUpdateBook/types/enum';
+
+export interface ISwappableBookData {
+  id: string;
   title: string;
   author: string;
   coverPhotoUrl: string;
 }
 
-export interface ISwapCondition<T = IBook> {
-  conditionType: "ByBooks" | "ByGenres" | "OpenForOffers" | "GiveAway";
+export interface ISwapConditionData<T = ISwappableBookData> {
+  swapType: SwapType;
   giveAway: boolean;
   openForOffers: boolean;
   swappableGenres: {
@@ -15,7 +18,7 @@ export interface ISwapCondition<T = IBook> {
   swappableBooks: T[];
 }
 export interface IExchange {
-  type: string;
+  swapType: string;
   title: string;
-  author: string;
+  value: string;
 }

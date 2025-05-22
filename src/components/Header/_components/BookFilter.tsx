@@ -1,21 +1,20 @@
-import Button from "../../shared/Button";
-import Image from "../../shared/Image";
-import deleteIcon from "../../../assets/deleteIcon.png";
-import Line from "../../shared/Line";
-import InputLabel from "../../shared/InputLabel";
-import CheckboxControllerField from "./CheckboxInputControllerField";
-import { useGetGenreQuery } from "../../../redux/feature/genre/genreApi";
-import GenreSkelton from "./GenreSkelton";
+import Button from '../../shared/Button';
+import Image from '../../shared/Image';
+import deleteIcon from '../../../assets/deleteIcon.png';
+import Line from '../../shared/Line';
+import InputLabel from '../../shared/InputLabel';
+import CheckboxControllerField from './CheckboxInputControllerField';
+import { useGetGenreQuery } from '../../../redux/feature/genre/genreApi';
+import GenreSkelton from './GenreSkelton';
 
 import {
   useGetSupportConditionQuery,
   useGetSupportLanguageQuery,
-} from "../../../redux/feature/book/bookApi";
-import { useFormContext } from "react-hook-form";
+} from '../../../redux/feature/book/bookApi';
+import { useFormContext } from 'react-hook-form';
 
 export default function BookFilter() {
-  const { data: genreData = [], isLoading: genreLoading } =
-    useGetGenreQuery(undefined);
+  const { data: genreData = [], isLoading: genreLoading } = useGetGenreQuery(undefined);
   const { data: languageDataOptions, isLoading: languageLoading } =
     useGetSupportLanguageQuery(undefined);
   const { data: conditionDataOptions, isLoading: conditionLoading } =
@@ -24,9 +23,7 @@ export default function BookFilter() {
   return (
     <div className="overflow-y-scroll h-screen custom-scrollbar px-2">
       <div className="flex items-center justify-between">
-        <h3 className="text-grayDark font-poppins font-medium text-sm">
-          Book Filter
-        </h3>
+        <h3 className="text-grayDark font-poppins font-medium text-sm">Book Filter</h3>
         <Button
           type="reset"
           onClick={() => reset()}
@@ -48,15 +45,9 @@ export default function BookFilter() {
             ))}
           </div>
         ) : (
-          genreData?.map(
-            (genre: { id: string; name: string }, index: number) => (
-              <CheckboxControllerField
-                key={index}
-                name="genre"
-                value={genre.name}
-              />
-            )
-          )
+          genreData?.map((genre: { id: string; name: string }, index: number) => (
+            <CheckboxControllerField key={index} name="genre" value={genre.name} />
+          ))
         )}
       </div>
       <Line className="my-4" />
@@ -70,11 +61,7 @@ export default function BookFilter() {
           </div>
         ) : (
           languageDataOptions?.map((language: string, index: number) => (
-            <CheckboxControllerField
-              key={index}
-              name="language"
-              value={language}
-            />
+            <CheckboxControllerField key={index} name="language" value={language} />
           ))
         )}
       </div>
@@ -89,16 +76,17 @@ export default function BookFilter() {
           </div>
         ) : (
           conditionDataOptions?.map((condition: string, index: number) => (
-            <CheckboxControllerField
-              key={index}
-              name="condition"
-              value={condition}
-            />
+            <CheckboxControllerField key={index} name="condition" value={condition} />
           ))
         )}
       </div>
       <Line className="my-4" />
-      <Button type="submit" className="bg-primary text-white mb-12 w-full py-3 rounded-lg font-poppins font-medium text-base">Apply Filter</Button>
+      <Button
+        type="submit"
+        className="bg-primary text-white mb-12 w-full py-3 rounded-lg font-poppins font-medium text-base"
+      >
+        Apply Filter
+      </Button>
     </div>
   );
 }

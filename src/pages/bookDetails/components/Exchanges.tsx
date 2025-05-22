@@ -1,59 +1,44 @@
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "../../../components/shared/Carousel";
-import Image from "../../../components/shared/Image";
-import { IExchange, ISwapCondition } from "../interface";
-import BookIconBlue from "../../../assets/bookIconBlue.png";
-import BookIcon from "../../../assets/bookIcon.svg";
-import {
-  BYBOOKS,
-  BYGENRES,
-  GIVEAWAY,
-  OPENTOOFFERS,
-} from "../../../utility/ADDBOOKCONDITIONTYPE";
+import BookIcon from '../../../assets/bookIcon.svg';
+import BookIconBlue from '../../../assets/bookIconBlue.png';
+import { Carousel, CarouselContent, CarouselItem } from '../../../components/shared/Carousel';
+import Image from '../../../components/shared/Image';
+import { SwapType } from '../../addUpdateBook/types/enum';
+import { IExchange, ISwapConditionData } from '../interface';
 
-export default function Exchanges({
-  swapCondition,
-}: {
-  swapCondition: ISwapCondition;
-}) {
+export default function Exchanges({ swapCondition }: { swapCondition: ISwapConditionData }) {
   if (!swapCondition) return null;
 
-  const conditionExchangeFn = (
-    swapValues: ISwapCondition
-  ): Array<IExchange> => {
-    switch (swapValues.conditionType) {
-      case BYBOOKS:
-        return swapValues.swappableBooks.map((swapBook) => ({
-          type: swapValues.conditionType,
-          title: swapBook.title,
-          author: swapBook.author,
+  const swapConditionExchange = (swapConditionData: ISwapConditionData): Array<IExchange> => {
+    switch (swapConditionData.swapType) {
+      case SwapType.BYBOOKS:
+        return swapConditionData.swappableBooks.map((swappableBook) => ({
+          swapType: swapConditionData.swapType,
+          title: swappableBook.title,
+          value: swappableBook.author,
         }));
 
-      case BYGENRES:
-        return swapValues.swappableGenres.map((genre) => ({
-          type: swapValues.conditionType,
-          title: genre.name,
-          author: "Any of this genre",
+      case SwapType.BYGENRES:
+        return swapConditionData.swappableGenres.map((swappableGenre) => ({
+          swapType: swapConditionData.swapType,
+          title: swappableGenre.name,
+          value: 'Any of this genre',
         }));
 
-      case OPENTOOFFERS:
+      case SwapType.OPENTOOFFERS:
         return [
           {
-            type: swapValues.conditionType,
-            title: OPENTOOFFERS,
-            author: "Flexible exchange",
+            swapType: swapConditionData.swapType,
+            title: SwapType.OPENTOOFFERS,
+            value: 'Flexible exchange',
           },
         ];
 
-      case GIVEAWAY:
+      case SwapType.GIVEAWAY:
         return [
           {
-            type: swapValues.conditionType,
-            title: GIVEAWAY,
-            author: "You will receive offers for giveaway",
+            swapType: swapConditionData.swapType,
+            title: SwapType.GIVEAWAY,
+            value: 'You will receive offers for Give Away',
           },
         ];
 
@@ -62,11 +47,11 @@ export default function Exchanges({
     }
   };
 
-  const condition = conditionExchangeFn(swapCondition);
+  const condition = swapConditionExchange(swapCondition);
   return (
     <Carousel
       opts={{
-        align: "start",
+        align: 'start',
         loop: true,
       }}
       className="relative"
@@ -75,14 +60,12 @@ export default function Exchanges({
         {condition.map((item) => {
           return (
             <CarouselItem
-              key={`${item.type}-${item.title}`}
-              className={` ${
-                condition.length <= 1 ? "pr-4 basis-full" : "basis-[70%]"
-              }`}
+              key={`${item.swapType}-${item.title}`}
+              className={` ${condition.length <= 1 ? 'pr-4 basis-full' : 'basis-[70%]'}`}
             >
               <div className="relative w-full overflow-hidden h-[110px] rounded-lg bg-[#DEE7F5] flex items-center gap-3 px-[18px]">
                 <Image
-                  src={item.type === BYBOOKS ? BookIconBlue : BookIcon}
+                  src={item.swapType === SwapType.BYBOOKS ? BookIconBlue : BookIcon}
                   className="w-5"
                 />
                 <div className="w-[120px] text-left">
@@ -90,7 +73,7 @@ export default function Exchanges({
                     {item?.title}
                   </h3>
                   <p className="text-xs font-poppins font-light mt-1 text-smokyBlack">
-                    {item?.type === BYBOOKS && "by"} {item?.author}
+                    {item?.swapType === SwapType.BYBOOKS && 'by'} {item?.value}
                   </p>
                 </div>
               </div>

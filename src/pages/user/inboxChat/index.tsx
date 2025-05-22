@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom";
-import messagesData from "../../../data/messages.json";
-import ChatInput from "./_components/ChatInput";
-import ChatHeader from "./_components/ChatHeader";
-import MessagesList from "./_components/MessageList";
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import messagesData from '../../../data/messages.json';
+import ChatInput from './_components/ChatInput';
+import ChatHeader from './_components/ChatHeader';
+import MessagesList from './_components/MessageList';
 
 export const Index = () => {
   const { id } = useParams();
@@ -16,11 +16,11 @@ export const Index = () => {
 
     const newMessage = {
       id: String(Date.now()),
-      senderId: "user",
+      senderId: 'user',
       text: message,
       timestamp: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
+        hour: '2-digit',
+        minute: '2-digit',
       }),
     };
 

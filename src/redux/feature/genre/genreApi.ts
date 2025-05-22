@@ -1,16 +1,16 @@
-import { api } from "../../api/apiSlice";
+import { api } from '../../api/apiSlice';
 
 export const genreApi = api.injectEndpoints({
-    endpoints: (builder)=> ({
-        getGenre: builder.query({
-            query: () => {
-                return {
-                    url:"/genres",
-                    method:"GET"
-                }
-            }
-        })
-    })
-})
+  endpoints: (builder) => ({
+    getGenre: builder.query({
+      query: () => {
+        return {
+          url: '/genres',
+          method: 'GET',
+        };
+      },
+    }),
+  }),
+});
 
-export const { useGetGenreQuery } = genreApi
+export const { useGetGenreQuery } = genreApi;

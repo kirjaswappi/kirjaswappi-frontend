@@ -1,16 +1,16 @@
-import { MdKeyboardArrowDown } from "react-icons/md";
-import { FaLocationDot } from "react-icons/fa6";
-import { IoIosSearch } from "react-icons/io";
-import { useAppDispatch } from "../../redux/hooks";
-import { setSearch } from "../../redux/feature/filter/filterSlice";
-import { useEffect, useState } from "react";
-import useDebounce from "../../hooks/useDebounce";
+import { MdKeyboardArrowDown } from 'react-icons/md';
+import { FaLocationDot } from 'react-icons/fa6';
+import { IoIosSearch } from 'react-icons/io';
+import { useAppDispatch } from '../../redux/hooks';
+import { setSearch } from '../../redux/feature/filter/filterSlice';
+import { useEffect, useState } from 'react';
+import useDebounce from '../../hooks/useDebounce';
 
 export default function Search() {
-  const [query, setQuery] = useState<string>("");
+  const [query, setQuery] = useState<string>('');
   const dispatch = useAppDispatch();
   const queryValue = useDebounce(query, 300);
-  
+
   useEffect(() => {
     dispatch(setSearch(queryValue));
   }, [queryValue]);
@@ -26,10 +26,9 @@ export default function Search() {
         onChange={(e) => setQuery(e.target.value)}
       />
       <div className="flex items-center justify-between gap-1 rounded-full bg-primary-light w-[106px] h-[26px] px-2 text-primary py-1">
-        {" "}
-        <FaLocationDot />{" "}
-        <p className="font-normal text-xs font-poppins">Helsinki</p>{" "}
-        <MdKeyboardArrowDown />{" "}
+        {' '}
+        <FaLocationDot /> <p className="font-normal text-xs font-poppins">Helsinki</p>{' '}
+        <MdKeyboardArrowDown />{' '}
       </div>
     </div>
   );

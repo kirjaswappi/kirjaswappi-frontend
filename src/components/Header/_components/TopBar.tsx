@@ -1,10 +1,10 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { menu } from "../../../data/menu";
-import Image from "../../shared/Image";
-import notificationIcon from "../../../assets/notification.png";
-import profileIcon from "../../../assets/profileIcon.png";
-import { useAppSelector } from "../../../redux/hooks";
-import { useGetUserProfileImageQuery } from "../../../redux/feature/auth/authApi";
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import notificationIcon from '../../../assets/notification.png';
+import profileIcon from '../../../assets/profileIcon.png';
+import { menu } from '../../../data/menu';
+import { useGetUserProfileImageQuery } from '../../../redux/feature/auth/authApi';
+import { useAppSelector } from '../../../redux/hooks';
+import Image from '../../shared/Image';
 
 export default function TopBar() {
   const { pathname } = useLocation();
@@ -13,13 +13,11 @@ export default function TopBar() {
   const isLoggedIn = !!userInformation?.id;
 
   const { data: profileImage } = useGetUserProfileImageQuery(
-    { userId: userInformation?.id || "" },
-    { skip: !isLoggedIn }
+    { userId: userInformation?.id || '' },
+    { skip: !isLoggedIn },
   );
 
-  const filteredMenu = menu.filter(({ value }) => 
-    ["Books", "Map", "Message"].includes(value)
-  );
+  const filteredMenu = menu.filter(({ value }) => ['Books', 'Map', 'Message'].includes(value));
 
   return (
     <div className="hidden lg:flex items-center justify-between h-20 px-6 w-full z-50">
@@ -33,9 +31,9 @@ export default function TopBar() {
           return (
             <Link
               key={id}
-              to={route || "#"}
+              to={route || '#'}
               className={`flex items-center gap-2 px-4 py-2 rounded-md ${
-                isActive ? "bg-[#EDEDED] text-primary" : "text-gray-500"
+                isActive ? 'bg-[#EDEDED] text-primary' : 'text-gray-500'
               }`}
             >
               <Image
@@ -43,8 +41,10 @@ export default function TopBar() {
                 alt="icon"
                 className="w-5 h-5"
                 style={{
-                  filter: isActive ? "brightness(0) saturate(100%) invert(43%) sepia(98%) saturate(2375%) hue-rotate(185deg) brightness(93%) contrast(98%)" : "none",
-                  transition: "filter 0.2s ease-in-out",
+                  filter: isActive
+                    ? 'brightness(0) saturate(100%) invert(43%) sepia(98%) saturate(2375%) hue-rotate(185deg) brightness(93%) contrast(98%)'
+                    : 'none',
+                  transition: 'filter 0.2s ease-in-out',
                 }}
               />
               <span className="text-sm font-poppins">{value}</span>
@@ -60,11 +60,19 @@ export default function TopBar() {
             <img src={notificationIcon} alt="Notification" className="w-6 h-6" />
           </button>
         )}
-        
+
         {isLoggedIn ? (
-          <div 
-            className="flex items-center gap-2 cursor-pointer" 
-            onClick={() => navigate("/profile/user-profile")}
+          <div
+            tabIndex={0}
+            role="button"
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => navigate('/profile/user-profile')}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                navigate('/profile/user-profile');
+              }
+            }}
           >
             <img
               src={profileImage?.url || profileIcon}
@@ -76,8 +84,8 @@ export default function TopBar() {
             </span>
           </div>
         ) : (
-          <button 
-            onClick={() => navigate("/auth/login")}
+          <button
+            onClick={() => navigate('/auth/login')}
             className="bg-primary text-white py-2 px-4 rounded-md text-sm font-medium"
           >
             Login
