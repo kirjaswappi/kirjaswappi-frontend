@@ -1,6 +1,5 @@
 import { useLocation } from 'react-router-dom';
 import Search from '../shared/Search';
-import TopBar from './_components/TopBar';
 import filterIcon from '../../assets/filter.png';
 
 import Image from '../shared/Image';
@@ -15,6 +14,7 @@ import {
   setLanguageFilter,
 } from '../../redux/feature/filter/filterSlice';
 import { IFilterData } from '../../interface';
+import TopBar from './_components/TopBar';
 export default function Header() {
   const location = useLocation();
   const dispatch = useAppDispatch();
@@ -51,9 +51,9 @@ export default function Header() {
       <div
         className={`${
           isHeaderShow ? 'block bg-light' : 'hidden'
-        } fixed w-full px-5 py-2 flex flex-col gap-[12px] z-30`}
+        } fixed w-full  flex flex-col gap-[12px] z-30`}
       >
-        <TopBar />
+        <TopBar></TopBar>
         <div className="flex items-center gap-1">
           <button
             onClick={() => setClicked(true)}
