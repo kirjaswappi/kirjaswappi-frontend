@@ -1,16 +1,17 @@
 import { useFormContext } from 'react-hook-form';
-import { useAppSelector } from '../../../../redux/hooks';
-import MessageToastify from '../../../../components/shared/MessageToastify';
 import ControllerField from '../../../../components/shared/ControllerField';
+import MessageToastify from '../../../../components/shared/MessageToastify';
 import { ERROR } from '../../../../constant/MESSAGETYPE';
+import { useAppSelector } from '../../../../redux/hooks';
 
 export default function GetOTPByEmail() {
   const {
     formState: { errors },
+    watch,
   } = useFormContext();
 
   const { messageType, message, isShow } = useAppSelector((state) => state.notification);
-
+  console.log('GET OTP->>>>> ', watch('email'));
   return (
     <div>
       <ControllerField

@@ -1,10 +1,10 @@
-import { useAppSelector } from '../../../../redux/hooks';
+import { useEffect, useState } from 'react';
+import { useFormContext } from 'react-hook-form';
+import ControllerFieldOTP from '../../../../components/shared/ControllerFieldOTP';
 import MessageToastify from '../../../../components/shared/MessageToastify';
 import ResendOTPButton from '../../../../components/shared/ResendOTPButton';
-import ControllerFieldOTP from '../../../../components/shared/ControllerFieldOTP';
-import { useFormContext } from 'react-hook-form';
 import { ERROR, SUCCESS } from '../../../../constant/MESSAGETYPE';
-import { useState, useEffect } from 'react';
+import { useAppSelector } from '../../../../redux/hooks';
 
 export default function ConfirmOTP({
   handleOTPChange,
@@ -17,8 +17,9 @@ export default function ConfirmOTP({
     formState: { errors, isSubmitted },
     clearErrors,
     setValue,
+    watch,
   } = useFormContext();
-
+  console.log('GET OTP->>>>> ', watch('email'));
   // Get notification state
   const { messageType, message, isShow } = useAppSelector((state) => state.notification);
 

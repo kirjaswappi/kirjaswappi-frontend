@@ -1,10 +1,13 @@
-import { useEffect, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { OTP_LENGTH } from '../../../utility/constant';
-import { ResetPasswordValidation } from './Schema';
+import { useCallback, useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
+import leftArrowIcon from '../../../assets/leftArrow.png';
+import Button from '../../../components/shared/Button';
+import Image from '../../../components/shared/Image';
+import MessageToastify from '../../../components/shared/MessageToastify';
 import { ERROR, SUCCESS } from '../../../constant/MESSAGETYPE';
 import {
   useLazySentOTPQuery,
@@ -15,14 +18,11 @@ import { setOtp } from '../../../redux/feature/auth/authSlice';
 import { setMessages } from '../../../redux/feature/notification/notificationSlice';
 import { setStep } from '../../../redux/feature/step/stepSlice';
 import { useAppSelector } from '../../../redux/hooks';
-import Button from '../../../components/shared/Button';
-import Image from '../../../components/shared/Image';
-import MessageToastify from '../../../components/shared/MessageToastify';
-import GetOTPByEmail from './_component/GetOTPByEmail';
+import { OTP_LENGTH } from '../../../utility/constant';
 import ConfirmOTP from './_component/ConfirmOTP';
+import GetOTPByEmail from './_component/GetOTPByEmail';
 import { NewPassword } from './_component/NewPassword';
-import leftArrowIcon from '../../../assets/leftArrow.png';
-import * as yup from 'yup';
+import { ResetPasswordValidation } from './Schema';
 
 // INTERFACE FOR RESET PASSWORD FORM FIELDS
 interface IResetPasswordForm {
@@ -70,7 +70,6 @@ export default function ResetPassword() {
   const { otp } = useAppSelector((state) => state.auth);
   const { messageType, message: msg, isShow } = useAppSelector((state) => state.notification);
   // LOCAL STATE FOR USER EMAIL AND RESET SUCCESS
-  const [userEmail, setUserEmail] = useState('');
   const [resetSuccess, setResetSuccess] = useState(false);
   const [previousStep, setPreviousStep] = useState(0);
 
@@ -80,7 +79,7 @@ export default function ResetPassword() {
     resolver: yupResolver(ResetPasswordValidation[step] as yup.ObjectSchema<any>),
     mode: 'onTouched',
     defaultValues: {
-      email: userEmail || '',
+      email: '',
       otp: otp.join(''),
       password: '',
       confirmPassword: '',
@@ -90,9 +89,9 @@ export default function ResetPassword() {
   const { trigger, setValue, getValues } = methods;
 
   // Preserve email value between steps
-  useEffect(() => {
-    if (userEmail) setValue('email', userEmail);
-  }, [step, userEmail, setValue]);
+  // useEffect(() => {
+  //   if (userEmail) setValue('email', userEmail);
+  // }, [step, userEmail, setValue]);
 
   // Update OTP field when OTP state changes
   useEffect(() => setValue('otp', otp.join('')), [otp, setValue]);
@@ -199,7 +198,6 @@ export default function ResetPassword() {
     try {
       // Step 0: Send OTP to email
       if (step === 0) {
-        setUserEmail(data.email);
         const res = await sentOTP({ email: data.email });
         res.data
           ? showSuccess('OTP sent successfully!', handleNext)
