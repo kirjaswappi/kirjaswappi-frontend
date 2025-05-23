@@ -1,6 +1,6 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { menu } from '../../../data/menu';
+import { useNavigate } from 'react-router-dom';
 import Image from '../../shared/Image';
+// import TopMiddle from './TopMiddleBar'; // Import the new TopMiddle component
 import notification_gray from '../../../assets/notification_gray.png';
 import profileIcon from '../../../assets/profileIcon.png';
 import country from '../../../assets/country.png';
@@ -8,9 +8,11 @@ import logo from '../../../assets/logo.png';
 import dropdownarrow from '../../../assets/dropdownarrow.png';
 import { useAppSelector } from '../../../redux/hooks';
 import { useGetUserProfileImageQuery } from '../../../redux/feature/auth/authApi';
+import TopMiddle from './TopMiddleBar';
+import { useEffect, useState } from 'react';
+import ScrollSearch from '../../shared/ScrollSearch';
 
 export default function TopBar() {
-  const { pathname } = useLocation();
   const navigate = useNavigate();
   const { userInformation } = useAppSelector((state) => state.auth);
   const isLoggedIn = !!userInformation?.id;
@@ -22,46 +24,52 @@ export default function TopBar() {
     { skip: !isLoggedIn },
   );
 
-  const filteredMenu = menu.filter(({ isShow }) => isShow);
+  const [showScrollSearch, setShowScrollSearch] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const searchBar = document.querySelector('#hero-search');
+      const topBar = document.querySelector('#top-nav-bar');
+
+      if (searchBar && topBar) {
+        const searchBarRect = searchBar.getBoundingClientRect();
+        const topBarHeight = topBar.getBoundingClientRect().height;
+
+        // Adjust the threshold to be slightly before the search bar touches the nav
+        if (searchBarRect.top <= topBarHeight + 20) {
+          // Added small offset
+          setShowScrollSearch(true);
+        } else {
+          setShowScrollSearch(false);
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <div className="hidden lg:flex items-center justify-between bg-white h-20 px-6 w-full z-50">
+    <div
+      id="top-nav-bar"
+      className="hidden lg:flex items-center justify-between bg-white h-20 px-6 w-full z-50 fixed top-0 shadow-sm"
+    >
       {/* Left Section */}
       <div className="text-xl font-bold">
         <img src={logo} alt="KirjaSwappi Logo" className="h-8" />
       </div>
 
-      {/* Center Section */}
-      <div className="flex gap-6">
-        {filteredMenu.map(({ id, route, icon, value }) => {
-          const isActive = pathname === route;
-          return (
-            <Link
-              key={id}
-              to={route || '#'}
-              className={`flex items-center gap-2 ${
-                isActive
-                  ? 'bg-white text-blue-500 border border-blue-500 rounded-full px-6 py-2'
-                  : 'text-[#808080] px-4 py-2'
-              }`}
-            >
-              <Image
-                src={icon}
-                alt="icon"
-                className="w-5 h-5"
-                style={{
-                  filter: isActive
-                    ? 'brightness(0) saturate(100%) invert(43%) sepia(98%) saturate(2375%) hue-rotate(185deg) brightness(93%) contrast(98%)'
-                    : 'none',
-                  transition: 'filter 0.2s ease-in-out',
-                }}
-              />
-              <span className={`text-sm font-poppins ${isActive ? 'font-medium' : ''}`}>
-                {value}
-              </span>
-            </Link>
-          );
-        })}
+      {/* Center Section with transition */}
+      <div className="transition-all duration-300 ease-in-out">
+        {showScrollSearch ? (
+          <div className="animate-fadeIn">
+            <ScrollSearch />
+          </div>
+        ) : (
+          <div className="animate-fadeIn">
+            <TopMiddle />
+          </div>
+        )}
       </div>
 
       {/* Right Section */}

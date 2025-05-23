@@ -1,8 +1,4 @@
 import { useLocation } from 'react-router-dom';
-import Search from '../shared/Search';
-import filterIcon from '../../assets/filter.png';
-
-import Image from '../shared/Image';
 import SideLeftDrawer from './_components/LeftSideDrawer';
 import BookFilter from './_components/BookFilter';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -18,7 +14,7 @@ import TopBar from './_components/TopBar';
 export default function Header() {
   const location = useLocation();
   const dispatch = useAppDispatch();
-  const { clicked, setClicked, reference } = useMouseClick();
+  const { clicked, reference } = useMouseClick();
 
   const showTopHeaderPath = ['/'];
   const isHeaderShow = showTopHeaderPath.find((path) => path === location.pathname);
@@ -54,16 +50,6 @@ export default function Header() {
         } fixed w-full  flex flex-col gap-[12px] z-30`}
       >
         <TopBar></TopBar>
-        <div className="flex items-center gap-1">
-          <button
-            onClick={() => setClicked(true)}
-            className="w-[48px] h-[42px] rounded-[24px] bg-primary flex items-center justify-center px-[10px] py-2"
-            aria-label="Open filter menu"
-          >
-            <Image src={filterIcon} alt="filter icon" />
-          </button>
-          <Search />
-        </div>
       </div>
     </header>
   );
