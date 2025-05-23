@@ -83,8 +83,10 @@ export default function ConditionsStep({ errors }: { errors: any }) {
     const values = getValues('swappableBooks');
     const filteredSwapBooks = values.filter((_book: ISwappableBook, idx: number) => index !== idx);
     setValue('swappableBooks', filteredSwapBooks);
+    setPopup(false);
+    setSwappableBookIndex(null);
   };
-
+  console.log({ reference });
   return (
     <div>
       <div className="pt-4">
@@ -167,26 +169,32 @@ export default function ConditionsStep({ errors }: { errors: any }) {
             const coverPhoto = watch(`swappableBooks.${index}.coverPhoto`);
             const title = watch(`swappableBooks.${index}.title`);
             const author = watch(`swappableBooks.${index}.author`);
+
+            // Memoize image URL to avoid flicker
+            let coverPhotoUrl = '';
+            if (coverPhoto instanceof File) {
+              coverPhotoUrl = URL.createObjectURL(coverPhoto);
+            } else if (coverPhoto) {
+              coverPhotoUrl = coverPhoto;
+            }
+
             return flag ? (
               <div
+                id={`swappableBook-${swappableBook.id}`}
                 key={swappableBook.id}
                 className="bg-white p-4 rounded-xl flex gap-4 mt-3 shadow-sm"
               >
                 <div className="w-3/12 h-20 max-h-20">
-                  {
-                    <Image
-                      src={
-                        coverPhoto instanceof File ? URL.createObjectURL(coverPhoto) : coverPhoto
-                      }
-                      alt="Cover"
-                      className="w-20 h-20 object-cover rounded-md"
-                    />
-                  }
+                  <Image
+                    src={coverPhotoUrl || '/default-cover.png'}
+                    alt="Cover"
+                    className="w-20 h-20 object-cover rounded-md"
+                  />
                 </div>
                 <div className="w-3/4 pr-7 relative">
                   <h3 className="text-sm font-poppins font-medium line-clamp-2">{title}</h3>
                   <h3 className="text-xs font-poppins font-light mt-2">by {author}</h3>
-                  <div ref={reference as React.RefObject<HTMLDivElement>}>
+                  <div>
                     <PiDotsThreeBold
                       size={24}
                       className="absolute right-0 top-0 cursor-pointer"
@@ -198,6 +206,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                   </div>
                   {swappableBookIndex === index && clicked && (
                     <div
+                      ref={reference as React.RefObject<HTMLDivElement>}
                       className="absolute right-0 top-6 w-[138px] bg-white shadow-lg rounded-md z-10
                     "
                     >
@@ -226,7 +235,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                 </div>
               </div>
             ) : (
-              <div key={swappableBook.id}>
+              <div id={`swappableBook-${swappableBook.id}`} key={swappableBook.id}>
                 <div className="pt-4">
                   <div className="flex items-center justify-between">
                     <InputLabel label="Cover Photo" required />
