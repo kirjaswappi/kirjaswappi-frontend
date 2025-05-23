@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { FaDeleteLeft } from 'react-icons/fa6';
 import { PiDotsThreeBold } from 'react-icons/pi';
@@ -69,9 +69,12 @@ export default function ConditionsStep({ errors }: { errors: any }) {
   };
 
   // EDIT SWAPPABLE BOOK
-  const editAnotherBook = (index: number) => {
-    setValue(`swappableBooks.${index}.flag`, false);
-  };
+  const editAnotherBook = useCallback(
+    (index: number) => {
+      setValue(`swappableBooks.${index}.flag`, false);
+    },
+    [setValue],
+  );
 
   // OPEN POPUP WHEN CLICK ON THE DELETE BUTTON
   const anotherBookPopupDeleteModal = () => {
@@ -79,13 +82,18 @@ export default function ConditionsStep({ errors }: { errors: any }) {
     setPopup(true);
   };
   // DELETE SWAPPABLE BOOK
-  const deleteSwappableBookByIndex = (index: number) => {
-    const values = getValues('swappableBooks');
-    const filteredSwapBooks = values.filter((_book: ISwappableBook, idx: number) => index !== idx);
-    setValue('swappableBooks', filteredSwapBooks);
-    setPopup(false);
-    setSwappableBookIndex(null);
-  };
+  const deleteSwappableBookByIndex = useCallback(
+    (index: number) => {
+      const values = getValues('swappableBooks');
+      const filteredSwapBooks = values.filter(
+        (_book: ISwappableBook, idx: number) => index !== idx,
+      );
+      setValue('swappableBooks', filteredSwapBooks);
+      setPopup(false);
+      setSwappableBookIndex(null);
+    },
+    [getValues, setValue],
+  );
   console.log({ reference });
   return (
     <div>
