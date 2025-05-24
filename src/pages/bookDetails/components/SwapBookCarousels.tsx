@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Carousel, CarouselContent, CarouselItem } from '../../../components/shared/Carousel';
 import Image from '../../../components/shared/Image';
 
@@ -18,7 +19,7 @@ export default function SwapBookCarousels({
       className="relative"
     >
       <CarouselContent className="mr-4">
-        {swapBook.map((item) => {
+        {swapBook.map((item: any) => {
           return (
             <CarouselItem
               key={`${item.title}`}
