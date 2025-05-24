@@ -6,7 +6,6 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { goToTop } from '../../utility/helper';
 import { IBook } from './interface';
 import { setPageNumber } from '../../redux/feature/filter/filterSlice';
-import HeroSection from './_components/Herosection';
 export default function Books() {
   const observer = useRef<IntersectionObserver>();
   const [books, setBooks] = useState<IBook[]>([]);
@@ -67,7 +66,6 @@ export default function Books() {
     <section>
       <div className="container min-h-[80vh] pb-28">
         {/* Hero section */}
-        <HeroSection></HeroSection>
         <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-6 gap-2">
           {books.map((book: IBook, idx: number) => {
             if (idx === books.length - 1) {

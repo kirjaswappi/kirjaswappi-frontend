@@ -8,7 +8,6 @@ import logo from '../../../assets/logo.png';
 import dropdownarrow from '../../../assets/dropdownarrow.png';
 import { useAppSelector } from '../../../redux/hooks';
 import { useGetUserProfileImageQuery } from '../../../redux/feature/auth/authApi';
-import TopMiddle from './TopMiddleBar';
 import { useEffect, useState } from 'react';
 import ScrollSearch from '../../shared/ScrollSearch';
 
@@ -67,7 +66,7 @@ export default function TopBar() {
           </div>
         ) : (
           <div className="animate-fadeIn">
-            <TopMiddle />
+            <ScrollSearch />
           </div>
         )}
       </div>
