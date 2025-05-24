@@ -1,6 +1,5 @@
 import { MdKeyboardArrowDown } from 'react-icons/md';
 import { FaLocationDot } from 'react-icons/fa6';
-import { IoIosSearch } from 'react-icons/io';
 import { useAppDispatch } from '../../redux/hooks';
 import { setSearch } from '../../redux/feature/filter/filterSlice';
 import { useEffect, useState } from 'react';
@@ -15,10 +14,7 @@ export default function Search() {
     dispatch(setSearch(queryValue));
   }, [queryValue]);
   return (
-    <div className="w-full h-[42px] rounded-3xl bg-white border-gray border-[1px] flex items-center px-4">
-      <div className="w-6 h-6 flex items-center justify-center">
-        <IoIosSearch size={24} className="text-grayDark" />
-      </div>
+    <div className="w-full h-[42px] rounded-3xl bg-white flex items-center px-4">
       <input
         type="text"
         placeholder="Find Books"
