@@ -1,13 +1,12 @@
 import { Carousel, CarouselContent, CarouselItem } from '../../../components/shared/Carousel';
 import Image from '../../../components/shared/Image';
-import { IB } from '../interface';
 
 export default function SwapBookCarousels({
   swapBook,
   handleSelectBookForSwapRequest,
 }: {
-  swapBook: IB[];
-  handleSelectBookForSwapRequest: (item: IB) => void;
+  swapBook: any;
+  handleSelectBookForSwapRequest: (item: any) => void;
 }) {
   if (!swapBook) return null;
   return (
@@ -18,16 +17,16 @@ export default function SwapBookCarousels({
       }}
       className="relative"
     >
-      <CarouselContent>
+      <CarouselContent className="mr-4">
         {swapBook.map((item) => {
           return (
             <CarouselItem
               key={`${item.title}`}
-              className={` ${swapBook.length <= 1 ? 'pr-4 basis-full' : 'basis-[120px]'}`}
+              className={`${swapBook.length <= 1 ? 'pr-4 basis-full' : 'basis-[130px]'}`}
               onClick={() => handleSelectBookForSwapRequest(item)}
             >
-              <div className="max-w-[120px] w-[120px] rounded-[8px] p-2 border border-primary">
-                <div className="w-[104px] h-[120px] object-cover bg-center bg-cover border">
+              <div className="w-[120px] rounded-[8px] p-2 border border-primary">
+                <div className="h-[120px] object-cover bg-center bg-cover border">
                   <Image
                     className="mx-auto w-full h-full object-contain  rounded-lg"
                     src={item.coverPhotoUrl}
