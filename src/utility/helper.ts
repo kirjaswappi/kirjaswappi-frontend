@@ -46,6 +46,10 @@ export async function urlToDataUrl(url: string): Promise<string> {
   const base64 = await blobToBase64(blob);
   return base64 as string;
 }
+export const getFileToUrl = (coverPhoto: File | string) => {
+  if (coverPhoto instanceof File) return URL.createObjectURL(coverPhoto);
+  return coverPhoto || '';
+};
 
 export const options = (options: string[]) => {
   if (options && options?.length > 0) {
