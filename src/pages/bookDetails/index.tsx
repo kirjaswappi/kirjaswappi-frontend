@@ -1,36 +1,35 @@
+import { useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
-import bookIcon2 from '../../assets/bookIcon2.png';
-import lng from '../../assets/EN.png';
 import bookDetailsBg from '../../assets/bookdetailsbg.jpg';
+import bookIcon2 from '../../assets/bookIcon2.png';
+import editIcon from '../../assets/editBlack.png';
+import lng from '../../assets/EN.png';
+import exchangeIcon from '../../assets/exchange.png';
 import BookMarkIcon from '../../assets/icon_bookmark.png';
 import leftArrowIcon from '../../assets/leftArrow.png';
-import editIcon from '../../assets/editBlack.png';
 import locationIcon from '../../assets/location-icon.png';
-import exchangeIcon from '../../assets/exchange.png';
 import profileIcon from '../../assets/profileIcon.png';
 import shareIcon from '../../assets/share-icon.png';
 import upArrowIcon from '../../assets/upArrow.png';
 import Button from '../../components/shared/Button';
 import Image from '../../components/shared/Image';
-import { goToTop } from '../../utility/helper';
-import { useGetBookByIdQuery } from '../../redux/feature/book/bookApi';
 import Loader from '../../components/shared/Loader';
-import { useEffect, useState } from 'react';
-import Exchanges from './components/Exchanges';
-import { useGetUserProfileImageQuery } from '../../redux/feature/auth/authApi';
-import SwapModal from '../../components/shared/SwapModal';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { setSwapModal } from '../../redux/feature/open/openSlice';
-import { FormProvider, useForm } from 'react-hook-form';
 import BookSkeleton from '../../components/shared/skeleton/BookSkeleton';
+import { useGetUserProfileImageQuery } from '../../redux/feature/auth/authApi';
+import { useGetBookByIdQuery } from '../../redux/feature/book/bookApi';
+import { setSwapModal } from '../../redux/feature/open/openSlice';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { goToTop } from '../../utility/helper';
+import Exchanges from './components/Exchanges';
 
 export default function BookDetails() {
   const MAX_LENGTH = 95;
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [isProfile, setProfile] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const dispatch = useAppDispatch();
   const { userInformation } = useAppSelector((state) => state.auth);
   const { data: bookData, isLoading: bookLoading } = useGetBookByIdQuery({ id: id }, { skip: !id });
   const { data: userProfile } = useGetUserProfileImageQuery(
@@ -61,13 +60,23 @@ export default function BookDetails() {
     setIsExpanded(!isExpanded);
   };
 
+  // const loginModalOrSwapRequest = (): void => {
+  //   // =========== If user has in state show the swap request modal ===========
+  //   if (userInformation.email) {
+  //     dispatch(setSwapModal(true));
+  //   } else {
+  //     // =========== If user state is empty show the login modal for login user ===========
+  //     console.log('ok');
+  //   }
+  // };
+
   if (bookLoading) return <Loader />;
   goToTop();
   return (
     <div>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit((data) => console.log({ data }))}>
-          <SwapModal />
+          {/* <SwapModal bookData={bookData} /> */}
         </form>
       </FormProvider>
 
