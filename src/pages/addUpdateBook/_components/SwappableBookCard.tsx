@@ -13,7 +13,8 @@ interface ISwappableBookCard {
   coverPhotoUrl: string;
   swappableBookIndex: number | null;
   clicked: boolean;
-  reference: React.RefObject<HTMLDivElement>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  reference: React.RefObject<any>;
   setSwappableBookIndex: (index: number | null) => void;
   setClicked: React.Dispatch<React.SetStateAction<boolean>>;
   editAnotherBook: (index: number) => void;
