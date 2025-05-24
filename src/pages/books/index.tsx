@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import BookCard from "../../components/shared/BookCard";
-import BookSkeleton from "../../components/shared/skeleton/BookSkeleton";
-import { useGetAllBooksQuery } from "../../redux/feature/book/bookApi";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { goToTop } from "../../utility/helper";
-import { IBook } from "./interface";
-import { setPageNumber } from "../../redux/feature/filter/filterSlice";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import BookCard from '../../components/shared/BookCard';
+import BookSkeleton from '../../components/shared/skeleton/BookSkeleton';
+import { useGetAllBooksQuery } from '../../redux/feature/book/bookApi';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { goToTop } from '../../utility/helper';
+import { IBook } from './interface';
+import { setPageNumber } from '../../redux/feature/filter/filterSlice';
 export default function Books() {
   const observer = useRef<IntersectionObserver>();
   const [books, setBooks] = useState<IBook[]>([]);
@@ -20,12 +20,9 @@ export default function Books() {
     if (data?._embedded?.books) {
       setBooks((prevBooks) => {
         const newBooks = data._embedded.books;
-        const allBooks =
-          filter.pageNumber === 0 ? newBooks : [...prevBooks, ...newBooks];
+        const allBooks = filter.pageNumber === 0 ? newBooks : [...prevBooks, ...newBooks];
         const uniqueBooks = Array.from(
-          new Map<string, IBook>(
-            allBooks.map((book: IBook) => [book.id, book])
-          ).values()
+          new Map<string, IBook>(allBooks.map((book: IBook) => [book.id, book])).values(),
         );
         return uniqueBooks;
       });
@@ -38,9 +35,9 @@ export default function Books() {
     dispatch(setPageNumber(0));
   }, [
     filter.search,
-    filter.genre.join(","),
-    filter.condition.join(","),
-    filter.language.join(","),
+    filter.genre.join(','),
+    filter.condition.join(','),
+    filter.language.join(','),
   ]);
 
   // <======= Intersection observe =======>
@@ -60,7 +57,7 @@ export default function Books() {
       });
       if (node) observer.current.observe(node);
     },
-    [isLoading, data, filter.pageNumber]
+    [isLoading, data, filter.pageNumber],
   );
   const isInitialLoading = isFetching || isLoading;
 
@@ -80,9 +77,7 @@ export default function Books() {
             return <BookCard book={book} key={idx} />;
           })}
           {isInitialLoading &&
-            Array.from({ length: 6 }, (_, index) => (
-              <BookSkeleton key={index} />
-            ))}
+            Array.from({ length: 6 }, (_, index) => <BookSkeleton key={index} />)}
         </div>
       </div>
     </section>

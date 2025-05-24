@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface IFilterInitialState {
   filter: {
@@ -16,13 +16,13 @@ const initialState: IFilterInitialState = {
     genre: [],
     language: [],
     condition: [],
-    search: "",
+    search: '',
     pageNumber: 0,
     hasMore: false,
   },
 };
 const filterSlice = createSlice({
-  name: "filter",
+  name: 'filter',
   initialState,
   reducers: {
     setSearch: (state, action) => {

@@ -1,0 +1,49 @@
+{
+  "messages": [
+    {
+      "id": "1",
+      "senderId": "user",
+      "text": "Hi! Anyone here to chat?",
+      "timestamp": "9:12 AM"
+    },
+    {
+      "id": "2",
+      "senderId": "other",
+      "text": "Hello! How can I assist you today?",
+      "timestamp": "9:12 AM"
+    },
+    {
+      "id": "3",
+      "senderId": "user",
+      "text": "I'd like to check the status of my parcel booking.",
+      "timestamp": "9:12 AM"
+    },
+    {
+      "id": "4",
+      "senderId": "other",
+      "text": "Sure! Could you please provide your booking reference number?",
+      "timestamp": "9:12 AM"
+    },
+    {
+      "id": "5",
+      "senderId": "user",
+      "text": "It's GB123456",
+      "timestamp": "9:12 AM"
+    },
+    {
+      "id": "6",
+      "senderId": "other",
+      "text": "Thank you! Let me look that up for you... One moment, please.",
+      "timestamp": "9:12 AM"
+    }
+  ],
+  "users": {
+    "1": { "id": "1", "name": "Rahat Hasan", "avatar": "S" },
+    "2": { "id": "2", "name": "Arif Bhai", "avatar": null },
+    "3": { "id": "3", "name": "Mama", "avatar": null },
+    "4": { "id": "4", "name": "Kamal Mama", "avatar": null },
+    "5": { "id": "5", "name": "Girlfriend", "avatar": null },
+    "6": { "id": "6", "name": "Office Boss", "avatar": null },
+    "7": { "id": "7", "name": "Girlfriend 2", "avatar": null }
+  }
+}

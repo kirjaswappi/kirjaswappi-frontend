@@ -1,167 +1,187 @@
-import { Controller, useFieldArray, useFormContext } from "react-hook-form";
-import InputLabel from "../../../components/shared/InputLabel";
-import ControlledInputField from "../../../components/shared/ControllerField";
-import Button from "../../../components/shared/Button";
-import Image from "../../../components/shared/Image";
-import closeIcon from "../../../assets/close.svg";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { setOpen } from "../../../redux/feature/open/openSlice";
-import ImageFileInput from "./ImageControllerField";
-import plusIcon from "../../../assets/plus.png";
-import { useEffect } from "react";
-import { FaDeleteLeft } from "react-icons/fa6";
-import ConditionMessageBox from "./ConditionMessageBox";
-import {
-  BYBOOKS,
-  BYGENRES,
-  GIVEAWAY,
-  OPENTOOFFERS,
-} from "../../../utility/ADDBOOKCONDITIONTYPE";
+import { useCallback, useEffect, useState } from 'react';
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
+import { FaDeleteLeft } from 'react-icons/fa6';
+import closeIcon from '../../../assets/close.svg';
+import Button from '../../../components/shared/Button';
+import ControlledInputField from '../../../components/shared/ControllerField';
+import Image from '../../../components/shared/Image';
+import InputLabel from '../../../components/shared/InputLabel';
+import Separator from '../../../components/shared/Separator';
+import { useMouseClick } from '../../../hooks/useMouse';
+import { setOpen } from '../../../redux/feature/open/openSlice';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { getFileToUrl } from '../../../utility/helper';
+import { SWAP_TYPES } from '../helper';
+import { SwapType } from '../types/enum';
+import { ISwappableBook } from '../types/interface';
+import AddAnotherBookButton from './AddAnotherBookButton';
+import ConditionMessageBox from './ConditionMessageBox';
+import ImageFileInput from './ImageControllerField';
+import SwappableBookCard from './SwappableBookCard';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function ConditionsStep({ errors }: { errors: any }) {
   const dispatch = useAppDispatch();
+  const [swappableBookIndex, setSwappableBookIndex] = useState<number | null>(null);
   const { open } = useAppSelector((state) => state.open);
-  const { control, getValues, watch, setValue } = useFormContext();
-  const conditionType = watch("conditionType");
-  const genres = getValues("genres");
-  const { fields, append, remove } = useFieldArray({ control, name: "books" });
+  const { control, getValues, watch, setValue, trigger } = useFormContext();
+  const { reference, setClicked, clicked } = useMouseClick();
+  const swapType = watch('swapType');
+  const swappableGenres = getValues('swappableGenres');
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'swappableBooks',
+  });
 
+  //  INITIALIZE WITH ONE BOOK IF EMPTY
   useEffect(() => {
-    if (fields.length === 0) {
-      append({ bookTitle: "", authorName: "", byBookCover: null });
-    }
+    if (fields.length === 0) append({ title: '', author: '', coverPhoto: null, flag: false });
   }, [fields, append]);
 
   const handleRemoveGenre = (genreValue: string) => {
     if (!genreValue) return;
     setValue(
-      "genres",
-      genres?.filter((favGen: string) => favGen !== genreValue)
+      'swappableGenres',
+      swappableGenres?.filter((swappableGenre: string) => swappableGenre !== genreValue),
     );
   };
 
+  const addAnotherBook = async () => {
+    const valid = await trigger();
+    const values = getValues('swappableBooks');
+    // RESET LOCAL STATE
+    setClicked(false);
+    setSwappableBookIndex(null);
+
+    // Update the flags based on field validation
+    values.forEach((_book: ISwappableBook, idx: number) => {
+      const isValidBook = ['title', 'author', 'coverPhoto'].every(
+        (field) => !!watch(`swappableBooks.${idx}.${field}`),
+      );
+      setValue(`swappableBooks.${idx}.flag`, isValidBook);
+    });
+
+    if (valid) {
+      append({ title: '', author: '', coverPhoto: null, flag: false });
+    }
+  };
+
+  // EDIT SWAPPABLE BOOK
+  const editAnotherBook = useCallback(
+    (index: number) => {
+      setValue(`swappableBooks.${index}.flag`, false);
+    },
+    [setValue],
+  );
+
+  // DELETE SWAPPABLE BOOK
+  const deleteSwappableBookByIndex = useCallback(
+    (index: number) => {
+      const values = getValues('swappableBooks');
+      const filteredSwapBooks = values.filter(
+        (_book: ISwappableBook, idx: number) => index !== idx,
+      );
+      setValue('swappableBooks', filteredSwapBooks);
+      setSwappableBookIndex(null);
+    },
+    [getValues, setValue],
+  );
+
   return (
     <div>
-      <div className="pt-4">
-        <InputLabel label="Condition Type" required />
+      <div className="py-4">
+        <InputLabel label="Swap Type" required />
       </div>
       <div className="flex flex-col gap-2">
-        <Controller
-          name="conditionType"
-          control={control}
-          defaultValue={conditionType}
-          render={({ field }) => {
-            return (
-              <div className="flex flex-col gap-4 mt-2">
-                <div className="px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg">
-                  <label className="flex items-center gap-2 w-full cursor-pointer">
-                    <input
-                      type="radio"
-                      value={OPENTOOFFERS}
-                      checked={field.value === OPENTOOFFERS}
-                      onChange={field.onChange}
-                      className="w-4 h-4"
-                    />
-                    Open to Offer
-                  </label>
+        {SWAP_TYPES.map(({ value, label }) => (
+          <Controller
+            key={value}
+            name="swapType"
+            control={control}
+            render={({ field }) => (
+              <div className="px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg">
+                <label className="flex items-center gap-2 w-full cursor-pointer">
+                  <input
+                    type="radio"
+                    value={value}
+                    checked={field.value === value}
+                    onChange={field.onChange}
+                    className="w-4 h-4"
+                  />
+                  {label}
+                </label>
+              </div>
+            )}
+          />
+        ))}
+      </div>
+      <Separator />
+      {swapType === SwapType.BYBOOKS && (
+        <div>
+          {fields.map((swappableBook, index) => {
+            const flag = watch(`swappableBooks.${index}.flag`);
+            const { coverPhoto, title, author } = watch(`swappableBooks.${index}`);
+            return flag ? (
+              <SwappableBookCard
+                key={swappableBook.id}
+                id={swappableBook.id}
+                index={index}
+                title={title}
+                author={author}
+                coverPhotoUrl={getFileToUrl(coverPhoto)}
+                swappableBookIndex={swappableBookIndex}
+                clicked={clicked}
+                reference={reference}
+                setSwappableBookIndex={setSwappableBookIndex}
+                setClicked={setClicked}
+                editAnotherBook={editAnotherBook}
+                deleteSwappableBookByIndex={deleteSwappableBookByIndex}
+              />
+            ) : (
+              <div id={`swappableBook-${swappableBook.id}`} key={swappableBook.id}>
+                <div className="pt-4">
+                  <div className="flex items-center justify-between">
+                    <InputLabel label="Cover Photo" required />
+                    {index > 0 && (
+                      <Button
+                        type="button"
+                        onClick={() => remove(index)}
+                        className="text-red-500 w-7 h-7 flex items-center justify-center rounded-sm"
+                      >
+                        <FaDeleteLeft />
+                      </Button>
+                    )}
+                  </div>
+                  <ImageFileInput name={`swappableBooks.${index}.coverPhoto`} />
                 </div>
-                <div className="px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg ">
-                  <label className="flex items-center gap-2 w-full cursor-pointer">
-                    <input
-                      type="radio"
-                      value={BYBOOKS}
-                      checked={field.value === BYBOOKS}
-                      onChange={field.onChange}
-                      className="w-4 h-4"
-                    />
-                    By Book
-                  </label>
+                <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
+                  <InputLabel label="Book Title" required />
+                  <ControlledInputField
+                    name={`swappableBooks.${index}.title`}
+                    placeholder="Enter book title"
+                    className="rounded-md"
+                    showErrorMessage
+                  />
                 </div>
-                <div className="px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg">
-                  <label className="flex items-center gap-2 w-full cursor-pointer">
-                    <input
-                      type="radio"
-                      value={BYGENRES}
-                      checked={field.value === BYGENRES}
-                      onChange={field.onChange}
-                      className="w-4 h-4"
-                    />
-                    By Genre
-                  </label>
-                </div>
-                <div className="px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg">
-                  <label className="flex items-center gap-2 w-full cursor-pointer">
-                    <input
-                      type="radio"
-                      value={GIVEAWAY}
-                      checked={field.value === GIVEAWAY}
-                      onChange={field.onChange}
-                      className="w-4 h-4"
-                    />
-                    Giveaway
-                  </label>
+                <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
+                  <InputLabel label="Author Name" required />
+                  <ControlledInputField
+                    name={`swappableBooks.${index}.author`}
+                    placeholder="Enter author name"
+                    className="rounded-md"
+                    showErrorMessage
+                  />
                 </div>
               </div>
             );
-          }}
-        />
-      </div>
-      <span className="w-full h-[1px] bg-platinumDark block my-4"></span>
-      {conditionType === BYBOOKS && (
-        <div>
-          {fields.map((book, index) => (
-            <div key={book.id}>
-              <div className="pt-4">
-                <div className="flex items-center justify-between">
-                  <InputLabel label="Book Cover" required />
-                  {index > 0 && (
-                    <Button
-                      type="button"
-                      onClick={() => remove(index)}
-                      className="text-red-500 bg-rose-100 w-7 h-7 flex items-center justify-center rounded-sm"
-                    >
-                      <FaDeleteLeft />
-                    </Button>
-                  )}
-                </div>
-                <ImageFileInput name={`books.${index}.byBookCover`} />
-              </div>
-              <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
-                <InputLabel label="Book Title" required />
-                <ControlledInputField
-                  name={`books.${index}.bookTitle`}
-                  placeholder="Enter book title"
-                  className="rounded-md"
-                />
-              </div>
-              <div className="mt-4 pb-4 border-b border-[#E4E4E4]">
-                <InputLabel label="Author Name" required />
-                <ControlledInputField
-                  name={`books.${index}.authorName`}
-                  placeholder="Enter author name"
-                  className="rounded-md"
-                />
-              </div>
-            </div>
-          ))}
-          <div className="mt-4 pb-4 border-t border-[#E4E4E4]">
-            <Button
-              type="button"
-              onClick={() =>
-                append({ bookTitle: "", authorName: "", byBookCover: null })
-              }
-              className="flex items-center justify-center gap-1 w-full border border-dashed border-grayDark py-3 text-sm font-poppins text-grayDark rounded-md"
-            >
-              <Image src={plusIcon} alt="Add Another Book" />
-              Add Another Book
-            </Button>
-          </div>
+          })}
+          <AddAnotherBookButton addAnotherBook={addAnotherBook} />
         </div>
       )}
-      {conditionType === BYGENRES && (
+      {swapType === SwapType.BYGENRES && (
         <div>
           <div className="flex items-center justify-between py-4">
-            <InputLabel label="Genre" required />
+            <InputLabel label="Genre To Swap With" required />
             <Button
               type="button"
               onClick={() => dispatch(setOpen(!open))}
@@ -170,38 +190,32 @@ export default function ConditionsStep({ errors }: { errors: any }) {
               Add
             </Button>
           </div>
-          {genres && genres.length > 0 ? (
+          {swappableGenres && swappableGenres.length > 0 ? (
             <div className="flex flex-col gap-2 pb-4">
-              {genres.map((favItem: string, index: number) => (
+              {swappableGenres.map((item: string, index: number) => (
                 <div
                   key={index}
                   className="flex items-center justify-between px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg"
                 >
-                  <h3 className="font-poppins text-sm font-light">{favItem}</h3>
-                  <Button
-                    type="button"
-                    onClick={() => handleRemoveGenre(favItem)}
-                  >
+                  <h3 className="font-poppins text-sm font-light">{item}</h3>
+                  <Button type="button" onClick={() => handleRemoveGenre(item)}>
                     <Image src={closeIcon} alt="close" className="h-2" />
                   </Button>
                 </div>
               ))}
             </div>
           ) : (
-            <ConditionMessageBox conditionType={conditionType} />
+            <ConditionMessageBox swapType={swapType} />
           )}
-          {errors && errors["genres"] && (
+          {errors && errors['swappableGenres'] && (
             <div className="text-rose-500 text-xs mt-1 pl-2">
-              {errors["genres"]?.message}
+              {errors['swappableGenres']?.message}
             </div>
           )}
         </div>
       )}
-      {conditionType === OPENTOOFFERS && (
-        <ConditionMessageBox conditionType={conditionType} />
-      )}
-      {conditionType === GIVEAWAY && (
-        <ConditionMessageBox conditionType={conditionType} />
+      {[SwapType.OPENTOOFFERS, SwapType.GIVEAWAY].includes(swapType) && (
+        <ConditionMessageBox swapType={swapType} />
       )}
     </div>
   );

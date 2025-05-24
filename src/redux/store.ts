@@ -1,15 +1,22 @@
-import { EnhancedStore, StoreEnhancer, ThunkDispatch, Tuple, UnknownAction, configureStore } from "@reduxjs/toolkit"
-import { CombinedState } from "@reduxjs/toolkit/query"
+import {
+  EnhancedStore,
+  StoreEnhancer,
+  ThunkDispatch,
+  Tuple,
+  UnknownAction,
+  configureStore,
+} from '@reduxjs/toolkit';
+import { CombinedState } from '@reduxjs/toolkit/query';
 
-import { getCookie } from "../utility/cookies"
-import { api } from "./api/apiSlice"
-import authSlice, { IInitialState, initialState } from "./feature/auth/authSlice"
-import notificationSlice, { INotificationInitialState } from "./feature/notification/notificationSlice"
-import stepSlice, { IStepInitialState } from "./feature/step/stepSlice"
+import { getCookie } from '../utility/cookies';
+import { api } from './api/apiSlice';
+import authSlice, { IInitialState, initialState } from './feature/auth/authSlice';
+import notificationSlice, {
+  INotificationInitialState,
+} from './feature/notification/notificationSlice';
+import stepSlice, { IStepInitialState } from './feature/step/stepSlice';
 import openSlice, { IOpenInitialState } from './feature/open/openSlice';
 import filterSlice, { IFilterInitialState } from './feature/filter/filterSlice';
-
-
 
 const cookieUser = getCookie('user');
 const user = cookieUser ? cookieUser : {};
@@ -19,19 +26,19 @@ const preloadedState = {
     ...initialState,
     userInformation: {
       ...initialState.userInformation,
-      ...user, 
+      ...user,
     },
   },
 };
 
 const store: EnhancedStore<
   {
-    api: CombinedState<{}, never, 'api'>;
+    api: CombinedState<Record<string, never>, never, 'api'>;
     auth: IInitialState;
     step: IStepInitialState;
     open: IOpenInitialState;
-    notification: INotificationInitialState,
-    filter: IFilterInitialState
+    notification: INotificationInitialState;
+    filter: IFilterInitialState;
   },
   UnknownAction,
   Tuple<
@@ -39,13 +46,12 @@ const store: EnhancedStore<
       StoreEnhancer<{
         dispatch: ThunkDispatch<
           {
-            api: CombinedState<{}, never, 'api'>
-            auth: IInitialState
-
+            api: CombinedState<Record<string, never>, never, 'api'>;
+            auth: IInitialState;
           },
           undefined,
           UnknownAction
-        >
+        >;
       }>,
       StoreEnhancer,
     ]
@@ -57,14 +63,13 @@ const store: EnhancedStore<
     step: stepSlice,
     open: openSlice,
     notification: notificationSlice,
-    filter: filterSlice
+    filter: filterSlice,
   },
   preloadedState,
-  middleware: getDefaultMiddleware =>
-    getDefaultMiddleware().concat(api.middleware),
-})
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware),
+});
 
-export type RootState = ReturnType<typeof store.getState>
-export type AppDispatch = typeof store.dispatch
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
-export default store
+export default store;

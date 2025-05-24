@@ -1,89 +1,130 @@
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import Button from "../../../../components/shared/Button";
-import OTP from "../../../../components/shared/OTP";
-import { ERROR, SUCCESS } from "../../../../constant/MESSAGETYPE";
-import { useVerifyEmailMutation } from "../../../../redux/feature/auth/authApi";
-import { setOtp } from "../../../../redux/feature/auth/authSlice";
-import { setMessages } from "../../../../redux/feature/notification/notificationSlice";
-import { setStep } from "../../../../redux/feature/step/stepSlice";
-import { useAppSelector } from "../../../../redux/hooks";
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import OTPInput from 'react-otp-input';
+import Button from '../../../../components/shared/Button';
+import MessageToastify from '../../../../components/shared/MessageToastify';
+import { useVerifyEmailMutation } from '../../../../redux/feature/auth/authApi';
+import { setOtp } from '../../../../redux/feature/auth/authSlice';
+import { setMessages } from '../../../../redux/feature/notification/notificationSlice';
+import { setStep } from '../../../../redux/feature/step/stepSlice';
+import { useAppSelector } from '../../../../redux/hooks';
+import { ERROR, SUCCESS } from '../../../../constant/MESSAGETYPE';
+import { otpSchema } from '../Schema';
+import { OTPSchemaType } from '../interface';
 
 export default function ConfirmOTP() {
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const [verifyEmail] = useVerifyEmailMutation();
-    const { userEmail, loading, otp, success, error, message } = useAppSelector((state) => state.auth);
-    const handleOTPVerify = async (email: string, otp: string) => {
-        if (email !== "" && otp !== "" && otp.length >= 6) {
-            try {
-                await verifyEmail({ email: email, otp: otp }).then((res) => {
-                    if (!res.error) {
-                        const timer = setTimeout(() => {
-                            dispatch(
-                                setMessages({
-                                    type: "",
-                                    isShow: false,
-                                    message: "",
-                                })
-                            );
-                            dispatch(setOtp(Array(6).fill("")));
-                            navigate("/auth/login");
-                            dispatch(setStep(0))
-                        }, 3000);
-                        return () => clearTimeout(timer);
-                    }
-                });
-            } catch (error) {
-                console.log("error", error);
-            }
-        } else {
-            dispatch(
-                setMessages({
-                    type: ERROR,
-                    isShow: true,
-                    message:
-                        "OTP is required! insert your otp code in this field.",
-                })
-            );
-        }
-    };
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [verifyEmail, { isLoading }] = useVerifyEmailMutation();
+  const { userEmail, otp } = useAppSelector((state) => state.auth);
+  const [isAutoSubmitting, setIsAutoSubmitting] = useState(false);
 
-    useEffect(() => {
-        if (!!message || error) {
-            dispatch(setMessages({
-                type: success ? SUCCESS : ERROR,
-                isShow: true,
-                message: success ? message : error
-            }))
-        }
-    }, [error, message]);
-    return (
-        <div
-            className={`bg-white absolute bottom-0 left-0 w-full  rounded-t-3xl transition-all duration-500 ease-in-out transform translate-y-0 h-[80vh]`}
-        >
-            <div className="text-center py-6 border-b border-[#E6E6E6]">
-                <h1>Confirm you Email</h1>
-            </div>
-            <div className="px-6">
-                <p className="text-sm font-light font-poppins text-center pt-8 pb-10">
-                    Enter the code we’ve sent to your Email
-                </p>
-                <OTP />
+  const {
+    handleSubmit,
+    setValue,
+    setError,
+    clearErrors,
+    formState: { errors },
+  } = useForm<OTPSchemaType>({
+    resolver: yupResolver(otpSchema),
+    defaultValues: { otp: otp.join('') },
+    mode: 'onChange',
+  });
 
-                <Button
-                    type="button"
-                    onClick={() => handleOTPVerify(userEmail, otp.join(""))}
-                    className="text-white font-medium text-sm w-full bg-primary py-2 mt-3 rounded-2xl"
-                >
-                    {loading ? "Loading..." : "OTP Verify"}
-                </Button>
-                <div className="flex items-center justify-center mt-10 gap-2 text-grayDark text-sm font-poppins">
-                    <p>Haven’t received a code? </p>{" "}
-                    <Button className="underline text-sm">Sent again</Button>
-                </div>
-            </div>
+  useEffect(() => setValue('otp', otp.join('')), [otp, setValue]);
+
+  const handleOTPChange = (value: string) => {
+    dispatch(setOtp(value.split('')));
+    if (value.length === 0) setError('otp', { type: 'manual', message: 'OTP is required' });
+    else if (errors.otp) clearErrors('otp');
+  };
+
+  const onSubmit = async ({ otp: otpString }: OTPSchemaType) => {
+    setIsAutoSubmitting(true);
+    try {
+      const res = await verifyEmail({ email: userEmail, otp: otpString });
+      if ('error' in res) {
+        setError('otp', { type: 'manual', message: 'The OTP you entered is incorrect' });
+      } else {
+        dispatch(
+          setMessages({ type: SUCCESS, isShow: true, message: 'Email verified successfully!' }),
+        );
+        setTimeout(() => {
+          dispatch(setMessages({ type: '', isShow: false, message: '' }));
+          dispatch(setOtp(Array(6).fill('')));
+          navigate('/auth/login');
+          dispatch(setStep(0));
+        }, 3000);
+      }
+    } catch (err) {
+      console.error('Verification error:', err);
+      dispatch(
+        setMessages({
+          type: ERROR,
+          isShow: true,
+          message: 'An error occurred during verification',
+        }),
+      );
+    } finally {
+      setIsAutoSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="bg-white absolute bottom-0 left-0 w-full rounded-t-3xl transition-all duration-500 ease-in-out transform translate-y-0 h-[80vh]">
+      <div className="text-center py-6 border-b border-[#E6E6E6]">
+        <h1>Confirm your Email</h1>
+      </div>
+      <div className="px-6">
+        <p className="text-sm font-light text-grayDark font-poppins text-center pt-8 pb-10">
+          Enter the code we&apos;ve sent to your Email
+        </p>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex gap-2 justify-between mb-5">
+            <OTPInput
+              value={otp.join('')}
+              onChange={handleOTPChange}
+              numInputs={6}
+              shouldAutoFocus
+              inputType="text"
+              renderInput={(props) => (
+                <input
+                  {...props}
+                  maxLength={1}
+                  inputMode="numeric"
+                  placeholder="-"
+                  className={`max-w-10 h-10 mb-5 bg-[#E7E7E7] ${
+                    errors.otp ? 'border border-rose-500' : 'border border-[#D9D9D9]'
+                  } rounded-md text-center text-base font-normal focus:outline-none transition-all duration-150`}
+                  style={{
+                    backgroundColor: '#E7E7E7',
+                  }}
+                />
+              )}
+              containerStyle={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                width: '100%',
+              }}
+            />
+          </div>
+          {errors.otp && <MessageToastify isShow type="ERROR" value={errors.otp.message} />}
+          <Button
+            type="submit"
+            disabled={isLoading || isAutoSubmitting}
+            className="text-white font-medium text-sm w-full bg-primary py-2 mt-3 rounded-2xl"
+          >
+            {isLoading || isAutoSubmitting ? 'Loading...' : 'OTP Verify'}
+          </Button>
+        </form>
+        <div className="flex items-center justify-center mt-10 gap-2 text-grayDark text-sm font-poppins">
+          <p>Haven&apos;t received a code?</p>
+          <Button className="underline text-sm">Send again</Button>
         </div>
-    );
+      </div>
+    </div>
+  );
 }

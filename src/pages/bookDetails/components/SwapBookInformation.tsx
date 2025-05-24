@@ -1,4 +1,4 @@
-import Image from "../../../components/shared/Image";
+import Image from '../../../components/shared/Image';
 
 export default function SwapBookInformation({
   coverPhotoUrl,
@@ -27,18 +27,14 @@ export default function SwapBookInformation({
           <h1 className="font-medium text-smokyBlack text-sm leading-none mb-1 font-poppins">
             {title}
           </h1>
-          <p className="text-smokyBlack font-normal text-xs font-poppins">
-            by {author}
-          </p>
+          <p className="text-smokyBlack font-normal text-xs font-poppins">by {author}</p>
           <div className="flex items-center flex-wrap mt-4">
             {genres?.map((genre, index: number) => (
               <div key={index} className="flex items-center">
-                <p className="text-black font-light text-xs font-poppins">
-                  {genre}
-                </p>
+                <p className="text-black font-light text-xs font-poppins">{genre}</p>
                 <span
                   className={`${
-                    genres.length - 1 === index ? "hidden" : "block"
+                    genres.length - 1 === index ? 'hidden' : 'block'
                   } inline-block mx-2 font-poppins font-light text-sm`}
                 >
                   |
@@ -47,7 +43,7 @@ export default function SwapBookInformation({
             ))}
           </div>
           <p className="text-smokyBlack font-normal text-xs font-poppins mt-4">
-            <span className="font-light">Book Condition:</span>{" "}
+            <span className="font-light">Book Condition:</span>{' '}
             <span className="text-[#3FBA49] bg-[#3FBA4914] py-[2px] px-[6px] rounded-lg">
               {condition}
             </span>

@@ -1,60 +1,60 @@
-import { useState } from "react";
-import { AiOutlineEye } from "react-icons/ai";
-import { PiEyeClosed } from "react-icons/pi";
-import Input from "./Input";
+import { useState } from 'react';
+import { AiOutlineEye } from 'react-icons/ai';
+import { PiEyeClosed } from 'react-icons/pi';
+import Input from './Input';
 
 interface PasswordInputProps {
-    name: string;
-    id: string;
-    value?: string;
-    placeholder?: string;
-    error?: string | null;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    onBlur?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    className?: string;
+  name: string;
+  id: string;
+  value: string;
+  placeholder?: string;
+  error?: string | null;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  className?: string;
 }
 
-const PasswordInput: React.FC<PasswordInputProps> = ({
-    name,
-    id,
-    value,
-    placeholder,
-    error,
-    onChange,
-    onBlur,
-    className
-}) => {
-    const [isVisible, setIsVisible] = useState(false);
+export default function PasswordInput({
+  name,
+  id,
+  value,
+  placeholder,
+  error,
+  onChange,
+  onBlur,
+  className = '',
+}: PasswordInputProps) {
+  const [isVisible, setIsVisible] = useState(false);
 
-    const toggleVisibility = () => {
-        setIsVisible((prevState) => !prevState);
-    };
+  const toggleVisibility = () => {
+    setIsVisible((prev) => !prev);
+  };
 
-    return (
-        <div className="relative">
-            <Input
-                type={isVisible ? "text" : "password"}
-                id={id}
-                name={name}
-                value={value}
-                onChange={onChange}
-                placeholder={placeholder}
-                error={error}
-                className={`${className}`}
-                onBlur={onBlur}
-            />
-            <div
-                className="absolute right-4 top-[18px] flex items-center cursor-pointer"
-                onClick={toggleVisibility}
-            >
-                {isVisible ? (
-                    <PiEyeClosed className="text-grayDark" />
-                ) : (
-                    <AiOutlineEye className="text-grayDark" />
-                )}
-            </div>
-        </div>
-    );
-};
-
-export default PasswordInput;
+  return (
+    <div className="relative">
+      <Input
+        type={isVisible ? 'text' : 'password'}
+        id={id}
+        name={name}
+        value={value}
+        onChange={onChange}
+        onBlur={onBlur}
+        placeholder={placeholder}
+        error={error || undefined}
+        className={className}
+      />
+      <button
+        type="button"
+        className="absolute right-4 top-[18px] flex items-center cursor-pointer"
+        onClick={toggleVisibility}
+        aria-label={isVisible ? 'Hide password' : 'Show password'}
+      >
+        {isVisible ? (
+          <PiEyeClosed className="text-grayDark text-xl" />
+        ) : (
+          <AiOutlineEye className="text-grayDark text-xl" />
+        )}
+      </button>
+    </div>
+  );
+}

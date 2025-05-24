@@ -1,10 +1,6 @@
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "../../../components/shared/Carousel";
-import Image from "../../../components/shared/Image";
-import { IB } from "../interface";
+import { Carousel, CarouselContent, CarouselItem } from '../../../components/shared/Carousel';
+import Image from '../../../components/shared/Image';
+import { IB } from '../interface';
 
 export default function SwapBookCarousels({
   swapBook,
@@ -17,7 +13,7 @@ export default function SwapBookCarousels({
   return (
     <Carousel
       opts={{
-        align: "start",
+        align: 'start',
         loop: true,
       }}
       className="relative"
@@ -27,9 +23,7 @@ export default function SwapBookCarousels({
           return (
             <CarouselItem
               key={`${item.title}`}
-              className={` ${
-                swapBook.length <= 1 ? "pr-4 basis-full" : "basis-[120px]"
-              }`}
+              className={` ${swapBook.length <= 1 ? 'pr-4 basis-full' : 'basis-[120px]'}`}
               onClick={() => handleSelectBookForSwapRequest(item)}
             >
               <div className="max-w-[120px] w-[120px] rounded-[8px] p-2 border border-primary">

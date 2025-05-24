@@ -1,3 +1,3 @@
 export const applicationJSON = {
-    "Content-Type": "application/json",
+  'Content-Type': 'application/json',
 };
