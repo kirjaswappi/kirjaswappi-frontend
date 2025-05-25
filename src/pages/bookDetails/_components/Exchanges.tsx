@@ -3,7 +3,7 @@ import BookIconBlue from '../../../assets/bookIconBlue.png';
 import { Carousel, CarouselContent, CarouselItem } from '../../../components/shared/Carousel';
 import Image from '../../../components/shared/Image';
 import { SwapType } from '../../addUpdateBook/types/enum';
-import { IExchange, ISwapConditionData } from '../interface';
+import { IExchange, ISwapConditionData } from '../types/interface';
 
 export default function Exchanges({ swapCondition }: { swapCondition: ISwapConditionData }) {
   if (!swapCondition) return null;
