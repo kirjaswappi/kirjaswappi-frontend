@@ -71,16 +71,25 @@ export default function AddUpdateBook() {
 
   const [steps, setSteps] = useState([
     {
+      id: 1,
+      title: 'Book Details',
+      description: 'Add your book details here',
       label: 'Book Details',
       isCompleted: false,
       isActive: true,
     },
     {
+      id: 2,
+      title: 'Other Details',
+      description: 'Add other details here',
       label: 'Other Details',
       isCompleted: false,
       isActive: false,
     },
     {
+      id: 3,
+      title: 'Swap Condition',
+      description: 'Set your swap condition',
       label: 'Swap Condition',
       isCompleted: false,
       isActive: false,
@@ -147,57 +156,123 @@ export default function AddUpdateBook() {
         title={`${id ? 'Update' : 'Add'} Book`}
         onBack={() => navigate('/profile/user-profile')}
       />
-      <div className="container">
-        <div className="pt-16 border-b border-[#E4E4E4] pb-4">
-          <Stepper steps={steps} />
-        </div>
-        <FormProvider {...methods}>
-          <AddGenre
-            genresValue={active === 1 ? watch('genres') : watch('swappableGenres')}
-            setEditValuesChanged={() => console.log('Genres updated')}
-            setValue={setValue}
-            trigger={trigger}
-            addGenreName={active === 1 ? 'genres' : 'swappableGenres'}
-          />
-          <form onSubmit={handleSubmit((data) => handleAddUpdateBookFn(data))}>
-            <BookFormStep
-              activeStep={active}
-              errors={errors}
-              languages={languages}
-              conditions={conditions}
+
+      {/* Mobile Layout - Original */}
+      <div className="md:hidden">
+        <div className="container">
+          <div className="pt-16 border-b border-[#E4E4E4] pb-4">
+            <Stepper steps={steps} />
+          </div>
+          <FormProvider {...methods}>
+            <AddGenre
+              genresValue={active === 1 ? watch('genres') : watch('swappableGenres')}
+              setEditValuesChanged={() => console.log('Genres updated')}
+              setValue={setValue}
+              trigger={trigger}
+              addGenreName={active === 1 ? 'genres' : 'swappableGenres'}
             />
-            <div className="mt-4 flex justify-between gap-3 pb-4">
-              {active > 0 && (
-                <Button
-                  onClick={handlePrev}
-                  type="button"
-                  className="bg-primary-light text-primary w-full py-4 rounded-lg border border-primary flex items-center justify-center font-poppins text-base font-medium"
-                >
-                  <Image src={PrevArrowIcon} alt="Next" className="w-4" /> Back
-                </Button>
-              )}
-              {active <= 1 && (
-                <Button
-                  onClick={handleNext}
-                  type="button"
-                  className="bg-primary text-white w-full py-4 rounded-lg flex items-center justify-center  font-poppins text-base font-medium"
-                >
-                  Next <Image src={NextArrowIcon} alt="Next" className="w-4" />
-                </Button>
-              )}
-              {active === 2 && (
-                <Button
-                  disabled={isLoading}
-                  type="submit"
-                  className="bg-primary text-white w-full py-4 rounded-lg"
-                >
-                  {' '}
-                  {isLoading ? 'Loading...' : 'Save'}
-                </Button>
-              )}
-            </div>
-          </form>
-        </FormProvider>
+            <form onSubmit={handleSubmit((data) => handleAddUpdateBookFn(data))}>
+              <BookFormStep
+                activeStep={active}
+                errors={errors}
+                languages={languages}
+                conditions={conditions}
+              />
+              <div className="mt-4 flex justify-between gap-3 pb-4">
+                {active > 0 && (
+                  <Button
+                    onClick={handlePrev}
+                    type="button"
+                    className="bg-primary-light text-primary w-full py-4 rounded-lg border border-primary flex items-center justify-center font-poppins text-base font-medium"
+                  >
+                    <Image src={PrevArrowIcon} alt="Next" className="w-4" /> Back
+                  </Button>
+                )}
+                {active <= 1 && (
+                  <Button
+                    onClick={handleNext}
+                    type="button"
+                    className="bg-primary text-white w-full py-4 rounded-lg flex items-center justify-center  font-poppins text-base font-medium"
+                  >
+                    Next <Image src={NextArrowIcon} alt="Next" className="w-4" />
+                  </Button>
+                )}
+                {active === 2 && (
+                  <Button
+                    disabled={isLoading}
+                    type="submit"
+                    className="bg-primary text-white w-full py-4 rounded-lg"
+                  >
+                    {' '}
+                    {isLoading ? 'Loading...' : 'Save'}
+                  </Button>
+                )}
+              </div>
+            </form>
+          </FormProvider>
+        </div>
+      </div>
+
+      {/* Desktop/Tablet Layout - Sidebar + Main Content */}
+      <div className="hidden md:flex">
+        {/* Left Sidebar - Stepper */}
+        <div className="w-80 bg-gray-50 min-h-screen p-6 border-r border-[#E5E5E5]">
+          <div className="pt-8">
+            <Stepper steps={steps} />
+          </div>
+        </div>
+
+        {/* Right Main Content */}
+        <div className="flex-1">
+          <div className="container max-w-4xl mx-auto p-6">
+            <FormProvider {...methods}>
+              <AddGenre
+                genresValue={active === 1 ? watch('genres') : watch('swappableGenres')}
+                setEditValuesChanged={() => console.log('Genres updated')}
+                setValue={setValue}
+                trigger={trigger}
+                addGenreName={active === 1 ? 'genres' : 'swappableGenres'}
+              />
+              <form onSubmit={handleSubmit((data) => handleAddUpdateBookFn(data))}>
+                <BookFormStep
+                  activeStep={active}
+                  errors={errors}
+                  languages={languages}
+                  conditions={conditions}
+                />
+                <div className="mt-8 flex justify-end gap-4 pb-4">
+                  {active > 0 && (
+                    <Button
+                      onClick={handlePrev}
+                      type="button"
+                      className="bg-primary-light text-primary px-8 py-3 rounded-lg border border-primary flex items-center justify-center font-poppins text-base font-medium"
+                    >
+                      <Image src={PrevArrowIcon} alt="Back" className="w-4 mr-2" /> Back
+                    </Button>
+                  )}
+                  {active <= 1 && (
+                    <Button
+                      onClick={handleNext}
+                      type="button"
+                      className="bg-primary text-white px-8 py-3 rounded-lg flex items-center justify-center font-poppins text-base font-medium"
+                    >
+                      Next <Image src={NextArrowIcon} alt="Next" className="w-4 ml-2" />
+                    </Button>
+                  )}
+                  {active === 2 && (
+                    <Button
+                      disabled={isLoading}
+                      type="submit"
+                      className="bg-primary text-white px-8 py-3 rounded-lg"
+                    >
+                      {isLoading ? 'Loading...' : 'Save'}
+                    </Button>
+                  )}
+                </div>
+              </form>
+            </FormProvider>
+          </div>
+        </div>
       </div>
     </div>
   );
