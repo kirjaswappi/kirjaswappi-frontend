@@ -14,7 +14,7 @@ import TopBar from './_components/TopBar';
 export default function Header() {
   const location = useLocation();
   const dispatch = useAppDispatch();
-  const { clicked, reference } = useMouseClick();
+  const { clicked, reference } = useMouseClick<HTMLFormElement>();
 
   const showTopHeaderPath = ['/'];
   const isHeaderShow = showTopHeaderPath.find((path) => path === location.pathname);
@@ -36,10 +36,7 @@ export default function Header() {
     <header className={`${isHeaderShow ? 'pb-28' : 'pb-0'}`}>
       <FormProvider {...methods}>
         <SideLeftDrawer open={clicked}>
-          <form
-            ref={reference as React.RefObject<HTMLFormElement>}
-            onSubmit={handleSubmit((data) => handleSubmitFn(data))}
-          >
+          <form ref={reference} onSubmit={handleSubmit((data) => handleSubmitFn(data))}>
             <BookFilter />
           </form>
         </SideLeftDrawer>
