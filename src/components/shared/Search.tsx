@@ -33,7 +33,6 @@ export default function Search() {
         className={`
         w-full h-[42px] rounded-3xl bg-white flex items-center px-4
         transition-all duration-300 ease-in-out
-        ${isFocused ? 'shadow-lg ring-2 ring-blue-500 ring-opacity-50' : 'shadow-none'}
       `}
       >
         <input
@@ -44,7 +43,7 @@ export default function Search() {
           onBlur={() => setIsFocused(false)}
           type="text"
           placeholder="Find Books"
-          className="w-full outline-none px-3 py-1 placeholder:pl-3 md:placeholder:pl-8 placeholder:text-grayDark placeholder:font-poppins placeholder:text-xs transition-all duration-300"
+          className="w-full outline-none focus:outline-none focus:ring-0 focus:ring-offset-0 border-none appearance-none [-webkit-appearance:none] [-moz-appearance:none] px-3 py-1 placeholder:pl-3 md:placeholder:pl-8 placeholder:text-grayDark placeholder:font-poppins placeholder:text-xs"
         />
         <div
           className={`
@@ -66,10 +65,7 @@ export default function Search() {
 
       {clicked && (
         <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-lg shadow-lg p-4">
-          <div className="flex flex-col gap-2">
-            <p className="text-sm text-grayDark">Search Suggestions</p>
-            {/* Add your search suggestions or filters here */}
-          </div>
+          <div className="flex flex-col gap-2"></div>
         </div>
       )}
     </div>
