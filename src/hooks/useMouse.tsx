@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 export function useMouseClick() {
-  const reference = useRef<HTMLElement>(null);
+  const reference = useRef<HTMLDivElement>(null);
   const [clicked, setClicked] = useState<boolean>(false);
   const handleClickOutSide = (event: MouseEvent) => {
     if (
