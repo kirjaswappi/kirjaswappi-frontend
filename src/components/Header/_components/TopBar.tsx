@@ -1,14 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import Image from '../../shared/Image';
 // import TopMiddle from './TopMiddleBar'; // Import the new TopMiddle component
+import { useEffect, useState } from 'react';
+import country from '../../../assets/country.png';
+import dropdownarrow from '../../../assets/dropdownarrow.png';
+import logo from '../../../assets/logo.png';
 import notification_gray from '../../../assets/notification_gray.png';
 import profileIcon from '../../../assets/profileIcon.png';
-import country from '../../../assets/country.png';
-import logo from '../../../assets/logo.png';
-import dropdownarrow from '../../../assets/dropdownarrow.png';
-import { useAppSelector } from '../../../redux/hooks';
 import { useGetUserProfileImageQuery } from '../../../redux/feature/auth/authApi';
-import { useEffect, useState } from 'react';
+import { useAppSelector } from '../../../redux/hooks';
 import ScrollSearch from '../../shared/ScrollSearch';
 
 export default function TopBar() {
