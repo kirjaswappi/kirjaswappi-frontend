@@ -51,7 +51,7 @@ export default function TopBar() {
   return (
     <div
       id="top-nav-bar"
-      className="hidden lg:flex items-center justify-between bg-white h-20 px-6 w-full z-50 fixed top-0 shadow-sm"
+      className="hidden md:flex items-center justify-between bg-white h-20 px-6 w-full z-50 fixed top-0 shadow-sm"
     >
       {/* Left Section */}
       <div className="text-xl font-bold">
