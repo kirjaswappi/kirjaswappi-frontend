@@ -114,17 +114,55 @@ export default function AddUpdateBook() {
   };
 
   const handlePrev = async () => {
-    setSteps((prevStep) =>
-      prevStep.map((step, index) => {
-        if (index === active) return step;
-        if (index === active - 1) {
-          return { ...step, isActive: false };
+    setSteps((prevSteps) =>
+      prevSteps.map((step, index) => {
+        if (index === active) {
+          // Current step becomes inactive and not completed
+          return { ...step, isActive: false, isCompleted: false };
+        } else if (index === active - 1) {
+          // Previous step becomes active and not completed (since user is going back)
+          return { ...step, isActive: true, isCompleted: false };
         }
         return step;
       }),
     );
     if (active === 0) return;
     setActive((prev) => prev - 1);
+  };
+
+  const handleStepClick = async (stepId: number) => {
+    const targetStep = stepId - 1; // stepId is 1-based, but array index is 0-based
+    // Only allow navigation to previous steps or the next step if current step is valid
+    if (targetStep < active) {
+      // Going back - no validation needed
+      setSteps((prevSteps) =>
+        prevSteps.map((step, index) => {
+          if (index === targetStep) {
+            return { ...step, isActive: true, isCompleted: false };
+          } else {
+            return { ...step, isActive: false, isCompleted: index < targetStep };
+          }
+        }),
+      );
+      setActive(targetStep);
+    } else if (targetStep === active + 1) {
+      // Going forward - validate current step first
+      const valid = await trigger();
+      if (valid) {
+        setSteps((prevSteps) =>
+          prevSteps.map((step, index) => {
+            if (index === active) {
+              return { ...step, isActive: false, isCompleted: true };
+            } else if (index === targetStep) {
+              return { ...step, isActive: true };
+            }
+            return step;
+          }),
+        );
+        setActive(targetStep);
+      }
+    }
+    // Don't allow skipping steps (targetStep > active + 1)
   };
 
   const handleAddUpdateBookFn = async <T extends IAddUpdateBookData>(data: T) => {
@@ -161,7 +199,7 @@ export default function AddUpdateBook() {
       <div className="md:hidden">
         <div className="container">
           <div className="pt-16 border-b border-[#E4E4E4] pb-4">
-            <Stepper steps={steps} />
+            <Stepper steps={steps} onStepClick={handleStepClick} />
           </div>
           <FormProvider {...methods}>
             <AddGenre
@@ -214,17 +252,17 @@ export default function AddUpdateBook() {
       </div>
 
       {/* Desktop/Tablet Layout - Sidebar + Main Content */}
-      <div className="hidden md:flex">
+      <div className="hidden md:flex min-h-screen bg-white pt-[60px]">
         {/* Left Sidebar - Stepper */}
-        <div className="w-80 bg-gray-50 min-h-screen p-6 border-r border-[#E5E5E5]">
+        <div className="w-80 bg-white min-h-screen border-r border-[#E5E5E5]">
           <div className="pt-8">
-            <Stepper steps={steps} />
+            <Stepper steps={steps} onStepClick={handleStepClick} />
           </div>
         </div>
 
         {/* Right Main Content */}
-        <div className="flex-1">
-          <div className="container max-w-4xl mx-auto p-6">
+        <div className="flex-1 bg-white">
+          <div className="max-w-4xl mx-auto p-8 pt-12">
             <FormProvider {...methods}>
               <AddGenre
                 genresValue={active === 1 ? watch('genres') : watch('swappableGenres')}

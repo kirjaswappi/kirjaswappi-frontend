@@ -4,54 +4,83 @@ import { IBookDetailsProps } from '../types/interface';
 
 export default function BookDetailsStep({ languageOptions, conditionOptions }: IBookDetailsProps) {
   return (
-    <div>
-      <div className="mt-4 pb-4 border-b border-platinumDark">
-        <InputLabel label="Book Title" required />
-        <ControlledInputField
-          name="title"
-          placeholder="Enter book title"
-          className="rounded-md"
-          showErrorMessage
-        />
+    <div className="bg-white">
+      <div className="mb-8">
+        <h2
+          className="text-xl font-medium text-gray-900 mb-2"
+          style={{ fontFamily: 'Poppins, sans-serif' }}
+        >
+          Book Details
+        </h2>
       </div>
-      <div className="mt-4 pb-4 border-b border-platinumDark">
-        <InputLabel label="Author Name" required />
-        <ControlledInputField
-          name="author"
-          placeholder="Enter book author"
-          className="rounded-md"
-          showErrorMessage
-        />
-      </div>
-      <div className="mt-4 pb-4 border-b border-platinumDark">
-        <InputLabel label="Short Description" />
-        <ControlledInputField
-          type="textarea"
-          name="description"
-          placeholder="Enter a short description of the book"
-          className="rounded-md h-[83px]"
-          showErrorMessage
-        />
-      </div>
-      <div className="mt-4 pb-4 border-b border-platinumDark">
-        <InputLabel label="Book Language" required />
-        <ControlledInputField
-          type="select"
-          name="language"
-          className="rounded-md bg-white"
-          options={languageOptions}
-          showErrorMessage
-        />
-      </div>
-      <div className="mt-4 pb-4 border-b border-platinumDark">
-        <InputLabel label="Book Condition" required />
-        <ControlledInputField
-          type="select"
-          name="condition"
-          className="rounded-md bg-white"
-          options={conditionOptions}
-          showErrorMessage
-        />
+
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <InputLabel label="Book Title" required />
+            <ControlledInputField
+              name="title"
+              placeholder="Write Here"
+              className="rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              showErrorMessage
+            />
+          </div>
+          <div>
+            <InputLabel label="Author Name" required />
+            <ControlledInputField
+              name="author"
+              placeholder="Write Here"
+              className="rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              showErrorMessage
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <InputLabel label="Book Condition" required />
+            <ControlledInputField
+              type="select"
+              name="condition"
+              className="rounded-md bg-white border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              options={conditionOptions}
+              showErrorMessage
+            />
+          </div>
+          <div>
+            <InputLabel label="Book Language" required />
+            <ControlledInputField
+              type="select"
+              name="language"
+              className="rounded-md bg-white border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              options={languageOptions}
+              showErrorMessage
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <InputLabel label="Book Edition" />
+            <ControlledInputField
+              name="edition"
+              placeholder="Write Here"
+              className="rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              showErrorMessage
+            />
+          </div>
+        </div>
+
+        <div>
+          <InputLabel label="Short Description" />
+          <ControlledInputField
+            type="textarea"
+            name="description"
+            placeholder="A brief description written by the user, displayed under the username. This could include their interests, favorite genres, or a personal quote."
+            className="rounded-md h-[120px] border-gray-300 focus:border-blue-500 focus:ring-blue-500 resize-none"
+            showErrorMessage
+          />
+        </div>
       </div>
     </div>
   );

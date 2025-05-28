@@ -18,7 +18,7 @@ const Stepper: React.FC<StepperProps> = ({ steps, onStepClick }) => {
   return (
     <>
       {/* Small to Medium Device View */}
-      <div className="lg:hidden w-full bg-white max-w-md mx-auto">
+      <div className="md:hidden container bg-white">
         <div className="relative flex items-start justify-between">
           {steps.map((step, label) => (
             <div
@@ -34,11 +34,11 @@ const Stepper: React.FC<StepperProps> = ({ steps, onStepClick }) => {
               }}
             >
               <div
-                className={`w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full border-2 md:border-[3px] transition-all duration-200 cursor-pointer ${
+                className={`w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full border-2 border-[#E5E5E5] md:border-[3px] transition-all duration-200 cursor-pointer ${
                   step.isCompleted
                     ? 'bg-blue-500 border-blue-500 text-white'
                     : step.isActive
-                      ? 'bg-white border-blue-500 text-blue-500'
+                      ? 'bg-blue-500 border-blue-500 text-white'
                       : 'bg-white border-gray-300 text-gray-400'
                 }`}
               >
@@ -58,7 +58,7 @@ const Stepper: React.FC<StepperProps> = ({ steps, onStepClick }) => {
                 ) : (
                   <span
                     className={`text-sm md:text-base font-medium ${
-                      step.isActive ? 'text-blue-500' : 'text-gray-400'
+                      step.isActive ? 'text-white' : 'text-gray-400'
                     }`}
                   >
                     {step.id}
@@ -67,7 +67,7 @@ const Stepper: React.FC<StepperProps> = ({ steps, onStepClick }) => {
               </div>
 
               <p
-                className={`mt-2 text-xs md:text-sm text-center font-medium max-w-[80px] transition-colors duration-200 ${
+                className={`mt-2 text-xs md:text-sm text-center font-normal max-w-[80px] transition-colors duration-200 ${
                   step.isActive
                     ? 'text-gray-900'
                     : step.isCompleted
@@ -95,16 +95,16 @@ const Stepper: React.FC<StepperProps> = ({ steps, onStepClick }) => {
         </div>
       </div>
 
-      {/* Large Device View (now md and up) */}
-      <div className="hidden md:block w-full max-w-md mx-auto">
+      {/* Large Device View (md and up) */}
+      <div className="hidden md:block">
         <div className="flex flex-col">
           {steps.map((step, idx) => (
             <div
               key={step.id}
               onClick={() => onStepClick?.(step.id)}
-              className={`relative flex items-center px-6 py-4 transition-all duration-200 cursor-pointer font-poppins group
+              className={`relative flex items-center px-6 py-6 transition-all duration-200 cursor-pointer
                 ${step.isActive ? 'bg-blue-50' : 'bg-white'}
-                ${idx !== steps.length - 1}
+                ${idx !== steps.length - 1 ? ' border-gray-200' : ''}
               `}
               role="button"
               tabIndex={0}
@@ -115,30 +115,35 @@ const Stepper: React.FC<StepperProps> = ({ steps, onStepClick }) => {
               }}
             >
               <div
-                className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-colors duration-200 mr-4
-                  ${step.isActive ? 'bg-white border-2 border-blue-500 text-blue-500' : 'bg-white border-2 border-gray-300 text-gray-400'}
+                className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center font-medium transition-colors duration-200 mr-4 text-lg
+                  ${
+                    step.isActive
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-white border-2 border-[#B2B2B2] text-[#B2B2B2]'
+                  }
                 `}
-                style={{ fontFamily: 'Poppins, sans-serif', fontSize: '1.125rem' }}
               >
                 {step.id}
               </div>
               <div className="flex flex-col">
                 <span
-                  className={`text-base md:text-lg font-semibold font-poppins transition-colors duration-200 ${step.isActive ? 'text-gray-900' : 'text-gray-700'}`}
+                  className={`text-base font-medium transition-colors duration-200 
+                    ${step.isActive ? 'text-gray-900' : 'text-gray-700'}
+                  `}
                   style={{ fontFamily: 'Poppins, sans-serif' }}
                 >
                   {step.title}
                 </span>
                 <span
-                  className={`text-sm md:text-base font-normal font-poppins mt-1 transition-colors duration-200 ${step.isActive ? 'text-blue-500' : 'text-gray-500'}`}
+                  className={`text-sm font-normal mt-1 transition-colors duration-200 
+                    ${step.isActive ? 'text-blue-600' : 'text-gray-500'}
+                  `}
                   style={{ fontFamily: 'Poppins, sans-serif' }}
                 >
                   {step.description}
                 </span>
               </div>
-              {step.isActive && (
-                <div className="absolute right-0 top-0 bottom-0 w-2 bg-blue-500 rounded-r-xl" />
-              )}
+              {step.isActive && <div className="absolute right-0 top-0 bottom-0 w-1 bg-blue-500" />}
             </div>
           ))}
         </div>
