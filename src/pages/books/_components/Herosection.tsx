@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import Image from '../../../components/shared/Image';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
-import Search from '../../../components/shared/Search';
 
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -42,9 +41,7 @@ export default function HeroSection() {
 
         {/* Centered search bar */}
         <div className="flex justify-center mt-8 md:mt-12">
-          <div id="hero-search" className="w-full max-w-2xl">
-            <Search />
-          </div>
+          <div id="hero-search" className="w-full max-w-2xl"></div>
         </div>
 
         {/* Navigation dots */}
