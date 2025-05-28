@@ -1,13 +1,15 @@
 import { Link, useLocation } from 'react-router-dom';
 import { menu } from '../../data/menu';
 import Image from './Image';
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { IoSearch } from 'react-icons/io5';
 import Search from './Search';
 
 export default function ScrollSearch() {
   const { pathname } = useLocation();
   const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const searchBarRef = useRef<HTMLDivElement>(null);
 
   const filteredMenu = menu.filter(({ isShow }) => isShow);
 
@@ -15,9 +17,26 @@ export default function ScrollSearch() {
     setIsSearchVisible((prev) => !prev);
   };
 
+  // Close search when clicking outside
+  useEffect(() => {
+    if (!isSearchVisible) return;
+    function handleClickOutside(event: MouseEvent) {
+      if (searchBarRef.current && !searchBarRef.current.contains(event.target as Node)) {
+        setIsSearchVisible(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isSearchVisible]);
+
   return (
     <div className="relative w-full max-w-xl">
-      <div className="flex items-center bg-white rounded-full p-1 gap-2 border border-[#E5E5E5] shadow-sm w-full h-[48px]">
+      <div
+        ref={searchBarRef}
+        className="flex items-center bg-white rounded-full p-1 gap-2 border border-[#E5E5E5] shadow-sm w-full h-[48px]"
+      >
         {/* Animated menu text group */}
         <div
           className={`flex items-center gap-1 menu-text-fade ${
@@ -73,7 +92,11 @@ export default function ScrollSearch() {
           style={{ zIndex: 2 }}
         >
           <div className="flex-1">
-            <Search onClose={() => setIsSearchVisible(false)} />
+            <Search
+              query={searchQuery}
+              setQuery={setSearchQuery}
+              onClose={() => setIsSearchVisible(false)}
+            />
           </div>
         </div>
       </div>

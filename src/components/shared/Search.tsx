@@ -7,9 +7,16 @@ import { setSearch } from '../../redux/feature/filter/filterSlice';
 import useDebounce from '../../hooks/useDebounce';
 import { IoSearch } from 'react-icons/io5';
 
-export default function Search({ onClose }: { onClose?: () => void }) {
+export default function Search({
+  query,
+  setQuery,
+  onClose,
+}: {
+  query: string;
+  setQuery: (q: string) => void;
+  onClose?: () => void;
+}) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const { clicked, reference } = useMouseClick();
   const dispatch = useAppDispatch();
