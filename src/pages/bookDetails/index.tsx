@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import bookDetailsBg from '../../assets/bookdetailsbg.jpg';
 import editIcon from '../../assets/editBlack.png';
@@ -16,6 +17,7 @@ import Loader from '../../components/shared/Loader';
 import BookSkeleton from '../../components/shared/skeleton/BookSkeleton';
 import { useGetUserProfileImageQuery } from '../../redux/feature/auth/authApi';
 import { useGetBookByIdQuery } from '../../redux/feature/book/bookApi';
+import { setSwapBook, setSwapModal } from '../../redux/feature/swap/swapSlice';
 import { useAppSelector } from '../../redux/hooks';
 import { goToTop } from '../../utility/helper';
 import BookType from './_components/BookType';
@@ -26,7 +28,7 @@ export default function BookDetails() {
   const MAX_LENGTH = 95;
   const { id } = useParams();
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const [isProfile, setProfile] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const { userInformation } = useAppSelector((state) => state.auth);
@@ -59,15 +61,17 @@ export default function BookDetails() {
     setIsExpanded(!isExpanded);
   };
 
-  // const loginModalOrSwapRequest = (): void => {
-  //   // =========== If user has in state show the swap request modal ===========
-  //   if (userInformation.email) {
-  //     dispatch(setSwapModal(true));
-  //   } else {
-  //     // =========== If user state is empty show the login modal for login user ===========
-  //     console.log('ok');
-  //   }
-  // };
+  const loginModalOrSwapRequestModal = (): void => {
+    // =========== If user has in state show the swap request modal ===========
+    // console.log('test', bookData);
+    if (userInformation.email) {
+      dispatch(setSwapModal(true));
+      dispatch(setSwapBook(bookData));
+    } else {
+      // =========== If user state is empty show the login modal for login user ===========
+      console.log('ok');
+    }
+  };
 
   if (bookLoading) return <Loader />;
   goToTop();
@@ -194,7 +198,12 @@ export default function BookDetails() {
         </div>
       </div>
       {/* ==================SWAP REQUEST BUTTON CONTAINER ON THE FOOTER [SCREEN SIZE: MOBILE]================== */}
-      {!isProfile && <SwapRequestButton ownerName={bookData?.owner?.name} />}
+      {!isProfile && (
+        <SwapRequestButton
+          ownerName={bookData?.owner?.name}
+          onClick={loginModalOrSwapRequestModal}
+        />
+      )}
     </div>
   );
 }

@@ -1,10 +1,12 @@
 import Button from '../../../components/shared/Button';
-import { setSwapModal } from '../../../redux/feature/open/openSlice';
-import { useAppDispatch } from '../../../redux/hooks';
 
-export default function SwapRequestButton({ ownerName }: { ownerName: string }) {
-  const dispatch = useAppDispatch();
-
+export default function SwapRequestButton({
+  ownerName,
+  onClick,
+}: {
+  ownerName: string;
+  onClick: () => void;
+}) {
   return (
     <div
       className="h-16 flex items-center gap-1 justify-between text-xs font-normal px-6 fixed bottom-0  bg-white w-full"
@@ -18,7 +20,7 @@ export default function SwapRequestButton({ ownerName }: { ownerName: string }) 
       </div>
       <div>
         <Button
-          onClick={() => dispatch(setSwapModal(true))}
+          onClick={onClick}
           className="bg-primary text-white w-[130px] sm:w-[150px] py-2 text-sm font-poppins font-normal rounded-md"
         >
           Request Swap
