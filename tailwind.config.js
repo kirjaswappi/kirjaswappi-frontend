@@ -14,11 +14,11 @@ export default {
           tab: '100%',
           lg: '100%',
           xl: '100%',
-          '2xl': '1320px',
+          '2xl': '1440px',
         },
         padding: {
           DEFAULT: '1rem',
-          xl: '0rem',
+          "2xl": '0rem',
         },
       },
       colors: {
