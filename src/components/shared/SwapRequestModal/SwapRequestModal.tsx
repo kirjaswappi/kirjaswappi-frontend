@@ -3,7 +3,7 @@ import { useFormContext } from 'react-hook-form';
 import close from '../../../assets/close.png';
 import giveaway from '../../../assets/giveaway.png';
 import sendMessageIcon from '../../../assets/sendMessageIcon.png';
-import { setSwapModal } from '../../../redux/feature/open/openSlice';
+import { setSwapModal } from '../../../redux/feature/swap/swapSlice';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import Button from '../Button';
 import Image from '../Image';
@@ -12,7 +12,7 @@ import TextArea from '../TextArea';
 export default function SwapModal() {
   const context = useFormContext();
   const dispatch = useAppDispatch();
-  const { swapModal } = useAppSelector((state) => state.open);
+  const { swapModalOpen } = useAppSelector((state) => state.swapBook);
   // const { userInformation } = useAppSelector((state) => state.auth);
 
   if (!context) {
@@ -54,7 +54,7 @@ export default function SwapModal() {
   return (
     <div
       className={`${
-        swapModal ? 'block' : 'hidden'
+        swapModalOpen ? 'block' : 'hidden'
       } bg-black bg-opacity-50 inset-0 w-full h-screen fixed top-0 left-0 z-50 flex items-center justify-center`}
     >
       <div className="w-11/12 max-h-[90vh] bg-white rounded-md overflow-y-auto">
