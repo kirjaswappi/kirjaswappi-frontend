@@ -2,6 +2,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialState = {
+  isBookDetailsOrBookHomePage: false,
   bookInformation: {
     id: '',
     title: '',
@@ -32,8 +33,11 @@ const bookSlice = createSlice({
     setBook: (state, action: PayloadAction<any>) => {
       state.bookInformation = { ...initialState.bookInformation, ...action.payload };
     },
+    setBookDetailsOrBookHomePage: (state, action: PayloadAction<boolean>) => {
+      state.isBookDetailsOrBookHomePage = action.payload;
+    },
   },
 });
 
-export const { setBook } = bookSlice.actions;
+export const { setBook, setBookDetailsOrBookHomePage } = bookSlice.actions;
 export default bookSlice.reducer;
