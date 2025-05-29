@@ -8,18 +8,18 @@ interface IImageFileInputProps {
   errors: Record<string, FieldError>;
 }
 const MultipleImageFileInput = ({ name, errors }: IImageFileInputProps) => {
-  const { control, getValues, setValue, trigger } = useFormContext();
-  const initialValue = getValues(name);
+  const { control, watch, setValue, trigger } = useFormContext();
+  const watchedValue = watch(name);
   const [previews, setPreviews] = useState<string[]>([]);
 
   useEffect(() => {
-    if (Array.isArray(initialValue)) {
-      const urls = initialValue.map((file) =>
+    if (Array.isArray(watchedValue)) {
+      const urls = watchedValue.map((file) =>
         file instanceof File ? URL.createObjectURL(file) : file,
       );
       setPreviews(urls);
     }
-  }, [initialValue]);
+  }, [watchedValue]);
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,

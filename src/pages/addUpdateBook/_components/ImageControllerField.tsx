@@ -3,20 +3,22 @@ import { Controller, useFormContext, ControllerRenderProps } from 'react-hook-fo
 import closeIcon from '../../../assets/close.png';
 import Image from '../../../components/shared/Image';
 const ImageFileInput = ({ name }: { name: string }) => {
-  const { control, getValues, setValue } = useFormContext();
-  const initialValue = getValues(name);
+  const { control, watch, setValue } = useFormContext();
+  const watchedValue = watch(name);
   const [preview, setPreview] = useState<string | null>(
-    initialValue instanceof File ? URL.createObjectURL(initialValue) : initialValue || null,
+    watchedValue instanceof File ? URL.createObjectURL(watchedValue) : watchedValue || null,
   );
 
   useEffect(() => {
-    if (initialValue instanceof File) {
-      const fileUrl = URL.createObjectURL(initialValue);
+    if (watchedValue instanceof File) {
+      const fileUrl = URL.createObjectURL(watchedValue);
       setPreview(fileUrl);
-    } else if (typeof initialValue === 'string') {
-      setPreview(initialValue);
+    } else if (typeof watchedValue === 'string') {
+      setPreview(watchedValue);
+    } else if (watchedValue === null || watchedValue === undefined) {
+      setPreview(null);
     }
-  }, [initialValue]);
+  }, [watchedValue]);
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
