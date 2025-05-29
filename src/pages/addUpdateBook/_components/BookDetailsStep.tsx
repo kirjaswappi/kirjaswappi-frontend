@@ -5,21 +5,6 @@ import { IBookDetailsProps } from '../types/interface';
 export default function BookDetailsStep({ languageOptions, conditionOptions }: IBookDetailsProps) {
   return (
     <div className="bg-white">
-      <div className="mb-6">
-        <h2
-          className="text-black mb-2"
-          style={{
-            fontFamily: 'Poppins',
-            fontWeight: 600,
-            fontSize: '20px',
-            lineHeight: '32px',
-            letterSpacing: '0px',
-          }}
-        >
-          Book Details
-        </h2>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
         <div>
           <InputLabel label="Book Title" required />
@@ -65,7 +50,7 @@ export default function BookDetailsStep({ languageOptions, conditionOptions }: I
             type="textarea"
             name="description"
             placeholder="A brief description written by the user, displayed under the username. This could include their interests, favorite genres, or a personal quote."
-            className="rounded-md h-[112px] border-gray-300 focus:border-blue-500 focus:ring-blue-500 resize-none"
+            className="rounded-md h-[140px] border-gray-300 focus:border-blue-500 focus:ring-blue-500 resize-none"
             showErrorMessage
           />
         </div>

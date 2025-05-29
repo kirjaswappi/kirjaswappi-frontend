@@ -93,7 +93,7 @@ const MultipleImageFileInput = ({ name, errors }: IImageFileInputProps) => {
         return (
           <div>
             {previews.length < 5 && (
-              <div className="w-[126px] h-[150px] border-[1px] border-dashed border-grayDark rounded-lg cursor-pointer block mx-auto ">
+              <div className="w-[126px] lg:w-[200px] h-[150px] border-[1px] border-dashed border-grayDark rounded-lg cursor-pointer block mx-auto ">
                 <label htmlFor="file" className="flex flex-col items-center justify-center h-full">
                   <span className="text-grayDark text-3xl font-poppins font-extralight">+</span>
                   <span className="text-grayDark text-xs font-poppins font-normal">

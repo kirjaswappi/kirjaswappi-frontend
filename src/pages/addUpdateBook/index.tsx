@@ -137,7 +137,7 @@ export default function AddUpdateBook() {
 
       {/* Mobile Layout - Original */}
       <div className="md:hidden">
-        <div className="container">
+        <div className="">
           <div className="pt-16 border-b border-[#E4E4E4] pb-4">
             <Stepper steps={steps} onStepClick={handleStepClick} />
           </div>
@@ -204,7 +204,7 @@ export default function AddUpdateBook() {
             >
               <img src={PrevArrowIcon} alt="Back" className="w-4" />
             </button>
-            <span className="ml-2 font-poppins font-medium text-base text-[#222]">
+            <span className="ml-4 font-poppins font-semibold text-[24px] text-base text-[#262626]">
               {id ? 'Update' : 'Add'} Book
             </span>
           </div>
@@ -216,6 +216,18 @@ export default function AddUpdateBook() {
         {/* Right Main Content */}
         <div className="flex-1 bg-white">
           <div className="max-w-4xl mx-auto py-8 px-8 mt-[55px]">
+            <div className="mb-6">
+              <h2
+                className="text-black mb-2 font-Poppins"
+                style={{
+                  fontWeight: 600,
+                  fontSize: '20px',
+                  lineHeight: '32px',
+                }}
+              >
+                {steps[active].title}
+              </h2>
+            </div>
             <FormProvider {...methods}>
               <AddGenre
                 genresValue={active === 1 ? watch('genres') : watch('swappableGenres')}
