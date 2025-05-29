@@ -23,8 +23,8 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           onBlur={onBlur}
           value={value}
           placeholder={placeholder}
-          className={`w-full h-[48px] px-[14px] py-2  bg-white border border-[#E6E6E6] ${
-            error ? 'border border-rose-500' : 'focus:ring-grayDark focus:border-grayDark'
+          className={`w-full h-[80px] px-[14px] py-2  bg-white border border-[#E6E6E6] ${
+            error ? 'border border-rose-500' : 'focus:ring-blue-500 focus:border-blue-500'
           } bg-[#F2F2F2] focus:outline-none  placeholder:text-sm placeholder:text-grayDark ${
             className && className
           }`}

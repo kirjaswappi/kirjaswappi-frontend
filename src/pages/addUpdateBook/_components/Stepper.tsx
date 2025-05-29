@@ -96,7 +96,7 @@ const Stepper: React.FC<StepperProps> = ({ steps, onStepClick }) => {
       </div>
 
       {/* Large Device View (md and up) */}
-      <div className="hidden md:block">
+      <div className="container hidden md:block border-r border-[#E5E5E5] h-[682px]">
         <div className="flex flex-col">
           {steps.map((step, idx) => (
             <div
@@ -117,9 +117,11 @@ const Stepper: React.FC<StepperProps> = ({ steps, onStepClick }) => {
               <div
                 className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center font-medium transition-colors duration-200 mr-4 text-lg
                   ${
-                    step.isActive
+                    step.isCompleted
                       ? 'bg-blue-500 text-white'
-                      : 'bg-white border-2 border-[#B2B2B2] text-[#B2B2B2]'
+                      : step.isActive
+                        ? 'bg-white border-2 border-blue-500 text-blue-500'
+                        : 'bg-white border-2 border-[#808080] text-[#808080]'
                   }
                 `}
               >
@@ -128,20 +130,26 @@ const Stepper: React.FC<StepperProps> = ({ steps, onStepClick }) => {
               <div className="flex flex-col">
                 <span
                   className={`text-base font-medium transition-colors duration-200 
-                    ${step.isActive ? 'text-gray-900' : 'text-gray-700'}
+                    ${step.isCompleted ? 'text-black' : step.isActive ? 'text-black' : 'text-[#808080]'}
                   `}
                   style={{ fontFamily: 'Poppins, sans-serif' }}
                 >
                   {step.title}
                 </span>
                 <span
-                  className={`text-sm font-normal mt-1 transition-colors duration-200 
-                    ${step.isActive ? 'text-blue-600' : 'text-gray-500'}
-                  `}
+                  className="text-sm font-normal mt-1 transition-colors duration-200 text-[#808080]"
                   style={{ fontFamily: 'Poppins, sans-serif' }}
                 >
                   {step.description}
                 </span>
+                {step.isCompleted && (
+                  <span
+                    className="text-sm font-medium text-green-500 mt-1"
+                    style={{ fontFamily: 'Poppins, sans-serif' }}
+                  >
+                    Completed
+                  </span>
+                )}
               </div>
               {step.isActive && <div className="absolute right-0 top-0 bottom-0 w-1 bg-blue-500" />}
             </div>

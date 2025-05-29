@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import yup from 'yup';
@@ -25,11 +25,38 @@ import BookAddUpdateHeader from './_components/BookAddUpdateHeader';
 import BookFormStep from './_components/BookFormStep';
 import { buildFormData, getDefaultValues } from './helper';
 import { IAddUpdateBookData } from './types/interface';
+import { useStepManager } from '../../hooks/useStepManager';
+
+const initialSteps = [
+  {
+    id: 1,
+    title: 'Book Details',
+    description: 'Add your book details here',
+    label: 'Book Details',
+    isCompleted: false,
+    isActive: true,
+  },
+  {
+    id: 2,
+    title: 'Other Details',
+    description: 'Add other details here',
+    label: 'Other Details',
+    isCompleted: false,
+    isActive: false,
+  },
+  {
+    id: 3,
+    title: 'Swap Condition',
+    description: 'Set your swap condition',
+    label: 'Swap Condition',
+    isCompleted: false,
+    isActive: false,
+  },
+];
 
 export default function AddUpdateBook() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [active, setActive] = useState<number>(0);
   const { userInformation } = useAppSelector((state) => state.auth);
 
   // LANGUAGE, CONDITION, & BOOK QUERY
@@ -45,7 +72,7 @@ export default function AddUpdateBook() {
 
   const methods = useForm({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: yupResolver(validationSchemas[active] as yup.ObjectSchema<any>),
+    resolver: yupResolver(validationSchemas[0] as yup.ObjectSchema<any>),
     mode: 'onChange',
     defaultValues: getDefaultValues(bookData),
   });
@@ -59,6 +86,12 @@ export default function AddUpdateBook() {
     reset,
   } = methods;
 
+  // STEP MANAGEMENT HOOK
+  const { active, steps, handleNext, handlePrev, handleStepClick } = useStepManager({
+    initialSteps,
+    validateStep: trigger,
+  });
+
   // MEMORIZED LANGUAGE & CONDITION DATA
   const languages = useMemo(() => options(languageDataOptions), [languageDataOptions]);
 
@@ -68,102 +101,6 @@ export default function AddUpdateBook() {
   useEffect(() => {
     if (bookData) reset(getDefaultValues(bookData));
   }, [bookData, reset]);
-
-  const [steps, setSteps] = useState([
-    {
-      id: 1,
-      title: 'Book Details',
-      description: 'Add your book details here',
-      label: 'Book Details',
-      isCompleted: false,
-      isActive: true,
-    },
-    {
-      id: 2,
-      title: 'Other Details',
-      description: 'Add other details here',
-      label: 'Other Details',
-      isCompleted: false,
-      isActive: false,
-    },
-    {
-      id: 3,
-      title: 'Swap Condition',
-      description: 'Set your swap condition',
-      label: 'Swap Condition',
-      isCompleted: false,
-      isActive: false,
-    },
-  ]);
-
-  const handleNext = async () => {
-    const valid = await trigger();
-    if (valid) {
-      setSteps((prevStep) =>
-        prevStep.map((step, index) => {
-          if (index === active) {
-            return { ...step, isActive: false, isCompleted: true };
-          } else if (index === active + 1) {
-            return { ...step, isActive: true };
-          }
-          return step;
-        }),
-      );
-      setActive((prev) => prev + 1);
-    }
-  };
-
-  const handlePrev = async () => {
-    setSteps((prevSteps) =>
-      prevSteps.map((step, index) => {
-        if (index === active) {
-          // Current step becomes inactive and not completed
-          return { ...step, isActive: false, isCompleted: false };
-        } else if (index === active - 1) {
-          // Previous step becomes active and not completed (since user is going back)
-          return { ...step, isActive: true, isCompleted: false };
-        }
-        return step;
-      }),
-    );
-    if (active === 0) return;
-    setActive((prev) => prev - 1);
-  };
-
-  const handleStepClick = async (stepId: number) => {
-    const targetStep = stepId - 1; // stepId is 1-based, but array index is 0-based
-    // Only allow navigation to previous steps or the next step if current step is valid
-    if (targetStep < active) {
-      // Going back - no validation needed
-      setSteps((prevSteps) =>
-        prevSteps.map((step, index) => {
-          if (index === targetStep) {
-            return { ...step, isActive: true, isCompleted: false };
-          } else {
-            return { ...step, isActive: false, isCompleted: index < targetStep };
-          }
-        }),
-      );
-      setActive(targetStep);
-    } else if (targetStep === active + 1) {
-      // Going forward - validate current step first
-      const valid = await trigger();
-      if (valid) {
-        setSteps((prevSteps) =>
-          prevSteps.map((step, index) => {
-            if (index === active) {
-              return { ...step, isActive: false, isCompleted: true };
-            } else if (index === targetStep) {
-              return { ...step, isActive: true };
-            }
-            return step;
-          }),
-        );
-        setActive(targetStep);
-      }
-    }
-    // Don't allow skipping steps (targetStep > active + 1)
-  };
 
   const handleAddUpdateBookFn = async <T extends IAddUpdateBookData>(data: T) => {
     const formData = await buildFormData(data, userInformation.id, bookData?.id);
@@ -189,11 +126,14 @@ export default function AddUpdateBook() {
   if (loading()) return <Loader />;
 
   return (
-    <div className="min-h-screen">
-      <BookAddUpdateHeader
-        title={`${id ? 'Update' : 'Add'} Book`}
-        onBack={() => navigate('/profile/user-profile')}
-      />
+    <div className="min-h-screen font-poppins">
+      {/* Mobile Header */}
+      <div className="md:hidden">
+        <BookAddUpdateHeader
+          title={`${id ? 'Update' : 'Add'} Book`}
+          onBack={() => navigate('/profile/user-profile')}
+        />
+      </div>
 
       {/* Mobile Layout - Original */}
       <div className="md:hidden">
@@ -252,9 +192,22 @@ export default function AddUpdateBook() {
       </div>
 
       {/* Desktop/Tablet Layout - Sidebar + Main Content */}
-      <div className="hidden md:flex min-h-screen bg-white pt-[60px]">
+      <div className="container hidden md:flex py-8">
         {/* Left Sidebar - Stepper */}
-        <div className="w-80 bg-white min-h-screen border-r border-[#E5E5E5]">
+        <div className="w-80 bg-white min-h-screen">
+          {/* Desktop/Tablet Header */}
+          <div className="hidden md:flex items-center pl-6 pt-6">
+            <button
+              onClick={() => navigate('/profile/user-profile')}
+              className="p-2 rounded-lg bg-[#F5F6F7] hover:bg-[#e4e4e4] transition flex items-center justify-center"
+              style={{ minWidth: 40, minHeight: 40 }}
+            >
+              <img src={PrevArrowIcon} alt="Back" className="w-4" />
+            </button>
+            <span className="ml-2 font-poppins font-medium text-base text-[#222]">
+              {id ? 'Update' : 'Add'} Book
+            </span>
+          </div>
           <div className="pt-8">
             <Stepper steps={steps} onStepClick={handleStepClick} />
           </div>
@@ -262,7 +215,7 @@ export default function AddUpdateBook() {
 
         {/* Right Main Content */}
         <div className="flex-1 bg-white">
-          <div className="max-w-4xl mx-auto p-8 pt-12">
+          <div className="max-w-4xl mx-auto py-8 px-8 mt-[55px]">
             <FormProvider {...methods}>
               <AddGenre
                 genresValue={active === 1 ? watch('genres') : watch('swappableGenres')}
