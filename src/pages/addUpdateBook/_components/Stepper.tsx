@@ -1,17 +1,15 @@
-import React from 'react';
-
 const Stepper = ({
   steps,
 }: {
   steps: { label: string; isCompleted: boolean; isActive: boolean }[];
 }) => (
   <>
-    <div className="flex justify-between gap-4 md:gap-8 lg:hidden">
+    <div className="flex justify-between gap-4 md:gap-8 lg:hidden w-full">
       {steps.map((s, i) => (
-        <div key={i} className="flex items-center relative">
-          <div className="flex flex-col items-center">
+        <div key={i} className="flex flex-col items-center flex-1 relative">
+          <div className="flex items-center justify-center">
             <div
-              className={`w-6 md:w-8 h-6 md:h-8 flex items-center justify-center rounded-full border-[2px] md:border-[4px] ${
+              className={`w-8 h-8 flex items-center justify-center rounded-full border-4 transition-all duration-200 ${
                 s.isCompleted
                   ? 'bg-blue-500 border-blue-500'
                   : s.isActive
@@ -31,15 +29,17 @@ const Stepper = ({
                 <div className={`w-4 h-4 rounded-full ${s.isActive ? 'bg-blue-500' : ''}`} />
               )}
             </div>
-            <p
-              className={`mt-2 text-[10px] font-light ${s.isActive ? 'text-[#0D0D0D]' : 'text-gray-500'}`}
-            >
-              {s.label}
-            </p>
+            {i < steps.length - 1 && (
+              <div className="absolute left-full top-1/2 transform -translate-y-1/2 w-12 h-1 bg-[#B2B2B2] z-0" />
+            )}
           </div>
-          {i < steps.length - 1 && (
-            <div className="absolute h-[2px] w-full bg-grayDark -right-16 top-[13px]" />
-          )}
+          <p
+            className={`mt-2 text-[10px] ${
+              s.isActive ? 'text-[#0D0D0D] font-medium' : 'text-gray-500 font-light'
+            }`}
+          >
+            {s.label}
+          </p>
         </div>
       ))}
     </div>
@@ -65,7 +65,9 @@ const Stepper = ({
                   <path d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 10-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z" />
                 </svg>
               ) : (
-                <span className="text-xl font-light">{i + 1}</span>
+                <span className={`text-xl font-light ${s.isActive ? 'text-blue-500' : ''}`}>
+                  {i + 1}
+                </span>
               )}
             </div>
             <p

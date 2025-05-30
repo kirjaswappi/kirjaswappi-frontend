@@ -157,7 +157,7 @@ export default function AddUpdateBook() {
               >
                 <Image src={PrevArrowIcon} alt="left" className="w-4 h-4" />
               </button>
-              <h3 className="font-poppins text-base font-bold text-[#19191C] ml-2">
+              <h3 className="font-poppins text-base font-bold text-[#19191C] ml-2 text-[24px]">
                 {id ? 'Update' : 'Add'} Book
               </h3>
             </div>
@@ -169,7 +169,7 @@ export default function AddUpdateBook() {
               </div>
               <div className="w-full lg:w-[70%]">
                 <FormProvider {...methods}>
-                  <h1 className="font-poppins mt-4 mb-2 font-semibold text-[20px]">
+                  <h1 className="font-poppins mb-2 font-semibold text-[20px]">
                     {steps[active].label}
                   </h1>
                   <AddGenre
