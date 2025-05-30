@@ -1,8 +1,8 @@
+import { useEffect, useMemo, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect, useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
-import yup from 'yup';
+import * as yup from 'yup';
 import NextArrowIcon from '../../assets/arrow1.png';
 import PrevArrowIcon from '../../assets/arrow2.png';
 import Image from '../../components/shared/Image';
@@ -16,8 +16,6 @@ import {
 } from '../../redux/feature/book/bookApi';
 import { options } from '../../utility/helper';
 import Stepper from './_components/Stepper';
-import { validationSchemas } from './Schema';
-
 import AddGenre from '../../components/shared/AddGenre';
 import Button from '../../components/shared/Button';
 import { useAppSelector } from '../../redux/hooks';
@@ -26,6 +24,7 @@ import BookFormStep from './_components/BookFormStep';
 import { buildFormData, getDefaultValues } from './helper';
 import { IAddUpdateBookData } from './types/interface';
 import { useStepManager } from '../../hooks/useStepManager';
+import { validationSchemas } from './Schema';
 
 const initialSteps = [
   {
@@ -70,9 +69,13 @@ export default function AddUpdateBook() {
   const [addBook, { isLoading }] = useAddBookMutation();
   const [updateBook] = useUpdateBookMutation();
 
+  // Use state to track the active step for validation
+  const [currentStep, setCurrentStep] = useState(0);
+
+  // Initialize form with the first schema
   const methods = useForm({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: yupResolver(validationSchemas[0] as yup.ObjectSchema<any>),
+    resolver: yupResolver(validationSchemas[currentStep] as yup.ObjectSchema<any>),
     mode: 'onChange',
     defaultValues: getDefaultValues(bookData),
   });
@@ -87,10 +90,19 @@ export default function AddUpdateBook() {
   } = methods;
 
   // STEP MANAGEMENT HOOK
-  const { active, steps, handleNext, handlePrev, handleStepClick } = useStepManager({
+  const { active, steps, handleNext, handlePrev, handleStepClick, setActive } = useStepManager({
     initialSteps,
-    validateStep: trigger,
+    validateStep: async () => {
+      const isValid = await trigger();
+      return isValid;
+    },
   });
+
+  // Update current step when active changes
+  useEffect(() => {
+    setCurrentStep(active);
+    // No setResolver in react-hook-form v7+, so we can't update resolver dynamically
+  }, [active]);
 
   // MEMORIZED LANGUAGE & CONDITION DATA
   const languages = useMemo(() => options(languageDataOptions), [languageDataOptions]);
@@ -103,6 +115,26 @@ export default function AddUpdateBook() {
   }, [bookData, reset]);
 
   const handleAddUpdateBookFn = async <T extends IAddUpdateBookData>(data: T) => {
+    // Validate all steps before submission
+    let allValid = true;
+    const originalStep = active;
+
+    for (let i = 0; i < validationSchemas.length; i++) {
+      // No setResolver, so we can't update resolver dynamically
+      const isValid = await trigger(undefined, { shouldFocus: true });
+      if (!isValid) {
+        allValid = false;
+        setActive(i);
+        break;
+      }
+    }
+
+    if (!allValid) {
+      // Restore original step if validation fails
+      setActive(originalStep);
+      return;
+    }
+
     const formData = await buildFormData(data, userInformation.id, bookData?.id);
     try {
       const mutation = bookData?.id

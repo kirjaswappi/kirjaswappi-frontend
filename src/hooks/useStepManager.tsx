@@ -94,5 +94,6 @@ export const useStepManager = ({ initialSteps, validateStep }: UseStepManagerPro
     handleNext,
     handlePrev,
     handleStepClick,
+    setActive,
   };
 };
