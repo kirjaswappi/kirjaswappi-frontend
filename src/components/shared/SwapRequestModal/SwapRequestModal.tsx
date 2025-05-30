@@ -1,24 +1,30 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useFormContext } from 'react-hook-form';
-import close from '../../../assets/close.png';
+import { SwapType } from '../../../../types/enum';
+import close from '../../../assets/close.svg';
+import genre from '../../../assets/genre.png';
 import giveaway from '../../../assets/giveaway.png';
+import givewayIcon from '../../../assets/givewayIcon.png';
+import openToOffer from '../../../assets/openToOffer.png';
 import sendMessageIcon from '../../../assets/sendMessageIcon.png';
+import swap from '../../../assets/swap.png';
 import { setSwapModal } from '../../../redux/feature/swap/swapSlice';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import Button from '../Button';
 import Image from '../Image';
 import TextArea from '../TextArea';
+import SwapBookCarousels from './SwapBookCarousels';
+import SwapBookInformation from './SwapBookInformation';
 
 export default function SwapModal() {
-  const context = useFormContext();
   const dispatch = useAppDispatch();
-  const { swapModalOpen } = useAppSelector((state) => state.swapBook);
-  // const { userInformation } = useAppSelector((state) => state.auth);
-
-  if (!context) {
-    return null;
-  }
-  const { register } = context;
+  const { swapModalOpen, swapBookInformation } = useAppSelector((state) => state.swapBook);
+  const {
+    swapCondition: { swapType, swappableBooks },
+  } = swapBookInformation;
+  // const methods = useForm({
+  //   mode: 'onChange',
+  //   defaultValues: {},
+  // });
 
   // const {
   //   title,
@@ -29,28 +35,29 @@ export default function SwapModal() {
   //   swapCondition: { conditionType, swappableBooks },
   // } = bookData;
 
-  //   const conditionList: Record<string, { image: string; label: string }> = {
-  //     [BYGENRES]: {
-  //       image: genre,
-  //       label: 'By Genre',
-  //     },
-  //     [BYBOOKS]: {
-  //       image: swap,
-  //       label: 'By Books',
-  //     },
-  //     [OPENTOOFFERS]: {
-  //       image: openToOffer,
-  //       label: 'Open To Offer',
-  //     },
-  //     [GIVEAWAY]: {
-  //       image: giveWayIcon,
-  //       label: 'Giveaway',
-  //     },
-  //   };
-  //   const conditionItem = conditionList[conditionType];
+  const conditionList: Record<string, { image: string; label: string }> = {
+    [SwapType.BYGENRES]: {
+      image: genre,
+      label: 'By Genre',
+    },
+    [SwapType.BYBOOKS]: {
+      image: swap,
+      label: 'By Books',
+    },
+    [SwapType.OPENTOOFFERS]: {
+      image: openToOffer,
+      label: 'Open To Offer',
+    },
+    [SwapType.GIVEAWAY]: {
+      image: givewayIcon,
+      label: 'Giveaway',
+    },
+  };
+  const conditionItem = conditionList[swapType];
   // const handleSelectBookForSwapRequest = (item: any) => {
   //   console.log('item', item);
   // };
+
   return (
     <div
       className={`${
@@ -70,25 +77,18 @@ export default function SwapModal() {
           </Button>
         </div>
         <div className="px-[14px] pb-2 mt-4">
-          {/* <SwapBookInformation
-            title={title}
-            author={author}
-            coverPhotoUrl={coverPhotoUrl}
-            genres={genres}
-            condition={condition}
-          /> */}
-          <div className="flex items-center gap-2 my-5">
-            {/* <Image
-              src={conditionItem.image}
-              alt={conditionItem.label}
-              className="w-[14px]"
-            /> */}
-            {/* <h3>{conditionItem.label}</h3> */}
+          <SwapBookInformation />
+          <div className="flex items-center gap-2 mt-5 mb-4">
+            <Image src={conditionItem.image} alt={conditionItem.label} className="w-[14px]" />
+            <h3>{conditionItem.label}</h3>
           </div>
           <div>
             {/* ========= If not by books then show the library from user books ========= */}
-            {/* {conditionType !== BYBOOKS && (
-              <label className="flex items-center justify-between h-20 bg-[#E5E5E5] border border-[#E5E5E5] px-4 py-3 rounded-lg">
+            {/* {swapType !== SwapType.BYBOOKS && (
+              <label
+                className="flex items-center justify-between h-20 bg-[#E5E5E5] border border-[#E5E5E5] px-4 py-3 rounded-lg"
+                aria-label=" Select from your library"
+              >
                 <div className="flex items-center gap-4">
                   <div className="w-[40px] h-[40px] rounded-[50%] bg-primary flex items-center justify-center ">
                     <Image src={library} alt="library" className="w-[18px]" />
@@ -102,10 +102,19 @@ export default function SwapModal() {
                     </p>
                   </div>
                 </div>
-                <input type="radio" value="swap" {...register('radio')} />
+                <input type="radio" value="swap" />
               </label>
             )} */}
             {/* ========= If by books exist then show the books ========= */}
+            {swapType === SwapType.BYBOOKS && (
+              <label>
+                <SwapBookCarousels
+                  swapBook={swappableBooks}
+                  handleSelectBookForSwapRequest={() => console.log('ok')}
+                />
+                <input hidden type="radio" value={'ByBooks'} />
+              </label>
+            )}
             {/* {conditionType === SwapType.BYBOOKS && (
               <label>
                 <SwapBookCarousels
@@ -124,7 +133,10 @@ export default function SwapModal() {
                 <input hidden type="radio" value={'OpenForOffers'} {...register('radio')} />
               </label>
             )} */}
-            <label className="flex items-center justify-between h-20 bg-[#E5E5E5] border border-[#E5E5E5] px-4 py-3 rounded-lg mt-2">
+            <label
+              className="flex items-center justify-between h-20 bg-[#E5E5E5] border border-[#E5E5E5] px-4 py-3 rounded-lg mt-2"
+              aria-label="Ask for giveaway"
+            >
               <div className="flex items-center gap-4">
                 <div className="w-[40px] h-[40px] rounded-[50%] bg-yellow flex items-center justify-center ">
                   <Image src={giveaway} alt="library" className="w-[18px]" />
@@ -136,7 +148,7 @@ export default function SwapModal() {
                   </p>
                 </div>
               </div>
-              <input type="radio" value="giveaway" {...register('radio')} />
+              <input type="radio" value="giveaway" />
             </label>
           </div>
           <div>
