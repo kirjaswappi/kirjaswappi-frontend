@@ -31,7 +31,10 @@ export default function ConditionMessageBox({ swapType }: { swapType: string }) 
   const swapCondition = swapConditionList[swapType];
 
   return (
-    <div className="border border-yellow bg-yellow-light flex flex-col items-center justify-center p-5 gap-2 rounded-lg ">
+    <div
+      className="border border-yellow bg-yellow-light flex flex-col items-center justify-center p-5 gap-2 rounded-lg 
+      lg:w-[320px] lg:h-full"
+    >
       <Image src={swapCondition.image} alt={swapType} className="h-[64px]" />
       <p className="text-smokyBlack font-poppins text-sm font-normal text-center">
         {swapCondition.message}
