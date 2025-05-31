@@ -3,7 +3,6 @@ import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { SwapType } from '../../../../types/enum';
 import close from '../../../assets/close.svg';
 import genre from '../../../assets/genre.png';
-import giveaway from '../../../assets/giveaway.png';
 import givewayIcon from '../../../assets/givewayIcon.png';
 import openToOffer from '../../../assets/openToOffer.png';
 import sendMessageIcon from '../../../assets/sendMessageIcon.png';
@@ -19,16 +18,21 @@ export default function SwapModal() {
   const dispatch = useAppDispatch();
   const { swapModalOpen, swapBookInformation } = useAppSelector((state) => state.swapBook);
   const {
-    swapCondition: { swapType },
+    swapCondition: { swapType, swappableBooks },
   } = swapBookInformation;
-  const methods = useForm({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  type SwapRequestForm = {
+    swapType: SwapType;
+    selectedBook?: any;
+  };
+
+  const methods = useForm<SwapRequestForm>({
     mode: 'onChange',
     defaultValues: {
       swapType: SwapType.BYBOOKS,
+      selectedBook: undefined,
     },
   });
-  const { control } = methods;
+  const { control, setValue, watch } = methods;
   // const { control } = useFormContext();
   // const methods = useForm({
   //   mode: 'onChange',
@@ -43,7 +47,6 @@ export default function SwapModal() {
   //   condition,
   //   swapCondition: { conditionType, swappableBooks },
   // } = bookData;
-
   const conditionList: Record<string, { image: string; label: string }> = {
     [SwapType.BYGENRES]: {
       image: genre,
@@ -66,6 +69,7 @@ export default function SwapModal() {
   // const handleSelectBookForSwapRequest = (item: any) => {
   //   console.log('item', item);
   // };
+  console.log(watch('selectedBook'), watch('swapType'));
 
   return (
     <div
@@ -93,112 +97,65 @@ export default function SwapModal() {
           </div>
           <FormProvider {...methods}>
             <div>
-              {/* ========= If not by books then show the library from user books ========= */}
-              {/* {swapType !== SwapType.BYBOOKS && (
-              <label
-                className="flex items-center justify-between h-20 bg-[#E5E5E5] border border-[#E5E5E5] px-4 py-3 rounded-lg"
-                aria-label=" Select from your library"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-[40px] h-[40px] rounded-[50%] bg-primary flex items-center justify-center ">
-                    <Image src={library} alt="library" className="w-[18px]" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-poppins text-[#0D0D0D]">
-                      Select from your library
-                    </h4>
-                    <p className="text-[#8C8C8C] text-[10px] mt-1">
-                      You can offer from your library or, ask for giveaway
-                    </p>
-                  </div>
-                </div>
-                <input type="radio" value="swap" />
-              </label>
-            )} */}
-              {/* ========= If by books exist then show the books ========= */}
-              {/* {swapType === SwapType.BYBOOKS && (
-              <label>
-                <SwapBookCarousels
-                  swapBook={swappableBooks}
-                  handleSelectBookForSwapRequest={() => console.log('ok')}
-                />
-                <input hidden type="radio" value={'ByBooks'} />
-              </label>
-            )} */}
-
               <Controller
                 name="swapType"
                 control={control}
                 render={({ field }) => (
-                  <div
-                    // className={`px-4 py-4 bg-white border ${
-                    //   field.value === SwapType.BYBOOKS ? 'border-black' : 'border-[#E6E6E6]'
-                    // } rounded-lg cursor-pointer`}
-                    role="button"
-                    tabIndex={0}
+                  <button
+                    type="button"
+                    className={`px-4 py-4 bg-white border ${
+                      field.value === SwapType.BYBOOKS ? 'border-black' : 'border-[#E6E6E6]'
+                    } rounded-lg cursor-pointer w-full text-left`}
                     onClick={() => field.onChange(SwapType.BYBOOKS)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        field.onChange(SwapType.BYBOOKS);
-                      }
-                    }}
+                    aria-pressed={field.value === SwapType.BYBOOKS}
+                  >
+                    <input type="radio" value={SwapType.BYBOOKS} className="hidden" readOnly />
+                    <div className="mt-4 grid grid-cols-2 gap-4">
+                      {swappableBooks.map((book, index) => (
+                        <div
+                          key={index}
+                          onClick={() => setValue('selectedBook', book)}
+                          className={`border p-3 rounded cursor-pointer hover:shadow ${
+                            watch('selectedBook').id === book?.id
+                              ? 'border-blue-500 bg-blue-50'
+                              : ''
+                          }`}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              // setValue('selectedBook', book);
+                            }
+                          }}
+                        >
+                          <h4 className="font-semibold">{book.title}</h4>
+                          <p className="text-sm text-gray-500">{book.author}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </button>
+                )}
+              />
+              <Controller
+                name="swapType"
+                control={control}
+                render={({ field }) => (
+                  <label
+                    className={`block mt-2 px-4 py-4 bg-white border ${
+                      field.value === SwapType.BYGENRES ? 'border-black' : 'border-[#E6E6E6]'
+                    } rounded-lg cursor-pointer flex items-center gap-2`}
                   >
                     <input
                       type="radio"
-                      value={SwapType.BYBOOKS}
-                      className="hidden"
-                      id="swap-by-books-radio"
+                      value={SwapType.BYGENRES}
+                      checked={field.value === SwapType.BYGENRES}
+                      onChange={field.onChange}
+                      className="w-4 h-4"
                     />
-                    {/* <label className="w-full cursor-pointer" htmlFor="swap-by-books-radio">
-                      Swap by Books
-                    </label> */}
-
-                    {field.value === SwapType.BYBOOKS && (
-                      <div className="mt-4">
-                        {/* Render your API-fetched books here with selection */}
-                        {/* On selection, update other form values if needed */}
-                        <p className="text-sm text-gray-600">[Render books here]</p>
-                      </div>
-                    )}
-                  </div>
+                    Swap by Genres
+                  </label>
                 )}
               />
-              {/* {conditionType === SwapType.BYBOOKS && (
-              <label>
-                <SwapBookCarousels
-                  swapBook={swappableBooks}
-                  handleSelectBookForSwapRequest={handleSelectBookForSwapRequest}
-                />
-                <input hidden type="radio" value={'ByBooks'} {...register('radio')} />
-              </label>
-            )}
-            {conditionType === SwapType.OPENTOOFFERS && (
-              <label>
-                <SwapBookCarousels
-                  swapBook={userInformation.books}
-                  handleSelectBookForSwapRequest={handleSelectBookForSwapRequest}
-                />
-                <input hidden type="radio" value={'OpenForOffers'} {...register('radio')} />
-              </label>
-            )} */}
-              <label
-                className="flex items-center justify-between h-20 bg-[#E5E5E5] border border-[#E5E5E5] px-4 py-3 rounded-lg mt-2"
-                aria-label="Ask for giveaway"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-[40px] h-[40px] rounded-[50%] bg-yellow flex items-center justify-center ">
-                    <Image src={giveaway} alt="library" className="w-[18px]" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-poppins text-[#0D0D0D]">Ask for giveaway</h4>
-                    <p className="text-[#8C8C8C] text-[10px] mt-1">
-                      You can offer from your library or, ask for giveaway
-                    </p>
-                  </div>
-                </div>
-                <input type="radio" value="giveaway" />
-              </label>
             </div>
             <div>
               <h1 className="text-left font-poppins text-sm font-medium mb-2 mt-3">Short Note</h1>
