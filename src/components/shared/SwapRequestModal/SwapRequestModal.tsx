@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { SwapType } from '../../../../types/enum';
 import close from '../../../assets/close.svg';
 import genre from '../../../assets/genre.png';
@@ -12,15 +13,23 @@ import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import Button from '../Button';
 import Image from '../Image';
 import TextArea from '../TextArea';
-import SwapBookCarousels from './SwapBookCarousels';
 import SwapBookInformation from './SwapBookInformation';
 
 export default function SwapModal() {
   const dispatch = useAppDispatch();
   const { swapModalOpen, swapBookInformation } = useAppSelector((state) => state.swapBook);
   const {
-    swapCondition: { swapType, swappableBooks },
+    swapCondition: { swapType },
   } = swapBookInformation;
+  const methods = useForm({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mode: 'onChange',
+    defaultValues: {
+      swapType: SwapType.BYBOOKS,
+    },
+  });
+  const { control } = methods;
+  // const { control } = useFormContext();
   // const methods = useForm({
   //   mode: 'onChange',
   //   defaultValues: {},
@@ -82,9 +91,10 @@ export default function SwapModal() {
             <Image src={conditionItem.image} alt={conditionItem.label} className="w-[14px]" />
             <h3>{conditionItem.label}</h3>
           </div>
-          <div>
-            {/* ========= If not by books then show the library from user books ========= */}
-            {/* {swapType !== SwapType.BYBOOKS && (
+          <FormProvider {...methods}>
+            <div>
+              {/* ========= If not by books then show the library from user books ========= */}
+              {/* {swapType !== SwapType.BYBOOKS && (
               <label
                 className="flex items-center justify-between h-20 bg-[#E5E5E5] border border-[#E5E5E5] px-4 py-3 rounded-lg"
                 aria-label=" Select from your library"
@@ -105,8 +115,8 @@ export default function SwapModal() {
                 <input type="radio" value="swap" />
               </label>
             )} */}
-            {/* ========= If by books exist then show the books ========= */}
-            {swapType === SwapType.BYBOOKS && (
+              {/* ========= If by books exist then show the books ========= */}
+              {/* {swapType === SwapType.BYBOOKS && (
               <label>
                 <SwapBookCarousels
                   swapBook={swappableBooks}
@@ -114,8 +124,47 @@ export default function SwapModal() {
                 />
                 <input hidden type="radio" value={'ByBooks'} />
               </label>
-            )}
-            {/* {conditionType === SwapType.BYBOOKS && (
+            )} */}
+
+              <Controller
+                name="swapType"
+                control={control}
+                render={({ field }) => (
+                  <div
+                    // className={`px-4 py-4 bg-white border ${
+                    //   field.value === SwapType.BYBOOKS ? 'border-black' : 'border-[#E6E6E6]'
+                    // } rounded-lg cursor-pointer`}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => field.onChange(SwapType.BYBOOKS)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        field.onChange(SwapType.BYBOOKS);
+                      }
+                    }}
+                  >
+                    <input
+                      type="radio"
+                      value={SwapType.BYBOOKS}
+                      className="hidden"
+                      id="swap-by-books-radio"
+                    />
+                    {/* <label className="w-full cursor-pointer" htmlFor="swap-by-books-radio">
+                      Swap by Books
+                    </label> */}
+
+                    {field.value === SwapType.BYBOOKS && (
+                      <div className="mt-4">
+                        {/* Render your API-fetched books here with selection */}
+                        {/* On selection, update other form values if needed */}
+                        <p className="text-sm text-gray-600">[Render books here]</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              />
+              {/* {conditionType === SwapType.BYBOOKS && (
               <label>
                 <SwapBookCarousels
                   swapBook={swappableBooks}
@@ -133,40 +182,41 @@ export default function SwapModal() {
                 <input hidden type="radio" value={'OpenForOffers'} {...register('radio')} />
               </label>
             )} */}
-            <label
-              className="flex items-center justify-between h-20 bg-[#E5E5E5] border border-[#E5E5E5] px-4 py-3 rounded-lg mt-2"
-              aria-label="Ask for giveaway"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-[40px] h-[40px] rounded-[50%] bg-yellow flex items-center justify-center ">
-                  <Image src={giveaway} alt="library" className="w-[18px]" />
+              <label
+                className="flex items-center justify-between h-20 bg-[#E5E5E5] border border-[#E5E5E5] px-4 py-3 rounded-lg mt-2"
+                aria-label="Ask for giveaway"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-[40px] h-[40px] rounded-[50%] bg-yellow flex items-center justify-center ">
+                    <Image src={giveaway} alt="library" className="w-[18px]" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-poppins text-[#0D0D0D]">Ask for giveaway</h4>
+                    <p className="text-[#8C8C8C] text-[10px] mt-1">
+                      You can offer from your library or, ask for giveaway
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="text-sm font-poppins text-[#0D0D0D]">Ask for giveaway</h4>
-                  <p className="text-[#8C8C8C] text-[10px] mt-1">
-                    You can offer from your library or, ask for giveaway
-                  </p>
-                </div>
-              </div>
-              <input type="radio" value="giveaway" />
-            </label>
-          </div>
-          <div>
-            <h1 className="text-left font-poppins text-sm font-medium mb-2 mt-3">Short Note</h1>
-            <TextArea
-              onChange={(e) => console.log(e.target.value)}
-              placeholder="Write a short note"
-              className="h-[100px] rounded-lg border border-gray"
-            />
-          </div>
-          <div className="flex justify-center pt-2 mt-5">
-            <Button
-              type="submit"
-              className="bg-primary text-white font-medium text-xs py-2 w-full h-[48px] rounded-[8px] font-poppins flex justify-center items-center gap-2 "
-            >
-              <Image src={sendMessageIcon} alt="Book" /> Send Request
-            </Button>
-          </div>
+                <input type="radio" value="giveaway" />
+              </label>
+            </div>
+            <div>
+              <h1 className="text-left font-poppins text-sm font-medium mb-2 mt-3">Short Note</h1>
+              <TextArea
+                onChange={(e) => console.log(e.target.value)}
+                placeholder="Write a short note"
+                className="h-[100px] rounded-lg border border-gray"
+              />
+            </div>
+            <div className="flex justify-center pt-2 mt-5">
+              <Button
+                type="submit"
+                className="bg-primary text-white font-medium text-xs py-2 w-full h-[48px] rounded-[8px] font-poppins flex justify-center items-center gap-2 "
+              >
+                <Image src={sendMessageIcon} alt="Book" /> Send Request
+              </Button>
+            </div>
+          </FormProvider>
         </div>
       </div>
     </div>
