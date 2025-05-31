@@ -4,7 +4,7 @@ import { IBookDetailsProps } from '../types/interface';
 
 export default function BookDetailsStep({ languageOptions, conditionOptions }: IBookDetailsProps) {
   return (
-    <div className="lg:grid lg:grid-cols-2 gap-4">
+    <div className="lg:grid lg:grid-cols-2 lg:gap-6 md:gap-4">
       <div className="mt-4 pb-4 border-b border-platinumDark md:border-b-0">
         <InputLabel label="Book Title" required />
         <ControlledInputField
@@ -23,7 +23,7 @@ export default function BookDetailsStep({ languageOptions, conditionOptions }: I
           showErrorMessage
         />
       </div>
-      <div className="mt-4 pb-4 border-b border-platinumDark md:border-b-0">
+      <div className="lg:mt-0 mt-4 pb-4 border-b border-platinumDark md:border-b-0">
         <InputLabel label="Book Language" required />
         <ControlledInputField
           type="select"
@@ -33,7 +33,7 @@ export default function BookDetailsStep({ languageOptions, conditionOptions }: I
           showErrorMessage
         />
       </div>
-      <div className="mt-4 pb-4 border-b border-platinumDark md:border-b-0">
+      <div className="lg:mt-0 mt-4 pb-4 border-b border-platinumDark md:border-b-0">
         <InputLabel label="Book Condition" required />
         <ControlledInputField
           type="select"
@@ -43,7 +43,7 @@ export default function BookDetailsStep({ languageOptions, conditionOptions }: I
           showErrorMessage
         />
       </div>
-      <div className="mt-4 pb-4 border-b border-platinumDark md:border-b-0">
+      <div className="lg:mt-0mt-4 pb-4 border-b border-platinumDark md:border-b-0">
         <InputLabel label="Short Description" />
         <ControlledInputField
           type="textarea"

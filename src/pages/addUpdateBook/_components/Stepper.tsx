@@ -35,7 +35,7 @@ const Stepper = ({
           </div>
           <p
             className={`mt-2 text-[10px] ${
-              s.isActive ? 'text-[#0D0D0D] font-medium' : 'text-gray-500 font-light'
+              s.isActive ? 'text-[#808080] font-medium' : 'text-gray-500 font-light'
             }`}
           >
             {s.label}
@@ -65,13 +65,15 @@ const Stepper = ({
                   <path d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 10-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z" />
                 </svg>
               ) : (
-                <span className={`text-xl font-light ${s.isActive ? 'text-blue-500' : ''}`}>
+                <span
+                  className={`text-xl font-light ${s.isActive ? 'text-blue-500' : 'text-[#808080]'}`}
+                >
                   {i + 1}
                 </span>
               )}
             </div>
             <p
-              className={`text-sm ${s.isActive ? 'text-[#0D0D0D] font-medium' : 'text-gray-500 font-light'}`}
+              className={`text-md ${s.isActive ? 'text-[#0D0D0D] font-normal' : 'text-[#808080] font-thin'}`}
             >
               {s.label}
             </p>
