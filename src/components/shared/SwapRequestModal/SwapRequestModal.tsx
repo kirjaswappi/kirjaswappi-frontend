@@ -1,0 +1,181 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { SwapType } from '../../../../types/enum';
+import close from '../../../assets/close.svg';
+import genre from '../../../assets/genre.png';
+import givewayIcon from '../../../assets/givewayIcon.png';
+import openToOffer from '../../../assets/openToOffer.png';
+import sendMessageIcon from '../../../assets/sendMessageIcon.png';
+import swap from '../../../assets/swap.png';
+import { setSwapModal } from '../../../redux/feature/swap/swapSlice';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import Button from '../Button';
+import Image from '../Image';
+import TextArea from '../TextArea';
+import SwapBookInformation from './SwapBookInformation';
+
+export default function SwapModal() {
+  const dispatch = useAppDispatch();
+  const { swapModalOpen, swapBookInformation } = useAppSelector((state) => state.swapBook);
+  const {
+    swapCondition: { swapType, swappableBooks },
+  } = swapBookInformation;
+  type SwapRequestForm = {
+    swapType: SwapType;
+    selectedBook?: any;
+  };
+
+  const methods = useForm<SwapRequestForm>({
+    mode: 'onChange',
+    defaultValues: {
+      swapType: SwapType.BYBOOKS,
+      selectedBook: undefined,
+    },
+  });
+  const { control, setValue, watch } = methods;
+  // const { control } = useFormContext();
+  // const methods = useForm({
+  //   mode: 'onChange',
+  //   defaultValues: {},
+  // });
+
+  // const {
+  //   title,
+  //   author,
+  //   coverPhotoUrl,
+  //   genres,
+  //   condition,
+  //   swapCondition: { conditionType, swappableBooks },
+  // } = bookData;
+  const conditionList: Record<string, { image: string; label: string }> = {
+    [SwapType.BYGENRES]: {
+      image: genre,
+      label: 'By Genre',
+    },
+    [SwapType.BYBOOKS]: {
+      image: swap,
+      label: 'By Books',
+    },
+    [SwapType.OPENTOOFFERS]: {
+      image: openToOffer,
+      label: 'Open To Offer',
+    },
+    [SwapType.GIVEAWAY]: {
+      image: givewayIcon,
+      label: 'Giveaway',
+    },
+  };
+  const conditionItem = conditionList[swapType];
+  // const handleSelectBookForSwapRequest = (item: any) => {
+  //   console.log('item', item);
+  // };
+  console.log(watch('selectedBook'), watch('swapType'));
+
+  return (
+    <div
+      className={`${
+        swapModalOpen ? 'block' : 'hidden'
+      } bg-black bg-opacity-50 inset-0 w-full h-screen fixed top-0 left-0 z-50 flex items-center justify-center`}
+    >
+      <div className="w-11/12 max-h-[90vh] bg-white rounded-md overflow-y-auto">
+        <div className="py-4 border-b border-platinum relative">
+          <h3 className="font-poppins font-normal text-base text-center leading-none">
+            Swap Request
+          </h3>
+          <Button
+            onClick={() => dispatch(setSwapModal(false))}
+            className="border border-platinum rounded-full p-2 absolute right-4 top-3"
+          >
+            <Image src={close} alt="close" />
+          </Button>
+        </div>
+        <div className="px-[14px] pb-2 mt-4">
+          <SwapBookInformation />
+          <div className="flex items-center gap-2 mt-5 mb-4">
+            <Image src={conditionItem.image} alt={conditionItem.label} className="w-[14px]" />
+            <h3>{conditionItem.label}</h3>
+          </div>
+          <FormProvider {...methods}>
+            <div>
+              <Controller
+                name="swapType"
+                control={control}
+                render={({ field }) => (
+                  <button
+                    type="button"
+                    className={`px-4 py-4 bg-white border ${
+                      field.value === SwapType.BYBOOKS ? 'border-black' : 'border-[#E6E6E6]'
+                    } rounded-lg cursor-pointer w-full text-left`}
+                    onClick={() => field.onChange(SwapType.BYBOOKS)}
+                    aria-pressed={field.value === SwapType.BYBOOKS}
+                  >
+                    <input type="radio" value={SwapType.BYBOOKS} className="hidden" readOnly />
+                    <div className="mt-4 grid grid-cols-2 gap-4">
+                      {swappableBooks.map((book, index) => (
+                        <div
+                          key={index}
+                          onClick={() => setValue('selectedBook', book)}
+                          className={`border p-3 rounded cursor-pointer hover:shadow ${
+                            watch('selectedBook').id === book?.id
+                              ? 'border-blue-500 bg-blue-50'
+                              : ''
+                          }`}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              // setValue('selectedBook', book);
+                            }
+                          }}
+                        >
+                          <h4 className="font-semibold">{book.title}</h4>
+                          <p className="text-sm text-gray-500">{book.author}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </button>
+                )}
+              />
+              <Controller
+                name="swapType"
+                control={control}
+                render={({ field }) => (
+                  <label
+                    className={`block mt-2 px-4 py-4 bg-white border ${
+                      field.value === SwapType.BYGENRES ? 'border-black' : 'border-[#E6E6E6]'
+                    } rounded-lg cursor-pointer flex items-center gap-2`}
+                  >
+                    <input
+                      type="radio"
+                      value={SwapType.BYGENRES}
+                      checked={field.value === SwapType.BYGENRES}
+                      onChange={field.onChange}
+                      className="w-4 h-4"
+                    />
+                    Swap by Genres
+                  </label>
+                )}
+              />
+            </div>
+            <div>
+              <h1 className="text-left font-poppins text-sm font-medium mb-2 mt-3">Short Note</h1>
+              <TextArea
+                onChange={(e) => console.log(e.target.value)}
+                placeholder="Write a short note"
+                className="h-[100px] rounded-lg border border-gray"
+              />
+            </div>
+            <div className="flex justify-center pt-2 mt-5">
+              <Button
+                type="submit"
+                className="bg-primary text-white font-medium text-xs py-2 w-full h-[48px] rounded-[8px] font-poppins flex justify-center items-center gap-2 "
+              >
+                <Image src={sendMessageIcon} alt="Book" /> Send Request
+              </Button>
+            </div>
+          </FormProvider>
+        </div>
+      </div>
+    </div>
+  );
+}
