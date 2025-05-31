@@ -24,16 +24,18 @@ export default function OtherDetailsStep({ errors }: { errors: FieldErrors }) {
   };
 
   return (
-    <div>
-      <div>
-        <div className="py-4 border-b border-platinumDark">
+    <div className="flex flex-col lg:flex-row gap-8">
+      <div className="w-full lg:w-1/2">
+        <div className="py-4 border-b lg:border-b-0 border-platinumDark">
           <InputLabel label="Cover Photo" required />
           <MultipleImageFileInput
             errors={errors as Record<string, FieldError>}
             name="coverPhotos"
           />
         </div>
-        <div className="flex items-center justify-between py-4 border-b border-platinumDark">
+      </div>
+      <div className="w-full lg:w-1/2">
+        <div className="flex items-center justify-between py-4 border-b lg:border-b-0 border-platinumDark">
           <InputLabel label="Genre" required />
           <button
             type="button"
