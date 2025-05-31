@@ -129,7 +129,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
               }}
             />
           </div>
-          <div className="flex-1 min-w-[220px] w-full flex flex-col lg:items-center lg:justify-center h-full">
+          <div className="flex-1 min-w-[220px] w-full flex flex-col lg:items-center lg:pt-2 h-full">
             <span className="w-full h-[1px] bg-platinumDark block lg:hidden my-4"></span>
             {swapType === SwapType.BYBOOKS && (
               <div>
@@ -214,7 +214,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
             )}
             {swapType === SwapType.BYGENRES && (
               <div>
-                <div className="flex items-center justify-between py-4">
+                <div className="flex items-center justify-between py-4 lg:-mt-[68px]">
                   <InputLabel label="Genre To Swap With" required />
                   <Button
                     type="button"
