@@ -43,7 +43,7 @@ export default function BookDetailsStep({ languageOptions, conditionOptions }: I
           showErrorMessage
         />
       </div>
-      <div className="lg:mt-0mt-4 pb-4 border-b border-platinumDark md:border-b-0">
+      <div className="lg:mt-0 mt-4 pb-4 border-b border-platinumDark md:border-b-0">
         <InputLabel label="Short Description" />
         <ControlledInputField
           type="textarea"

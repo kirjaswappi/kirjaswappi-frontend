@@ -45,7 +45,7 @@ const ImageFileInput = ({ name }: { name: string }) => {
       render={({ field, fieldState }) => {
         return (
           <div>
-            <div className="w-[126px] h-[150px] border-[1px] border-dashed border-grayDark rounded-lg cursor-pointer block mx-auto lg:w-full lg:h-auto lg:py-4 lg:border-dashed lg:border lg:border-grayDark lg:rounded-md">
+            <div className="w-[126px] h-[150px] border-[1px] border-dashed border-grayDark rounded-lg cursor-pointer block mx-auto lg:w-[343px] lg:h-[64px]">
               {preview ? (
                 <div className="w-full h-full relative group">
                   <button
@@ -64,7 +64,10 @@ const ImageFileInput = ({ name }: { name: string }) => {
                   />
                 </div>
               ) : (
-                <label htmlFor="file" className="flex flex-col items-center justify-center h-full">
+                <label
+                  htmlFor="file"
+                  className="flex flex-col items-center justify-center h-full lg:flex-row lg:gap-2"
+                >
                   <span className="text-grayDark text-3xl font-poppins font-extralight">+</span>
                   <span className="text-grayDark text-xs font-poppins font-normal">
                     Upload Picture

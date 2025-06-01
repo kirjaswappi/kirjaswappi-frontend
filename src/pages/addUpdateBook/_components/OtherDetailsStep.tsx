@@ -24,52 +24,54 @@ export default function OtherDetailsStep({ errors }: { errors: FieldErrors }) {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8">
-      <div className="w-full lg:w-1/2">
-        <div className="py-4 border-b lg:border-b-0 border-platinumDark">
-          <InputLabel label="Cover Photo" required />
-          <MultipleImageFileInput
-            errors={errors as Record<string, FieldError>}
-            name="coverPhotos"
-          />
+    <div className="pt-12 lg:-pt-0">
+      <div className="flex flex-col lg:flex-row gap-8">
+        <div className="w-full lg:w-1/2">
+          <div className="py-4 border-b lg:border-b-0 border-platinumDark">
+            <InputLabel label="Cover Photo" required />
+            <MultipleImageFileInput
+              errors={errors as Record<string, FieldError>}
+              name="coverPhotos"
+            />
+          </div>
         </div>
-      </div>
-      <div className="w-full lg:w-1/2">
-        <div className="flex items-center justify-between py-4 border-b lg:border-b-0 border-platinumDark">
-          <InputLabel label="Genre" required />
-          <button
-            type="button"
-            onClick={() => dispatch(setOpen(!open))}
-            className="text-[#3879E9] font-poppins font-medium text-sm leading-none underline"
-          >
-            Add
-          </button>
-        </div>
-        <div>
-          {genres && genres.length > 0 ? (
-            <div className="flex flex-col gap-2 pt-4">
-              {genres.map((item: string, index: number) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg"
-                >
-                  <h3 className="font-poppins text-sm font-light">{item}</h3>
-                  <Button onClick={() => handleRemoveGenre(item)}>
-                    <Image src={closeIcon} alt="close" className="h-2" />
-                  </Button>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="h-[50px] bg-white  mt-3 flex items-center justify-center rounded-md">
-              <p className="text-xs text-grayDark">No Genre Added.</p>
-            </div>
-          )}
-          {errors && errors['genres'] && (
-            <div className="text-rose-500 text-xs mt-1 pl-2">
-              {(errors['genres'] as FieldError)?.message}
-            </div>
-          )}
+        <div className="w-full lg:w-1/2">
+          <div className="flex items-center justify-between py-4 border-b lg:border-b-0 border-platinumDark">
+            <InputLabel label="Genre" required />
+            <button
+              type="button"
+              onClick={() => dispatch(setOpen(!open))}
+              className="text-[#3879E9] font-poppins font-medium text-sm leading-none underline"
+            >
+              Add
+            </button>
+          </div>
+          <div>
+            {genres && genres.length > 0 ? (
+              <div className="flex flex-col gap-2 pt-4">
+                {genres.map((item: string, index: number) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between px-4 py-4 bg-white border border-[#E6E6E6] rounded-lg"
+                  >
+                    <h3 className="font-poppins text-sm font-light">{item}</h3>
+                    <Button onClick={() => handleRemoveGenre(item)}>
+                      <Image src={closeIcon} alt="close" className="h-2" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="h-[50px] bg-white  mt-3 flex items-center justify-center rounded-md">
+                <p className="text-xs text-grayDark">No Genre Added.</p>
+              </div>
+            )}
+            {errors && errors['genres'] && (
+              <div className="text-rose-500 text-xs mt-1 pl-2">
+                {(errors['genres'] as FieldError)?.message}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

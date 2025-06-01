@@ -164,7 +164,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                     </div>
                   ) : (
                     <div key={swappableBook.id}>
-                      <div className="pt-4">
+                      <div className="pt-4 lg:-mt-[60px]">
                         <div className="flex items-center justify-between">
                           <InputLabel label="Cover Photo" required />
                           {index > 0 && (

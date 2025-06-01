@@ -4,12 +4,12 @@ const Stepper = ({
   steps: { label: string; isCompleted: boolean; isActive: boolean }[];
 }) => (
   <>
-    <div className="flex justify-between gap-4 md:gap-8 lg:hidden w-full">
+    <div className="flex justify-between gap-4 md:gap-8 lg:hidden w-full pt-6 pb-3">
       {steps.map((s, i) => (
         <div key={i} className="flex flex-col items-center flex-1 relative">
           <div className="flex items-center justify-center">
             <div
-              className={`w-8 h-8 flex items-center justify-center rounded-full border-4 transition-all duration-200 ${
+              className={`w-8 h-8 flex items-center justify-center rounded-full  border-[2px] md:border-[4px] transition-all duration-200 ${
                 s.isCompleted
                   ? 'bg-blue-500 border-blue-500'
                   : s.isActive
@@ -26,11 +26,15 @@ const Stepper = ({
                   />
                 </svg>
               ) : (
-                <div className={`w-4 h-4 rounded-full ${s.isActive ? 'bg-blue-500' : ''}`} />
+                <span
+                  className={`text-base font-light ${s.isActive ? 'text-blue-500' : 'text-[#808080]'}`}
+                >
+                  {i + 1}
+                </span>
               )}
             </div>
             {i < steps.length - 1 && (
-              <div className="absolute left-full top-1/2 transform -translate-y-1/2 w-12 h-1 bg-[#B2B2B2] z-0" />
+              <div className="absolute left-[80%] top-3/2 transform -translate-y-1/2 w-[48px] h-[0.8px] bg-[#808080] z-0" />
             )}
           </div>
           <p

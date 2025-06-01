@@ -142,7 +142,7 @@ export default function AddUpdateBook() {
   if (loading()) return <Loader />;
 
   return (
-    <div className="min-h-screen bg-[#F2F4F8] flex items-center justify-center">
+    <div className="min-h-screen bg-[#F2F4F8] flex lg:items-center lg:justify-center">
       <div className="bg-white p-10 max-w-5xl rouned-5xl w-full mx-auto">
         <BookAddUpdateHeader title="Add Book" onBack={() => navigate('/profile/user-profile')} />
         <div className="">
