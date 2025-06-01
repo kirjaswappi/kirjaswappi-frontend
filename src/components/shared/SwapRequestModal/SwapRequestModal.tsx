@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import Button from '../Button';
 import Image from '../Image';
 import TextArea from '../TextArea';
+import SwapBookCarousels from './SwapBookCarousels';
 import SwapBookInformation from './SwapBookInformation';
 
 export default function SwapModal() {
@@ -32,21 +33,8 @@ export default function SwapModal() {
       selectedBook: undefined,
     },
   });
-  const { control, setValue, watch } = methods;
-  // const { control } = useFormContext();
-  // const methods = useForm({
-  //   mode: 'onChange',
-  //   defaultValues: {},
-  // });
+  const { control } = methods;
 
-  // const {
-  //   title,
-  //   author,
-  //   coverPhotoUrl,
-  //   genres,
-  //   condition,
-  //   swapCondition: { conditionType, swappableBooks },
-  // } = bookData;
   const conditionList: Record<string, { image: string; label: string }> = {
     [SwapType.BYGENRES]: {
       image: genre,
@@ -66,10 +54,6 @@ export default function SwapModal() {
     },
   };
   const conditionItem = conditionList[swapType];
-  // const handleSelectBookForSwapRequest = (item: any) => {
-  //   console.log('item', item);
-  // };
-  console.log(watch('selectedBook'), watch('swapType'));
 
   return (
     <div
@@ -101,39 +85,15 @@ export default function SwapModal() {
                 name="swapType"
                 control={control}
                 render={({ field }) => (
-                  <button
+                  <Button
                     type="button"
-                    className={`px-4 py-4 bg-white border ${
-                      field.value === SwapType.BYBOOKS ? 'border-black' : 'border-[#E6E6E6]'
-                    } rounded-lg cursor-pointer w-full text-left`}
                     onClick={() => field.onChange(SwapType.BYBOOKS)}
                     aria-pressed={field.value === SwapType.BYBOOKS}
+                    className="w-full"
                   >
-                    <input type="radio" value={SwapType.BYBOOKS} className="hidden" readOnly />
-                    <div className="mt-4 grid grid-cols-2 gap-4">
-                      {swappableBooks.map((book, index) => (
-                        <div
-                          key={index}
-                          onClick={() => setValue('selectedBook', book)}
-                          className={`border p-3 rounded cursor-pointer hover:shadow ${
-                            watch('selectedBook').id === book?.id
-                              ? 'border-blue-500 bg-blue-50'
-                              : ''
-                          }`}
-                          role="button"
-                          tabIndex={0}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              // setValue('selectedBook', book);
-                            }
-                          }}
-                        >
-                          <h4 className="font-semibold">{book.title}</h4>
-                          <p className="text-sm text-gray-500">{book.author}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </button>
+                    <input type="radio" value={SwapType.BYBOOKS} hidden readOnly />
+                    <SwapBookCarousels swapBook={swappableBooks} />
+                  </Button>
                 )}
               />
               <Controller

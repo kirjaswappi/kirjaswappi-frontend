@@ -69,7 +69,7 @@ export default function Exchanges({ swapCondition }: { swapCondition: ISwapCondi
                   className="w-5"
                 />
                 <div className="w-[120px] text-left">
-                  <h3 className="text-sm font-poppins leading-[18px] font-normal text-smokyBlack capitalize">
+                  <h3 className="text-sm font-poppins leading-[18px] font-normal text-smokyBlack capitalize line-clamp-2">
                     {item?.title}
                   </h3>
                   <p className="text-xs font-poppins font-light mt-1 text-smokyBlack">

@@ -1,15 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useFormContext } from 'react-hook-form';
 import { Carousel, CarouselContent, CarouselItem } from '../Carousel';
 import Image from '../Image';
 
-export default function SwapBookCarousels({
-  swapBook,
-  handleSelectBookForSwapRequest,
-}: {
-  swapBook: any;
-  handleSelectBookForSwapRequest: (item: any) => void;
-}) {
+export default function SwapBookCarousels({ swapBook }: { swapBook: any }) {
   if (!swapBook) return null;
+  const { setValue, watch } = useFormContext();
+  const selectedBook = watch('selectedBook');
   return (
     <Carousel
       opts={{
@@ -20,14 +17,21 @@ export default function SwapBookCarousels({
     >
       <CarouselContent>
         {swapBook.map(
-          (item: { title: string; coverPhotoUrl: string | undefined; author: string }) => {
+          (item: {
+            id: string;
+            title: string;
+            coverPhotoUrl: string | undefined;
+            author: string;
+          }) => {
             return (
               <CarouselItem
                 key={`${item.title}`}
                 className={` ${swapBook.length <= 1 ? 'pr-4 basis-full' : 'basis-[120px]'}`}
-                onClick={() => handleSelectBookForSwapRequest(item)}
+                onClick={() => setValue('selectedBook', item)}
               >
-                <div className="max-w-[120px] w-[120px] rounded-[8px] p-2 border border-primary">
+                <div
+                  className={`max-w-[120px] w-[120px] rounded-[8px] p-2 ${selectedBook?.id === item.id ? 'border border-primary' : ''}`}
+                >
                   <div className="w-[104px] h-[120px] object-cover bg-center bg-cover border border-[#E5E5E5] rounded-lg">
                     <Image
                       className="mx-auto w-full h-full object-cover rounded-lg"

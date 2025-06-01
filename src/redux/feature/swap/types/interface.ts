@@ -19,6 +19,7 @@ export interface ISwapBookInformation {
     openForOffers: boolean;
     swappableGenres: string[];
     swappableBooks: {
+      id?: string;
       title: string;
       author: string;
       coverPhoto: File | string;
