@@ -3,6 +3,7 @@ import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { SwapType } from '../../../../types/enum';
 import close from '../../../assets/close.svg';
 import genre from '../../../assets/genre.png';
+import giveaway from '../../../assets/giveaway.png';
 import givewayIcon from '../../../assets/givewayIcon.png';
 import openToOffer from '../../../assets/openToOffer.png';
 import sendMessageIcon from '../../../assets/sendMessageIcon.png';
@@ -10,8 +11,9 @@ import swap from '../../../assets/swap.png';
 import { setSwapModal } from '../../../redux/feature/swap/swapSlice';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import Button from '../Button';
+import ControlledInputField from '../ControllerField';
 import Image from '../Image';
-import TextArea from '../TextArea';
+import InputLabel from '../InputLabel';
 import SwapBookCarousels from './SwapBookCarousels';
 import SwapBookInformation from './SwapBookInformation';
 
@@ -24,6 +26,7 @@ export default function SwapModal() {
   type SwapRequestForm = {
     swapType: SwapType;
     selectedBook?: any;
+    note: string;
   };
 
   const methods = useForm<SwapRequestForm>({
@@ -31,9 +34,10 @@ export default function SwapModal() {
     defaultValues: {
       swapType: SwapType.BYBOOKS,
       selectedBook: undefined,
+      note: '',
     },
   });
-  const { control } = methods;
+  const { control, getValues } = methods;
 
   const conditionList: Record<string, { image: string; label: string }> = {
     [SwapType.BYGENRES]: {
@@ -54,7 +58,7 @@ export default function SwapModal() {
     },
   };
   const conditionItem = conditionList[swapType];
-
+  console.log(getValues());
   return (
     <div
       className={`${
@@ -101,28 +105,42 @@ export default function SwapModal() {
                 control={control}
                 render={({ field }) => (
                   <label
-                    className={`block mt-2 px-4 py-4 bg-white border ${
-                      field.value === SwapType.BYGENRES ? 'border-black' : 'border-[#E6E6E6]'
-                    } rounded-lg cursor-pointer flex items-center gap-2`}
+                    className={`bg-[#E5E5E5] border border-[#E5E5E5] w-full h-[80px] flex items-center rounded-xl px-[18px] gap-2 mt-2`}
+                    aria-label="Ask for giveaway"
                   >
-                    <input
-                      type="radio"
-                      value={SwapType.BYGENRES}
-                      checked={field.value === SwapType.BYGENRES}
-                      onChange={field.onChange}
-                      className="w-4 h-4"
-                    />
-                    Swap by Genres
+                    <div className="w-2/12">
+                      <div className="w-10 h-10 flex items-center justify-center bg-yellow rounded-full">
+                        <Image src={giveaway} alt="Giveaway" className="w-4 h-4" />
+                      </div>
+                    </div>
+                    <div className="w-8/12">
+                      <h3 className="text-sm font-poppins font-normal text-smokyBlack">
+                        Ask for giveaway
+                      </h3>
+                      <p className="text-xs font-poppins font-normal text-[#8C8C8C]">
+                        You can offer from your library or, ask for giveaway
+                      </p>
+                    </div>
+                    <div className="w-1/12 flex items-end justify-end">
+                      <input
+                        type="radio"
+                        value={SwapType.GIVEAWAY}
+                        checked={field.value === SwapType.GIVEAWAY}
+                        onChange={field.onChange}
+                        className="w-4 h-4"
+                      />
+                    </div>
                   </label>
                 )}
               />
             </div>
             <div>
-              <h1 className="text-left font-poppins text-sm font-medium mb-2 mt-3">Short Note</h1>
-              <TextArea
-                onChange={(e) => console.log(e.target.value)}
+              <InputLabel label="Short Note" className="mt-5" />
+              <ControlledInputField
+                type="textarea"
+                name="note"
                 placeholder="Write a short note"
-                className="h-[100px] rounded-lg border border-gray"
+                className="rounded-md h-[83px] bg-white"
               />
             </div>
             <div className="flex justify-center pt-2 mt-5">

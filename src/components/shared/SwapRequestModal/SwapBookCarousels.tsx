@@ -40,10 +40,10 @@ export default function SwapBookCarousels({ swapBook }: { swapBook: any }) {
                     />
                   </div>
                   <div>
-                    <h1 className="font-medium text-black text-xs leading-none mt-2 mb-1 font-poppins truncate ">
+                    <h1 className="font-medium text-black text-xs leading-none mt-2 mb-1 font-poppins truncate text-left">
                       {item.title}
                     </h1>
-                    <p className="text-black font-light text-[10px] font-poppins truncate">
+                    <p className="text-black font-light text-[10px] font-poppins truncate text-left">
                       by {item.author}
                     </p>
                   </div>
