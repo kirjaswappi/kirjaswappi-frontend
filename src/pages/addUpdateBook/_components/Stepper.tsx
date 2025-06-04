@@ -48,7 +48,7 @@ const Stepper = ({
       ))}
     </div>
 
-    <div className="hidden lg:flex flex-col h-full justify-between relative">
+    <div className="hidden container lg:flex flex-col h-full justify-between relative">
       {steps.map((s, i) => (
         <div
           key={i}
@@ -83,7 +83,7 @@ const Stepper = ({
             </p>
           </div>
           {i < steps.length - 1 && (
-            <div className="absolute top-4 right-0 h-[53vh] w-[1px] bg-[#E5E5E5] z-0" />
+            <div className="absolute top-4 right-0 h-[45vh] w-[1px] bg-[#E5E5E5] z-0" />
           )}
           {s.isActive && (
             <div className="absolute right-0 top-0 w-2 h-full bg-blue-500 rounded-r-lg z-10" />

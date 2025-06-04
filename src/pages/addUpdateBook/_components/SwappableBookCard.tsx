@@ -42,11 +42,18 @@ function SwappableBookCard({
   };
 
   return (
-    <div id={`swappableBook-${id}`} className="bg-white p-4 rounded-xl flex gap-4 mt-3 shadow-sm">
-      <div className="w-3/12 h-20 max-h-20">
-        <Image src={coverPhotoUrl} alt="Cover" className="w-20 h-20 object-cover rounded-md" />
+    <div
+      id={`swappableBook-${id}`}
+      className="bg-white p-4 rounded-xl flex gap-4 mt-3 shadow-sm lg:max-w-[400px]"
+    >
+      <div className="w-3/12 h-20 max-h-20 lg:w-24 lg:h-24">
+        <Image
+          src={coverPhotoUrl}
+          alt="Cover"
+          className="w-20 h-20 object-cover rounded-md lg:w-24 lg:h-24"
+        />
       </div>
-      <div className="w-3/4 pr-7 relative">
+      <div className="w-3/4 pr-7 lg:pr-10 relative">
         <h3 className="text-sm font-poppins font-medium line-clamp-2">{title}</h3>
         <h3 className="text-xs font-poppins font-light mt-2">by {author}</h3>
 

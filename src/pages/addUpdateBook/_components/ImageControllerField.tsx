@@ -45,7 +45,7 @@ const ImageFileInput = ({ name }: { name: string }) => {
       render={({ field, fieldState }) => {
         return (
           <div>
-            <div className="w-[126px] h-[150px] border-[1px] border-dashed border-grayDark rounded-lg cursor-pointer block mx-auto lg:w-[343px] lg:h-[64px]">
+            <div className="w-[126px] h-[150px] border-[1px] border-dashed border-grayDark rounded-lg cursor-pointer block mx-auto lg:w-full lg:h-[64px]">
               {preview ? (
                 <div className="w-full h-full relative group">
                   <button
