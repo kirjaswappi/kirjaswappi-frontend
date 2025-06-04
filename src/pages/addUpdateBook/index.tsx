@@ -144,7 +144,7 @@ export default function AddUpdateBook() {
 
   return (
     <div className="min-h-screen bg-[#F2F4F8] flex lg:items-center lg:justify-center">
-      <div className="bg-white p-10 max-w-5xl rounded-5xl w-full">
+      <div className="bg-white p-10 container rounded-5xl w-full">
         <BookAddUpdateHeader title="Add Book" onBack={() => navigate('/profile/user-profile')} />
         <div className="">
           <div className="">
