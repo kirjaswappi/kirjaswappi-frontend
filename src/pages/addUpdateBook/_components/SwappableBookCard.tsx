@@ -44,53 +44,52 @@ function SwappableBookCard({
   return (
     <div
       id={`swappableBook-${id}`}
-      className="bg-white p-4 rounded-xl flex gap-4 mt-3 shadow-sm lg:max-w-[400px]"
+      className="bg-white lg:bg-none sm:p-4 lg:p-0 rounded-xl flex lg:flex-col gap-4 lg:gap-3 mt-3 lg:mt-0 shadow-sm lg:max-w-[400px] relative"
     >
-      <div className="w-3/12 h-20 max-h-20 lg:w-24 lg:h-24">
+      <PiDotsThreeBold
+        size={24}
+        className="absolute lg:bg-white lg:rounded-md right-4 top-4 cursor-pointer z-20"
+        onClick={handleClickDots}
+      />
+
+      <div className="w-3/12 h-20 max-h-20 lg:w-full lg:h-32">
         <Image
           src={coverPhotoUrl}
           alt="Cover"
-          className="w-20 h-20 object-cover rounded-md lg:w-24 lg:h-24"
+          className="w-20 h-20 object-cover rounded-md lg:w-full lg:h-32"
         />
       </div>
-      <div className="w-3/4 pr-7 lg:pr-10 relative">
-        <h3 className="text-sm font-poppins font-medium line-clamp-2">{title}</h3>
+
+      <div className="w-3/4 pr-7 lg:pr-0 lg:mb-3 lg:pr-2 lg:pl-2 lg:w-full lg:mt-11">
+        <h3 className="text-sm font-poppins font-medium text-[12px]">{title}</h3>
         <h3 className="text-xs font-poppins font-light mt-2">by {author}</h3>
-
-        <PiDotsThreeBold
-          size={24}
-          className="absolute right-0 top-0 cursor-pointer"
-          onClick={handleClickDots}
-        />
-
-        {swappableBookIndex === index && clicked && (
-          <div
-            ref={reference}
-            className="absolute right-0 top-6 w-[138px] bg-white shadow-lg rounded-md z-10"
-          >
-            <Button
-              onClick={() => editAnotherBook(index)}
-              onKeyDown={(e) => e.key === 'Enter' && editAnotherBook(index)}
-              className="flex items-center gap-2 p-2 border-b border-[#D3D3D3] w-full cursor-pointer"
-              type="button"
-            >
-              <Image src={editIcon} alt="edit" className="h-[18px]" />
-              <p className="font-poppins font-normal text-sm">Edit</p>
-            </Button>
-            <Button
-              onClick={() => deleteSwappableBookByIndex(index)}
-              onKeyDown={(e) => e.key === 'Enter' && deleteSwappableBookByIndex(index)}
-              className="flex items-center gap-2 p-2 w-full"
-              type="button"
-            >
-              <Image src={deleteIcon} alt="delete" className="h-[18px]" />
-              <p className="font-poppins font-normal text-sm text-[#EA244E] cursor-pointer">
-                Delete
-              </p>
-            </Button>
-          </div>
-        )}
       </div>
+
+      {swappableBookIndex === index && clicked && (
+        <div
+          ref={reference}
+          className="absolute right-4 top-12 w-[138px] bg-white shadow-lg rounded-md z-10"
+        >
+          <Button
+            onClick={() => editAnotherBook(index)}
+            onKeyDown={(e) => e.key === 'Enter' && editAnotherBook(index)}
+            className="flex items-center gap-2 p-2 border-b border-[#D3D3D3] w-full cursor-pointer"
+            type="button"
+          >
+            <Image src={editIcon} alt="edit" className="h-[18px]" />
+            <p className="font-poppins font-normal text-sm">Edit</p>
+          </Button>
+          <Button
+            onClick={() => deleteSwappableBookByIndex(index)}
+            onKeyDown={(e) => e.key === 'Enter' && deleteSwappableBookByIndex(index)}
+            className="flex items-center gap-2 p-2 w-full"
+            type="button"
+          >
+            <Image src={deleteIcon} alt="delete" className="h-[18px]" />
+            <p className="font-poppins font-normal text-sm text-[#EA244E] cursor-pointer">Delete</p>
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
