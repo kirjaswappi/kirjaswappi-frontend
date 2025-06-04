@@ -97,21 +97,22 @@ export default function AddUpdateBook() {
           } else if (index === active + 1) {
             return { ...step, isActive: true };
           }
-          return step;
+          return { ...step, isActive: false };
         }),
       );
       setActive((prev) => prev + 1);
     }
   };
 
-  const handlePrev = async () => {
+  const handlePrev = () => {
     setSteps((prevStep) =>
       prevStep.map((step, index) => {
-        if (index === active) return step;
-        if (index === active - 1) {
+        if (index === active) {
           return { ...step, isActive: false };
+        } else if (index === active - 1) {
+          return { ...step, isActive: true };
         }
-        return step;
+        return { ...step, isActive: false };
       }),
     );
     if (active === 0) return;
@@ -143,7 +144,7 @@ export default function AddUpdateBook() {
 
   return (
     <div className="min-h-screen bg-[#F2F4F8] flex lg:items-center lg:justify-center">
-      <div className="bg-white p-10 max-w-5xl rouned-5xl w-full mx-auto">
+      <div className="bg-white p-10 max-w-5xl rounded-5xl w-full">
         <BookAddUpdateHeader title="Add Book" onBack={() => navigate('/profile/user-profile')} />
         <div className="">
           <div className="">
