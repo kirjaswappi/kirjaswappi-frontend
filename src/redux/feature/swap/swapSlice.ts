@@ -35,6 +35,9 @@ const swapSlice = createSlice({
     setSwapBook: (state, action: PayloadAction<ISwapBookInformation>) => {
       state.swapBookInformation = { ...initialState.swapBookInformation, ...action.payload };
     },
+    setResetSwapBook: (state) => {
+      state.swapBookInformation = { ...initialState.swapBookInformation };
+    },
     setSwapBookDetailsOrBookHomePage: (state, action: PayloadAction<boolean>) => {
       state.isSwapBookDetailsOrBookHomePage = action.payload;
     },
@@ -44,5 +47,6 @@ const swapSlice = createSlice({
   },
 });
 
-export const { setSwapModal, setSwapBook, setSwapBookDetailsOrBookHomePage } = swapSlice.actions;
+export const { setSwapModal, setSwapBook, setResetSwapBook, setSwapBookDetailsOrBookHomePage } =
+  swapSlice.actions;
 export default swapSlice.reducer;
