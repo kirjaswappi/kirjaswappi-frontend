@@ -231,7 +231,7 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                         )}
                       </div>
                       {/* Image upload - hidden on sm for first section, shown on lg */}
-                      <div className="hidden lg:block lg:mb-4">
+                      <div className="lg:mb-4 ">
                         <ImageFileInput name={`swappableBooks.${index}.coverPhoto`} />
                       </div>
                     </div>
@@ -252,11 +252,6 @@ export default function ConditionsStep({ errors }: { errors: any }) {
                         className="rounded-md"
                         showErrorMessage
                       />
-                    </div>
-                    {/* Image upload for sm devices at bottom */}
-                    <div className="block lg:hidden mt-4 pb-4 border-b border-[#E4E4E4]">
-                      <InputLabel label="Cover Photo" required />
-                      <ImageFileInput name={`swappableBooks.${index}.coverPhoto`} />
                     </div>
                   </div>
                 ) : null;

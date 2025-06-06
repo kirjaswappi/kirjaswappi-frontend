@@ -4,11 +4,11 @@ export const Stepper = ({
   steps: { label: string; isCompleted: boolean; isActive: boolean }[];
 }) => (
   <div className="w-full">
-    <div className="flex lg:flex-col justify-between gap-4 md:gap-7 w-full pt-6 pb-3">
+    <div className="flex lg:flex-col justify-between sm:gap-4 w-full pt-6 lg:pt-0 pb-3">
       {steps.map((s, i) => (
         <div
           key={i}
-          className={`relative flex items-center ${s.isActive ? 'lg:bg-[#E6F1FF] lg:pt-3 lg:pb-3' : ''}`}
+          className={`relative flex items-center lg:h-[68px] ${s.isActive ? 'lg:bg-[#E6F1FF]' : ''}`}
         >
           <div className="flex flex-col lg:flex-row items-center flex-1 gap-2 lg:gap-4 lg:pl-3">
             {/* STEP CIRCLE */}
@@ -44,10 +44,7 @@ export const Stepper = ({
             {/* STEP LABEL */}
             <div className="flex flex-col">
               <p
-                className={`
-      font-poppins
-      text-[10px] lg:text-[14px]
-      font-medium lg:font-normal
+                className={`font-poppins text-[10px] lg:text-[14px] font-medium lg:font-normal
       ${s.isActive ? 'text-[#0D0D0D]' : 'text-[#808080]'}
     `}
               >
@@ -69,7 +66,7 @@ export const Stepper = ({
 
           {/* VERTICAL LINE (lg) */}
           {i < steps.length - 1 && (
-            <div className="hidden lg:block absolute top-4 right-0 h-[45vh] w-[1px] bg-[#E5E5E5] z-0" />
+            <div className="hidden lg:block absolute h-[43vh] top-4 bottom-4 right-0 w-[1px] bg-[#E5E5E5] z-0" />
           )}
 
           {/* SIDE BAR INDICATOR (lg) */}

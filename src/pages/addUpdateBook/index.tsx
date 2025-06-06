@@ -158,7 +158,7 @@ export default function AddUpdateBook() {
               >
                 <Image src={PrevArrowIcon} alt="left" className="w-4 h-4" />
               </button>
-              <h3 className="font-poppins text-base font-bold text-[#19191C] ml-2 text-[24px]">
+              <h3 className="font-poppins text-base font-bold text-[#19191C] ml-2 text-xl">
                 {id ? 'Update' : 'Add'} Book
               </h3>
             </div>
@@ -170,7 +170,7 @@ export default function AddUpdateBook() {
               </div>
               <div className="w-full lg:w-[70%]">
                 <FormProvider {...methods}>
-                  <h1 className="font-poppins mb-2 font-semibold text-[20px] hidden lg:block">
+                  <h1 className="font-poppins lg:mt-3 mb-2 font-semibold text-[20px] hidden lg:block">
                     {steps[active].label}
                   </h1>
                   <AddGenre
@@ -187,12 +187,12 @@ export default function AddUpdateBook() {
                       languages={languages}
                       conditions={conditions}
                     />
-                    <div className="mt-4 flex justify-end gap-3 pb-4">
+                    <div className="mt-4 flex justify-between gap-3 pb-4 lg:justify-end">
                       {active > 0 && (
                         <Button
                           onClick={handlePrev}
                           type="button"
-                          className="bg-primary-light text-primary px-8 py-4 rounded-lg border border-primary flex items-center justify-center font-poppins text-base font-medium"
+                          className="bg-primary-light text-primary w-full lg:w-[112px] py-4 rounded-lg border border-primary flex items-center justify-center font-poppins text-base font-medium"
                         >
                           <Image src={PrevArrowIcon} alt="Next" className="w-4" /> Back
                         </Button>
@@ -201,7 +201,7 @@ export default function AddUpdateBook() {
                         <Button
                           onClick={handleNext}
                           type="button"
-                          className="bg-primary text-white px-8 py-4 rounded-lg flex items-center justify-center font-poppins text-base font-medium"
+                          className="bg-primary text-white w-full lg:w-[112px] py-4 rounded-lg flex items-center justify-center font-poppins text-base font-medium"
                         >
                           Next <Image src={NextArrowIcon} alt="Next" className="w-4" />
                         </Button>
@@ -210,7 +210,7 @@ export default function AddUpdateBook() {
                         <Button
                           disabled={isLoading}
                           type="submit"
-                          className="bg-primary text-white px-8 py-4 rounded-lg"
+                          className="bg-primary text-white w-full lg:w-[112px] py-4 rounded-lg"
                         >
                           {isLoading ? 'Loading...' : 'Save'}
                         </Button>
