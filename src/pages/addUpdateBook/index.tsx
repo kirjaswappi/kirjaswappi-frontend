@@ -15,7 +15,7 @@ import {
   useUpdateBookMutation,
 } from '../../redux/feature/book/bookApi';
 import { options } from '../../utility/helper';
-import Stepper from './_components/Stepper';
+import { Stepper } from './_components/Stepper';
 import { validationSchemas } from './Schema';
 
 import AddGenre from '../../components/shared/AddGenre';

@@ -44,7 +44,7 @@ function SwappableBookCard({
   return (
     <div
       id={`swappableBook-${id}`}
-      className="bg-white lg:bg-none sm:p-4 lg:p-0 rounded-xl flex lg:flex-col gap-4 lg:gap-3 mt-3 lg:mt-0 shadow-sm lg:max-w-[400px] relative"
+      className="bg-white sm:p-4 lg:p-0 rounded-xl flex lg:flex-col gap-4 lg:gap-3 mt-3 lg:mt-0 shadow-sm lg:max-w-[400px] relative"
     >
       <PiDotsThreeBold
         size={24}
