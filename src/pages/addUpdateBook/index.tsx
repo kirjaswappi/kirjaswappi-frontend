@@ -15,7 +15,7 @@ import {
   useUpdateBookMutation,
 } from '../../redux/feature/book/bookApi';
 import { options } from '../../utility/helper';
-import Stepper from './_components/Stepper';
+import { Stepper } from './_components/Stepper';
 import { validationSchemas } from './Schema';
 
 import AddGenre from '../../components/shared/AddGenre';
@@ -97,21 +97,22 @@ export default function AddUpdateBook() {
           } else if (index === active + 1) {
             return { ...step, isActive: true };
           }
-          return step;
+          return { ...step, isActive: false };
         }),
       );
       setActive((prev) => prev + 1);
     }
   };
 
-  const handlePrev = async () => {
+  const handlePrev = () => {
     setSteps((prevStep) =>
       prevStep.map((step, index) => {
-        if (index === active) return step;
-        if (index === active - 1) {
+        if (index === active) {
           return { ...step, isActive: false };
+        } else if (index === active - 1) {
+          return { ...step, isActive: true };
         }
-        return step;
+        return { ...step, isActive: false };
       }),
     );
     if (active === 0) return;
@@ -142,62 +143,85 @@ export default function AddUpdateBook() {
   if (loading()) return <Loader />;
 
   return (
-    <div className="min-h-screen">
-      <BookAddUpdateHeader
-        title={`${id ? 'Update' : 'Add'} Book`}
-        onBack={() => navigate('/profile/user-profile')}
-      />
-      <div className="container">
-        <div className="pt-16 border-b border-[#E4E4E4] pb-4">
-          <Stepper steps={steps} />
-        </div>
-        <FormProvider {...methods}>
-          <AddGenre
-            genresValue={active === 1 ? watch('genres') : watch('swappableGenres')}
-            setEditValuesChanged={() => console.log('Genres updated')}
-            setValue={setValue}
-            trigger={trigger}
-            addGenreName={active === 1 ? 'genres' : 'swappableGenres'}
-          />
-          <form onSubmit={handleSubmit((data) => handleAddUpdateBookFn(data))}>
-            <BookFormStep
-              activeStep={active}
-              errors={errors}
-              languages={languages}
-              conditions={conditions}
-            />
-            <div className="mt-4 flex justify-between gap-3 pb-4">
-              {active > 0 && (
-                <Button
-                  onClick={handlePrev}
-                  type="button"
-                  className="bg-primary-light text-primary w-full py-4 rounded-lg border border-primary flex items-center justify-center font-poppins text-base font-medium"
-                >
-                  <Image src={PrevArrowIcon} alt="Next" className="w-4" /> Back
-                </Button>
-              )}
-              {active <= 1 && (
-                <Button
-                  onClick={handleNext}
-                  type="button"
-                  className="bg-primary text-white w-full py-4 rounded-lg flex items-center justify-center  font-poppins text-base font-medium"
-                >
-                  Next <Image src={NextArrowIcon} alt="Next" className="w-4" />
-                </Button>
-              )}
-              {active === 2 && (
-                <Button
-                  disabled={isLoading}
-                  type="submit"
-                  className="bg-primary text-white w-full py-4 rounded-lg"
-                >
-                  {' '}
-                  {isLoading ? 'Loading...' : 'Save'}
-                </Button>
-              )}
+    <div className="min-h-screen bg-[#F2F4F8] flex lg:items-center lg:justify-center">
+      <div className="bg-[#F2F4F8] lg:bg-white lg:p-10 container rounded-5xl w-full">
+        <BookAddUpdateHeader title="Add Book" onBack={() => navigate('/profile/user-profile')} />
+        <div className="pt-8">
+          <div className="">
+            <div className="hidden mt-10 lg:flex items-center mb-8">
+              <button
+                className="cursor-pointer w-8 h-8 flex items-center justify-center rounded-lg bg-[#F5F6F7] border-none mr-2"
+                onClick={() => navigate('/profile/user-profile')}
+                onKeyDown={(e) => e.key === 'Enter' && navigate('/profile/user-profile')}
+                aria-label="Go back"
+                type="button"
+              >
+                <Image src={PrevArrowIcon} alt="left" className="w-4 h-4" />
+              </button>
+              <h3 className="font-poppins text-base font-bold text-[#19191C] ml-2 text-xl">
+                {id ? 'Update' : 'Add'} Book
+              </h3>
             </div>
-          </form>
-        </FormProvider>
+            <div className="lg:flex pt-2 pb-4 border-b border-[#E4E4E4] md:border-b-0">
+              <div className="w-full lg:w-[30%] lg:pr-9">
+                <div className="relative flex justify-between gap-4 md:gap-6 lg:flex-col">
+                  <Stepper steps={steps} />
+                </div>
+              </div>
+              <div className="w-full lg:w-[70%]">
+                <FormProvider {...methods}>
+                  <h1 className="font-poppins lg:mt-3 mb-2 font-semibold text-[20px] hidden lg:block">
+                    {steps[active].label}
+                  </h1>
+                  <AddGenre
+                    genresValue={active === 1 ? watch('genres') : watch('swappableGenres')}
+                    setEditValuesChanged={() => console.log('Genres updated')}
+                    setValue={setValue}
+                    trigger={trigger}
+                    addGenreName={active === 1 ? 'genres' : 'swappableGenres'}
+                  />
+                  <form onSubmit={handleSubmit((data) => handleAddUpdateBookFn(data))}>
+                    <BookFormStep
+                      activeStep={active}
+                      errors={errors}
+                      languages={languages}
+                      conditions={conditions}
+                    />
+                    <div className="mt-4 flex justify-between gap-3 pb-4 lg:justify-end">
+                      {active > 0 && (
+                        <Button
+                          onClick={handlePrev}
+                          type="button"
+                          className="bg-primary-light text-primary w-full lg:w-[112px] py-4 rounded-lg border border-primary flex items-center justify-center font-poppins text-base font-medium"
+                        >
+                          <Image src={PrevArrowIcon} alt="Next" className="w-4" /> Back
+                        </Button>
+                      )}
+                      {active <= 1 && (
+                        <Button
+                          onClick={handleNext}
+                          type="button"
+                          className="bg-primary text-white w-full lg:w-[112px] py-4 rounded-lg flex items-center justify-center font-poppins text-base font-medium"
+                        >
+                          Next <Image src={NextArrowIcon} alt="Next" className="w-4" />
+                        </Button>
+                      )}
+                      {active === 2 && (
+                        <Button
+                          disabled={isLoading}
+                          type="submit"
+                          className="bg-primary text-white w-full lg:w-[112px] py-4 rounded-lg"
+                        >
+                          {isLoading ? 'Loading...' : 'Save'}
+                        </Button>
+                      )}
+                    </div>
+                  </form>
+                </FormProvider>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

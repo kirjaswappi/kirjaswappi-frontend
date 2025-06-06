@@ -4,8 +4,8 @@ import { IBookDetailsProps } from '../types/interface';
 
 export default function BookDetailsStep({ languageOptions, conditionOptions }: IBookDetailsProps) {
   return (
-    <div>
-      <div className="mt-4 pb-4 border-b border-platinumDark">
+    <div className="lg:grid lg:grid-cols-2 lg:gap-6 md:gap-4">
+      <div className="mt-4 pb-4 border-b border-platinumDark md:border-b-0">
         <InputLabel label="Book Title" required />
         <ControlledInputField
           name="title"
@@ -14,7 +14,7 @@ export default function BookDetailsStep({ languageOptions, conditionOptions }: I
           showErrorMessage
         />
       </div>
-      <div className="mt-4 pb-4 border-b border-platinumDark">
+      <div className="mt-4 pb-4 border-b border-platinumDark md:border-b-0">
         <InputLabel label="Author Name" required />
         <ControlledInputField
           name="author"
@@ -23,17 +23,7 @@ export default function BookDetailsStep({ languageOptions, conditionOptions }: I
           showErrorMessage
         />
       </div>
-      <div className="mt-4 pb-4 border-b border-platinumDark">
-        <InputLabel label="Short Description" />
-        <ControlledInputField
-          type="textarea"
-          name="description"
-          placeholder="Enter a short description of the book"
-          className="rounded-md h-[83px]"
-          showErrorMessage
-        />
-      </div>
-      <div className="mt-4 pb-4 border-b border-platinumDark">
+      <div className="lg:mt-0 mt-4 pb-4 border-b border-platinumDark md:border-b-0">
         <InputLabel label="Book Language" required />
         <ControlledInputField
           type="select"
@@ -43,13 +33,23 @@ export default function BookDetailsStep({ languageOptions, conditionOptions }: I
           showErrorMessage
         />
       </div>
-      <div className="mt-4 pb-4 border-b border-platinumDark">
+      <div className="lg:mt-0 mt-4 pb-4 border-b border-platinumDark md:border-b-0">
         <InputLabel label="Book Condition" required />
         <ControlledInputField
           type="select"
           name="condition"
           className="rounded-md bg-white"
           options={conditionOptions}
+          showErrorMessage
+        />
+      </div>
+      <div className="lg:mt-0 mt-4 pb-4 border-b border-platinumDark md:border-b-0">
+        <InputLabel label="Short Description" />
+        <ControlledInputField
+          type="textarea"
+          name="description"
+          placeholder="Enter a short description of the book"
+          className="rounded-md h-[83px]"
           showErrorMessage
         />
       </div>
