@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useFormContext } from 'react-hook-form';
-import { Carousel, CarouselContent, CarouselItem } from '../Carousel';
-import Image from '../Image';
+import { Carousel, CarouselContent, CarouselItem } from '../../Carousel';
+import Image from '../../Image';
 
 export default function SwapBookCarousels({ swapBook }: { swapBook: any }) {
   if (!swapBook) return null;

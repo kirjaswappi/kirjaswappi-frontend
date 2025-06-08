@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { SwapType } from '../../../../types/enum';
 import close from '../../../assets/close.svg';
@@ -15,12 +16,16 @@ import Button from '../Button';
 import ControlledInputField from '../ControllerField';
 import Image from '../Image';
 import InputLabel from '../InputLabel';
-import SwapBookCarousels from './SwapBookCarousels';
-import SwapBookInformation from './SwapBookInformation';
+import SwapBookCarousels from './_components/SwapBookCarousels';
+import SwapBookInformation from './_components/SwapBookInformation';
+import { swapRequestDefaultValues } from './helper';
 
 export default function SwapModal() {
   const dispatch = useAppDispatch();
   const { swapModalOpen, swapBookInformation } = useAppSelector((state) => state.swapBook);
+  const {
+    userInformation: { books },
+  } = useAppSelector((state) => state.auth);
   const {
     swapCondition: { swapType, swappableBooks },
   } = swapBookInformation;
@@ -32,13 +37,9 @@ export default function SwapModal() {
 
   const methods = useForm<SwapRequestForm>({
     mode: 'onChange',
-    defaultValues: {
-      swapType: SwapType.BYBOOKS,
-      selectedBook: undefined,
-      note: '',
-    },
+    defaultValues: swapRequestDefaultValues(),
   });
-  const { control } = methods;
+  const { control, watch, reset } = methods;
   // const selectedBook = watch('selectedBook');
   const conditionList: Record<string, { image: string; label: string }> = {
     [SwapType.BYGENRES]: {
@@ -59,15 +60,15 @@ export default function SwapModal() {
     },
   };
   const conditionItem = conditionList[swapType];
-
-  // const SwapTypes = watch('swapType');
+  useEffect(() => {}, [swapBookInformation, reset]);
+  const SwapTypes = watch('swapType');
   // useEffect(() => {
   //   if (SwapTypes) {
   //     // dispatch(setResetSwapBook());
   //     setValue('selectedBook', undefined);
   //   }
   // }, [SwapTypes]);
-
+  console.log(watch('selectedBook'));
   return (
     <div
       className={`${
@@ -152,6 +153,7 @@ export default function SwapModal() {
                             />
                           </div>
                         </label>
+                        {SwapTypes === SwapType.BYGENRES && <SwapBookCarousels swapBook={books} />}
                       </Button>
                     </>
                   );

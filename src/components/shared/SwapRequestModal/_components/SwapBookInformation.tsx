@@ -1,5 +1,5 @@
-import { useAppSelector } from '../../../redux/hooks';
-import Image from '../Image';
+import { useAppSelector } from '../../../../redux/hooks';
+import Image from '../../Image';
 
 export default function SwapBookInformation() {
   const { swapBookInformation } = useAppSelector((state) => state.swapBook);
