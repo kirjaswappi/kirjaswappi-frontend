@@ -39,8 +39,8 @@ export default function SwapModal() {
     mode: 'onChange',
     defaultValues: swapRequestDefaultValues(),
   });
-  const { control, watch, reset } = methods;
-  // const selectedBook = watch('selectedBook');
+  const { control, watch, setValue, handleSubmit } = methods;
+
   const conditionList: Record<string, { image: string; label: string }> = {
     [SwapType.BYGENRES]: {
       image: genre,
@@ -60,15 +60,14 @@ export default function SwapModal() {
     },
   };
   const conditionItem = conditionList[swapType];
-  useEffect(() => {}, [swapBookInformation, reset]);
-  const SwapTypes = watch('swapType');
-  // useEffect(() => {
-  //   if (SwapTypes) {
-  //     // dispatch(setResetSwapBook());
-  //     setValue('selectedBook', undefined);
-  //   }
-  // }, [SwapTypes]);
-  console.log(watch('selectedBook'));
+  const selectedBook = watch('selectedBook');
+  const currentSwapType = watch('swapType');
+  useEffect(() => {
+    if (currentSwapType !== SwapType.BYBOOKS && selectedBook) {
+      setValue('selectedBook', null);
+    }
+  }, [currentSwapType]);
+
   return (
     <div
       className={`${
@@ -94,124 +93,179 @@ export default function SwapModal() {
             <h3>{conditionItem.label}</h3>
           </div>
           <FormProvider {...methods}>
-            <div>
-              <Controller
-                name="swapType"
-                control={control}
-                render={({ field }) => {
-                  return (
-                    <>
-                      <Button
-                        type="button"
-                        onClick={() => field.onChange(SwapType.BYBOOKS)}
-                        aria-pressed={field.value === SwapType.BYBOOKS}
-                        className="w-full"
-                      >
-                        <input type="radio" value={SwapType.BYBOOKS} readOnly hidden />
-                        <SwapBookCarousels swapBook={swappableBooks} />
-                      </Button>
-                    </>
-                  );
-                }}
-              />
-              <Controller
-                name="swapType"
-                control={control}
-                render={({ field }) => {
-                  return (
-                    <>
-                      <Button
-                        type="button"
-                        onClick={() => field.onChange(SwapType.BYGENRES)}
-                        aria-pressed={field.value === SwapType.BYGENRES}
-                        className="w-full"
-                      >
-                        <label
-                          className={`bg-[#DBEDFF] border border-primary w-full h-[80px] flex items-center rounded-xl px-[18px] gap-2 mt-2`}
-                          aria-label="Ask for giveaway"
+            <form onSubmit={handleSubmit((data) => console.log(data))}>
+              <div>
+                <Controller
+                  name="swapType"
+                  control={control}
+                  render={({ field }) => {
+                    return (
+                      <>
+                        <Button
+                          type="button"
+                          onClick={() => field.onChange(SwapType.BYBOOKS)}
+                          aria-pressed={field.value === SwapType.BYBOOKS}
+                          className="w-full"
                         >
-                          <div className="w-2/12">
-                            <div className="w-10 h-10 flex items-center justify-center bg-primary rounded-full">
-                              <Image src={library} alt="library" className="w-4 h-4" />
-                            </div>
+                          <input type="radio" value={SwapType.BYBOOKS} readOnly hidden />
+                          <SwapBookCarousels swapBook={swappableBooks} />
+                        </Button>
+                      </>
+                    );
+                  }}
+                />
+                {swapType === SwapType.BYGENRES && (
+                  <Controller
+                    name="swapType"
+                    control={control}
+                    render={({ field }) => {
+                      return (
+                        <>
+                          <Button
+                            type="button"
+                            onClick={() => field.onChange(SwapType.BYGENRES)}
+                            aria-pressed={field.value === SwapType.BYGENRES}
+                            className="w-full"
+                          >
+                            <label
+                              className={`bg-[#DBEDFF] border border-primary w-full h-[80px] flex items-center rounded-xl px-[18px] gap-2 mt-2`}
+                              aria-label="Ask for giveaway"
+                            >
+                              <div className="w-2/12">
+                                <div className="w-10 h-10 flex items-center justify-center bg-primary rounded-full">
+                                  <Image src={library} alt="library" className="w-4 h-4" />
+                                </div>
+                              </div>
+                              <div className="w-8/12 text-left">
+                                <h3 className="text-sm font-poppins font-normal text-smokyBlack">
+                                  Select from your library
+                                </h3>
+                                <p className="text-xs font-poppins font-normal text-[#8C8C8C]">
+                                  You can offer from your library or, ask for genres
+                                </p>
+                              </div>
+                              <div className="w-1/12 flex items-end justify-end">
+                                <input
+                                  type="radio"
+                                  value={SwapType.BYGENRES}
+                                  checked={field.value === SwapType.BYGENRES}
+                                  onChange={field.onChange}
+                                  className="w-4 h-4"
+                                />
+                              </div>
+                            </label>
+                            {currentSwapType === SwapType.BYGENRES && (
+                              <SwapBookCarousels swapBook={books} />
+                            )}
+                          </Button>
+                        </>
+                      );
+                    }}
+                  />
+                )}
+                {swapType === SwapType.OPENTOOFFERS && (
+                  <Controller
+                    name="swapType"
+                    control={control}
+                    render={({ field }) => {
+                      return (
+                        <>
+                          <Button
+                            type="button"
+                            onClick={() => field.onChange(SwapType.OPENTOOFFERS)}
+                            aria-pressed={field.value === SwapType.OPENTOOFFERS}
+                            className="w-full"
+                          >
+                            <label
+                              className={`bg-[#DBEDFF] border border-primary w-full h-[80px] flex items-center rounded-xl px-[18px] gap-2 mt-2`}
+                              aria-label="Ask for giveaway"
+                            >
+                              <div className="w-2/12">
+                                <div className="w-10 h-10 flex items-center justify-center bg-primary rounded-full">
+                                  <Image src={library} alt="library" className="w-4 h-4" />
+                                </div>
+                              </div>
+                              <div className="w-8/12 text-left">
+                                <h3 className="text-sm font-poppins font-normal text-smokyBlack">
+                                  Select from your library
+                                </h3>
+                                <p className="text-xs font-poppins font-normal text-[#8C8C8C]">
+                                  You can offer from your library or, ask for open to offer
+                                </p>
+                              </div>
+                              <div className="w-1/12 flex items-end justify-end">
+                                <input
+                                  type="radio"
+                                  value={SwapType.OPENTOOFFERS}
+                                  checked={field.value === SwapType.OPENTOOFFERS}
+                                  onChange={field.onChange}
+                                  className="w-4 h-4"
+                                />
+                              </div>
+                            </label>
+                            {currentSwapType === SwapType.OPENTOOFFERS && (
+                              <SwapBookCarousels swapBook={books} />
+                            )}
+                          </Button>
+                        </>
+                      );
+                    }}
+                  />
+                )}
+                <Controller
+                  name="swapType"
+                  control={control}
+                  render={({ field }) => {
+                    return (
+                      <label
+                        className={`bg-[#E5E5E5] border border-[#E5E5E5] w-full h-[80px] flex items-center rounded-xl px-[18px] gap-2 mt-2`}
+                        aria-label="Ask for giveaway"
+                      >
+                        <div className="w-2/12">
+                          <div className="w-10 h-10 flex items-center justify-center bg-yellow rounded-full">
+                            <Image src={giveaway} alt="Giveaway" className="w-4 h-4" />
                           </div>
-                          <div className="w-8/12 text-left">
-                            <h3 className="text-sm font-poppins font-normal text-smokyBlack">
-                              Select from your library
-                            </h3>
-                            <p className="text-xs font-poppins font-normal text-[#8C8C8C]">
-                              You can offer from your library or, ask for genres
-                            </p>
-                          </div>
-                          <div className="w-1/12 flex items-end justify-end">
-                            <input
-                              type="radio"
-                              value={SwapType.BYGENRES}
-                              checked={field.value === SwapType.BYGENRES}
-                              onChange={field.onChange}
-                              className="w-4 h-4"
-                            />
-                          </div>
-                        </label>
-                        {SwapTypes === SwapType.BYGENRES && <SwapBookCarousels swapBook={books} />}
-                      </Button>
-                    </>
-                  );
-                }}
-              />
-              <Controller
-                name="swapType"
-                control={control}
-                render={({ field }) => {
-                  return (
-                    <label
-                      className={`bg-[#E5E5E5] border border-[#E5E5E5] w-full h-[80px] flex items-center rounded-xl px-[18px] gap-2 mt-2`}
-                      aria-label="Ask for giveaway"
-                    >
-                      <div className="w-2/12">
-                        <div className="w-10 h-10 flex items-center justify-center bg-yellow rounded-full">
-                          <Image src={giveaway} alt="Giveaway" className="w-4 h-4" />
                         </div>
-                      </div>
-                      <div className="w-8/12">
-                        <h3 className="text-sm font-poppins font-normal text-smokyBlack">
-                          Ask for giveaway
-                        </h3>
-                        <p className="text-xs font-poppins font-normal text-[#8C8C8C]">
-                          You can offer from your library or, ask for giveaway
-                        </p>
-                      </div>
-                      <div className="w-1/12 flex items-end justify-end">
-                        <input
-                          type="radio"
-                          value={SwapType.GIVEAWAY}
-                          checked={field.value === SwapType.GIVEAWAY}
-                          onChange={field.onChange}
-                          className="w-4 h-4"
-                        />
-                      </div>
-                    </label>
-                  );
-                }}
-              />
-            </div>
-            <div>
-              <InputLabel label="Short Note" className="mt-5" />
-              <ControlledInputField
-                type="textarea"
-                name="note"
-                placeholder="Write a short note"
-                className="rounded-md h-[83px] bg-white"
-              />
-            </div>
-            <div className="flex justify-center pt-2 mt-5">
-              <Button
-                type="submit"
-                className="bg-primary text-white font-medium text-xs py-2 w-full h-[48px] rounded-[8px] font-poppins flex justify-center items-center gap-2 "
-              >
-                <Image src={sendMessageIcon} alt="Book" /> Send Request
-              </Button>
-            </div>
+                        <div className="w-8/12">
+                          <h3 className="text-sm font-poppins font-normal text-smokyBlack">
+                            Ask for giveaway
+                          </h3>
+                          <p className="text-xs font-poppins font-normal text-[#8C8C8C]">
+                            You can offer from your library or, ask for giveaway
+                          </p>
+                        </div>
+                        <div className="w-1/12 flex items-end justify-end">
+                          <input
+                            type="radio"
+                            value={SwapType.GIVEAWAY}
+                            checked={field.value === SwapType.GIVEAWAY}
+                            onChange={field.onChange}
+                            className="w-4 h-4"
+                          />
+                        </div>
+                      </label>
+                    );
+                  }}
+                />
+              </div>
+              <div>
+                <InputLabel label="Short Note" className="mt-5" />
+                <ControlledInputField
+                  type="textarea"
+                  name="note"
+                  placeholder="Write a short note"
+                  className="rounded-md h-[83px] bg-white"
+                />
+              </div>
+              <div className="flex justify-center pt-2 mt-5">
+                <Button
+                  type="submit"
+                  className="bg-primary text-white font-medium text-xs py-2 w-full h-[48px] rounded-[8px] font-poppins flex justify-center items-center gap-2 "
+                >
+                  <Image src={sendMessageIcon} alt="Book" /> Send Request
+                </Button>
+              </div>
+            </form>
           </FormProvider>
         </div>
       </div>
