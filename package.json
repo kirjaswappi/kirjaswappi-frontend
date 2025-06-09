@@ -22,7 +22,7 @@
     ]
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.0.1",
+    "@hookform/resolvers": "^5.1.0",
     "@reduxjs/toolkit": "^2.8.2",
     "@types/yup": "^0.29.14",
     "clsx": "^2.1.1",
