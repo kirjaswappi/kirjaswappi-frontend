@@ -11,7 +11,7 @@ export default function Exchanges({ swapCondition }: { swapCondition: ISwapCondi
   const swapConditionExchange = (swapConditionData: ISwapConditionData): Array<IExchange> => {
     switch (swapConditionData.swapType) {
       case SwapType.BYBOOKS:
-        return swapConditionData?.swappableBooks?.map((swappableBook) => ({
+        return (swapConditionData?.swappableBooks ?? []).map((swappableBook) => ({
           swapType: swapConditionData.swapType,
           title: swappableBook.title,
           value: swappableBook.author,
