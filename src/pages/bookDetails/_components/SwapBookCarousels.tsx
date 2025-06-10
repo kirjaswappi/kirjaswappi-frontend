@@ -22,7 +22,7 @@ export default function SwapBookCarousels({
         {swapBook.map((item: any) => {
           return (
             <CarouselItem
-              key={`${item.title}`}
+              key={item.id}
               className={`${swapBook.length <= 1 ? 'pr-4 basis-full' : 'basis-[130px]'}`}
               onClick={() => handleSelectBookForSwapRequest(item)}
             >
