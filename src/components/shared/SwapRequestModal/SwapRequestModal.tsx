@@ -15,6 +15,7 @@ import SwapBookInformation from './_components/SwapBookInformation';
 import { SwapConditionList } from './_components/SwapConditionList';
 import SwapController from './_components/SwapController';
 import { swapRequestDefaultValues } from './helper';
+import { ISwapRequestForm } from './types/interface';
 
 export default function SwapModal() {
   const dispatch = useAppDispatch();
@@ -25,13 +26,8 @@ export default function SwapModal() {
   const {
     swapCondition: { swapType, swappableBooks },
   } = swapBookInformation;
-  type SwapRequestForm = {
-    swapType: SwapType;
-    selectedBook?: any;
-    note: string;
-  };
 
-  const methods = useForm<SwapRequestForm>({
+  const methods = useForm<ISwapRequestForm>({
     mode: 'onChange',
     defaultValues: swapRequestDefaultValues(),
   });
@@ -43,7 +39,7 @@ export default function SwapModal() {
 
   useEffect(() => {
     if (currentSwapType !== SwapType.BYBOOKS && selectedBook) {
-      setValue('selectedBook', null);
+      setValue('selectedBook', undefined);
     }
   }, [currentSwapType]);
 
