@@ -9,7 +9,7 @@ export default function SwapBookInformation() {
       <div className="flex gap-4">
         <div className="max-w-[108px] max-h-[142px] flex items-center justify-center ">
           <Image
-            src={coverPhotoUrls[0]}
+            src={coverPhotoUrls?.[0] ?? ''}
             alt={title}
             className="max-w-[108px] h-[142px] object-cover  rounded-lg"
           />
