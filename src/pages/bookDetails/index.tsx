@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import bookDetailsBg from '../../assets/bookdetailsbg.jpg';
@@ -39,12 +38,6 @@ export default function BookDetails() {
       skip: !bookData?.owner?.id,
     },
   );
-  const methods = useForm({
-    mode: 'onChange',
-    defaultValues: { radio: 'swap' },
-  });
-  const { handleSubmit } = methods;
-
   useEffect(() => {
     if (userInformation?.id === bookData?.owner?.id) {
       setProfile(true);
@@ -77,12 +70,6 @@ export default function BookDetails() {
   goToTop();
   return (
     <div>
-      <FormProvider {...methods}>
-        <form onSubmit={handleSubmit((data) => console.log({ data }))}>
-          {/* <SwapModal bookData={bookData} /> */}
-        </form>
-      </FormProvider>
-
       <div className="absolute left-0 top-0 w-full flex justify-between px-4 bg-white h-14">
         <div className="flex items-center gap-4">
           <Image

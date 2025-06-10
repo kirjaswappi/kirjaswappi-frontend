@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Carousel, CarouselContent, CarouselItem } from '../../../components/shared/Carousel';
 import Image from '../../../components/shared/Image';
+import { ISwappableBookData } from '../types/interface';
 
 export default function SwapBookCarousels({
   swapBook,
   handleSelectBookForSwapRequest,
 }: {
   swapBook: any;
-  handleSelectBookForSwapRequest: (item: any) => void;
+  handleSelectBookForSwapRequest: (item: ISwappableBookData) => void;
 }) {
   if (!swapBook) return null;
   return (
