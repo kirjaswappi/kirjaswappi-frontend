@@ -41,6 +41,8 @@ export default function MoreOptions() {
             className="flex items-center px-4 py-4 bg-white border border-[#E6E6E6] rounded-2xl gap-2"
             onClick={() => {
               if (item.name.toLocaleLowerCase() === 'logout') dispatch(logout());
+              else if (item.name.toLocaleLowerCase() === 'privacy')
+                window.location.href = '/profile/privacy';
               dispatch(setOpen(false));
             }}
             type="button"
