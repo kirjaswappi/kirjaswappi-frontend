@@ -1,5 +1,7 @@
 import { PrivacyPolicySection } from '../interface/types';
 
+export const PRIVACY_POLICY_INTRODUCTION = `We are committed to protecting your privacy and ensuring that your personal information is handled in a safe and responsible manner. This Privacy Policy outlines how we collect, use, store, and protect your information when you use our Website. By using KirjaSwappi, you agree to the terms of this Privacy Policy. If you do not agree with any part of this policy, please do not use our Website.`;
+
 export const PRIVACY_POLICY_SECTIONS: PrivacyPolicySection[] = [
   {
     category: 'Information we collect',
