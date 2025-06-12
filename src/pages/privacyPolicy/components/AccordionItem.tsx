@@ -2,7 +2,7 @@ import React from 'react';
 import arrow1 from '../../../assets/arrowR.png';
 
 interface AccordionItemProps {
-  title: string;
+  title: React.ReactNode;
   isOpen: boolean;
   toggle: () => void;
   children: React.ReactNode;

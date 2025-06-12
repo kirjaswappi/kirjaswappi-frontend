@@ -17,6 +17,7 @@ import Inbox from '../pages/user/inbox/Inbox';
 import { Navigate } from 'react-router-dom';
 import { Index } from '../pages/user/inboxChat';
 import PrivacyPolicy from '../pages/privacyPolicy';
+import PrivacyPolicyDetail from '../pages/privacyPolicy/components/PrivacyPolicyDetail';
 
 const routes = createBrowserRouter([
   {
@@ -67,11 +68,11 @@ const routes = createBrowserRouter([
           },
           {
             path: 'privacy',
-            element: (
-              <PrivateRoute>
-                <PrivacyPolicy />
-              </PrivateRoute>
-            ),
+            element: <PrivacyPolicy />,
+          },
+          {
+            path: 'privacy/:sectionKey',
+            element: <PrivacyPolicyDetail />,
           },
           // {
           //   path: "book-details/:id",

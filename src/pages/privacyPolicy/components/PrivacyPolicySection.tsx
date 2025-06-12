@@ -1,5 +1,5 @@
 import React from 'react';
-import AccordionItem from './AccordionItem';
+import { Link } from 'react-router-dom';
 
 interface SectionItem {
   key: string;
@@ -10,16 +10,9 @@ interface SectionItem {
 interface PrivacyPolicySectionProps {
   category: string;
   items: SectionItem[];
-  openSections: Record<string, boolean>;
-  toggleSection: (key: string) => void;
 }
 
-const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({
-  category,
-  items,
-  openSections,
-  toggleSection,
-}) => {
+const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({ category, items }) => {
   return (
     <div className="">
       <p className="px-4 pt-[20px] font-poppins font-semibold text-[16px] pb-[12px] leading-[28px] lg:tracking-[0px]">
@@ -28,14 +21,13 @@ const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({
       {/* Mobile view */}
       <div className="block lg:hidden bg-white">
         {items.map((item) => (
-          <AccordionItem
+          <Link
             key={item.key}
-            title={item.title}
-            isOpen={!!openSections[item.key]}
-            toggle={() => toggleSection(item.key)}
+            to={`/profile/privacy/${item.key}`}
+            className="block px-4 py-3 text-[15px] text-gray-700 hover:bg-gray-50"
           >
-            <div className="px-4">{item.content}</div>
-          </AccordionItem>
+            {item.title}
+          </Link>
         ))}
       </div>
       {/* Desktop view */}
