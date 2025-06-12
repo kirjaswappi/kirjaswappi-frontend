@@ -1,7 +1,5 @@
-import { useNavigate } from 'react-router-dom';
-import Image from '../../shared/Image';
-// import TopMiddle from './TopMiddleBar'; // Import the new TopMiddle component
 import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import country from '../../../assets/country.png';
 import dropdownarrow from '../../../assets/dropdownarrow.png';
 import logo from '../../../assets/logo.png';
@@ -9,21 +7,30 @@ import notification_gray from '../../../assets/notification_gray.png';
 import profileIcon from '../../../assets/profileIcon.png';
 import { useGetUserProfileImageQuery } from '../../../redux/feature/auth/authApi';
 import { useAppSelector } from '../../../redux/hooks';
+import Image from '../../shared/Image';
 import ScrollSearch from '../../shared/ScrollSearch';
 
 export default function TopBar() {
   const navigate = useNavigate();
   const { userInformation } = useAppSelector((state) => state.auth);
   const isLoggedIn = !!userInformation?.id;
-  // Mock notification count for demonstration
   const notificationCount = 1;
-
   const { data: profileImage } = useGetUserProfileImageQuery(
     { userId: userInformation?.id || '' },
     { skip: !isLoggedIn },
   );
 
-  const [showScrollSearch, setShowScrollSearch] = useState(false);
+  const [scrolled, setScrolled] = useState<boolean>(false);
+  const [showScrollSearch, setShowScrollSearch] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 80);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,10 +40,7 @@ export default function TopBar() {
       if (searchBar && topBar) {
         const searchBarRect = searchBar.getBoundingClientRect();
         const topBarHeight = topBar.getBoundingClientRect().height;
-
-        // Adjust the threshold to be slightly before the search bar touches the nav
         if (searchBarRect.top <= topBarHeight + 20) {
-          // Added small offset
           setShowScrollSearch(true);
         } else {
           setShowScrollSearch(false);
@@ -47,19 +51,19 @@ export default function TopBar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
+  console.log(scrolled);
   return (
     <div
       id="top-nav-bar"
-      className="hidden md:flex items-center justify-between bg-white h-20 px-6 w-full z-50 fixed top-0 shadow-sm"
+      className={`flex items-center justify-between lg:bg-white h-20 px-4 w-full z-50 fixed top-0 lg:shadow-sm transition-all duration-300 ${
+        scrolled ? 'bg-white shadow-md' : 'bg-transparent'
+      }`}
     >
-      {/* Left Section */}
-      <div className="text-xl font-bold">
-        <img src={logo} alt="KirjaSwappi Logo" className="h-8" />
-      </div>
+      <Link to={'/'}>
+        <Image src={logo} alt="KirjaSwappi Logo" className="h-6 lg:h-8 cursor-pointer" />
+      </Link>
 
-      {/* Center Section with transition */}
-      <div className="transition-all duration-300 ease-in-out">
+      <div className="hidden lg:block transition-all duration-300 ease-in-out">
         {showScrollSearch ? (
           <div className="animate-fadeIn">
             <ScrollSearch />
@@ -71,9 +75,7 @@ export default function TopBar() {
         )}
       </div>
 
-      {/* Right Section */}
-      <div className="flex items-center gap-4">
-        {/* Swedish Flag */}
+      <div className="hidden lg:flex items-center gap-4">
         <button className="flex items-center justify-center w-8 h-8 rounded-full overflow-hidden">
           <img src={country} alt="Swedish Flag" className="w-full h-full object-cover" />
         </button>
@@ -90,7 +92,6 @@ export default function TopBar() {
             )}
           </div>
         )}
-
         {isLoggedIn ? (
           <div
             role="button"
@@ -109,7 +110,7 @@ export default function TopBar() {
               className="w-8 h-8 rounded-full object-cover"
             />
             <span className="text-sm font-light font-poppins text-[#808080]">
-              {userInformation?.firstName || userInformation?.email?.split('@')[0] || 'User'}
+              {userInformation?.firstName}
             </span>
             {/* Dropdown arrow */}
             <Image src={dropdownarrow} alt="dropdown" className="w-[12px] h-[6px] top-[9px]" />
