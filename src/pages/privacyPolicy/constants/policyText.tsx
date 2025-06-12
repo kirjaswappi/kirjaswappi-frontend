@@ -21,4 +21,4 @@ export const BoldText: React.FC<{ title: string; children: React.ReactNode }> = 
   <p className={commonTextStyles}>
     <b>{title}:</b> {children}
   </p>
-); 
+);
