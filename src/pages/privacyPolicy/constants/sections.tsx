@@ -1,6 +1,39 @@
 import { PrivacyPolicySection } from '../interface/types';
+import { Paragraph, List, BoldText } from './policyText';
 
 export const PRIVACY_POLICY_INTRODUCTION = `We are committed to protecting your privacy and ensuring that your personal information is handled in a safe and responsible manner. This Privacy Policy outlines how we collect, use, store, and protect your information when you use our Website. By using KirjaSwappi, you agree to the terms of this Privacy Policy. If you do not agree with any part of this policy, please do not use our Website.`;
+
+const personalInfoItems = [
+  { item: 'Name', collected: true },
+  { item: 'Email', collected: false },
+  { item: 'Mailing Address', collected: true },
+  { item: 'Phone Number', collected: true },
+];
+
+const nonPersonalInfoItems = [
+  'IP address',
+  'Browser type and version',
+  'Operating system',
+  'Pages visited on the Website',
+  'Time and date of visits',
+  'Referring website (if applicable),',
+];
+
+const userContentItems = [
+  'Book listings (title, author, condition, etc.)',
+  'Reviews and ratings',
+  'Messages exchanged with other users',
+];
+
+const usesOfInfoItems = [
+  'To facilitate book swaps between users.',
+  'To create and manage your account.',
+  'To communicate with you about your account, transactions, and updates to our services.',
+  'To improve the functionality and user experience of the Website.',
+  'To process payments (if applicable).',
+  'To send promotional emails or newsletters (only with your consent).',
+  'To comply with legal obligations and resolve disputes.',
+];
 
 export const PRIVACY_POLICY_SECTIONS: PrivacyPolicySection[] = [
   {
@@ -10,52 +43,29 @@ export const PRIVACY_POLICY_SECTIONS: PrivacyPolicySection[] = [
         key: 'personal',
         title: 'Personal Information',
         content: (
-          <ul className="text-[15px] text-gray-700 space-y-2">
-            {[
-              'Name',
-              'Email address',
-              'Mailing address (for book swaps)',
-              'Phone number (optional)',
-              'Username and password (for account creation)',
-              'Payment information (if applicable, for premium services)',
-            ].map((item, i) => (
-              <li key={i}>{item}</li>
+          <div className="sm:space-y-4 lg:space-y-2">
+            {personalInfoItems.map(({ item, collected }, i) => (
+              <div key={i}>
+                <div className="lg:text-black text-[#808080] lg:text-[15px] text-[14px] font-normal">
+                  {item}
+                </div>
+                <div className="lg:hidden text-gray-700 text-[15px]">
+                  {collected ? 'We collect from site' : "We don't collect from site"}
+                </div>
+              </div>
             ))}
-          </ul>
+          </div>
         ),
       },
       {
         key: 'nonPersonal',
         title: 'Non-Personal Information',
-        content: (
-          <ul className="text-[15px] text-gray-700 space-y-2">
-            {[
-              'IP address',
-              'Browser type and version',
-              'Operating system',
-              'Pages visited on the Website',
-              'Time and date of visits',
-              'Referring website (if applicable)',
-            ].map((item, i) => (
-              <li key={i}>{item}</li>
-            ))}
-          </ul>
-        ),
+        content: <List items={nonPersonalInfoItems} />,
       },
       {
         key: 'userContent',
         title: 'User Generated Content',
-        content: (
-          <ul className="text-[15px] text-gray-700 space-y-2">
-            {[
-              'Book listings (title, author, condition, etc.)',
-              'Reviews and ratings',
-              'Messages exchanged with other users',
-            ].map((item, i) => (
-              <li key={i}>{item}</li>
-            ))}
-          </ul>
-        ),
+        content: <List items={userContentItems} />,
       },
     ],
   },
@@ -65,78 +75,70 @@ export const PRIVACY_POLICY_SECTIONS: PrivacyPolicySection[] = [
       {
         key: 'uses',
         title: 'Uses of information',
-        content: (
-          <ul className="text-[15px] text-gray-700 space-y-2">
-            {[
-              'To facilitate book swaps between users.',
-              'To create and manage your account.',
-              'To communicate with you about your account, transactions, and updates to our services.',
-              'To improve the functionality and user experience of the Website.',
-              'To process payments (if applicable).',
-              'To send promotional emails or newsletters (only with your consent).',
-              'To comply with legal obligations and resolve disputes.',
-            ].map((item, i) => (
-              <li key={i}>{item}</li>
-            ))}
-          </ul>
-        ),
+        content: <List items={usesOfInfoItems} />,
       },
       {
         key: 'sharing',
         title: 'Sharing Information',
         content: (
-          <ul className="text-[15px] text-gray-700 space-y-2">
-            <li>
-              <b>With Other Users:</b> Your name, mailing address, and contact information may be
-              shared with other users to facilitate book swaps.
-            </li>
-            <li>
-              <b>With Service Providers:</b> We may share information with third-party service
-              providers who assist us in operating the Website (e.g., payment processors, hosting
-              providers).
-            </li>
-            <li>
-              <b>For Legal Reasons:</b> We may disclose your information if required by law or to
-              protect our rights, property, or safety.
-            </li>
-            <li>
-              <b>With Your Consent:</b> We may share your information with third parties if you give
-              us explicit permission to do so.
-            </li>
-          </ul>
+          <div className="space-y-4">
+            <BoldText title="With Other Users">
+              Your name, mailing address, and contact information may be shared with other users to
+              facilitate book swaps.
+            </BoldText>
+            <BoldText title="With Service Providers">
+              We may share information with third-party service providers who assist us in operating
+              the Website (e.g., payment processors, hosting providers).
+            </BoldText>
+            <BoldText title="For Legal Reasons">
+              We may disclose your information if required by law or to protect our rights,
+              property, or safety.
+            </BoldText>
+            <BoldText title="With Your Consent">
+              We may share your information with third parties if you give us explicit permission to
+              do so.
+            </BoldText>
+          </div>
         ),
       },
       {
         key: 'security',
         title: 'Data Security',
         content: (
-          <ul className="text-[15px] text-gray-700 space-y-2">
-            {[
-              'Using encryption for sensitive data (e.g., payment information).',
-              'Regularly updating our security practices.',
-              'Limiting access to personal information to authorized personnel only.',
-              'However, no method of transmission over the internet or electronic storage is 100% secure. While we strive to protect your information, we cannot guarantee absolute security.',
-            ].map((item, i) => (
-              <li key={i}>{item}</li>
-            ))}
-          </ul>
+          <div className="space-y-4">
+            <Paragraph>
+              We implement various security measures to protect your personal information:
+            </Paragraph>
+            <List
+              items={[
+                'Using encryption for sensitive data (e.g., payment information).',
+                'Regularly updating our security practices.',
+                'Limiting access to personal information to authorized personnel only.',
+              ]}
+            />
+            <Paragraph>
+              However, no method of transmission over the internet or electronic storage is 100%
+              secure. While we strive to protect your information, we cannot guarantee absolute
+              security.
+            </Paragraph>
+          </div>
         ),
       },
       {
         key: 'cookies',
         title: 'Cookies and Tracking Technologies',
         content: (
-          <ul className="text-[15px] text-gray-700 space-y-2">
-            <li>
+          <div className="space-y-4">
+            <Paragraph>
               We use cookies and similar tracking technologies to enhance your experience on our
               Website. Cookies are small files stored on your device that help us remember your
               preferences and track usage patterns.
-            </li>
-            <li>
+            </Paragraph>
+            <Paragraph>
               You can disable cookies through your browser settings, but this may affect the
               functionality of the Website.
-            </li>
-          </ul>
+            </Paragraph>
+          </div>
         ),
       },
     ],
@@ -148,83 +150,74 @@ export const PRIVACY_POLICY_SECTIONS: PrivacyPolicySection[] = [
         key: 'thirdParty',
         title: 'Third-Party Links',
         content: (
-          <ul className="text-[15px] text-gray-700 space-y-2">
-            <li>
-              Our Website may contain links to third-party websites. We are not responsible for the
-              privacy practices or content of these websites. We encourage you to review the privacy
-              policies of any third-party sites you visit.
-            </li>
-          </ul>
+          <Paragraph>
+            Our Website may contain links to third-party websites. We are not responsible for the
+            privacy practices or content of these websites. We encourage you to review the privacy
+            policies of any third-party sites you visit.
+          </Paragraph>
         ),
       },
       {
         key: 'children',
         title: "Children's Privacy",
         content: (
-          <ul className="text-[15px] text-gray-700 space-y-2">
-            <li>
-              Our Website is not intended for use by individuals under the age of 7. We do not
-              knowingly collect personal information from children under 7. If we become aware that
-              we have collected such information, we will take steps to delete it.
-            </li>
-          </ul>
+          <Paragraph>
+            Our Website is not intended for use by individuals under the age of 7. We do not
+            knowingly collect personal information from children under 7. If we become aware that we
+            have collected such information, we will take steps to delete it.
+          </Paragraph>
         ),
       },
       {
         key: 'rights',
         title: 'Your Rights and Choices',
         content: (
-          <ul className="text-[15px] text-gray-700 space-y-2">
-            <li>
-              <b>Access:</b> You can request a copy of the personal information we hold about you.
-            </li>
-            <li>
-              <b>Correction:</b> You can update or correct your personal information through your
-              account settings or by contacting us.
-            </li>
-            <li>
-              <b>Deletion:</b> You can request that we delete your personal information, subject to
-              certain legal obligations.
-            </li>
-            <li>
-              <b>Opt-Out:</b> You can opt out of receiving promotional emails by following the
-              unsubscribe link in the email.
-            </li>
-            <li>
+          <div className="space-y-4">
+            <BoldText title="Access">
+              You can request a copy of the personal information we hold about you.
+            </BoldText>
+            <BoldText title="Correction">
+              You can update or correct your personal information through your account settings or
+              by contacting us.
+            </BoldText>
+            <BoldText title="Deletion">
+              You can request that we delete your personal information, subject to certain legal
+              obligations.
+            </BoldText>
+            <BoldText title="Opt-Out">
+              You can opt out of receiving promotional emails by following the unsubscribe link in
+              the email.
+            </BoldText>
+            <Paragraph>
               To exercise these rights, please contact us at{' '}
               <a href="mailto:info@kirjaswappi.fi" className="underline">
                 info@kirjaswappi.fi
               </a>
               .
-            </li>
-          </ul>
+            </Paragraph>
+          </div>
         ),
       },
       {
         key: 'international',
         title: 'International Users',
         content: (
-          <ul className="text-[15px] text-gray-700 space-y-2">
-            <li>
-              If you are accessing the Website from outside Finland, please note that your
-              information may be transferred to, stored, and processed in Finland, where our servers
-              are located. By using the Website, you consent to this transfer and processing.
-            </li>
-          </ul>
+          <Paragraph>
+            If you are accessing the Website from outside Finland, please note that your information
+            may be transferred to, stored, and processed in Finland, where our servers are located.
+            By using the Website, you consent to this transfer and processing.
+          </Paragraph>
         ),
       },
       {
         key: 'changes',
         title: 'Changes to This Privacy Policy',
         content: (
-          <ul className="text-[15px] text-gray-700 space-y-2">
-            <li>
-              We may update this Privacy Policy from time to time. Any changes will be posted on
-              this page with an updated &quot;Last Updated&quot; date. We encourage you to review
-              this policy periodically to stay informed about how we are protecting your
-              information.
-            </li>
-          </ul>
+          <Paragraph>
+            We may update this Privacy Policy from time to time. Any changes will be posted on this
+            page with an updated &apos;Last Updated&apos; date. We encourage you to review this
+            policy periodically to stay informed about how we are protecting your information.
+          </Paragraph>
         ),
       },
     ],
