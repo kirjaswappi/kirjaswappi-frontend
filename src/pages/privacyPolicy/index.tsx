@@ -7,12 +7,6 @@ import { PRIVACY_POLICY_SECTIONS, PRIVACY_POLICY_INTRODUCTION } from './constant
 const PrivacyPolicy = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  // const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
-
-  // const toggleSection = (key: string) => {
-  //   setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
-  // };
-
   const sequentialNumbers = useMemo(() => {
     const numbers: Record<string, number> = {};
     let currentNumber = 1;
@@ -46,7 +40,7 @@ const PrivacyPolicy = () => {
           {PRIVACY_POLICY_INTRODUCTION}
         </p>
 
-        {/* Mobile view */}
+        {/* Information we collect */}
         <div className="lg:hidden">
           {PRIVACY_POLICY_SECTIONS.map((section, index) => (
             <PrivacyPolicySection key={index} category={section.category} items={section.items} />

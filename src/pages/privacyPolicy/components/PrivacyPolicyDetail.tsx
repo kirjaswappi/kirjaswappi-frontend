@@ -42,8 +42,10 @@ const PrivacyPolicyDetail: React.FC = () => {
     <div className="font-poppins  min-h-screen">
       <div className="pt-[56px] lg:max-w-3xl lg:mx-auto lg:px-12">
         <PrivacyPolicyHeader onBack={() => navigate('/profile/privacy')} />
-        <div className="p-4">
-          <h2 className="text-2xl font-semibold mb-6">{section.title}</h2>
+        <div className="px-4 sm:px-6">
+          <h2 className="text-[16px] sm:pl-4 sm:mt-4 sm:mb-3 font-semibold mb-6 leading-7 tracking-normal">
+            {section.title}
+          </h2>
           <div className="text-[15px] text-gray-700">{section.content}</div>
         </div>
       </div>

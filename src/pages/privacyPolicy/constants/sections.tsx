@@ -43,13 +43,13 @@ export const PRIVACY_POLICY_SECTIONS: PrivacyPolicySection[] = [
         key: 'personal',
         title: 'Personal Information',
         content: (
-          <div className="space-y-4">
+          <div className="space-y-4 lg:space-y-2">
             {personalInfoItems.map(({ item, collected }, i) => (
               <div key={i}>
-                <div className="lg:text-black pb--5 text-[#808080] lg:text-[15px] text-[14px] font-normal">
+                <div className="lg:text-black text-[#808080] sm:pl-4 lg:pl-0 lg:text-[15px] text-[14px] font-normal">
                   {item}
                 </div>
-                <div className="lg:hidden text-gray-700 text-[15px]">
+                <div className="lg:hidden sm:pl-4 text-gray-700 text-[15px]">
                   {collected ? 'We collect from site' : "We don't collect from site"}
                 </div>
               </div>
