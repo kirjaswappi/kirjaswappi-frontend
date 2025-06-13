@@ -1,4 +1,5 @@
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import Language from '../../../assets/language.png';
 import logoutIcon from '../../../assets/logout.png';
 import privacy from '../../../assets/privacy.png';
@@ -38,6 +39,7 @@ const profileSetting = [
 ];
 export default function MoreOptions() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   return (
     <SideDrawer>
       <div className="mt-4 flex flex-col gap-2">
@@ -48,7 +50,7 @@ export default function MoreOptions() {
             onClick={() => {
               if (item.name.toLocaleLowerCase() === 'logout') dispatch(logout());
               else if (item.location) {
-                window.location.href = item.location;
+                navigate(item.location);
               }
               dispatch(setOpen(false));
             }}
