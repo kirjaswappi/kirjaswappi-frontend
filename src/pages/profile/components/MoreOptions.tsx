@@ -3,6 +3,7 @@ import Language from '../../../assets/language.png';
 import logoutIcon from '../../../assets/logout.png';
 import privacy from '../../../assets/privacy.png';
 import setting from '../../../assets/settings.png';
+import contact from '../../../assets/contact.png';
 import Image from '../../../components/shared/Image';
 import { logout } from '../../../redux/feature/auth/authSlice';
 import { setOpen } from '../../../redux/feature/open/openSlice';
@@ -22,7 +23,12 @@ const profileSetting = [
   {
     name: 'privacy',
     icon: privacy,
-    location: '',
+    location: '/profile/privacy',
+  },
+  {
+    name: 'Contact Us',
+    icon: contact,
+    location: '/profile/contact',
   },
   {
     name: 'logout',
@@ -41,8 +47,9 @@ export default function MoreOptions() {
             className="flex items-center px-4 py-4 bg-white border border-[#E6E6E6] rounded-2xl gap-2"
             onClick={() => {
               if (item.name.toLocaleLowerCase() === 'logout') dispatch(logout());
-              else if (item.name.toLocaleLowerCase() === 'privacy')
-                window.location.href = '/profile/privacy';
+              else if (item.location) {
+                window.location.href = item.location;
+              }
               dispatch(setOpen(false));
             }}
             type="button"
