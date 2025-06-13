@@ -36,7 +36,7 @@ export default function ContactUs() {
             Contact Us
           </h2>
           <p className="w-full block font-normal text-[10px] lg:text-[14px] leading-5 lg:leading-6 tracking-[0px] text-[#808080] mb-8 whitespace-normal">
-            Were here to help and answer any question you might have. We look forward to hearing
+            We are here to help and answer any question you might have. We look forward to hearing
             from you.
           </p>
           <div className="w-full lg:max-w-lg">
