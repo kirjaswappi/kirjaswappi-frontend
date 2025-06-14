@@ -16,18 +16,16 @@ import AddUpdateBook from '../pages/addUpdateBook';
 import Inbox from '../pages/user/inbox/Inbox';
 import { Navigate } from 'react-router-dom';
 import { Index } from '../pages/user/inboxChat';
+import NoInternetConnection from '../components/NoInternetConnection';
 
 const routes = createBrowserRouter([
   {
     path: '/',
     element: (
-      // <NoInternetConnection>
-      // <ErrorBoundary FallbackComponent={ErrorReturn} onReset={() => (location.href = "/")}>
-      <App />
-      // </ErrorBoundary>
-      // </NoInternetConnection>
+      <NoInternetConnection>
+        <App />
+      </NoInternetConnection>
     ),
-    // errorElement: <ErrorBoundary />,
     children: [
       {
         index: true,
