@@ -73,9 +73,9 @@ export default function ContactUs() {
                   <InputLabel label="Message" />
                   <ControlledInputField
                     type="textarea"
-                    name="message"
+                    name="description"
                     placeholder="Enter your message"
-                    className="rounded-md h-[122px] !bg-[#F2F2F2] border-[#CCCCCC] hover:border-blue-500 focus:border-blue-500 focus:outline-none"
+                    className="rounded-md min-h-[122px] !bg-[#F2F2F2] border-[#CCCCCC] hover:border-blue-500 focus:border-blue-500 focus:outline-none"
                     showErrorMessage
                   />
                 </div>
