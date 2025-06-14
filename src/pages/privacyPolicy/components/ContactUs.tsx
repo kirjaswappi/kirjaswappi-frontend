@@ -90,7 +90,7 @@ export default function ContactUs() {
           </div>
           <div className="hidden lg:block mt-16 mb-8">
             <div className="w-full max-w-2xl bg-white mb-8">
-              <h3 className="font-semibold text-[22px] text-base mb-2 mb-5">Contact Information</h3>
+              <h3 className="font-semibold text-[22px] text-base mb-5">Contact Information</h3>
               <p className="font-normal text-[16px] leading-[24px] mb-2 tracking-[0px] font-[Poppins] mr-2">
                 Website:{' '}
                 <a href="https://www.kirjaswappi.fi" target="_blank" rel="noopener noreferrer">

@@ -51,7 +51,7 @@ const PrivacyPolicy = () => {
         <div className="hidden lg:block">
           {PRIVACY_POLICY_SECTIONS.map((section, sectionIndex) => (
             <div key={sectionIndex} className="pt-2">
-              <h2 className="pl-3 lg:hidden font-poppins font-semibold text-[20px] leading-[28px] tracking-[0px]">
+              <h2 className="pl-3 font-poppins font-semibold text-[20px] leading-[28px] tracking-[0px]">
                 {sectionIndex + 1}. {section.category}
               </h2>
 
