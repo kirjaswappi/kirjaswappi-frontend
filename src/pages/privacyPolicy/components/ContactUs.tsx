@@ -47,7 +47,7 @@ export default function ContactUs() {
                   <ControlledInputField
                     name="name"
                     placeholder="Enter your name"
-                    className="rounded-md border-[#CCCCCC] text-[14px] leading-[20px] !bg-[#F2F2F2] hover:border-blue-500 focus:border-blue-500 focus:outline-none"
+                    className="rounded-md border-[#CCCCCC] text-[14px] leading-[20px]  hover:border-blue-500 focus:border-blue-500 focus:outline-none"
                     showErrorMessage
                   />
                 </div>
@@ -56,7 +56,7 @@ export default function ContactUs() {
                   <ControlledInputField
                     name="email"
                     placeholder="Enter your email"
-                    className="rounded-md border-[#CCCCCC] text-[14px] leading-[20px] !bg-[#F2F2F2] hover:border-blue-500 focus:border-blue-500 focus:outline-none"
+                    className="rounded-md border-[#CCCCCC] text-[14px] leading-[20px] hover:border-blue-500 focus:border-blue-500 focus:outline-none"
                     showErrorMessage
                   />
                 </div>
@@ -65,7 +65,7 @@ export default function ContactUs() {
                   <ControlledInputField
                     name="subject"
                     placeholder="Enter your subject"
-                    className="rounded-md border-[#CCCCCC] text-[14px] leading-[20px] !bg-[#F2F2F2] hover:border-blue-500 focus:border-blue-500 focus:outline-none"
+                    className="rounded-md border-[#CCCCCC] text-[14px] leading-[20px] hover:border-blue-500 focus:border-blue-500 focus:outline-none"
                     showErrorMessage
                   />
                 </div>
@@ -75,7 +75,7 @@ export default function ContactUs() {
                     type="textarea"
                     name="description"
                     placeholder="Enter your message"
-                    className="rounded-md min-h-[122px] !bg-[#F2F2F2] border-[#CCCCCC] hover:border-blue-500 focus:border-blue-500 focus:outline-none"
+                    className="rounded-md min-h-[122px]  border-[#CCCCCC] hover:border-blue-500 focus:border-blue-500 focus:outline-none"
                     showErrorMessage
                   />
                 </div>
