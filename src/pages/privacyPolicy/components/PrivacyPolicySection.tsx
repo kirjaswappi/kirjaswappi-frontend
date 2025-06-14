@@ -20,11 +20,7 @@ const PrivacyPolicySection: React.FC<PrivacyPolicySectionProps> = ({ category, i
       </p>
       <div className="block lg:hidden bg-white">
         {items.map((item) => (
-          <Link
-            key={item.key}
-            to={`/profile/privacy/${item.key}`}
-            className="block px-4 py-3 text-[15px] text-gray-700"
-          >
+          <Link key={item.key} to={item.key} className="block px-4 py-3 text-[15px] text-gray-700">
             {item.title}
           </Link>
         ))}

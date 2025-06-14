@@ -116,7 +116,7 @@ export default function ContactUs() {
             <img
               src={contactFrame}
               alt="Contact Map"
-              className="w-full max-w-2xl rounded-xl object-cover"
+              className="w-full max-w-2xl rounded-lg object-cover"
             />
           </div>
         </div>

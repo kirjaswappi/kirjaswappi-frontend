@@ -16,7 +16,7 @@ const nonPersonalInfoItems = [
   'Operating system',
   'Pages visited on the Website',
   'Time and date of visits',
-  'Referring website (if applicable),',
+  'Referring website (if applicable)',
 ];
 
 const userContentItems = [
@@ -44,8 +44,8 @@ export const PRIVACY_POLICY_SECTIONS: PrivacyPolicySection[] = [
         title: 'Personal Information',
         content: (
           <div className="space-y-4 lg:space-y-2">
-            {personalInfoItems.map(({ item, collected }, i) => (
-              <div key={i}>
+            {personalInfoItems.map(({ item, collected }) => (
+              <div key={item}>
                 <div className="lg:text-black text-[#808080] sm:pl-4 lg:pl-0 lg:text-[15px] text-[14px] font-normal">
                   {item}
                 </div>
