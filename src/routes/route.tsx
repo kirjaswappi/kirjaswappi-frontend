@@ -16,16 +16,18 @@ import AddUpdateBook from '../pages/addUpdateBook';
 import Inbox from '../pages/user/inbox/Inbox';
 import { Navigate } from 'react-router-dom';
 import { Index } from '../pages/user/inboxChat';
-import NoInternetConnection from '../components/NoInternetConnection';
+import GlobalError from '../components/error/GlobalError';
+import AppErrorBoundary from '../components/error/AppErrorBoundary';
 
 const routes = createBrowserRouter([
   {
     path: '/',
     element: (
-      <NoInternetConnection>
+      <AppErrorBoundary>
         <App />
-      </NoInternetConnection>
+      </AppErrorBoundary>
     ),
+    errorElement: <GlobalError />,
     children: [
       {
         index: true,
