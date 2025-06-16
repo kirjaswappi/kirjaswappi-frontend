@@ -1,31 +1,33 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import country from '../../../assets/country.png';
-import dropdownarrow from '../../../assets/dropdownarrow.png';
+import { Link, useLocation } from 'react-router-dom';
+import blankProfileIcon from '../../../assets/blankProfileIcon.png';
+import country from '../../../assets/flag.png';
 import logo from '../../../assets/logo.png';
-import notification_gray from '../../../assets/notification_gray.png';
-import profileIcon from '../../../assets/profileIcon.png';
 import { useGetUserProfileImageQuery } from '../../../redux/feature/auth/authApi';
 import { useAppSelector } from '../../../redux/hooks';
+import Button from '../../shared/Button';
 import Image from '../../shared/Image';
 import ScrollSearch from '../../shared/ScrollSearch';
+import SearchBar from '../../shared/SearchBar';
 
 export default function TopBar() {
-  const navigate = useNavigate();
+  const location = useLocation();
   const { userInformation } = useAppSelector((state) => state.auth);
-  const isLoggedIn = !!userInformation?.id;
-  const notificationCount = 1;
-  const { data: profileImage } = useGetUserProfileImageQuery(
-    { userId: userInformation?.id || '' },
-    { skip: !isLoggedIn },
+  const { data: profilePicture, isLoading } = useGetUserProfileImageQuery(
+    { userId: userInformation.id },
+    {
+      skip: !userInformation.id,
+    },
   );
+  console.log(profilePicture, isLoading);
 
+  const pathname = location.pathname;
   const [scrolled, setScrolled] = useState<boolean>(false);
   const [showScrollSearch, setShowScrollSearch] = useState<boolean>(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 80);
+      setScrolled(window.scrollY > 70);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -51,79 +53,55 @@ export default function TopBar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  console.log(scrolled);
+
   return (
     <div
-      id="top-nav-bar"
-      className={`flex items-center justify-between lg:bg-white h-20 px-4 w-full z-50 fixed top-0 lg:shadow-sm transition-all duration-300 ${
+      className={`lg:bg-white h-28 lg:h-20 px-4 py-2  w-full z-50 fixed top-0 lg:shadow-sm transition-all duration-300 flex items-center justify-center flex-col gap-4 ${
         scrolled ? 'bg-white shadow-md' : 'bg-transparent'
       }`}
     >
-      <Link to={'/'}>
-        <Image src={logo} alt="KirjaSwappi Logo" className="h-6 lg:h-8 cursor-pointer" />
-      </Link>
+      <div id="top-nav-bar" className={`w-full flex items-center justify-between `}>
+        <Link to={'/'}>
+          <Image src={logo} alt="KirjaSwappi Logo" className="h-7 cursor-pointer" />
+        </Link>
 
-      <div className="hidden lg:block transition-all duration-300 ease-in-out">
-        {showScrollSearch ? (
-          <div className="animate-fadeIn">
-            <ScrollSearch />
-          </div>
-        ) : (
-          <div className="animate-fadeIn">
-            <ScrollSearch />
-          </div>
-        )}
+        <div className="hidden lg:block transition-all duration-300 ease-in-out">
+          {showScrollSearch ? (
+            <div className="animate-fadeIn">
+              <ScrollSearch />
+            </div>
+          ) : (
+            <div className="animate-fadeIn">
+              <ScrollSearch />
+            </div>
+          )}
+        </div>
+
+        <div className="flex items-center gap-4">
+          <Button className="flex items-center justify-center w-10 h-10 border border-primary rounded-full overflow-hidden">
+            <Image src={country} alt="Swedish Flag" className="w-10 h-10 object-cover " />
+          </Button>
+          {isLoading ? (
+            <div className="w-10 h-10 rounded-full bg-platinum animate-pulse"></div>
+          ) : (
+            <Link
+              to={'/profile/user-profile'}
+              className="w-10 h-10 flex items-center justify-center"
+            >
+              <Image
+                src={profilePicture?.imageUrl ?? blankProfileIcon}
+                alt="profile"
+                className="w-10 h-10 object-cover rounded-full border border-primary"
+              />
+            </Link>
+          )}
+        </div>
       </div>
-
-      <div className="hidden lg:flex items-center gap-4">
-        <button className="flex items-center justify-center w-8 h-8 rounded-full overflow-hidden">
-          <img src={country} alt="Swedish Flag" className="w-full h-full object-cover" />
-        </button>
-
-        {isLoggedIn && (
-          <div className="relative">
-            <button className="flex items-center justify-center w-10 h-10 bg-[#E8EEF5] rounded-full">
-              <img src={notification_gray} alt="Notification" className="w-5 h-5" />
-            </button>
-            {notificationCount > 0 && (
-              <span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-[#EF2C4D] text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold">
-                {notificationCount}
-              </span>
-            )}
-          </div>
-        )}
-        {isLoggedIn ? (
-          <div
-            role="button"
-            tabIndex={0}
-            className="flex items-center gap-2 cursor-pointer"
-            onClick={() => navigate('/profile/user-profile')}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                navigate('/profile/user-profile');
-              }
-            }}
-          >
-            <img
-              src={profileImage?.url || profileIcon}
-              alt={`${userInformation?.firstName || 'User'} Profile`}
-              className="w-8 h-8 rounded-full object-cover"
-            />
-            <span className="text-sm font-light font-poppins text-[#808080]">
-              {userInformation?.firstName}
-            </span>
-            {/* Dropdown arrow */}
-            <Image src={dropdownarrow} alt="dropdown" className="w-[12px] h-[6px] top-[9px]" />
-          </div>
-        ) : (
-          <button
-            onClick={() => navigate('/auth/login')}
-            className="bg-primary text-white py-2 px-4 rounded-md text-sm font-medium"
-          >
-            Login
-          </button>
-        )}
-      </div>
+      {pathname === '/' && (
+        <div className="lg:hidden w-full">
+          <SearchBar />
+        </div>
+      )}
     </div>
   );
 }

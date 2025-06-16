@@ -15,9 +15,10 @@ export default function Header() {
   const location = useLocation();
   const dispatch = useAppDispatch();
   const { clicked, reference } = useMouseClick<HTMLFormElement>();
-
-  const showTopHeaderPath = ['/', `/book-details/${location?.pathname?.split('/').reverse()[0]}`];
-  const isHeaderShow = showTopHeaderPath.find((path) => path === location.pathname);
+  console.log(location);
+  const pathname = location.pathname;
+  const showTopHeaderPath = ['/', `/book-details/${pathname?.split('/').reverse()[0]}`];
+  const isHeaderShow = showTopHeaderPath.find((path) => path === pathname);
   const methods = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -33,7 +34,7 @@ export default function Header() {
     dispatch(setLanguageFilter(data.language));
   };
   return (
-    <header className={`${isHeaderShow ? 'pb-24 lg:pb-28' : 'pb-0'}`}>
+    <header className={`${isHeaderShow ? 'pb-28' : 'pb-0'}`}>
       <FormProvider {...methods}>
         <SideLeftDrawer open={clicked}>
           <form ref={reference} onSubmit={handleSubmit((data) => handleSubmitFn(data))}>
