@@ -39,7 +39,7 @@
     "react-otp-input": "^3.1.1",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.6.2",
-    "tailwind-merge": "^3.0.2",
+    "tailwind-merge": "^3.3.1",
     "yup": "^1.6.1"
   },
   "devDependencies": {
