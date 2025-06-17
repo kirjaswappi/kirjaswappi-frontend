@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import blankProfileIcon from '../../../assets/blankProfileIcon.png';
 import country from '../../../assets/flag.png';
+import leftArrowGray from '../../../assets/leftArrowGray.png';
 import logo from '../../../assets/logo.png';
+import logoIcon from '../../../assets/logoIcon.png';
 import { useGetUserProfileImageQuery } from '../../../redux/feature/auth/authApi';
 import { useAppSelector } from '../../../redux/hooks';
 import Button from '../../shared/Button';
@@ -12,6 +14,10 @@ import SearchBar from '../../shared/SearchBar';
 
 export default function TopBar() {
   const location = useLocation();
+  const [scrolled, setScrolled] = useState<boolean>(false);
+  const [searchToggle, setSearchToggle] = useState<boolean>(false);
+  const [showScrollSearch, setShowScrollSearch] = useState<boolean>(false);
+  const pathname = location.pathname;
   const { userInformation } = useAppSelector((state) => state.auth);
   const { data: profilePicture, isLoading } = useGetUserProfileImageQuery(
     { userId: userInformation.id },
@@ -19,11 +25,6 @@ export default function TopBar() {
       skip: !userInformation.id,
     },
   );
-  console.log(profilePicture, isLoading);
-
-  const pathname = location.pathname;
-  const [scrolled, setScrolled] = useState<boolean>(false);
-  const [showScrollSearch, setShowScrollSearch] = useState<boolean>(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,15 +57,52 @@ export default function TopBar() {
 
   return (
     <div
-      className={`lg:bg-white h-28 lg:h-20 px-4 py-2  w-full z-50 fixed top-0 lg:shadow-sm transition-all duration-300 flex items-center justify-center flex-col gap-4 ${
+      className={`lg:bg-white ${scrolled ? 'h-[65px]' : 'h-28'} lg:h-20 px-4 py-2  w-full z-50 fixed top-0 lg:shadow-sm transition-all duration-300 flex items-center justify-center flex-col gap-4 ${
         scrolled ? 'bg-white shadow-md' : 'bg-transparent'
       }`}
     >
       <div id="top-nav-bar" className={`w-full flex items-center justify-between `}>
-        <Link to={'/'}>
-          <Image src={logo} alt="KirjaSwappi Logo" className="h-7 cursor-pointer" />
-        </Link>
-
+        <div className="flex flex-row gap-2">
+          <Link
+            to="/"
+            aria-label="Go to homepage"
+            className={`${searchToggle ? 'hidden' : 'block'}`}
+          >
+            <Image
+              src={logo}
+              alt="KirjaSwappi Logo"
+              className="h-7 cursor-pointer hidden lg:block"
+            />
+            <Image
+              src={!scrolled ? logo : logoIcon}
+              alt="KirjaSwappi Logo"
+              className={`cursor-pointer lg:hidden ${scrolled ? 'w-10 h-10' : 'h-7'}`}
+            />
+          </Link>
+          {searchToggle && (
+            <button
+              onClick={() => setSearchToggle(false)}
+              className="w-12 h-10 border border-gray rounded-full flex items-center justify-center"
+            >
+              <Image src={leftArrowGray} alt="Left Arrow" className="h-4" />
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => setSearchToggle(true)}
+            aria-label="Show search"
+            className="bg-transparent border-none p-0 m-0 focus:outline-none"
+            tabIndex={0}
+          >
+            {scrolled && (
+              <SearchBar
+                isShowFilterIcon={false}
+                isShowSortingIcon={false}
+                className={`h-10 px-0 pl-2 overflow-hidden lg:hidden ${searchToggle ? 'w-full pr-3' : 'w-10'} `}
+              />
+            )}
+          </button>
+        </div>
         <div className="hidden lg:block transition-all duration-300 ease-in-out">
           {showScrollSearch ? (
             <div className="animate-fadeIn">
@@ -77,7 +115,7 @@ export default function TopBar() {
           )}
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className={`${searchToggle ? 'hidden' : 'block'} flex items-center gap-4`}>
           <Button className="flex items-center justify-center w-10 h-10 border border-primary rounded-full overflow-hidden">
             <Image src={country} alt="Swedish Flag" className="w-10 h-10 object-cover " />
           </Button>
@@ -97,7 +135,7 @@ export default function TopBar() {
           )}
         </div>
       </div>
-      {pathname === '/' && (
+      {!scrolled && pathname === '/' && (
         <div className="lg:hidden w-full">
           <SearchBar />
         </div>

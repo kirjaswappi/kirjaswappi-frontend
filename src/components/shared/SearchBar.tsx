@@ -7,9 +7,18 @@ import sortIcon from '../../assets/sorticon.png';
 import useDebounce from '../../hooks/useDebounce';
 import { setSearch } from '../../redux/feature/filter/filterSlice';
 import { useAppDispatch } from '../../redux/hooks';
+import { cn } from '../../utility/cn';
 import Image from './Image';
 import Input from './Input';
-export default function SearchBar() {
+export default function SearchBar({
+  isShowFilterIcon = true,
+  isShowSortingIcon = true,
+  className,
+}: {
+  className?: string;
+  isShowFilterIcon?: boolean;
+  isShowSortingIcon?: boolean;
+}) {
   const [query, setQuery] = useState<string>('');
   const dispatch = useAppDispatch();
   const queryValue = useDebounce(query, 300);
@@ -19,17 +28,24 @@ export default function SearchBar() {
   }, [queryValue]);
   return (
     <div className="flex items-center justify-between gap-2">
-      <div className="w-11 h-10 rounded-2xl flex items-center justify-center bg-primary-light">
-        <Image src={filterIcon} alt="Filter Icon" className="w-6" />
-      </div>
-      <div className="w-[78%] h-[42px] rounded-3xl bg-white border-gray border-[1px] flex items-center px-4">
+      {isShowFilterIcon && (
+        <div className="w-11 h-10 rounded-2xl flex items-center justify-center bg-primary-light">
+          <Image src={filterIcon} alt="Filter Icon" className="w-6" />
+        </div>
+      )}
+      <div
+        className={cn(
+          'w-[78%] h-[42px] rounded-3xl bg-white border-gray border-[1px] flex items-center px-4',
+          className,
+        )}
+      >
         <div className="w-6 h-6 flex items-center justify-center">
           <IoIosSearch size={24} className="text-grayDark" />
         </div>
         <Input
           type="text"
           placeholder="Find Books"
-          className="w-full outline-none border-none px-3 py-1  bg-white h-[38px]"
+          className="w-full outline-none border-none px-3  bg-white h-[40px]"
           onChange={(e) => setQuery(e.target.value)}
         />
         <div className="flex items-center justify-between gap-1 rounded-full bg-primary-light w-[106px] h-[26px] px-2 text-primary py-1">
@@ -39,9 +55,11 @@ export default function SearchBar() {
           <MdKeyboardArrowDown />{' '}
         </div>
       </div>
-      <div className="w-11 h-10 rounded-2xl flex items-center justify-center bg-primary-light">
-        <Image src={sortIcon} alt="Sort Icon" className="w-6" />
-      </div>
+      {isShowSortingIcon && (
+        <div className="w-11 h-10 rounded-2xl flex items-center justify-center bg-primary-light">
+          <Image src={sortIcon} alt="Sort Icon" className="w-6" />
+        </div>
+      )}
     </div>
   );
 }
