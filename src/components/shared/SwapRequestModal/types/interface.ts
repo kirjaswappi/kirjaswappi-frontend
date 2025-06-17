@@ -3,7 +3,7 @@ import { SwapType } from '../../../../../types/enum';
 export interface ISwapBook {
   id?: string;
   author: string;
-  coverPhotoUrl: string;
+  coverPhotoUrl?: string;
   title: string;
 }
 

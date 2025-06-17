@@ -6,6 +6,7 @@ import Button from '../../Button';
 import Image from '../../Image';
 import { ISwapBook } from '../types/interface';
 import SwapBookCarousels from './SwapBookCarousels';
+
 export default function SwapController({
   swapType,
   books,
@@ -19,6 +20,8 @@ export default function SwapController({
 }) {
   const { control, watch } = useFormContext();
   const currentSwapType = watch('swapType');
+  const radioId = `swap-type-radio-${swapType}`;
+
   return (
     <Controller
       name="swapType"
@@ -32,8 +35,9 @@ export default function SwapController({
             className="w-full"
           >
             <label
+              htmlFor={radioId}
+              aria-label={swapTitle}
               className={` ${swapType === SwapType.GIVEAWAY ? 'bg-[#F2F2F2] border-[#E5E5E5]' : 'bg-[#DBEDFF] border-primary'} border  w-full h-[80px] flex items-center rounded-xl px-[18px] gap-2 mb-1`}
-              aria-label="Ask for giveaway"
             >
               <div className="w-2/12">
                 <div
@@ -52,16 +56,20 @@ export default function SwapController({
               </div>
               <div className="w-1/12 flex items-end justify-end">
                 <input
+                  id={radioId}
                   type="radio"
-                  value={currentSwapType}
+                  value={swapType}
                   checked={field.value === swapType}
                   onChange={() => field.onChange(swapType)}
                   className="w-4 h-4"
+                  tabIndex={-1}
                 />
               </div>
             </label>
-            {swapType !== SwapType.GIVEAWAY && currentSwapType === swapType && (
-              <SwapBookCarousels swapBook={books} />
+            {books && swapType !== SwapType.GIVEAWAY && currentSwapType === swapType && (
+              <SwapBookCarousels
+                swapBook={books.map((book) => ({ ...book, id: book.id ? String(book.id) : '' }))}
+              />
             )}
           </Button>
         );
