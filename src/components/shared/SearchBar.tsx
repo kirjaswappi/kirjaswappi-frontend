@@ -6,7 +6,7 @@ import filterIcon from '../../assets/filterBlue.png';
 import sortIcon from '../../assets/sorticon.png';
 import useDebounce from '../../hooks/useDebounce';
 import { setSearch } from '../../redux/feature/filter/filterSlice';
-import { useAppDispatch } from '../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { cn } from '../../utility/cn';
 import Image from './Image';
 import Input from './Input';
@@ -21,11 +21,15 @@ export default function SearchBar({
 }) {
   const [query, setQuery] = useState<string>('');
   const dispatch = useAppDispatch();
+  const {
+    filter: { search },
+  } = useAppSelector((state) => state.filter);
   const queryValue = useDebounce(query, 300);
 
   useEffect(() => {
     dispatch(setSearch(queryValue));
   }, [queryValue]);
+  console.log(search);
   return (
     <div className="flex items-center justify-between gap-2">
       {isShowFilterIcon && (
@@ -45,7 +49,7 @@ export default function SearchBar({
         <Input
           type="text"
           placeholder="Find Books"
-          className="w-full outline-none border-none px-3  bg-white h-[40px]"
+          className="w-full outline-none border-none px-3 bg-white h-[38px]"
           onChange={(e) => setQuery(e.target.value)}
         />
         <div className="flex items-center justify-between gap-1 rounded-full bg-primary-light w-[106px] h-[26px] px-2 text-primary py-1">

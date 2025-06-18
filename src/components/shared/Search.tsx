@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { FaLocationDot } from 'react-icons/fa6';
-import { MdKeyboardArrowDown } from 'react-icons/md';
-import { useMouseClick } from '../../hooks/useMouse';
-import { useAppDispatch } from '../../redux/hooks';
-import { setSearch } from '../../redux/feature/filter/filterSlice';
-import useDebounce from '../../hooks/useDebounce';
 import { IoSearch } from 'react-icons/io5';
+import { MdKeyboardArrowDown } from 'react-icons/md';
+import useDebounce from '../../hooks/useDebounce';
+import { useMouseClick } from '../../hooks/useMouse';
+import { setSearch } from '../../redux/feature/filter/filterSlice';
+import { useAppDispatch } from '../../redux/hooks';
 
 export default function Search({
   query,
@@ -31,7 +31,7 @@ export default function Search({
   }, [debouncedSearch, dispatch]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newQuery = e.target.value || '';
+    const newQuery = e.target.value;
     setQuery(newQuery);
   };
 

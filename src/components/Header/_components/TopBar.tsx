@@ -25,7 +25,7 @@ export default function TopBar() {
       skip: !userInformation.id,
     },
   );
-
+  console.log(pathname);
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 70);
@@ -55,10 +55,16 @@ export default function TopBar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const isScrollOrToggleSearch = () => {
+    if (scrolled) return true;
+    else if (searchToggle) return true;
+    else return false;
+  };
+  const toggle = isScrollOrToggleSearch();
   return (
     <div
-      className={`lg:bg-white ${scrolled ? 'h-[65px]' : 'h-28'} lg:h-20 px-4 py-2  w-full z-50 fixed top-0 lg:shadow-sm transition-all duration-300 flex items-center justify-center flex-col gap-4 ${
-        scrolled ? 'bg-white shadow-md' : 'bg-transparent'
+      className={`lg:bg-white ${toggle ? 'h-[65px]' : 'h-28'} lg:h-20 px-4 py-2  w-full z-50 fixed top-0 lg:shadow-sm transition-all duration-300 flex items-center justify-center flex-col gap-4 ${
+        toggle ? 'bg-white shadow-md' : 'bg-transparent'
       }`}
     >
       <div id="top-nav-bar" className={`w-full flex items-center justify-between `}>
@@ -87,21 +93,23 @@ export default function TopBar() {
               <Image src={leftArrowGray} alt="Left Arrow" className="h-4" />
             </button>
           )}
-          <button
-            type="button"
-            onClick={() => setSearchToggle(true)}
-            aria-label="Show search"
-            className="bg-transparent border-none p-0 m-0 focus:outline-none"
-            tabIndex={0}
-          >
-            {scrolled && (
-              <SearchBar
-                isShowFilterIcon={false}
-                isShowSortingIcon={false}
-                className={`h-10 px-0 pl-2 overflow-hidden lg:hidden ${searchToggle ? 'w-full pr-3' : 'w-10'} `}
-              />
-            )}
-          </button>
+          {toggle && (
+            <button
+              type="button"
+              onClick={() => setSearchToggle(true)}
+              aria-label="Show search"
+              className="bg-transparent border-none p-0 m-0 focus:outline-none"
+              tabIndex={0}
+            >
+              {
+                <SearchBar
+                  isShowFilterIcon={false}
+                  isShowSortingIcon={false}
+                  className={`h-10 px-0 pl-2 overflow-hidden lg:hidden ${searchToggle ? 'w-full pr-3' : 'w-10'} `}
+                />
+              }
+            </button>
+          )}
         </div>
         <div className="hidden lg:block transition-all duration-300 ease-in-out">
           {showScrollSearch ? (
@@ -136,7 +144,7 @@ export default function TopBar() {
         </div>
       </div>
       {!scrolled && pathname === '/' && (
-        <div className="lg:hidden w-full">
+        <div className={`${searchToggle ? 'hidden' : 'block'} lg:hidden w-full`}>
           <SearchBar />
         </div>
       )}
