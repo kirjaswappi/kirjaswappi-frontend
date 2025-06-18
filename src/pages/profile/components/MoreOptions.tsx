@@ -29,7 +29,7 @@ const profileSetting = [
   {
     name: 'Contact Us',
     icon: contact,
-    location: '/profile/contact',
+    location: '/contact',
   },
   {
     name: 'logout',

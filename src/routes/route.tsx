@@ -18,7 +18,7 @@ import { Navigate } from 'react-router-dom';
 import { Index } from '../pages/user/inboxChat';
 import PrivacyPolicy from '../pages/privacyPolicy';
 import PrivacyPolicyDetail from '../pages/privacyPolicy/components/PrivacyPolicyDetail';
-import ContactUs from '../pages/privacyPolicy/components/ContactUs';
+import ContactUs from '../pages/contactUs/ContactUs';
 
 const routes = createBrowserRouter([
   {
@@ -40,7 +40,10 @@ const routes = createBrowserRouter([
         path: '/book-details/:id',
         element: <BookDetails />,
       },
-
+      {
+        path: '/contact',
+        element: <ContactUs />,
+      },
       {
         path: '/profile',
         element: (
@@ -75,14 +78,6 @@ const routes = createBrowserRouter([
             path: 'privacy/:sectionKey',
             element: <PrivacyPolicyDetail />,
           },
-          {
-            path: 'contact',
-            element: <ContactUs />,
-          },
-          // {
-          //   path: "book-details/:id",
-          //   element: <BookDetails />,
-          // },
         ],
       },
       {

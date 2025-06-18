@@ -1,12 +1,12 @@
 import { useForm, FormProvider } from 'react-hook-form';
-import ControlledInputField from '../../../components/shared/ControllerField';
-import InputLabel from '../../../components/shared/InputLabel';
-import Button from '../../../components/shared/Button';
+import ControlledInputField from '../../components/shared/ControllerField';
+import InputLabel from '../../components/shared/InputLabel';
+import Button from '../../components/shared/Button';
 import { useNavigate } from 'react-router-dom';
-import BookAddUpdateHeader from '../../addUpdateBook/_components/BookAddUpdateHeader';
+import BookAddUpdateHeader from '../addUpdateBook/_components/BookAddUpdateHeader';
 import { yupResolver } from '@hookform/resolvers/yup';
-import contactUsSchema from '../schema';
-import contactFrame from '../../../assets/contactFrame.png';
+import contactUsSchema from './schema/index';
+import contactFrame from '../../assets/contactFrame.png';
 import { InferType } from 'yup';
 
 type ContactFormData = InferType<typeof contactUsSchema>;
@@ -31,7 +31,7 @@ export default function ContactUs() {
         <BookAddUpdateHeader onBack={() => navigate(-1)} title="Contact Us" />
       </div>
       <div className="bg-[#F5F7FA] container min-h-screen pb-24 font-poppins lg:bg-white lg:pt-14">
-        <div className="px-4 py-8 lg:mt-0 mx-auto lg:px-0 lg:py-0 lg:mx-0 lg:ml-40">
+        <div className="py-8 lg:mt-0 lg:py-0 lg:mx-0 lg:ml-40">
           <h2 className="text-[16px] lg:text-[32px] lg:font-semibold font-medium mb-3 leading-[40px] mt-10 lg:mt-0">
             Contact Us
           </h2>
@@ -75,7 +75,7 @@ export default function ContactUs() {
                     type="textarea"
                     name="description"
                     placeholder="Enter your message"
-                    className="rounded-md min-h-[122px]  border-[#CCCCCC] hover:border-blue-500 focus:border-blue-500 focus:outline-none"
+                    className="rounded-md min-h-[122px] border-[#CCCCCC] hover:border-blue-500 focus:border-blue-500 focus:outline-none"
                     showErrorMessage
                   />
                 </div>
