@@ -35,7 +35,7 @@ const PrivacyPolicy = () => {
   return (
     <div className="font-poppins pb-24 lg:bg-white lg:container">
       <div className="pt-[56px] lg:max-w-3xl lg:mx-auto lg:px-12">
-        <PrivacyPolicyHeader onBack={() => navigate('/profile/user-profile')} />
+        <PrivacyPolicyHeader onBack={() => navigate('/')} />
         <p className="pt-9 leading-6 px-4 lg:hidden font-normal text-[14px] px-4 pb-[12px]">
           {PRIVACY_POLICY_INTRODUCTION}
         </p>

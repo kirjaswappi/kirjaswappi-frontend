@@ -11,7 +11,7 @@ const PrivacyPolicyDetail: React.FC = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
-        navigate('/profile/privacy', { replace: true });
+        navigate('/privacy-policy', { replace: true });
       }
     };
     window.addEventListener('resize', handleResize);
@@ -28,7 +28,7 @@ const PrivacyPolicyDetail: React.FC = () => {
     return (
       <div className="font-poppins pb-24 lg:bg-white lg:container">
         <div className="pt-[56px] lg:max-w-3xl lg:mx-auto lg:px-12">
-          <PrivacyPolicyHeader onBack={() => navigate('/profile/privacy')} />
+          <PrivacyPolicyHeader onBack={() => navigate('/privacy-policy')} />
           <div className="p-4">
             <h2 className="text-xl font-semibold mb-4">Section not found</h2>
             <p>The requested privacy policy section could not be found.</p>
@@ -41,7 +41,7 @@ const PrivacyPolicyDetail: React.FC = () => {
   return (
     <div className="font-poppins  min-h-screen">
       <div className="pt-[56px] lg:max-w-3xl lg:mx-auto lg:px-12">
-        <PrivacyPolicyHeader onBack={() => navigate('/profile/privacy')} />
+        <PrivacyPolicyHeader onBack={() => navigate('/privacy-policy')} />
         <div className="px-4 sm:px-6">
           <h2 className="text-[16px] sm:pl-4 sm:mt-4 sm:mb-3 font-semibold mb-6 leading-7 tracking-normal">
             {section.title}

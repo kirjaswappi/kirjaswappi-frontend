@@ -45,6 +45,14 @@ const routes = createBrowserRouter([
         element: <ContactUs />,
       },
       {
+        path: '/privacy-policy',
+        element: <PrivacyPolicy />,
+      },
+      {
+        path: '/privacy-policy/:sectionKey',
+        element: <PrivacyPolicyDetail />,
+      },
+      {
         path: '/profile',
         element: (
           <PrivateRoute>
@@ -69,14 +77,6 @@ const routes = createBrowserRouter([
           {
             path: 'update-book/:id',
             element: <AddUpdateBook />,
-          },
-          {
-            path: 'privacy',
-            element: <PrivacyPolicy />,
-          },
-          {
-            path: 'privacy/:sectionKey',
-            element: <PrivacyPolicyDetail />,
           },
         ],
       },

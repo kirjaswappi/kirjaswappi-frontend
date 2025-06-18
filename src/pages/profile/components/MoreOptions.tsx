@@ -24,7 +24,7 @@ const profileSetting = [
   {
     name: 'privacy',
     icon: privacy,
-    location: '/profile/privacy',
+    location: '/privacy-policy',
   },
   {
     name: 'Contact Us',
