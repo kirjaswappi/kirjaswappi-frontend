@@ -23,6 +23,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { setSwapModal } from '../../redux/feature/open/openSlice';
 import { FormProvider, useForm } from 'react-hook-form';
 import BookSkeleton from '../../components/shared/skeleton/BookSkeleton';
+import BookImageSlider from './components/BookImageSlider';
 
 export default function BookDetails() {
   const MAX_LENGTH = 95;
@@ -93,11 +94,11 @@ export default function BookDetails() {
       <div className="w-full h-[172px] mt-14">
         <Image src={bookDetailsBg} className="w-full h-full" />
       </div>
-      <div className="mx-auto w-[160px] h-[190px] -mt-32">
-        <Image src={bookData?.coverPhotoUrls[0]} className="w-full h-full rounded-lg" />
+      <div className="mx-auto w-[160px] h-[190px] -mt-32 mb-16">
+        <BookImageSlider images={bookData?.coverPhotoUrls || []} />
       </div>
       <div className=" pb-32">
-        <div className="container text-center my-5 ">
+        <div className="container text-center my-5">
           <h1 className="font-medium text-black text-sm leading-none mb-1 font-poppins">
             {bookData?.title}
           </h1>
