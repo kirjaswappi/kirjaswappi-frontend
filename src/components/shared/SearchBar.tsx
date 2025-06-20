@@ -49,8 +49,9 @@ export default function SearchBar({
         <Input
           type="text"
           placeholder="Find Books"
-          className="w-full outline-none border-none px-3 bg-white h-[38px]"
+          className="w-full outline-none border-none px-3 bg-white h-[40px]"
           onChange={(e) => setQuery(e.target.value)}
+          value={query}
         />
         <div className="flex items-center justify-between gap-1 rounded-full bg-primary-light w-[106px] h-[26px] px-2 text-primary py-1">
           {' '}

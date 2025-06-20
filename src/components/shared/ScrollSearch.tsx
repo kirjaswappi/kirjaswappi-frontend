@@ -1,46 +1,46 @@
+import React from 'react';
+import { IoSearch } from 'react-icons/io5';
 import { Link, useLocation } from 'react-router-dom';
 import { menu } from '../../data/menu';
+import { useMouseClick } from '../../hooks/useMouse';
 import Image from './Image';
-import React, { useState, useRef, useEffect } from 'react';
-import { IoSearch } from 'react-icons/io5';
 import Search from './Search';
 
 export default function ScrollSearch() {
   const { pathname } = useLocation();
-  const [isSearchVisible, setIsSearchVisible] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const searchBarRef = useRef<HTMLDivElement>(null);
-
+  // const [isSearchVisible, setIsSearchVisible] = useState(false);
+  // const [searchQuery, setSearchQuery] = useState('');
+  // const searchBarRef = useRef<HTMLDivElement>(null);
+  const { clicked, setClicked, reference } = useMouseClick();
   const filteredMenu = menu.filter(({ isShow }) => isShow);
 
-  const handleSearchIconClick = () => {
-    setIsSearchVisible((prev) => !prev);
-  };
+  // const handleSearchIconClick = () => {
+  //   setIsSearchVisible((prev) => !prev);
+  // };
 
   // Close search when clicking outside
-  useEffect(() => {
-    if (!isSearchVisible) return;
-    function handleClickOutside(event: MouseEvent) {
-      if (searchBarRef.current && !searchBarRef.current.contains(event.target as Node)) {
-        setIsSearchVisible(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isSearchVisible]);
+  // useEffect(() => {
+  //   if (!isSearchVisible) return;
+  //   function handleClickOutside(event: MouseEvent) {
+  //     if (searchBarRef.current && !searchBarRef.current.contains(event.target as Node)) {
+  //       setIsSearchVisible(false);
+  //     }
+  //   }
+  //   document.addEventListener('mousedown', handleClickOutside);
+  //   return () => {
+  //     document.removeEventListener('mousedown', handleClickOutside);
+  //   };
+  // }, [isSearchVisible]);
 
   return (
     <div className="relative w-full max-w-xl">
       <div
-        ref={searchBarRef}
+        ref={reference}
         className="flex items-center bg-white rounded-full p-1 gap-2 border border-[#E5E5E5] shadow-sm w-full h-[48px]"
       >
-        {/* Animated menu text group */}
         <div
           className={`flex items-center gap-1 menu-text-fade ${
-            isSearchVisible ? 'menu-text-hidden' : 'menu-text-visible'
+            clicked ? 'menu-text-hidden' : 'menu-text-visible'
           }`}
           style={{ position: 'relative', zIndex: 1 }}
         >
@@ -75,7 +75,7 @@ export default function ScrollSearch() {
           })}
           {/* Search icon as part of menu group */}
           <button
-            onClick={handleSearchIconClick}
+            onClick={() => setClicked((prev) => !prev)}
             className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-all duration-200 ml-2"
             style={{ position: 'relative' }}
             aria-label="Search"
@@ -87,21 +87,16 @@ export default function ScrollSearch() {
         {/* Search bar fades in over menu texts */}
         <div
           className={`flex-1 absolute left-0 top-0 w-full h-full flex items-center transition-opacity duration-300 ease-in-out ${
-            isSearchVisible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+            clicked ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
           }`}
           style={{ zIndex: 2 }}
         >
           <div className="flex-1">
-            <Search
-              query={searchQuery}
-              setQuery={setSearchQuery}
-              onClose={() => setIsSearchVisible(false)}
-            />
+            <Search onClose={() => setClicked(false)} />
           </div>
         </div>
       </div>
 
-      {/* Add custom styles for smoother fade */}
       <style>
         {`
           .menu-text-fade {

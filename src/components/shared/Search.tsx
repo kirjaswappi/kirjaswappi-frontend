@@ -6,42 +6,41 @@ import useDebounce from '../../hooks/useDebounce';
 import { useMouseClick } from '../../hooks/useMouse';
 import { setSearch } from '../../redux/feature/filter/filterSlice';
 import { useAppDispatch } from '../../redux/hooks';
+import Input from './Input';
 
-export default function Search({
-  query,
-  setQuery,
-  onClose,
-}: {
-  query: string;
-  setQuery: (q: string) => void;
-  onClose?: () => void;
-}) {
+export default function Search({ onClose }: { onClose?: () => void }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
+  const [query, setQuery] = useState<string>('');
+  const debouncedSearch = useDebounce(query, 300);
   const { clicked, reference } = useMouseClick();
   const dispatch = useAppDispatch();
-  const debouncedSearch = useDebounce(query, 300);
 
-  useEffect(() => {
-    inputRef.current?.focus(); // Focus when component mounts
-  }, []);
+  // useEffect(() => {
+  //   inputRef.current?.focus();
+  // }, []);
 
   useEffect(() => {
     dispatch(setSearch(debouncedSearch));
   }, [debouncedSearch, dispatch]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newQuery = e.target.value;
-    setQuery(newQuery);
-  };
-
   return (
     <div ref={reference} className="relative w-full">
       <div className="w-full h-[48px] rounded-3xl bg-white border border-[#E5E5E5] shadow-sm flex items-center px-4 transition-all duration-300 ease-in-out gap-2">
-        <input
+        {/* <input
           ref={inputRef}
           value={query}
-          onChange={handleInputChange}
+          onChange={(e) => setQuery(e.target.value)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          type="text"
+          placeholder="Find Books"
+          className="w-full h-full outline-none border-none px-3 py-1 placeholder:pl-3 md:placeholder:pl-8 placeholder:text-grayDark placeholder:font-poppins placeholder:text-xs"
+        /> */}
+        <Input
+          ref={inputRef}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           type="text"
