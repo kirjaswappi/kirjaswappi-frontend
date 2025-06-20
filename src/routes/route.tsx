@@ -1,5 +1,3 @@
-/* eslint-disable no-return-assign */
-/* eslint-disable no-restricted-globals */
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import App from '../App';
 import AddUpdateBook from '../pages/addUpdateBook';
@@ -16,10 +14,9 @@ import { Index } from '../pages/user/inboxChat';
 import Authenticate from './Authenticate';
 import PrivateRoute from './PrivateRoute';
 
+import ContactUs from '../pages/contactUs/ContactUs';
 import PrivacyPolicy from '../pages/privacyPolicy';
 import PrivacyPolicyDetail from '../pages/privacyPolicy/components/PrivacyPolicyDetail';
-import ContactUs from '../pages/contactUs/ContactUs';
-
 
 const routes = createBrowserRouter([
   {
