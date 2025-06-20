@@ -12,13 +12,13 @@ const PrivacyPolicyHeader: React.FC<PrivacyPolicyHeaderProps> = ({ onBack }) => 
     <>
       {/* Mobile Header */}
       <div className="block lg:hidden">
-        <BookAddUpdateHeader title={t('privacyPolicy.centerTitle')} onBack={onBack} />
+        <BookAddUpdateHeader title={t('privacypolicy.header')} onBack={onBack} />
       </div>
       {/* Desktop Header */}
       <div className="hidden lg:flex relative pt-[56px] pl-6">
-        {/* Centered Title (remains centered regardless of button) */}
+        {/* Centered Title (remains */}
         <h1 className="font-poppins font-semibold text-[32px] tracking-[-0.02em]">
-          {t('privacyPolicy.centerTitle')}
+          {t('privacypolicy.header')}
         </h1>
       </div>
     </>
