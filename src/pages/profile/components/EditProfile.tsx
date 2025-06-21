@@ -3,6 +3,7 @@ import { FaRegUser } from 'react-icons/fa';
 import { IoCamera } from 'react-icons/io5';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import bg from '../../../assets/bookdetailsbg.jpg';
 import closeIcon from '../../../assets/close.svg';
 import leftArrowIcon from '../../../assets/leftArrow.png';
@@ -31,6 +32,7 @@ import { useAppSelector } from '../../../redux/hooks';
 import { IEditInfo } from '../interface/interface';
 
 export default function EditProfile() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const profileRef = useRef<HTMLInputElement | null>(null);
@@ -249,8 +251,8 @@ export default function EditProfile() {
       {isLoading() && <Spinner />}
       <AlertModal
         yes={handleDeleteFn}
-        yesBtnValue="Yes"
-        noBtnValue="No"
+        yesBtnValue={t('yes')}
+        noBtnValue={t('no')}
         no={() => dispatch(setAlert({ showAlert: false, message: '' }))}
         loading={deleteLoading}
       />
@@ -288,7 +290,7 @@ export default function EditProfile() {
             } font-poppins font-medium text-base`}
             onClick={handleEditSaveFn}
           >
-            Save
+            {t('save')}
           </Button>
         </div>
       </div>
@@ -361,7 +363,7 @@ export default function EditProfile() {
               }}
               className="text-[#3879E9] font-poppins font-medium text-sm leading-none underline relative"
             >
-              Change
+              {t('change')}
             </Button>
             <div
               className={`${

@@ -2,6 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useMemo, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import yup from 'yup';
 import NextArrowIcon from '../../assets/arrow1.png';
 import PrevArrowIcon from '../../assets/arrow2.png';
@@ -27,6 +28,7 @@ import { buildFormData, getDefaultValues } from './helper';
 import { IAddUpdateBookData } from './types/interface';
 
 export default function AddUpdateBook() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
   const [active, setActive] = useState<number>(0);
@@ -144,7 +146,7 @@ export default function AddUpdateBook() {
   return (
     <div className="min-h-screen">
       <BookAddUpdateHeader
-        title={`${id ? 'Update' : 'Add'} Book`}
+        title={`${id ? t('update') : t('add')} Book`}
         onBack={() => navigate('/profile/user-profile')}
       />
       <div className="container">
@@ -173,7 +175,7 @@ export default function AddUpdateBook() {
                   type="button"
                   className="bg-primary-light text-primary w-full py-4 rounded-lg border border-primary flex items-center justify-center font-poppins text-base font-medium"
                 >
-                  <Image src={PrevArrowIcon} alt="Next" className="w-4" /> Back
+                  <Image src={PrevArrowIcon} alt="Previous" className="w-4" /> {t('back')}
                 </Button>
               )}
               {active <= 1 && (
@@ -182,7 +184,7 @@ export default function AddUpdateBook() {
                   type="button"
                   className="bg-primary text-white w-full py-4 rounded-lg flex items-center justify-center  font-poppins text-base font-medium"
                 >
-                  Next <Image src={NextArrowIcon} alt="Next" className="w-4" />
+                  {t('next')} <Image src={NextArrowIcon} alt="Next" className="w-4" />
                 </Button>
               )}
               {active === 2 && (
@@ -192,7 +194,7 @@ export default function AddUpdateBook() {
                   className="bg-primary text-white w-full py-4 rounded-lg"
                 >
                   {' '}
-                  {isLoading ? 'Loading...' : 'Save'}
+                  {isLoading ? t('loading') + '...' : t('save')}
                 </Button>
               )}
             </div>
