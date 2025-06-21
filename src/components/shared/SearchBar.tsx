@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { FaLocationDot } from 'react-icons/fa6';
 import { IoIosSearch } from 'react-icons/io';
 import { MdKeyboardArrowDown } from 'react-icons/md';
@@ -13,14 +13,18 @@ import Input from './Input';
 export default function SearchBar({
   isShowFilterIcon = true,
   isShowSortingIcon = true,
+  query,
+  setQuery,
   className,
 }: {
   className?: string;
   isShowFilterIcon?: boolean;
   isShowSortingIcon?: boolean;
+  query: string;
+  setQuery: (value: string) => void;
 }) {
-  const [query, setQuery] = useState<string>('');
   const dispatch = useAppDispatch();
+  // const [query, setQuery] = useState<string>('');
   const {
     filter: { search },
   } = useAppSelector((state) => state.filter);
@@ -46,13 +50,15 @@ export default function SearchBar({
         <div className="w-6 h-6 flex items-center justify-center">
           <IoIosSearch size={24} className="text-grayDark" />
         </div>
-        <Input
-          type="text"
-          placeholder="Find Books"
-          className="w-full outline-none border-none px-3 bg-white h-[40px]"
-          onChange={(e) => setQuery(e.target.value)}
-          value={query}
-        />
+        <div>
+          <Input
+            type="text"
+            placeholder="Find Books"
+            className="w-full outline-none border-none px-3 bg-white h-[38px]"
+            onChange={(e) => setQuery(e.target.value)}
+            value={query}
+          />
+        </div>
         <div className="flex items-center justify-between gap-1 rounded-full bg-primary-light w-[106px] h-[26px] px-2 text-primary py-1">
           {' '}
           <FaLocationDot className="text-xs md:text-sm" />{' '}

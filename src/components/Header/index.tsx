@@ -15,7 +15,6 @@ export default function Header() {
   const location = useLocation();
   const dispatch = useAppDispatch();
   const { clicked, reference } = useMouseClick<HTMLFormElement>();
-  console.log(location);
   const pathname = location.pathname;
   const showTopHeaderPath = ['/', `/book-details/${pathname?.split('/').reverse()[0]}`];
   const isHeaderShow = showTopHeaderPath.find((path) => path === pathname);

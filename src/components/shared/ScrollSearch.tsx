@@ -8,30 +8,8 @@ import Search from './Search';
 
 export default function ScrollSearch() {
   const { pathname } = useLocation();
-  // const [isSearchVisible, setIsSearchVisible] = useState(false);
-  // const [searchQuery, setSearchQuery] = useState('');
-  // const searchBarRef = useRef<HTMLDivElement>(null);
   const { clicked, setClicked, reference } = useMouseClick();
   const filteredMenu = menu.filter(({ isShow }) => isShow);
-
-  // const handleSearchIconClick = () => {
-  //   setIsSearchVisible((prev) => !prev);
-  // };
-
-  // Close search when clicking outside
-  // useEffect(() => {
-  //   if (!isSearchVisible) return;
-  //   function handleClickOutside(event: MouseEvent) {
-  //     if (searchBarRef.current && !searchBarRef.current.contains(event.target as Node)) {
-  //       setIsSearchVisible(false);
-  //     }
-  //   }
-  //   document.addEventListener('mousedown', handleClickOutside);
-  //   return () => {
-  //     document.removeEventListener('mousedown', handleClickOutside);
-  //   };
-  // }, [isSearchVisible]);
-
   return (
     <div className="relative w-full max-w-xl">
       <div

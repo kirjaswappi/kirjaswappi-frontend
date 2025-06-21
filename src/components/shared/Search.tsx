@@ -27,16 +27,6 @@ export default function Search({ onClose }: { onClose?: () => void }) {
   return (
     <div ref={reference} className="relative w-full">
       <div className="w-full h-[48px] rounded-3xl bg-white border border-[#E5E5E5] shadow-sm flex items-center px-4 transition-all duration-300 ease-in-out gap-2">
-        {/* <input
-          ref={inputRef}
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          type="text"
-          placeholder="Find Books"
-          className="w-full h-full outline-none border-none px-3 py-1 placeholder:pl-3 md:placeholder:pl-8 placeholder:text-grayDark placeholder:font-poppins placeholder:text-xs"
-        /> */}
         <Input
           ref={inputRef}
           value={query}
@@ -44,8 +34,7 @@ export default function Search({ onClose }: { onClose?: () => void }) {
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           type="text"
-          placeholder="Find Books"
-          className="w-full h-full outline-none border-none px-3 py-1 placeholder:pl-3 md:placeholder:pl-8 placeholder:text-grayDark placeholder:font-poppins placeholder:text-xs"
+          className="w-full h-full outline-none border-none px-3 py-1 placeholder:pl-3 md:placeholder:pl-8 placeholder:text-grayDark placeholder:font-poppins placeholder:text-xs bg-transparent"
         />
         <div
           className="flex items-center justify-between gap-1 rounded-full bg-primary-light h-[26px] px-2 text-primary py-1 transition-all duration-300 ease-in-out"
