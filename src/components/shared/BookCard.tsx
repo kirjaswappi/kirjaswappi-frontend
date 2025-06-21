@@ -5,10 +5,31 @@ import Image from './Image';
 export default function BookCard({ book }: { book: IBook }) {
   if (!book) return null;
   const navigate = useNavigate();
-
   const { title, author, coverPhotoUrl, id } = book;
+
   return (
-    <div className="sm:max-w-[168px] max-h-[264px] flex flex-col">
+    <div
+      className="
+    w-[145px]
+    xm:w-[158px]
+    xlg:w-[165px]
+    sm:w-[168px]
+    lg:w-[212px]
+    sm:h-[264px]
+    lg:h-[314px]
+    gap-[20px]
+    xm:gap-[24px]
+    xlg:gap-[28px]
+    sm:gap-[32px]
+    lg:gap-[56px]
+    shadow-lg
+    flex flex-col
+    bg-white
+    rounded-lg
+    shadow-sm
+    overflow-hidden
+  "
+    >
       <div
         role="button"
         tabIndex={0}
@@ -24,20 +45,71 @@ export default function BookCard({ book }: { book: IBook }) {
             });
           }
         }}
-        className="cursor-pointer"
+        className="cursor-pointer h-full flex flex-col"
       >
-        <div className="h-[190px] mb-2 rounded-md overflow-hidden	">
+        {/* Book Cover Image */}
+        <div className="w-full h-[156px] lg:h-[214px] lg:w-[212px] bg-gray-100 overflow-hidden rounded-t-lg flex-shrink-0 relative">
           <Image
-            className="mx-auto h-full object-cover"
+            className="w-full h-full object-cover"
             src={coverPhotoUrl}
             alt={`${title} || 'Your favorite book'`}
           />
+          {/* Exchange Icon */}
+          <div className="absolute bottom-2 left-2 bg-blue-500 flex items-center justify-center w-7 h-7 rounded-full p-2 gap-2.5">
+            <img src="/src/assets/exchangeicon.png" alt="Exchange" className="w-2.5 h-2" />
+          </div>
         </div>
-        <div>
-          <h1 className="font-medium text-black text-xs leading-none mb-1 font-poppins truncate">
+
+        {/* Book Info Section */}
+        <div className="flex-1 px-3 py-1.5 lg:px-4 lg:py-2 flex flex-col">
+          {/* Book Title */}
+          <h1 className="font-poppins font-medium text-[12px] mt-1 leading-[100%] text-gray-900 mb-0.5 truncate">
             {title && title}
           </h1>
-          {author && <p className="text-black font-light text-[10px] font-poppins">by {author}</p>}
+
+          {/* Author */}
+          {author && (
+            <p className="font-poppins font-light text-[10px] mt-[2px] leading-[13.77px] text-gray-600 mb-1.5">
+              by {author}
+            </p>
+          )}
+
+          {/* Location */}
+          <div className="flex items-center mb-1.5 lg:mb-2">
+            <img
+              src="/src/assets/location-icon.png"
+              alt="Location"
+              className="mr-1 flex-shrink-0 w-4 h-4"
+            />
+            <span className="font-poppins font-normal text-[10px] leading-[13.77px] text-gray-700">
+              Helsinki
+            </span>
+          </div>
+
+          {/* User Info - Different layout for sm vs lg */}
+          <div className="lg:flex lg:items-center lg:justify-between">
+            {/* User Info */}
+            <div className="flex items-center mb-1.5 lg:mb-0">
+              <div className="flex-shrink-0 mr-1.5 overflow-hidden w-3.5 h-3.5 rounded-full">
+                <img
+                  src="/src/assets/userprofile.png"
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <span className="font-poppins font-normal text-[10px] leading-[13.77px] text-gray-700">
+                Tanvir Rayhan
+              </span>
+            </div>
+
+            {/* Timestamp - Below name on small, beside on large */}
+            <div className="flex items-center ml-0 lg:ml-0 mt-1 lg:mt-0">
+              <img src="/src/assets/clock.png" alt="Clock" className="mr-1 w-[9px] h-[9px]" />
+              <span className="font-poppins font-normal text-[10px] leading-[13.77px] text-[#808080]">
+                29 mins ago
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
