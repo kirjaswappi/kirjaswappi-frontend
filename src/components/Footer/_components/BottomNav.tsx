@@ -1,8 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { menu } from '../../../data/menu';
 import Image from '../../shared/Image';
 
 export default function BottomNav() {
+  const { t } = useTranslation();
   const location = useLocation();
   const ignorePath = [
     '/profile/edit-user',
@@ -44,7 +46,7 @@ export default function BottomNav() {
                 }}
               />
             </div>
-            <p className="leading-none text-xs font-normal font-poppins">{menuItem?.value}</p>
+            <p className="leading-none text-xs font-normal font-poppins">{t(menuItem?.value)}</p>
           </Link>
         );
       })}
