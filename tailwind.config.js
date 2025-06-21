@@ -13,7 +13,7 @@ export default {
           md: '100%',
           tab: '100%',
           lg: '1024px',
-          xl: '1245px',
+          xl: '1391px',
         },
         padding: {
           DEFAULT: '1rem',

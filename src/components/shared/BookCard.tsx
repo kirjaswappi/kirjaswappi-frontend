@@ -8,7 +8,28 @@ export default function BookCard({ book }: { book: IBook }) {
   const { title, author, coverPhotoUrl, id } = book;
 
   return (
-    <div className="w-[168px] h-[264px] lg:w-[212px] lg:h-[314px] shadow-lg flex flex-col bg-white rounded-lg shadow-sm overflow-hidden">
+    <div
+      className="
+    w-[145px]
+    xm:w-[158px]
+    xlg:w-[165px]
+    sm:w-[168px]
+    lg:w-[212px]
+    sm:h-[264px]
+    lg:h-[314px]
+    gap-[20px]
+    xm:gap-[24px]
+    xlg:gap-[28px]
+    sm:gap-[32px]
+    lg:gap-[56px]
+    shadow-lg
+    flex flex-col
+    bg-white
+    rounded-lg
+    shadow-sm
+    overflow-hidden
+  "
+    >
       <div
         role="button"
         tabIndex={0}
@@ -42,13 +63,13 @@ export default function BookCard({ book }: { book: IBook }) {
         {/* Book Info Section */}
         <div className="flex-1 px-3 py-1.5 lg:px-4 lg:py-2 flex flex-col">
           {/* Book Title */}
-          <h1 className="font-poppins font-medium text-[12px] leading-[100%] text-gray-900 mb-0.5 truncate">
+          <h1 className="font-poppins font-medium text-[12px] mt-1 leading-[100%] text-gray-900 mb-0.5 truncate">
             {title && title}
           </h1>
 
           {/* Author */}
           {author && (
-            <p className="font-poppins font-light text-[10px] leading-[13.77px] text-gray-600 mb-1.5">
+            <p className="font-poppins font-light text-[10px] mt-[2px] leading-[13.77px] text-gray-600 mb-1.5">
               by {author}
             </p>
           )}
