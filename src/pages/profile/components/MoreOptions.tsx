@@ -1,5 +1,6 @@
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Language from '../../../assets/language.png';
 import logoutIcon from '../../../assets/logout.png';
 import privacy from '../../../assets/privacy.png';
@@ -12,12 +13,12 @@ import SideDrawer from './SideDrawer';
 
 const profileSetting = [
   {
-    name: 'Settings',
+    name: 'settings',
     icon: setting,
     location: '',
   },
   {
-    name: 'Language',
+    name: 'language',
     icon: Language,
     location: '',
   },
@@ -27,7 +28,7 @@ const profileSetting = [
     location: '/privacy-policy',
   },
   {
-    name: 'Contact Us',
+    name: 'contactUs',
     icon: contact,
     location: '/contact',
   },
@@ -38,6 +39,7 @@ const profileSetting = [
   },
 ];
 export default function MoreOptions() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   return (
@@ -48,7 +50,7 @@ export default function MoreOptions() {
             key={item.name}
             className="flex items-center px-4 py-4 bg-white border border-[#E6E6E6] rounded-2xl gap-2"
             onClick={() => {
-              if (item.name.toLocaleLowerCase() === 'logout') dispatch(logout());
+              if (item.name === 'logout') dispatch(logout());
               else if (item.location) {
                 navigate(item.location);
               }
@@ -57,7 +59,7 @@ export default function MoreOptions() {
             type="button"
           >
             <Image src={item.icon} alt="close" className="h-auto" />
-            <h3 className="font-poppins text-sm font-normal capitalize">{item.name}</h3>
+            <h3 className="font-poppins text-sm font-normal capitalize">{t(item.name)}</h3>
           </button>
         ))}
       </div>
